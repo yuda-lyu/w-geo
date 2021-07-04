@@ -6,6 +6,10 @@ import isbol from 'wsemi/src/isbol.mjs'
 import cnst from './cnst.mjs'
 
 
+// //eps
+// let eps = cnst.eps
+
+
 //rw, 水單位重(kN/m3)
 let rw = cnst.rw
 
@@ -234,6 +238,15 @@ function get_GS_from_rsat_e(rsat, e) {
  * //     e: 0.86
  * // }
  *
+ * try {
+ *     r = relaPorousParams(14.1, null, GS, e)
+ * }
+ * catch (e) {
+ *     r = e.toString()
+ * }
+ * console.log('GS,e', r)
+ * // => Error: 輸入孔隙比[0.86]與反算出孔隙比[0.8785106382978726]差距過大
+ *
  */
 function relaPorousParams(rd, rsat, GS, e, opt = {}) {
 
@@ -297,81 +310,112 @@ function relaPorousParams(rd, rsat, GS, e, opt = {}) {
         let bUpdate = false
 
         //calc rd
-        if (!isNumber(rd) && isNumber(GS) && isNumber(e)) {
-            rd = get_rd_from_GS_e(GS, e)
-            bUpdate = true
+        let _rd
+        if (!isNumber(_rd) && isNumber(GS) && isNumber(e)) {
+            _rd = get_rd_from_GS_e(GS, e)
         }
-        if (!isNumber(rd) && isNumber(rsat) && isNumber(e)) {
-            rd = get_rd_from_rsat_e(rsat, e)
-            bUpdate = true
+        if (!isNumber(_rd) && isNumber(rsat) && isNumber(e)) {
+            _rd = get_rd_from_rsat_e(rsat, e)
         }
-        if (!isNumber(rd) && isNumber(rsat) && isNumber(GS)) {
+        if (!isNumber(_rd) && isNumber(rsat) && isNumber(GS)) {
             if (GS !== 1) {
-                rd = get_rd_from_rsat_GS(rsat, GS)
-                bUpdate = true
+                _rd = get_rd_from_rsat_GS(rsat, GS)
+            }
+        }
+        if (!isNumber(rd)) {
+            rd = _rd
+            bUpdate = true
+        }
+        else {
+            // console.log('rd isNumber', Math.abs(rd - _rd) > eps)
+            if (Math.abs(rd - _rd) > _rd / 100) {
+                throw new Error(`輸入乾單位重[${rd}]與反算出乾單位重[${_rd}]差距過大`)
             }
         }
 
         //calc rsat
-        if (!isNumber(rsat) && isNumber(GS) && isNumber(e)) {
-            rsat = get_rsat_from_GS_e(GS, e)
+        let _rsat
+        if (!isNumber(_rsat) && isNumber(GS) && isNumber(e)) {
+            _rsat = get_rsat_from_GS_e(GS, e)
+        }
+        if (!isNumber(_rsat) && isNumber(rd) && isNumber(e)) {
+            _rsat = get_rsat_from_rd_e(rd, e)
+        }
+        if (!isNumber(_rsat) && isNumber(rd) && isNumber(GS)) {
+            _rsat = get_rsat_from_rd_GS(rd, GS)
+        }
+        if (!isNumber(rsat)) {
+            rsat = _rsat
             bUpdate = true
         }
-        if (!isNumber(rsat) && isNumber(rd) && isNumber(e)) {
-            rsat = get_rsat_from_rd_e(rd, e)
-            bUpdate = true
-        }
-        if (!isNumber(rsat) && isNumber(rd) && isNumber(GS)) {
-            rsat = get_rsat_from_rd_GS(rd, GS)
-            bUpdate = true
+        else {
+            if (Math.abs(rsat - _rsat) > _rsat / 100) {
+                throw new Error(`輸入飽和單位重[${rsat}]與反算出飽和單位重[${_rsat}]差距過大`)
+            }
         }
 
         //calc e
-        if (!isNumber(e) && isNumber(GS) && isNumber(rd)) {
-            e = get_e_from_GS_rd(GS, rd)
+        let _e
+        if (!isNumber(_e) && isNumber(GS) && isNumber(rd)) {
+            _e = get_e_from_GS_rd(GS, rd)
+        }
+        if (!isNumber(_e) && isNumber(rsat) && isNumber(rd)) {
+            if ((rsat - rw - rd) !== 0) {
+                _e = get_e_from_rd_rsat(rd, rsat)
+            }
+        }
+        if (!isNumber(_e) && isNumber(rsat) && isNumber(GS)) {
+            if ((rsat - rw) !== 0) {
+                _e = get_e_from_GS_rsat(GS, rsat)
+            }
+        }
+        if (!isNumber(e)) {
+            e = _e
             bUpdate = true
         }
-        if (!isNumber(e) && isNumber(rsat) && isNumber(rd)) {
-            if ((rsat - rw - rd) !== 0) {
-                e = get_e_from_rd_rsat(rd, rsat)
-                bUpdate = true
-            }
-        }
-        if (!isNumber(e) && isNumber(rsat) && isNumber(rd)) {
-            if ((1 - rw * (rsat - rd)) !== 0) {
-                e = get_e_from_rd_rsat(rsat, rd)
-                bUpdate = true
-            }
-        }
-        if (!isNumber(e) && isNumber(rsat) && isNumber(GS)) {
-            if ((rsat - rw) !== 0) {
-                e = get_e_from_GS_rsat(GS, rsat)
-                bUpdate = true
+        else {
+            if (Math.abs(e - _e) > _e / 100) {
+                throw new Error(`輸入孔隙比[${e}]與反算出孔隙比[${_e}]差距過大`)
             }
         }
 
         //calc GS
-        if (!isNumber(GS) && isNumber(rd) && isNumber(e)) {
-            GS = get_GS_from_rd_e(rd, e)
-            bUpdate = true
+        let _GS
+        if (!isNumber(_GS) && isNumber(rd) && isNumber(e)) {
+            _GS = get_GS_from_rd_e(rd, e)
         }
-        if (!isNumber(GS) && isNumber(rd) && isNumber(rsat)) {
+        if (!isNumber(_GS) && isNumber(rd) && isNumber(rsat)) {
             if ((rd - (rsat - rw)) !== 0) {
-                GS = get_GS_from_rd_rsat(rd, rsat)
-                bUpdate = true
+                _GS = get_GS_from_rd_rsat(rd, rsat)
             }
         }
-        if (!isNumber(GS) && isNumber(rsat) && isNumber(e)) {
-            GS = get_GS_from_rsat_e(rsat, e)
+        if (!isNumber(_GS) && isNumber(rsat) && isNumber(e)) {
+            _GS = get_GS_from_rsat_e(rsat, e)
+        }
+        if (!isNumber(GS)) {
+            GS = _GS
             bUpdate = true
+        }
+        else {
+            if (Math.abs(GS - _GS) > _GS / 100) {
+                throw new Error(`輸入比重[${GS}]與反算出比重[${_GS}]差距過大`)
+            }
         }
 
         return bUpdate
     }
 
-    let b = core()
-    while (b) {
-        b = core()
+    //check 至少要2參數才進行轉換
+    let ieff = 0
+    ieff += isnum(rd) ? 1 : 0
+    ieff += isnum(rsat) ? 1 : 0
+    ieff += isnum(GS) ? 1 : 0
+    ieff += isnum(e) ? 1 : 0
+    if (ieff >= 2) {
+        let b = core()
+        while (b) {
+            b = core()
+        }
     }
 
     //r
