@@ -6,8 +6,8 @@ describe(`relaPorousParams`, function() {
     let eps = 1e-6
     let GS = 2.7
     let e = 0.86
-    let rd = 1.4516129032258067
-    let rsat = 1.913978494623656
+    let rd = 14.240322580645163 //kN/m3
+    let rsat = 18.776129032258066 //kN/m3
     let all = {
         rd, rsat, GS, e
     }
