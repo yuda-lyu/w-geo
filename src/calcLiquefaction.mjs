@@ -3705,7 +3705,9 @@ function liquefaction(kind = 'auto', rows) {
 
         //map
         rows = map(rows, (v, k) => {
-            let t
+
+            //err
+            let err = get(v, 'err', '')
 
             //save waterLevelUsual,waterLevelDesign
             v.waterLevelUsual = waterLevelUsual
@@ -3733,30 +3735,43 @@ function liquefaction(kind = 'auto', rows) {
             let GS = get(v, 'GS', null)
             let rd = get(v, 'rd', null) //乾單位重rd(kN/m3)
             let rsat = get(v, 'rsat', null) //飽和單位重rsat(kN/m3)
-            t = relaPorousParams(rd, rsat, GS, e)
-            if (isNumber(t.rd)) {
-                v.rd = t.rd
+            let t = relaPorousParams(rd, rsat, GS, e)
+            if (get(t, 'err')) {
+                if (err === '') {
+                    err = t.err
+                }
+                else {
+                    if (err.indexOf(t.err) < 0) { //若不存在才加入
+                        err += `, ${t.err}`
+                    }
+                }
+                v.err = err
             }
             else {
-                v.rd = ''
-            }
-            if (isNumber(t.rsat)) {
-                v.rsat = t.rsat
-            }
-            else {
-                v.rsat = ''
-            }
-            if (isNumber(t.GS)) {
-                v.GS = t.GS
-            }
-            else {
-                v.GS = ''
-            }
-            if (isNumber(t.e)) {
-                v.e = t.e
-            }
-            else {
-                v.e = ''
+                if (isNumber(t.rd)) {
+                    v.rd = t.rd
+                }
+                else {
+                    v.rd = ''
+                }
+                if (isNumber(t.rsat)) {
+                    v.rsat = t.rsat
+                }
+                else {
+                    v.rsat = ''
+                }
+                if (isNumber(t.GS)) {
+                    v.GS = t.GS
+                }
+                else {
+                    v.GS = ''
+                }
+                if (isNumber(t.e)) {
+                    v.e = t.e
+                }
+                else {
+                    v.e = ''
+                }
             }
 
             return v

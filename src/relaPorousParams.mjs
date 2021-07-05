@@ -1,8 +1,11 @@
 import get from 'lodash/get'
+import join from 'lodash/join'
+import values from 'lodash/values'
 import isNumber from 'lodash/isNumber'
 import cdbl from 'wsemi/src/cdbl.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
 import isbol from 'wsemi/src/isbol.mjs'
+import iseobj from 'wsemi/src/iseobj.mjs'
 import cnst from './cnst.mjs'
 
 
@@ -245,10 +248,17 @@ function get_GS_from_rsat_e(rsat, e) {
  *     r = e.toString()
  * }
  * console.log('GS,e', r)
- * // => Error: 輸入孔隙比[0.86]與反算出孔隙比[0.8785106382978726]差距過大
+ * // => GS,e {
+ * //   rd: 14.1,
+ * //   rsat: 18.776129032258066,
+ * //   GS: 2.7,
+ * //   e: 0.86,
+ * //   err: '輸入孔隙比[0.86]與反算出孔隙比[0.8785106382978726]差距過大'
+ * // }
  *
  */
 function relaPorousParams(rd, rsat, GS, e, opt = {}) {
+    let kpErr = {}
 
     //returnFuncs
     let returnFuncs = get(opt, 'returnFuncs')
@@ -260,10 +270,12 @@ function relaPorousParams(rd, rsat, GS, e, opt = {}) {
     if (isnum(rd)) {
         rd = cdbl(rd)
         if (rd <= 0) {
-            throw new Error(`乾單位重[${rd}]<=0`)
+            return {
+                err: `乾單位重[${rd}]為數字但<=0`
+            }
         }
         if (rd <= rw) {
-            throw new Error(`乾單位重[${rd}]<=水單位重[${rw}]`)
+            kpErr['rd'] = `乾單位重[${rd}]<=水單位重[${rw}]`
         }
     }
     else {
@@ -274,10 +286,12 @@ function relaPorousParams(rd, rsat, GS, e, opt = {}) {
     if (isnum(rsat)) {
         rsat = cdbl(rsat)
         if (rsat <= 0) {
-            throw new Error(`飽和單位重[${rsat}]<=0`)
+            return {
+                err: `飽和單位重[${rsat}]為數字但<=0`
+            }
         }
         if (rsat <= rw) {
-            throw new Error(`飽和單位重[${rsat}]<=水單位重[${rw}]`)
+            kpErr['rsat'] = `飽和單位重[${rsat}]<=水單位重[${rw}]`
         }
     }
     else {
@@ -288,7 +302,9 @@ function relaPorousParams(rd, rsat, GS, e, opt = {}) {
     if (isnum(GS)) {
         GS = cdbl(GS)
         if (GS <= 0) {
-            throw new Error(`比重[${GS}]<=0`)
+            return {
+                err: `比重[${GS}]為數字但<=0`
+            }
         }
     }
     else {
@@ -299,7 +315,9 @@ function relaPorousParams(rd, rsat, GS, e, opt = {}) {
     if (isnum(e)) {
         e = cdbl(e)
         if (e <= 0) {
-            throw new Error(`孔隙比[${e}]<=0`)
+            return {
+                err: `孔隙比[${e}]為數字但<=0`
+            }
         }
     }
     else {
@@ -329,7 +347,7 @@ function relaPorousParams(rd, rsat, GS, e, opt = {}) {
         else {
             // console.log('rd isNumber', Math.abs(rd - _rd) > eps)
             if (Math.abs(rd - _rd) > _rd / 100) {
-                throw new Error(`輸入乾單位重[${rd}]與反算出乾單位重[${_rd}]差距過大`)
+                kpErr['ck_rd'] = `輸入乾單位重[${rd}]與反算出乾單位重[${_rd}]差距過大`
             }
         }
 
@@ -350,7 +368,7 @@ function relaPorousParams(rd, rsat, GS, e, opt = {}) {
         }
         else {
             if (Math.abs(rsat - _rsat) > _rsat / 100) {
-                throw new Error(`輸入飽和單位重[${rsat}]與反算出飽和單位重[${_rsat}]差距過大`)
+                kpErr['ck_rsat'] = `輸入飽和單位重[${rsat}]與反算出飽和單位重[${_rsat}]差距過大`
             }
         }
 
@@ -375,7 +393,7 @@ function relaPorousParams(rd, rsat, GS, e, opt = {}) {
         }
         else {
             if (Math.abs(e - _e) > _e / 100) {
-                throw new Error(`輸入孔隙比[${e}]與反算出孔隙比[${_e}]差距過大`)
+                kpErr['ck_e'] = `輸入孔隙比[${e}]與反算出孔隙比[${_e}]差距過大`
             }
         }
 
@@ -398,7 +416,7 @@ function relaPorousParams(rd, rsat, GS, e, opt = {}) {
         }
         else {
             if (Math.abs(GS - _GS) > _GS / 100) {
-                throw new Error(`輸入比重[${GS}]與反算出比重[${_GS}]差距過大`)
+                kpErr['ck_GS'] = `輸入比重[${GS}]與反算出比重[${_GS}]差距過大`
             }
         }
 
@@ -424,6 +442,10 @@ function relaPorousParams(rd, rsat, GS, e, opt = {}) {
         rsat,
         GS,
         e,
+    }
+    if (iseobj(kpErr)) {
+        let err = join(values(kpErr), ', ')
+        r.err = err
     }
     if (returnFuncs) {
         r.coreFuncs = {

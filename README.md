@@ -24,6 +24,6 @@ npm i w-geo
 
 Add script for w-geo.
 ```alias
-<script src="https://cdn.jsdelivr.net/npm/w-geo@1.0.6/dist/w-geo.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/w-geo@1.0.7/dist/w-geo.umd.js"></script>
 
 ```
