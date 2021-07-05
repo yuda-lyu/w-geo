@@ -27,7 +27,7 @@
 
 <nav >
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPorousParams">relaPorousParams</a></li></ul></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPorousParams">relaPorousParams</a></li><li data-type='method'><a href="w-geo.html#.sptHBF">sptHBF</a></li><li data-type='method'><a href="w-geo.html#.sptNCEER">sptNCEER</a></li><li data-type='method'><a href="w-geo.html#.sptNJRA">sptNJRA</a></li><li data-type='method'><a href="w-geo.html#.sptSeed">sptSeed</a></li><li data-type='method'><a href="w-geo.html#.sptTY">sptTY</a></li></ul></li></ul>
 </nav>
 
 <div id="main">
@@ -153,6 +153,79 @@
 
     
 
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id=".calcLiquefaction"><span class="type-signature">(static) </span>calcLiquefaction<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line4043">line 4043</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>液化分析</p>
+<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/calcLiquefaction.test.js">Github</a></p>
+</div>
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>let rowsIn = `[{"depthStart":"0","depthEnd":"2.025","depth":"1.0125","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"ML","N60":"9.6","gravel":"","sand":"","silt":"","clay":"","FC":"83","w":"","Gs":"","e":"","rd":"","rsat":"19.52","sv":"","svp":"","LL":"","PI":"5","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"2.025","depthEnd":"3.525","depth":"2.775","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"CL","N60":"10.8","gravel":"","sand":"","silt":"","clay":"","FC":"91","w":"","Gs":"","e":"","rd":"","rsat":"18.64","sv":"","svp":"","LL":"","PI":"20","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"3.525","depthEnd":"5.025","depth":"4.275","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"SM","N60":"24","gravel":"","sand":"","silt":"","clay":"","FC":"14","w":"","Gs":"","e":"","rd":"","rsat":"19.03","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"5.025","depthEnd":"6.525","depth":"5.775","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"SM","N60":"27.6","gravel":"","sand":"","silt":"","clay":"","FC":"12","w":"","Gs":"","e":"","rd":"","rsat":"18.54","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"6.525","depthEnd":"8.025","depth":"7.275","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"SM","N60":"19.2","gravel":"","sand":"","silt":"","clay":"","FC":"15","w":"","Gs":"","e":"","rd":"","rsat":"19.18","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"8.025","depthEnd":"9.525","depth":"8.775","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"SM","N60":"18","gravel":"","sand":"","silt":"","clay":"","FC":"13","w":"","Gs":"","e":"","rd":"","rsat":"18.84","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"9.525","depthEnd":"11.025","depth":"10.275","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"ML","N60":"8.4","gravel":"","sand":"","silt":"","clay":"","FC":"52","w":"","Gs":"","e":"","rd":"","rsat":"18.39","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"11.025","depthEnd":"12.525","depth":"11.775","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"ML","N60":"9.6","gravel":"","sand":"","silt":"","clay":"","FC":"54","w":"","Gs":"","e":"","rd":"","rsat":"19.28","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"12.525","depthEnd":"14.025","depth":"13.275","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"ML","N60":"10.8","gravel":"","sand":"","silt":"","clay":"","FC":"57","w":"","Gs":"","e":"","rd":"","rsat":"17.85","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"14.025","depthEnd":"15.525","depth":"14.775","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"SM","N60":"9.6","gravel":"","sand":"","silt":"","clay":"","FC":"45","w":"","Gs":"","e":"","rd":"","rsat":"19.42","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"15.525","depthEnd":"17.025","depth":"16.275","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"CL","N60":"7.2","gravel":"","sand":"","silt":"","clay":"","FC":"97","w":"","Gs":"","e":"","rd":"","rsat":"18.64","sv":"","svp":"","LL":"","PI":"11","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"17.025","depthEnd":"18.525","depth":"17.775","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"CL","N60":"7.2","gravel":"","sand":"","silt":"","clay":"","FC":"95","w":"","Gs":"","e":"","rd":"","rsat":"19.03","sv":"","svp":"","LL":"","PI":"15","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"18.525","depthEnd":"20","depth":"19.2625","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"CL","N60":"8.4","gravel":"","sand":"","silt":"","clay":"","FC":"94","w":"","Gs":"","e":"","rd":"","rsat":"18.34","sv":"","svp":"","LL":"","PI":"13","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""}]`rowsIn = JSON.parse(rowsIn)// console.log('rowsIn',rowsIn)let rowsOut = calcLiquefaction.calc('SPT', rowsIn)// console.log('rowsOut',rowsOut)fs.writeFileSync('./rowsIn.json', JSON.stringify(rowsIn), 'utf8')fs.writeFileSync('./rowsOut.json', JSON.stringify(rowsOut), 'utf8')// let mat = w.ltdtkeysheads2mat(rowsOut)// w.downloadExcelFileFromData('./mat.xlsx', 'mat', mat)</code></pre>
+
+
+
+        
     
 
     
@@ -951,6 +1024,3252 @@
 
 
         
+            
+
+    
+
+    <h4 class="name" id=".sptHBF"><span class="type-signature">(static) </span>sptHBF<span class="signature">(row)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line1221">line 1221</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>HBF液化分析</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code></code></pre>
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>row</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>輸入數據物件</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>ver</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'2012'</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入版本字串，預設'2012'</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>waterLevelDesign</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>0</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入設計地下水位數字，單位m，預設0</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>soilClassification</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'SW'</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入USCS土壤分類字串，預設'SW'</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>depth</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本所在中點深度數字，單位m</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>N60</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本N60數字</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>FC</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本細粒料含量數字，單位%</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>PI</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入塑性指數數字，單位%</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sv</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本中點深度之垂直總應力數字，單位(kN/m2)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>svpUsual</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>svpDesign</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>PGA</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入設計地表最大水平加速度數字，單位(g)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>Mw</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入設計地震規模數字</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>回傳計算後數據物件</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".sptNCEER"><span class="type-signature">(static) </span>sptNCEER<span class="signature">(row)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line1487">line 1487</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>NCEER液化分析</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code></code></pre>
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>row</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>輸入數據物件</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>waterLevelDesign</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>0</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入設計地下水位數字，單位m，預設0</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>soilClassification</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'SW'</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入USCS土壤分類字串，預設'SW'</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>depth</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本所在中點深度數字，單位m</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>N60</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本N60數字</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>FC</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本細粒料含量數字，單位%</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>PI</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入塑性指數數字，單位%</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sv</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本中點深度之垂直總應力數字，單位(kN/m2)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>svpUsual</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>svpDesign</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>PGA</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入設計地表最大水平加速度數字，單位(g)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>Mw</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入設計地震規模數字</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>回傳計算後數據物件</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".sptNJRA"><span class="type-signature">(static) </span>sptNJRA<span class="signature">(row)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line1741">line 1741</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>JRA液化分析</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code></code></pre>
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>row</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>輸入數據物件</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>ver</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'1996'</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入版本字串，預設'1996'</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>waterLevelDesign</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>0</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入設計地下水位數字，單位m，預設0</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>soilClassification</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'SW'</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入USCS土壤分類字串，預設'SW'</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vibrationType</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>1</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入震動形式數字，1為第一型震動[板塊邊界地震(遠震)]，2為第二型震動[內陸直下型地震(近震)]，預設1</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>depth</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本所在中點深度數字，單位m</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>N60</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本N60數字</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>FC</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本細粒料含量數字，單位%</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>PI</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入塑性指數數字，單位%</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>D50</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入累計50%通過粒徑數字，單位mm</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>D10</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入累計10%通過粒徑數字，單位mm</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sv</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本中點深度之垂直總應力數字，單位(kN/m2)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>svpUsual</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>svpDesign</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>PGA</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入設計地表最大水平加速度數字，單位(g)</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>回傳計算後數據物件</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".sptSeed"><span class="type-signature">(static) </span>sptSeed<span class="signature">(row)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line805">line 805</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Seed液化分析</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code></code></pre>
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>row</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>輸入數據物件</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>waterLevelDesign</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>0</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入設計地下水位數字，單位m，預設0</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>soilClassification</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'SW'</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入USCS土壤分類字串，預設'SW'</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>depth</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本所在中點深度數字，單位m</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>N60</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本N60數字</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>FC</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本細粒料含量數字，單位%</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sv</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本中點深度之垂直總應力數字，單位(kN/m2)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>svpUsual</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>svpDesign</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>PGA</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入設計地表最大水平加速度數字，單位(g)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>Mw</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入設計地震規模數字</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>回傳計算後數據物件</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".sptTY"><span class="type-signature">(static) </span>sptTY<span class="signature">(row)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line2173">line 2173</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>TY液化分析</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code></code></pre>
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>row</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>輸入數據物件</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>ver</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'1996'</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入版本字串，預設'1996'</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>waterLevelDesign</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>0</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入設計地下水位數字，單位m，預設0</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>soilClassification</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'SW'</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入USCS土壤分類字串，預設'SW'</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vibrationType</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>1</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入震動形式數字，1為第一型震動[板塊邊界地震(遠震)]，2為第二型震動[內陸直下型地震(近震)]，預設1</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>depth</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本所在中點深度數字，單位m</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>0.45</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入分析設定參數a數字，預設0.45</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>n</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>0.45</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入分析設定參數n數字，預設14</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>Cr</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>0.57</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入分析設定參數Cr數字，預設0.57</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>Cs</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>85</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入分析設定參數Cs數字，預設85</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>N60</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本N60數字</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>FC</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本細粒料含量數字，單位%</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sv</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本中點深度之垂直總應力數字，單位(kN/m2)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>svpUsual</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>svpDesign</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>PGA</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入設計地表最大水平加速度數字，單位(g)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>Mw</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入設計地震規模數字</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>回傳計算後數據物件</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
     
 
     
@@ -970,7 +4289,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Mon Jul 05 2021 09:58:00 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Mon Jul 05 2021 16:03:29 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

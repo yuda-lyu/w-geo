@@ -1,4 +1,48 @@
-import map from 'lodash/map'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>calcLiquefaction.mjs - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPorousParams">relaPorousParams</a></li><li data-type='method'><a href="w-geo.html#.sptHBF">sptHBF</a></li><li data-type='method'><a href="w-geo.html#.sptNCEER">sptNCEER</a></li><li data-type='method'><a href="w-geo.html#.sptNJRA">sptNJRA</a></li><li data-type='method'><a href="w-geo.html#.sptSeed">sptSeed</a></li><li data-type='method'><a href="w-geo.html#.sptTY">sptTY</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">calcLiquefaction.mjs</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import map from 'lodash/map'
 import each from 'lodash/each'
 import min from 'lodash/min'
 import max from 'lodash/max'
@@ -55,7 +99,7 @@ function isNoLique(soilClassification) {
     if (r1 === 'C' || r1 === 'O' || r1 === 'P') {
         return true
     }
-    return r1 === 'M' && (r2 !== 'ML' && r2 !== 'MH')
+    return r1 === 'M' &amp;&amp; (r2 !== 'ML' &amp;&amp; r2 !== 'MH')
 }
 
 
@@ -85,10 +129,10 @@ function isSandByUSCS(soilClassification) {
 function interp(vx, vy, x) {
 
     //check
-    if (size(vx) <= 0) {
+    if (size(vx) &lt;= 0) {
         return { err: 'invalid vx' }
     }
-    if (size(vy) <= 0) {
+    if (size(vy) &lt;= 0) {
         return { err: 'invalid vy' }
     }
     if (size(vx) !== size(vy)) {
@@ -389,9 +433,9 @@ function sptVolumetricStrainTokimatsuAndSeed(N160, CSR) {
                 err.push(`出現外插情形 N160=${N160} > N160Max=${N160Max}，依照CSR=${CSR}並給予最小體積應變vstr=${vstr}%`)
                 volumetricStrain = vstr
             }
-            else if (N160 < N160Min) {
+            else if (N160 &lt; N160Min) {
                 let vstr = interExtraPolate(ps[0], ps[1], N160)
-                err.push(`出現外插情形 N160=${N160} < N160Min=${N160Min}，依照CSR=${CSR}並依據最近2點外插體積應變vstr=${vstr}%`)
+                err.push(`出現外插情形 N160=${N160} &lt; N160Min=${N160Min}，依照CSR=${CSR}並依據最近2點外插體積應變vstr=${vstr}%`)
                 volumetricStrain = vstr
             }
             else {
@@ -681,9 +725,9 @@ function sptVolumetricStrainIshiharaAndYoshimine(N172, FS) {
                 err.push(`出現外插情形 N172=${N172} > N172Max=${N172Max}，依照FS=${FS}並給予最小體積應變vstr=${vstr}%`)
                 volumetricStrain = vstr
             }
-            else if (N172 < N172Min) {
+            else if (N172 &lt; N172Min) {
                 let vstr = interExtraPolate(ps[0], ps[1], N172)
-                err.push(`出現外插情形 N172=${N172} < N172Min=${N172Min}，依照FS=${FS}並依據最近2點外插體積應變vstr=${vstr}%`)
+                err.push(`出現外插情形 N172=${N172} &lt; N172Min=${N172Min}，依照FS=${FS}並依據最近2點外插體積應變vstr=${vstr}%`)
                 volumetricStrain = vstr
             }
             else {
@@ -708,15 +752,15 @@ function sptVolumetricStrainIshiharaAndYoshimine(N172, FS) {
 
 function sptSettlement(N160, N172, CSR, FS) {
     let err = []
-    //原本已考慮FS<1的沉陷，另考慮FS>=1的沉陷，此會包括了液化過程中因為超額孔隙抬升(但未達液化)期間之排水變形，代表完整考慮液化過程沉陷(不強調液化後沉陷) (2020/02/04)
+    //原本已考慮FS&lt;1的沉陷，另考慮FS>=1的沉陷，此會包括了液化過程中因為超額孔隙抬升(但未達液化)期間之排水變形，代表完整考慮液化過程沉陷(不強調液化後沉陷) (2020/02/04)
 
     //sptVolumetricStrainTokimatsuAndSeed
     let vstrTS = 0
     function TS() {
 
         //check
-        if (CSR < 0) {
-            err.push(`Volumetric Strain(Tokimatsu And Seed): CSR${brk(CSR)} < 0`)
+        if (CSR &lt; 0) {
+            err.push(`Volumetric Strain(Tokimatsu And Seed): CSR${brk(CSR)} &lt; 0`)
             vstrTS = ''
             return //清空vstr並強制跳出
         }
@@ -748,8 +792,8 @@ function sptSettlement(N160, N172, CSR, FS) {
     function IY() {
 
         //check
-        if (FS < 0) {
-            err.push(`Volumetric Strain(Ishihara And Yoshimine): FS${brk(FS)} < 0`)
+        if (FS &lt; 0) {
+            err.push(`Volumetric Strain(Ishihara And Yoshimine): FS${brk(FS)} &lt; 0`)
             vstrIY = ''
             return //清空vstr並強制跳出
         }
@@ -827,8 +871,8 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
         return ret()
     }
     depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
+    if (depth &lt; 0) {
+        err.push(`depth${brk(depth)} &lt; 0`)
         return ret()
     }
 
@@ -838,8 +882,8 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
         return ret()
     }
     N60 = cdbl(N60)
-    if (N60 < 0) {
-        err.push(`N60${brk(N60)} < 0`)
+    if (N60 &lt; 0) {
+        err.push(`N60${brk(N60)} &lt; 0`)
         return ret()
     }
 
@@ -857,8 +901,8 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
     //     waterLevelUsual = 0
     // }
     // waterLevelUsual = cdbl(waterLevelUsual)
-    // if (waterLevelUsual < 0) {
-    //     err.push(`waterLevelUsual${brk(waterLevelUsual)} < 0，預設為0 (m)`)
+    // if (waterLevelUsual &lt; 0) {
+    //     err.push(`waterLevelUsual${brk(waterLevelUsual)} &lt; 0，預設為0 (m)`)
     //     waterLevelUsual = 0
     // }
 
@@ -868,8 +912,8 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
         waterLevelDesign = 0
     }
     waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
+    if (waterLevelDesign &lt; 0) {
+        err.push(`waterLevelDesign${brk(waterLevelDesign)} &lt; 0，預設為0 (m)`)
         waterLevelDesign = 0
     }
 
@@ -881,7 +925,7 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
     soilClassification = cstr(soilClassification)
 
     //非液化: 地下水位以上, 統一土壤分類屬黏土
-    if (depth < waterLevelDesign || isNoLique(soilClassification)) {
+    if (depth &lt; waterLevelDesign || isNoLique(soilClassification)) {
         CRR = '-'
         CSR = '-'
         FS = 10
@@ -901,8 +945,8 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
         return ret()
     }
     FC = cdbl(FC)
-    if (FC < 0) {
-        err.push(`FC${brk(FC)} < 0`)
+    if (FC &lt; 0) {
+        err.push(`FC${brk(FC)} &lt; 0`)
         return ret()
     }
 
@@ -911,8 +955,8 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
         return ret()
     }
     svpUsual = cdbl(svpUsual)
-    if (svpUsual < 0) {
-        err.push(`svpUsual${brk(svpUsual)} < 0`)
+    if (svpUsual &lt; 0) {
+        err.push(`svpUsual${brk(svpUsual)} &lt; 0`)
         return ret()
     }
 
@@ -921,8 +965,8 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
         return ret()
     }
     svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
+    if (svpDesign &lt; 0) {
+        err.push(`svpDesign${brk(svpDesign)} &lt; 0`)
         return ret()
     }
 
@@ -931,8 +975,8 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
         return ret()
     }
     sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
+    if (sv &lt; 0) {
+        err.push(`sv${brk(sv)} &lt; 0`)
         return ret()
     }
 
@@ -941,8 +985,8 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
         return ret()
     }
     PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
+    if (PGA &lt; 0) {
+        err.push(`PGA${brk(PGA)} &lt; 0`)
         return ret()
     }
 
@@ -951,8 +995,8 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
         return ret()
     }
     Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
+    if (Mw &lt; 0) {
+        err.push(`Mw${brk(Mw)} &lt; 0`)
         return ret()
     }
 
@@ -978,7 +1022,7 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
     //     return d[i]
     // }
 
-    // if (FC <= 10) {
+    // if (FC &lt;= 10) {
     //     dN160 = 0
     // }
     // else {
@@ -1138,10 +1182,10 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
                 CRR75 = interExtraPolate(ps[size(ps) - 2], ps[size(ps) - 1], FC)
                 err.push(`出現外插情形 FC=${FC} > FCMax=${FCMax}，依據最近2點外插CRR75=${CRR75}`)
             }
-            else if (FC < FCMin) {
+            else if (FC &lt; FCMin) {
                 CRR75 = interExtraPolate(ps[0], ps[1], FC)
                 CRR75 = Math.max(CRR75, 0) //若FC往小方向外插有可能出現負CRR75, 故需取最小值0
-                err.push(`出現外插情形 FC=${FC} < FCMin=${FCMin}，依據最近2點外插CRR75=${CRR75}`)
+                err.push(`出現外插情形 FC=${FC} &lt; FCMin=${FCMin}，依據最近2點外插CRR75=${CRR75}`)
             }
             else {
                 err.push(`非預期外插情形，請洽開發者修復問題`)
@@ -1174,14 +1218,14 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
     }
 
     //check
-    if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+    if (CRR &lt; 0) {
+        err.push(`CRR${brk(CRR)} &lt; 0`)
     }
-    if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+    if (CSR &lt;= 0) {
+        err.push(`CSR${brk(CSR)} &lt;= 0`)
     }
-    if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+    if (FS &lt; 0) {
+        err.push(`FS${brk(FS)} &lt; 0，強制改為0`)
         FS = 0
     }
 
@@ -1244,8 +1288,8 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         return ret()
     }
     depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
+    if (depth &lt; 0) {
+        err.push(`depth${brk(depth)} &lt; 0`)
         return ret()
     }
 
@@ -1255,8 +1299,8 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         return ret()
     }
     N60 = cdbl(N60)
-    if (N60 < 0) {
-        err.push(`N60${brk(N60)} < 0`)
+    if (N60 &lt; 0) {
+        err.push(`N60${brk(N60)} &lt; 0`)
         return ret()
     }
 
@@ -1274,8 +1318,8 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
     //     waterLevelUsual = 0
     // }
     // waterLevelUsual = cdbl(waterLevelUsual)
-    // if (waterLevelUsual < 0) {
-    //     err.push(`waterLevelUsual${brk(waterLevelUsual)} < 0，預設為0 (m)`)
+    // if (waterLevelUsual &lt; 0) {
+    //     err.push(`waterLevelUsual${brk(waterLevelUsual)} &lt; 0，預設為0 (m)`)
     //     waterLevelUsual = 0
     // }
 
@@ -1285,8 +1329,8 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         waterLevelDesign = 0
     }
     waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
+    if (waterLevelDesign &lt; 0) {
+        err.push(`waterLevelDesign${brk(waterLevelDesign)} &lt; 0，預設為0 (m)`)
         waterLevelDesign = 0
     }
 
@@ -1298,7 +1342,7 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
     soilClassification = cstr(soilClassification)
 
     //非液化: 地下水位以上, 統一土壤分類屬黏土, (N160cs>=39, 於後面檢查)
-    if (depth < waterLevelDesign || isNoLique(soilClassification)) {
+    if (depth &lt; waterLevelDesign || isNoLique(soilClassification)) {
         CRR = '-'
         CSR = '-'
         FS = 10
@@ -1313,7 +1357,7 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         return ret()
     }
 
-    //check PI為NP, 不需阿太堡時，預設樣品PI、LL位於塑性圖Aline以下，並隸屬於ML(LL<50)，此時使用PI=0、LL=40
+    //check PI為NP, 不需阿太堡時，預設樣品PI、LL位於塑性圖Aline以下，並隸屬於ML(LL&lt;50)，此時使用PI=0、LL=40
     if (trim(cstr(PI)) === 'NP') {
         PI = 0
     }
@@ -1336,8 +1380,8 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         return ret()
     }
     FC = cdbl(FC)
-    if (FC < 0) {
-        err.push(`FC${brk(FC)} < 0`)
+    if (FC &lt; 0) {
+        err.push(`FC${brk(FC)} &lt; 0`)
         return ret()
     }
 
@@ -1346,8 +1390,8 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         return ret()
     }
     svpUsual = cdbl(svpUsual)
-    if (svpUsual < 0) {
-        err.push(`svpUsual${brk(svpUsual)} < 0`)
+    if (svpUsual &lt; 0) {
+        err.push(`svpUsual${brk(svpUsual)} &lt; 0`)
         return ret()
     }
 
@@ -1356,8 +1400,8 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         return ret()
     }
     svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
+    if (svpDesign &lt; 0) {
+        err.push(`svpDesign${brk(svpDesign)} &lt; 0`)
         return ret()
     }
 
@@ -1366,8 +1410,8 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         return ret()
     }
     sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
+    if (sv &lt; 0) {
+        err.push(`sv${brk(sv)} &lt; 0`)
         return ret()
     }
 
@@ -1376,8 +1420,8 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         return ret()
     }
     PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
+    if (PGA &lt; 0) {
+        err.push(`PGA${brk(PGA)} &lt; 0`)
         return ret()
     }
 
@@ -1386,8 +1430,8 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         return ret()
     }
     Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
+    if (Mw &lt; 0) {
+        err.push(`Mw${brk(Mw)} &lt; 0`)
         return ret()
     }
 
@@ -1404,13 +1448,13 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         err.push(`invalid ver=${ver}`)
     }
     MSF = (Mw / 7.5) ** (MSFPow)
-    if (depth <= 10) {
+    if (depth &lt;= 10) {
         rd = 1 - 0.01 * depth
     }
     else {
         rd = 1.2 - 0.03 * depth
     }
-    if (FC <= 10) {
+    if (FC &lt;= 10) {
         ks = 1.0
     }
     else {
@@ -1441,14 +1485,14 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
     }
 
     //check
-    if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+    if (CRR &lt; 0) {
+        err.push(`CRR${brk(CRR)} &lt; 0`)
     }
-    if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+    if (CSR &lt;= 0) {
+        err.push(`CSR${brk(CSR)} &lt;= 0`)
     }
-    if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+    if (FS &lt; 0) {
+        err.push(`FS${brk(FS)} &lt; 0，強制改為0`)
         FS = 0
     }
 
@@ -1511,8 +1555,8 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
         return ret()
     }
     depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
+    if (depth &lt; 0) {
+        err.push(`depth${brk(depth)} &lt; 0`)
         return ret()
     }
 
@@ -1522,8 +1566,8 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
         return ret()
     }
     N60 = cdbl(N60)
-    if (N60 < 0) {
-        err.push(`N60${brk(N60)} < 0`)
+    if (N60 &lt; 0) {
+        err.push(`N60${brk(N60)} &lt; 0`)
         return ret()
     }
 
@@ -1541,8 +1585,8 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
     //     waterLevelUsual = 0
     // }
     // waterLevelUsual = cdbl(waterLevelUsual)
-    // if (waterLevelUsual < 0) {
-    //     err.push(`waterLevelUsual${brk(waterLevelUsual)} < 0，預設為0 (m)`)
+    // if (waterLevelUsual &lt; 0) {
+    //     err.push(`waterLevelUsual${brk(waterLevelUsual)} &lt; 0，預設為0 (m)`)
     //     waterLevelUsual = 0
     // }
 
@@ -1552,8 +1596,8 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
         waterLevelDesign = 0
     }
     waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
+    if (waterLevelDesign &lt; 0) {
+        err.push(`waterLevelDesign${brk(waterLevelDesign)} &lt; 0，預設為0 (m)`)
         waterLevelDesign = 0
     }
 
@@ -1565,7 +1609,7 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
     soilClassification = cstr(soilClassification)
 
     //非液化: 地下水位以上, 統一土壤分類屬黏土, (N160cs>=30, 於後面處理)
-    if (depth < waterLevelDesign || isNoLique(soilClassification)) {
+    if (depth &lt; waterLevelDesign || isNoLique(soilClassification)) {
         CRR = '-'
         CSR = '-'
         FS = 10
@@ -1585,8 +1629,8 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
         return ret()
     }
     FC = cdbl(FC)
-    if (FC < 0) {
-        err.push(`FC${brk(FC)} < 0`)
+    if (FC &lt; 0) {
+        err.push(`FC${brk(FC)} &lt; 0`)
         return ret()
     }
 
@@ -1595,8 +1639,8 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
         return ret()
     }
     svpUsual = cdbl(svpUsual)
-    if (svpUsual < 0) {
-        err.push(`svpUsual${brk(svpUsual)} < 0`)
+    if (svpUsual &lt; 0) {
+        err.push(`svpUsual${brk(svpUsual)} &lt; 0`)
         return ret()
     }
 
@@ -1605,8 +1649,8 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
         return ret()
     }
     svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
+    if (svpDesign &lt; 0) {
+        err.push(`svpDesign${brk(svpDesign)} &lt; 0`)
         return ret()
     }
 
@@ -1615,8 +1659,8 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
         return ret()
     }
     sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
+    if (sv &lt; 0) {
+        err.push(`sv${brk(sv)} &lt; 0`)
         return ret()
     }
 
@@ -1625,8 +1669,8 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
         return ret()
     }
     PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
+    if (PGA &lt; 0) {
+        err.push(`PGA${brk(PGA)} &lt; 0`)
         return ret()
     }
 
@@ -1635,26 +1679,26 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
         return ret()
     }
     Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
+    if (Mw &lt; 0) {
+        err.push(`Mw${brk(Mw)} &lt; 0`)
         return ret()
     }
 
     MSF = (Mw / 7.5) ** (-2.56)
     rd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
-    if (FC <= 5) {
+    if (FC &lt;= 5) {
         alpha = 0
     }
-    else if (FC <= 35) {
+    else if (FC &lt;= 35) {
         alpha = Math.exp(1.76 - 190 / FC ** 2)
     }
     else {
         alpha = 5
     }
-    if (FC <= 5) {
+    if (FC &lt;= 5) {
         beta = 1
     }
-    else if (FC <= 35) {
+    else if (FC &lt;= 35) {
         beta = 0.99 + (FC ** 1.5) / 1000
     }
     else {
@@ -1692,14 +1736,14 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
     }
 
     //check
-    if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+    if (CRR &lt; 0) {
+        err.push(`CRR${brk(CRR)} &lt; 0`)
     }
-    if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+    if (CSR &lt;= 0) {
+        err.push(`CSR${brk(CSR)} &lt;= 0`)
     }
-    if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+    if (FS &lt; 0) {
+        err.push(`FS${brk(FS)} &lt; 0，強制改為0`)
         FS = 0
     }
 
@@ -1768,8 +1812,8 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         return ret()
     }
     depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
+    if (depth &lt; 0) {
+        err.push(`depth${brk(depth)} &lt; 0`)
         return ret()
     }
 
@@ -1779,8 +1823,8 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         return ret()
     }
     N60 = cdbl(N60)
-    if (N60 < 0) {
-        err.push(`N60${brk(N60)} < 0`)
+    if (N60 &lt; 0) {
+        err.push(`N60${brk(N60)} &lt; 0`)
         return ret()
     }
 
@@ -1798,8 +1842,8 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
     //     waterLevelUsual = 0
     // }
     // waterLevelUsual = cdbl(waterLevelUsual)
-    // if (waterLevelUsual < 0) {
-    //     err.push(`waterLevelUsual${brk(waterLevelUsual)} < 0，預設為0 (m)`)
+    // if (waterLevelUsual &lt; 0) {
+    //     err.push(`waterLevelUsual${brk(waterLevelUsual)} &lt; 0，預設為0 (m)`)
     //     waterLevelUsual = 0
     // }
 
@@ -1809,8 +1853,8 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         waterLevelDesign = 0
     }
     waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
+    if (waterLevelDesign &lt; 0) {
+        err.push(`waterLevelDesign${brk(waterLevelDesign)} &lt; 0，預設為0 (m)`)
         waterLevelDesign = 0
     }
 
@@ -1820,8 +1864,8 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         return ret()
     }
     FC = cdbl(FC)
-    if (FC < 0) {
-        err.push(`FC${brk(FC)} < 0`)
+    if (FC &lt; 0) {
+        err.push(`FC${brk(FC)} &lt; 0`)
         return ret()
     }
 
@@ -1848,7 +1892,7 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
     //3.50％粒徑D50為10mm以下的土層，和10％粒徑D10為1mm以下的土層
 
     //非液化: 地下水位以上, 地下水低於地表下10m以下, 細料含量>35%且PI值>=15, D50>10mm或D10>1mm
-    if (depth < waterLevelDesign || waterLevelDesign > 10) {
+    if (depth &lt; waterLevelDesign || waterLevelDesign > 10) {
         CRR = '-'
         CSR = '-'
         FS = 10
@@ -1860,21 +1904,21 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
     //     err.push(`PI${brk(PI)} 非數字與非NP，略過部份非液化條件檢核`) //經與所方的討論，傾向不管排除條件，能算的都算還是照算，不然孔數會不符合密度需求 2021/05/21
     // }
     // else {
-    //     if (FC > 35 && cdbl(PI) >= 15) { //PI單位(%)
-    //         // console.log(`PI: 因 FC > 35 && cdbl(PI) >= 15, 故 FS=10`)
+    //     if (FC > 35 &amp;&amp; cdbl(PI) >= 15) { //PI單位(%)
+    //         // console.log(`PI: 因 FC > 35 &amp;&amp; cdbl(PI) >= 15, 故 FS=10`)
     //         CRR = '-'
     //         CSR = '-'
     //         FS = 10
     //         return ret()
     //     }
     // }
-    if (FC <= 35) {
+    if (FC &lt;= 35) {
         //可能液化
     }
     else {
         //FC > 35
 
-        //check PI為NP, 不需阿太堡時，預設樣品PI、LL位於塑性圖Aline以下，並隸屬於ML(LL<50)，此時使用PI=0、LL=40
+        //check PI為NP, 不需阿太堡時，預設樣品PI、LL位於塑性圖Aline以下，並隸屬於ML(LL&lt;50)，此時使用PI=0、LL=40
         if (trim(cstr(PI)) === 'NP') {
             PI = 0
         }
@@ -1884,11 +1928,11 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
             err.push(`PI${brk(PI)} 非數字與非NP，略過部份非液化條件檢核`) //經與所方的討論，傾向不管排除條件，能算的都算還是照算，不然孔數會不符合密度需求 2021/05/21
         }
         else {
-            if (cdbl(PI) < 15) { //PI單位(%)
+            if (cdbl(PI) &lt; 15) { //PI單位(%)
                 //可能液化, FC超過35％但塑性指數IP小於15的土層
             }
             else {
-                // console.log(`PI: 因 FC > 35 && cdbl(PI) >= 15, 故 FS=10`)
+                // console.log(`PI: 因 FC > 35 &amp;&amp; cdbl(PI) >= 15, 故 FS=10`)
                 CRR = '-'
                 CSR = '-'
                 FS = 10
@@ -1899,7 +1943,7 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
     }
 
     //非液化: 地下水位以上, 地下水低於地表下10m以下, 細料含量>35%且PI值>=15, D50>10mm或D10>1mm
-    if (isnum(D50) && isnum(D10)) {
+    if (isnum(D50) &amp;&amp; isnum(D10)) {
         if (cdbl(D50) > 10) { //D50單位(mm)
             // console.log(`D50: 因 cdbl(D50) > 10, 故 FS=10`)
             CRR = '-'
@@ -1943,7 +1987,7 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         err.push(`vibrationType${brk(vibrationType)} 非數字`)
     }
     vibrationType = cint(vibrationType)
-    if (vibrationType !== 1 && vibrationType !== 2) {
+    if (vibrationType !== 1 &amp;&amp; vibrationType !== 2) {
         err.push(`vibrationType${brk(vibrationType)} 不等於 1 或 2，更改為預設值1`)
         vibrationType = 1
     }
@@ -1953,8 +1997,8 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         return ret()
     }
     svpUsual = cdbl(svpUsual)
-    if (svpUsual < 0) {
-        err.push(`svpUsual${brk(svpUsual)} < 0`)
+    if (svpUsual &lt; 0) {
+        err.push(`svpUsual${brk(svpUsual)} &lt; 0`)
         return ret()
     }
 
@@ -1963,8 +2007,8 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         return ret()
     }
     svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
+    if (svpDesign &lt; 0) {
+        err.push(`svpDesign${brk(svpDesign)} &lt; 0`)
         return ret()
     }
 
@@ -1973,8 +2017,8 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         return ret()
     }
     sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
+    if (sv &lt; 0) {
+        err.push(`sv${brk(sv)} &lt; 0`)
         return ret()
     }
 
@@ -1983,8 +2027,8 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         return ret()
     }
     PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
+    if (PGA &lt; 0) {
+        err.push(`PGA${brk(PGA)} &lt; 0`)
         return ret()
     }
 
@@ -1997,16 +2041,16 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
     N172 = CN * N72
     let getNaForSand1996 = () => {
         let _Na = 0
-        if (FC < 10) {
+        if (FC &lt; 10) {
             c1 = 1
         }
-        else if (FC < 60) {
+        else if (FC &lt; 60) {
             c1 = (FC + 40) / 50
         }
         else {
             c1 = FC / 20 - 1
         }
-        if (FC < 10) {
+        if (FC &lt; 10) {
             c2 = 0
         }
         else {
@@ -2017,10 +2061,10 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
     }
     let getNaForSand2017 = () => {
         let _Na = 0
-        if (FC < 10) {
+        if (FC &lt; 10) {
             cFC = 1
         }
-        else if (FC < 40) {
+        else if (FC &lt; 40) {
             cFC = (FC + 20) / 30
         }
         else {
@@ -2033,7 +2077,7 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         let _Na = 0
         let cty = ''
         if (isnum(D50)) {
-            if (cdbl(D50) < 2) { //D50單位(mm)
+            if (cdbl(D50) &lt; 2) { //D50單位(mm)
                 cty = 'sand'
             }
             else {
@@ -2081,7 +2125,7 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         return _Na
     }
     Na = getNa()
-    if (Na < 14) {
+    if (Na &lt; 14) {
         if (ver === '1996') {
             RL = 0.0882 * Math.sqrt(Na / 1.7)
         }
@@ -2098,10 +2142,10 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
     }
     //等級2(レベル2)才會考慮第一、二型震動
     if (vibrationType === 2) { //第二型震動, 內陸直下型地震(近震)
-        if (RL <= 0.1) {
+        if (RL &lt;= 0.1) {
             cw = 1
         }
-        else if (RL <= 0.4) {
+        else if (RL &lt;= 0.4) {
             cw = 3.3 * RL + 0.67
         }
         else {
@@ -2122,14 +2166,14 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
     }
 
     //check
-    if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+    if (CRR &lt; 0) {
+        err.push(`CRR${brk(CRR)} &lt; 0`)
     }
-    if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+    if (CSR &lt;= 0) {
+        err.push(`CSR${brk(CSR)} &lt;= 0`)
     }
-    if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+    if (FS &lt; 0) {
+        err.push(`FS${brk(FS)} &lt; 0，強制改為0`)
         FS = 0
     }
 
@@ -2196,8 +2240,8 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
         return ret()
     }
     depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
+    if (depth &lt; 0) {
+        err.push(`depth${brk(depth)} &lt; 0`)
         return ret()
     }
 
@@ -2207,8 +2251,8 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
         return ret()
     }
     N60 = cdbl(N60)
-    if (N60 < 0) {
-        err.push(`N60${brk(N60)} < 0`)
+    if (N60 &lt; 0) {
+        err.push(`N60${brk(N60)} &lt; 0`)
         return ret()
     }
 
@@ -2226,8 +2270,8 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
     //     waterLevelUsual = 0
     // }
     // waterLevelUsual = cdbl(waterLevelUsual)
-    // if (waterLevelUsual < 0) {
-    //     err.push(`waterLevelUsual${brk(waterLevelUsual)} < 0，預設為0 (m)`)
+    // if (waterLevelUsual &lt; 0) {
+    //     err.push(`waterLevelUsual${brk(waterLevelUsual)} &lt; 0，預設為0 (m)`)
     //     waterLevelUsual = 0
     // }
 
@@ -2237,8 +2281,8 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
         waterLevelDesign = 0
     }
     waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
+    if (waterLevelDesign &lt; 0) {
+        err.push(`waterLevelDesign${brk(waterLevelDesign)} &lt; 0，預設為0 (m)`)
         waterLevelDesign = 0
     }
 
@@ -2251,7 +2295,7 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
 
     //尚無資料, 比照Seed法提供
     //非液化: 地下水位以上, 統一土壤分類屬黏土
-    if (depth < waterLevelDesign || isNoLique(soilClassification)) {
+    if (depth &lt; waterLevelDesign || isNoLique(soilClassification)) {
         CRR = '-'
         CSR = '-'
         FS = 10
@@ -2271,8 +2315,8 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
         return ret()
     }
     FC = cdbl(FC)
-    if (FC < 0) {
-        err.push(`FC${brk(FC)} < 0`)
+    if (FC &lt; 0) {
+        err.push(`FC${brk(FC)} &lt; 0`)
         return ret()
     }
 
@@ -2281,8 +2325,8 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
         return ret()
     }
     svpUsual = cdbl(svpUsual)
-    if (svpUsual < 0) {
-        err.push(`svpUsual${brk(svpUsual)} < 0`)
+    if (svpUsual &lt; 0) {
+        err.push(`svpUsual${brk(svpUsual)} &lt; 0`)
         return ret()
     }
 
@@ -2291,8 +2335,8 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
         return ret()
     }
     svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
+    if (svpDesign &lt; 0) {
+        err.push(`svpDesign${brk(svpDesign)} &lt; 0`)
         return ret()
     }
 
@@ -2301,8 +2345,8 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
         return ret()
     }
     sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
+    if (sv &lt; 0) {
+        err.push(`sv${brk(sv)} &lt; 0`)
         return ret()
     }
 
@@ -2311,8 +2355,8 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
         return ret()
     }
     PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
+    if (PGA &lt; 0) {
+        err.push(`PGA${brk(PGA)} &lt; 0`)
         return ret()
     }
 
@@ -2321,8 +2365,8 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
         return ret()
     }
     Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
+    if (Mw &lt; 0) {
+        err.push(`Mw${brk(Mw)} &lt; 0`)
         return ret()
     }
 
@@ -2359,10 +2403,10 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
     // CN = 170 / (svp * r + 70) //svp需由kg/cm2轉kPa
     CN = 170 / (svpUsual + 70) //svp為kPa故不用轉
     N172 = CN * N72
-    if (FC <= 5) {
+    if (FC &lt;= 5) {
         dNf = 0
     }
-    else if (FC <= 10) {
+    else if (FC &lt;= 10) {
         dNf = FC - 5
     }
     else {
@@ -2379,14 +2423,14 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
     }
 
     //check
-    if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+    if (CRR &lt; 0) {
+        err.push(`CRR${brk(CRR)} &lt; 0`)
     }
-    if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+    if (CSR &lt;= 0) {
+        err.push(`CSR${brk(CSR)} &lt;= 0`)
     }
-    if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+    if (FS &lt; 0) {
+        err.push(`FS${brk(FS)} &lt; 0，強制改為0`)
         FS = 0
     }
 
@@ -2419,8 +2463,8 @@ function cptJuang({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         waterLevelDesign = 0
     }
     waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
+    if (waterLevelDesign &lt; 0) {
+        err.push(`waterLevelDesign${brk(waterLevelDesign)} &lt; 0，預設為0 (m)`)
         waterLevelDesign = 0
     }
 
@@ -2429,8 +2473,8 @@ function cptJuang({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
+    if (depth &lt; 0) {
+        err.push(`depth${brk(depth)} &lt; 0`)
         return ret()
     }
 
@@ -2439,8 +2483,8 @@ function cptJuang({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     qc = cdbl(qc)
-    if (qc < 0) {
-        err.push(`qc${brk(qc)} < 0`)
+    if (qc &lt; 0) {
+        err.push(`qc${brk(qc)} &lt; 0`)
         return ret()
     }
 
@@ -2449,8 +2493,8 @@ function cptJuang({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     fs = cdbl(fs)
-    if (fs < 0) {
-        err.push(`fs${brk(fs)} < 0`)
+    if (fs &lt; 0) {
+        err.push(`fs${brk(fs)} &lt; 0`)
         return ret()
     }
 
@@ -2459,8 +2503,8 @@ function cptJuang({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
+    if (svpDesign &lt; 0) {
+        err.push(`svpDesign${brk(svpDesign)} &lt; 0`)
         return ret()
     }
 
@@ -2469,8 +2513,8 @@ function cptJuang({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
+    if (sv &lt; 0) {
+        err.push(`sv${brk(sv)} &lt; 0`)
         return ret()
     }
 
@@ -2479,8 +2523,8 @@ function cptJuang({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
+    if (PGA &lt; 0) {
+        err.push(`PGA${brk(PGA)} &lt; 0`)
         return ret()
     }
 
@@ -2489,8 +2533,8 @@ function cptJuang({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
+    if (Mw &lt; 0) {
+        err.push(`Mw${brk(Mw)} &lt; 0`)
         return ret()
     }
 
@@ -2523,14 +2567,14 @@ function cptJuang({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
     }
 
     //check
-    if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+    if (CRR &lt; 0) {
+        err.push(`CRR${brk(CRR)} &lt; 0`)
     }
-    if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+    if (CSR &lt;= 0) {
+        err.push(`CSR${brk(CSR)} &lt;= 0`)
     }
-    if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+    if (FS &lt; 0) {
+        err.push(`FS${brk(FS)} &lt; 0，強制改為0`)
         FS = 0
     }
 
@@ -2554,8 +2598,8 @@ function cptHBF({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         waterLevelDesign = 0
     }
     waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
+    if (waterLevelDesign &lt; 0) {
+        err.push(`waterLevelDesign${brk(waterLevelDesign)} &lt; 0，預設為0 (m)`)
         waterLevelDesign = 0
     }
 
@@ -2564,8 +2608,8 @@ function cptHBF({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
+    if (depth &lt; 0) {
+        err.push(`depth${brk(depth)} &lt; 0`)
         return ret()
     }
 
@@ -2574,8 +2618,8 @@ function cptHBF({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     qc = cdbl(qc)
-    if (qc < 0) {
-        err.push(`qc${brk(qc)} < 0`)
+    if (qc &lt; 0) {
+        err.push(`qc${brk(qc)} &lt; 0`)
         return ret()
     }
 
@@ -2584,8 +2628,8 @@ function cptHBF({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     fs = cdbl(fs)
-    if (fs < 0) {
-        err.push(`fs${brk(fs)} < 0`)
+    if (fs &lt; 0) {
+        err.push(`fs${brk(fs)} &lt; 0`)
         return ret()
     }
 
@@ -2594,8 +2638,8 @@ function cptHBF({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
+    if (svpDesign &lt; 0) {
+        err.push(`svpDesign${brk(svpDesign)} &lt; 0`)
         return ret()
     }
 
@@ -2604,8 +2648,8 @@ function cptHBF({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
+    if (sv &lt; 0) {
+        err.push(`sv${brk(sv)} &lt; 0`)
         return ret()
     }
 
@@ -2614,8 +2658,8 @@ function cptHBF({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
+    if (PGA &lt; 0) {
+        err.push(`PGA${brk(PGA)} &lt; 0`)
         return ret()
     }
 
@@ -2624,8 +2668,8 @@ function cptHBF({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
+    if (Mw &lt; 0) {
+        err.push(`Mw${brk(Mw)} &lt; 0`)
         return ret()
     }
 
@@ -2636,7 +2680,7 @@ function cptHBF({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
     console.log('需確認公式內svpDesign是否為kg/cm2, 否則需要轉kPa, 不過170=>1.7與70=>0.7就代表除r = 98.134256')
     let Rf = fs / qc * 100
     let Kc
-    if (Rf <= 0.1) {
+    if (Rf &lt;= 0.1) {
         Kc = 1.0
     }
     else {
@@ -2663,14 +2707,14 @@ function cptHBF({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
     }
 
     //check
-    if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+    if (CRR &lt; 0) {
+        err.push(`CRR${brk(CRR)} &lt; 0`)
     }
-    if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+    if (CSR &lt;= 0) {
+        err.push(`CSR${brk(CSR)} &lt;= 0`)
     }
-    if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+    if (FS &lt; 0) {
+        err.push(`FS${brk(FS)} &lt; 0，強制改為0`)
         FS = 0
     }
 
@@ -2694,8 +2738,8 @@ function cptOlsen({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         waterLevelDesign = 0
     }
     waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
+    if (waterLevelDesign &lt; 0) {
+        err.push(`waterLevelDesign${brk(waterLevelDesign)} &lt; 0，預設為0 (m)`)
         waterLevelDesign = 0
     }
 
@@ -2704,8 +2748,8 @@ function cptOlsen({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
+    if (depth &lt; 0) {
+        err.push(`depth${brk(depth)} &lt; 0`)
         return ret()
     }
 
@@ -2714,8 +2758,8 @@ function cptOlsen({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     qc = cdbl(qc)
-    if (qc < 0) {
-        err.push(`qc${brk(qc)} < 0`)
+    if (qc &lt; 0) {
+        err.push(`qc${brk(qc)} &lt; 0`)
         return ret()
     }
 
@@ -2724,8 +2768,8 @@ function cptOlsen({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     fs = cdbl(fs)
-    if (fs < 0) {
-        err.push(`fs${brk(fs)} < 0`)
+    if (fs &lt; 0) {
+        err.push(`fs${brk(fs)} &lt; 0`)
         return ret()
     }
 
@@ -2734,8 +2778,8 @@ function cptOlsen({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
+    if (svpDesign &lt; 0) {
+        err.push(`svpDesign${brk(svpDesign)} &lt; 0`)
         return ret()
     }
 
@@ -2744,8 +2788,8 @@ function cptOlsen({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
+    if (sv &lt; 0) {
+        err.push(`sv${brk(sv)} &lt; 0`)
         return ret()
     }
 
@@ -2754,8 +2798,8 @@ function cptOlsen({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
+    if (PGA &lt; 0) {
+        err.push(`PGA${brk(PGA)} &lt; 0`)
         return ret()
     }
 
@@ -2764,8 +2808,8 @@ function cptOlsen({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
+    if (Mw &lt; 0) {
+        err.push(`Mw${brk(Mw)} &lt; 0`)
         return ret()
     }
 
@@ -2792,14 +2836,14 @@ function cptOlsen({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
     }
 
     //check
-    if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+    if (CRR &lt; 0) {
+        err.push(`CRR${brk(CRR)} &lt; 0`)
     }
-    if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+    if (CSR &lt;= 0) {
+        err.push(`CSR${brk(CSR)} &lt;= 0`)
     }
-    if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+    if (FS &lt; 0) {
+        err.push(`FS${brk(FS)} &lt; 0，強制改為0`)
         FS = 0
     }
 
@@ -2823,8 +2867,8 @@ function cptShibata({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw, D
         waterLevelDesign = 0
     }
     waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
+    if (waterLevelDesign &lt; 0) {
+        err.push(`waterLevelDesign${brk(waterLevelDesign)} &lt; 0，預設為0 (m)`)
         waterLevelDesign = 0
     }
 
@@ -2833,8 +2877,8 @@ function cptShibata({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw, D
         return ret()
     }
     depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
+    if (depth &lt; 0) {
+        err.push(`depth${brk(depth)} &lt; 0`)
         return ret()
     }
 
@@ -2843,8 +2887,8 @@ function cptShibata({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw, D
         return ret()
     }
     qc = cdbl(qc)
-    if (qc < 0) {
-        err.push(`qc${brk(qc)} < 0`)
+    if (qc &lt; 0) {
+        err.push(`qc${brk(qc)} &lt; 0`)
         return ret()
     }
 
@@ -2853,8 +2897,8 @@ function cptShibata({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw, D
         return ret()
     }
     fs = cdbl(fs)
-    if (fs < 0) {
-        err.push(`fs${brk(fs)} < 0`)
+    if (fs &lt; 0) {
+        err.push(`fs${brk(fs)} &lt; 0`)
         return ret()
     }
 
@@ -2863,8 +2907,8 @@ function cptShibata({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw, D
         return ret()
     }
     svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
+    if (svpDesign &lt; 0) {
+        err.push(`svpDesign${brk(svpDesign)} &lt; 0`)
         return ret()
     }
 
@@ -2873,8 +2917,8 @@ function cptShibata({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw, D
         return ret()
     }
     sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
+    if (sv &lt; 0) {
+        err.push(`sv${brk(sv)} &lt; 0`)
         return ret()
     }
 
@@ -2883,8 +2927,8 @@ function cptShibata({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw, D
         return ret()
     }
     PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
+    if (PGA &lt; 0) {
+        err.push(`PGA${brk(PGA)} &lt; 0`)
         return ret()
     }
 
@@ -2893,8 +2937,8 @@ function cptShibata({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw, D
         return ret()
     }
     Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
+    if (Mw &lt; 0) {
+        err.push(`Mw${brk(Mw)} &lt; 0`)
         return ret()
     }
     if (!isnum(D50)) {
@@ -2902,8 +2946,8 @@ function cptShibata({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw, D
         return ret()
     }
     D50 = cdbl(D50)
-    if (D50 < 0) {
-        err.push(`D50${brk(D50)} < 0`)
+    if (D50 &lt; 0) {
+        err.push(`D50${brk(D50)} &lt; 0`)
         return ret()
     }
 
@@ -2938,14 +2982,14 @@ function cptShibata({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw, D
     }
 
     //check
-    if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+    if (CRR &lt; 0) {
+        err.push(`CRR${brk(CRR)} &lt; 0`)
     }
-    if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+    if (CSR &lt;= 0) {
+        err.push(`CSR${brk(CSR)} &lt;= 0`)
     }
-    if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+    if (FS &lt; 0) {
+        err.push(`FS${brk(FS)} &lt; 0，強制改為0`)
         FS = 0
     }
 
@@ -2969,8 +3013,8 @@ function cptNCEER({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         waterLevelDesign = 0
     }
     waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
+    if (waterLevelDesign &lt; 0) {
+        err.push(`waterLevelDesign${brk(waterLevelDesign)} &lt; 0，預設為0 (m)`)
         waterLevelDesign = 0
     }
 
@@ -2979,8 +3023,8 @@ function cptNCEER({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
+    if (depth &lt; 0) {
+        err.push(`depth${brk(depth)} &lt; 0`)
         return ret()
     }
 
@@ -2989,8 +3033,8 @@ function cptNCEER({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     qc = cdbl(qc)
-    if (qc < 0) {
-        err.push(`qc${brk(qc)} < 0`)
+    if (qc &lt; 0) {
+        err.push(`qc${brk(qc)} &lt; 0`)
         return ret()
     }
 
@@ -2999,8 +3043,8 @@ function cptNCEER({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     fs = cdbl(fs)
-    if (fs < 0) {
-        err.push(`fs${brk(fs)} < 0`)
+    if (fs &lt; 0) {
+        err.push(`fs${brk(fs)} &lt; 0`)
         return ret()
     }
 
@@ -3009,8 +3053,8 @@ function cptNCEER({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
+    if (svpDesign &lt; 0) {
+        err.push(`svpDesign${brk(svpDesign)} &lt; 0`)
         return ret()
     }
 
@@ -3019,8 +3063,8 @@ function cptNCEER({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
+    if (sv &lt; 0) {
+        err.push(`sv${brk(sv)} &lt; 0`)
         return ret()
     }
 
@@ -3029,8 +3073,8 @@ function cptNCEER({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
+    if (PGA &lt; 0) {
+        err.push(`PGA${brk(PGA)} &lt; 0`)
         return ret()
     }
 
@@ -3039,8 +3083,8 @@ function cptNCEER({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
+    if (Mw &lt; 0) {
+        err.push(`Mw${brk(Mw)} &lt; 0`)
         return ret()
     }
 
@@ -3053,7 +3097,7 @@ function cptNCEER({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
     let qc1N
     let Ic1 = Math.sqrt((3.47 - Math.log10(Q)) ** 2 + (Math.log10(F) + 1.22) ** 2)
     let Ic3
-    if (Ic1 <= 2.6) {
+    if (Ic1 &lt;= 2.6) {
         let Pa = 100 // kPa
         Pa = Pa * 1e3 / 9.81 / 10000 // kg/cm2
         let Pa2 = 0.1 // MPa
@@ -3061,7 +3105,7 @@ function cptNCEER({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         qc1N = (qc / Pa2) * (Pa / svpDesign) ** 0.5
         console.log('待確認qc,Pa,Pa2,svpDesign的單位')
         let Ic2 = Math.sqrt((3.47 - Math.log10(qc1N)) ** 2 + (Math.log10(F) + 1.22) ** 2)
-        if (Ic2 <= 2.6) {
+        if (Ic2 &lt;= 2.6) {
             Ic3 = Ic2
         }
         else {
@@ -3075,12 +3119,12 @@ function cptNCEER({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         Ic3 = Ic1
     }
     let Kc
-    if (Ic3 <= 1.64) {
+    if (Ic3 &lt;= 1.64) {
         Kc = 1.0
     }
     else {
         Kc = -0.403 * Ic3 ** 4 + 5.581 * Ic3 ** 3 - 21.63 * Ic3 ** 2 + 33.75 * Ic3 - 17.88
-        if (Ic3 < 2.36 && F < 0.5) {
+        if (Ic3 &lt; 2.36 &amp;&amp; F &lt; 0.5) {
             Kc = 1.0
         }
     }
@@ -3088,7 +3132,7 @@ function cptNCEER({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
     let qc1Ncs = Kc * qc1N
     qc1Ncs = Math.min(qc1Ncs, 160)
     let CRR75
-    if (qc1Ncs < 50) {
+    if (qc1Ncs &lt; 50) {
         CRR75 = 0.833 * (qc1Ncs / 1000) + 0.05
     }
     else {
@@ -3112,14 +3156,14 @@ function cptNCEER({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
     }
 
     //check
-    if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+    if (CRR &lt; 0) {
+        err.push(`CRR${brk(CRR)} &lt; 0`)
     }
-    if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+    if (CSR &lt;= 0) {
+        err.push(`CSR${brk(CSR)} &lt;= 0`)
     }
-    if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+    if (FS &lt; 0) {
+        err.push(`FS${brk(FS)} &lt; 0，強制改為0`)
         FS = 0
     }
 
@@ -3143,8 +3187,8 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         waterLevelDesign = 0
     }
     waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
+    if (waterLevelDesign &lt; 0) {
+        err.push(`waterLevelDesign${brk(waterLevelDesign)} &lt; 0，預設為0 (m)`)
         waterLevelDesign = 0
     }
 
@@ -3153,8 +3197,8 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
+    if (depth &lt; 0) {
+        err.push(`depth${brk(depth)} &lt; 0`)
         return ret()
     }
 
@@ -3163,8 +3207,8 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     Vs = cdbl(Vs)
-    if (Vs < 0) {
-        err.push(`Vs${brk(Vs)} < 0`)
+    if (Vs &lt; 0) {
+        err.push(`Vs${brk(Vs)} &lt; 0`)
         return ret()
     }
 
@@ -3173,8 +3217,8 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     FC = cdbl(FC)
-    if (FC < 0) {
-        err.push(`FC${brk(FC)} < 0`)
+    if (FC &lt; 0) {
+        err.push(`FC${brk(FC)} &lt; 0`)
         return ret()
     }
 
@@ -3183,8 +3227,8 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
+    if (svpDesign &lt; 0) {
+        err.push(`svpDesign${brk(svpDesign)} &lt; 0`)
         return ret()
     }
 
@@ -3193,8 +3237,8 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
+    if (sv &lt; 0) {
+        err.push(`sv${brk(sv)} &lt; 0`)
         return ret()
     }
 
@@ -3203,8 +3247,8 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
+    if (PGA &lt; 0) {
+        err.push(`PGA${brk(PGA)} &lt; 0`)
         return ret()
     }
 
@@ -3213,8 +3257,8 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
+    if (Mw &lt; 0) {
+        err.push(`Mw${brk(Mw)} &lt; 0`)
         return ret()
     }
 
@@ -3224,7 +3268,7 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     let Vs1 = 1 / Math.sqrt(svpDesign) * Vs
     console.log('待確認此處svpDesign,Vs的單位')
     let Kv
-    if (FC <= 10) {
+    if (FC &lt;= 10) {
         Kv = 1.0
     }
     else {
@@ -3233,7 +3277,7 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     let Vs100cs = Kv * (Vs1 - 100)
     Vs100cs = Math.min(Vs100cs, 135 - 0.5)
     let CRR75
-    if (Vs1 <= 100) {
+    if (Vs1 &lt;= 100) {
         CRR75 = 0.09
     }
     else {
@@ -3257,14 +3301,14 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     }
 
     //check
-    if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+    if (CRR &lt; 0) {
+        err.push(`CRR${brk(CRR)} &lt; 0`)
     }
-    if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+    if (CSR &lt;= 0) {
+        err.push(`CSR${brk(CSR)} &lt;= 0`)
     }
-    if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+    if (FS &lt; 0) {
+        err.push(`FS${brk(FS)} &lt; 0，強制改為0`)
         FS = 0
     }
 
@@ -3288,8 +3332,8 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         waterLevelDesign = 0
     }
     waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
+    if (waterLevelDesign &lt; 0) {
+        err.push(`waterLevelDesign${brk(waterLevelDesign)} &lt; 0，預設為0 (m)`)
         waterLevelDesign = 0
     }
 
@@ -3298,8 +3342,8 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
+    if (depth &lt; 0) {
+        err.push(`depth${brk(depth)} &lt; 0`)
         return ret()
     }
 
@@ -3308,8 +3352,8 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     Vs = cdbl(Vs)
-    if (Vs < 0) {
-        err.push(`Vs${brk(Vs)} < 0`)
+    if (Vs &lt; 0) {
+        err.push(`Vs${brk(Vs)} &lt; 0`)
         return ret()
     }
 
@@ -3318,8 +3362,8 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     FC = cdbl(FC)
-    if (FC < 0) {
-        err.push(`FC${brk(FC)} < 0`)
+    if (FC &lt; 0) {
+        err.push(`FC${brk(FC)} &lt; 0`)
         return ret()
     }
 
@@ -3328,8 +3372,8 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
+    if (svpDesign &lt; 0) {
+        err.push(`svpDesign${brk(svpDesign)} &lt; 0`)
         return ret()
     }
 
@@ -3338,8 +3382,8 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
+    if (sv &lt; 0) {
+        err.push(`sv${brk(sv)} &lt; 0`)
         return ret()
     }
 
@@ -3348,8 +3392,8 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
+    if (PGA &lt; 0) {
+        err.push(`PGA${brk(PGA)} &lt; 0`)
         return ret()
     }
 
@@ -3358,8 +3402,8 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
+    if (Mw &lt; 0) {
+        err.push(`Mw${brk(Mw)} &lt; 0`)
         return ret()
     }
 
@@ -3368,10 +3412,10 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     let Vs1 = 1 / Math.sqrt(svpDesign) * Vs
     console.log('待確認此處svpDesign,Vs的單位')
     let Vs1Star
-    if (FC <= 5) {
+    if (FC &lt;= 5) {
         Vs1Star = 215
     }
-    else if (FC <= 35) {
+    else if (FC &lt;= 35) {
         Vs1Star = 215 - 0.5 * (FC - 5)
     }
     else {
@@ -3399,14 +3443,14 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     }
 
     //check
-    if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+    if (CRR &lt; 0) {
+        err.push(`CRR${brk(CRR)} &lt; 0`)
     }
-    if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+    if (CSR &lt;= 0) {
+        err.push(`CSR${brk(CSR)} &lt;= 0`)
     }
-    if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+    if (FS &lt; 0) {
+        err.push(`FS${brk(FS)} &lt; 0，強制改為0`)
         FS = 0
     }
 
@@ -3430,8 +3474,8 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         waterLevelDesign = 0
     }
     waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
+    if (waterLevelDesign &lt; 0) {
+        err.push(`waterLevelDesign${brk(waterLevelDesign)} &lt; 0，預設為0 (m)`)
         waterLevelDesign = 0
     }
 
@@ -3440,8 +3484,8 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
+    if (depth &lt; 0) {
+        err.push(`depth${brk(depth)} &lt; 0`)
         return ret()
     }
 
@@ -3450,8 +3494,8 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     Vs = cdbl(Vs)
-    if (Vs < 0) {
-        err.push(`Vs${brk(Vs)} < 0`)
+    if (Vs &lt; 0) {
+        err.push(`Vs${brk(Vs)} &lt; 0`)
         return ret()
     }
 
@@ -3460,8 +3504,8 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     FC = cdbl(FC)
-    if (FC < 0) {
-        err.push(`FC${brk(FC)} < 0`)
+    if (FC &lt; 0) {
+        err.push(`FC${brk(FC)} &lt; 0`)
         return ret()
     }
 
@@ -3470,8 +3514,8 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
+    if (svpDesign &lt; 0) {
+        err.push(`svpDesign${brk(svpDesign)} &lt; 0`)
         return ret()
     }
 
@@ -3480,8 +3524,8 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
+    if (sv &lt; 0) {
+        err.push(`sv${brk(sv)} &lt; 0`)
         return ret()
     }
 
@@ -3490,8 +3534,8 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
+    if (PGA &lt; 0) {
+        err.push(`PGA${brk(PGA)} &lt; 0`)
         return ret()
     }
 
@@ -3500,8 +3544,8 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
     Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
+    if (Mw &lt; 0) {
+        err.push(`Mw${brk(Mw)} &lt; 0`)
         return ret()
     }
 
@@ -3510,10 +3554,10 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     let Vs1 = 1 / Math.sqrt(svpDesign) * Vs
     console.log('待確認此處svpDesign的單位')
     let Vs1c
-    if (FC <= 5) {
+    if (FC &lt;= 5) {
         Vs1c = 220
     }
-    else if (FC <= 35) {
+    else if (FC &lt;= 35) {
         Vs1c = 210
     }
     else {
@@ -3541,14 +3585,14 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     }
 
     //check
-    if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+    if (CRR &lt; 0) {
+        err.push(`CRR${brk(CRR)} &lt; 0`)
     }
-    if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+    if (CSR &lt;= 0) {
+        err.push(`CSR${brk(CSR)} &lt;= 0`)
     }
-    if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+    if (FS &lt; 0) {
+        err.push(`FS${brk(FS)} &lt; 0，強制改為0`)
         FS = 0
     }
 
@@ -3615,7 +3659,7 @@ function liquefaction(kind = 'auto', rows) {
             //ds, de
             let ds = get(v, 'depthStart', null)
             let de = get(v, 'depthEnd', null)
-            let bDepth = isnum(ds) && isnum(de)
+            let bDepth = isnum(ds) &amp;&amp; isnum(de)
             if (bDepth) {
                 ds = cdbl(ds)
                 de = cdbl(de)
@@ -3714,7 +3758,7 @@ function liquefaction(kind = 'auto', rows) {
             //ds, de
             let ds = get(v, 'depthStart', null)
             let de = get(v, 'depthEnd', null)
-            let bDepth = isnum(ds) && isnum(de)
+            let bDepth = isnum(ds) &amp;&amp; isnum(de)
             if (bDepth) {
                 ds = cdbl(ds)
                 de = cdbl(de)
@@ -3836,9 +3880,9 @@ function liquefaction(kind = 'auto', rows) {
                     // console.log('isnum(v.depthEnd)', isnum(v.depthEnd), v.depthEnd)
                     // console.log('isnum(v.depth)', isnum(v.depth), v.depth)
                     // console.log('isnum(v[key])', isnum(v[key]), v[key])
-                    if (isnum(v.depthStart) &&
-                        isnum(v.depthEnd) &&
-                        isnum(v.depth) &&
+                    if (isnum(v.depthStart) &amp;&amp;
+                        isnum(v.depthEnd) &amp;&amp;
+                        isnum(v.depth) &amp;&amp;
                         isnum(v[key])
                     ) {
                         let zs = cdbl(v.depthStart)
@@ -3903,8 +3947,8 @@ function liquefaction(kind = 'auto', rows) {
                     // console.log('isnum(v.depthStart)', isnum(v.depthStart), v.depthStart)
                     // console.log('isnum(v.depthEnd)', isnum(v.depthEnd), v.depthEnd)
                     // console.log('isnum(v[key])', isnum(v[key]), v[key])
-                    if (isnum(v.depthStart) &&
-                        isnum(v.depthEnd) &&
+                    if (isnum(v.depthStart) &amp;&amp;
+                        isnum(v.depthEnd) &amp;&amp;
                         isnum(v[key])
                     ) {
                         let zs = cdbl(v.depthStart)
@@ -3930,7 +3974,7 @@ function liquefaction(kind = 'auto', rows) {
     if (!isestr(kind)) {
         throw new Error('kind(分析種類)非字串')
     }
-    if (kind !== 'SPT' && kind !== 'CPT' && kind !== 'VS' && kind !== 'auto') {
+    if (kind !== 'SPT' &amp;&amp; kind !== 'CPT' &amp;&amp; kind !== 'VS' &amp;&amp; kind !== 'auto') {
         throw new Error(`kind(分析種類)[${kind}]非有效值: SPT, CPT, VS, auto`)
     }
 
@@ -4049,3 +4093,28 @@ let calcLiquefaction = {
 
 export default calcLiquefaction
 
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Mon Jul 05 2021 16:03:29 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
