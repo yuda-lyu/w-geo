@@ -112,8 +112,8 @@ function core(rows, waterLevel) {
                     err += `, ${ce}`
                 }
             }
-            v.sv = null
-            v.svp = null
+            v.sv = ''
+            v.svp = ''
             v.err = err
         }
 
