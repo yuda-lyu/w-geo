@@ -1,150 +1,343 @@
-import relaPorousParams from './src/relaPorousParams.mjs'
+// import relaPorousParams from './src/relaPorousParams.mjs'
 // import checkDepthStartEnd from './src/checkDepthStartEnd.mjs'
-// import calcVerticalStress from './src/calcVerticalStress.mjs'
+import calcVerticalStress from './src/calcVerticalStress.mjs'
 
 
-let GS = 2.7
-let e = 0.86
-let rd = 14.240322580645163 //kN/m3
-let rsat = 18.776129032258066 //kN/m3
-let r
+let waterLevelUsual
+let waterLevelDesign
+let rows
+let rowsNew
 
-let coreFuncs = relaPorousParams(null, null, null, null, { returnFuncs: true }).coreFuncs
+waterLevelUsual = 0
+waterLevelDesign = 0
+rows = [
+    {
+        depthStart: 0,
+        depthEnd: 5,
+        rsat: 18, //kN/m3
+    },
+    {
+        depthStart: 5,
+        depthEnd: 10,
+        rsat: 18, //kN/m3
+    },
+    {
+        depthStart: 10,
+        depthEnd: 20,
+        rsat: 18, //kN/m3
+    },
+]
+rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })
+console.log(rowsNew, (18 - 9.81) * 15) //地下 15(m) 處之垂直有效應力為 122.85(kN/m2)
+// => [
+//   {
+//     depthStart: 0,
+//     depthEnd: 5,
+//     rsat: 18,
+//     waterLevelUsual: 0,
+//     waterLevelDesign: 0,
+//     sv: 45,
+//     svpUsual: 20.474999999999998,
+//     svpDesign: 20.474999999999998,
+//     zsv: 2.5
+//   },
+//   {
+//     depthStart: 5,
+//     depthEnd: 10,
+//     rsat: 18,
+//     waterLevelUsual: 0,
+//     waterLevelDesign: 0,
+//     sv: 135,
+//     svpUsual: 61.425,
+//     svpDesign: 61.425,
+//     zsv: 7.5
+//   },
+//   {
+//     depthStart: 10,
+//     depthEnd: 20,
+//     rsat: 18,
+//     waterLevelUsual: 0,
+//     waterLevelDesign: 0,
+//     sv: 270,
+//     svpUsual: 122.85,
+//     svpDesign: 122.85,
+//     zsv: 15
+//   }
+// ] 122.85
 
-console.log('rd get_rd_from_GS_e', coreFuncs.get_rd_from_GS_e(GS, e))
-// => rd get_rd_from_GS_e 14.240322580645163
+waterLevelUsual = 0
+waterLevelDesign = 0
+rows = [
+    {
+        depthStart: 0,
+        depthEnd: 5,
+        rsat: 18, //kN/m3
+    },
+    {
+        depthStart: 5,
+        depthEnd: 10,
+        rsat: 19, //kN/m3
+    },
+    {
+        depthStart: 10,
+        depthEnd: 20,
+        rsat: 20, //kN/m3
+    },
+]
+rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })
+console.log(rowsNew, (19 - 9.81) * 15) //地下 15(m) 處之垂直有效應力為 137.85(kN/m2)
+// => [
+//   {
+//     depthStart: 0,
+//     depthEnd: 5,
+//     rsat: 18,
+//     waterLevelUsual: 0,
+//     waterLevelDesign: 0,
+//     sv: 45,
+//     svpUsual: 20.474999999999998,
+//     svpDesign: 20.474999999999998,
+//     zsv: 2.5
+//   },
+//   {
+//     depthStart: 5,
+//     depthEnd: 10,
+//     rsat: 19,
+//     waterLevelUsual: 0,
+//     waterLevelDesign: 0,
+//     sv: 137.5,
+//     svpUsual: 63.925,
+//     svpDesign: 63.925,
+//     zsv: 7.5
+//   },
+//   {
+//     depthStart: 10,
+//     depthEnd: 20,
+//     rsat: 20,
+//     waterLevelUsual: 0,
+//     waterLevelDesign: 0,
+//     sv: 285,
+//     svpUsual: 137.85,
+//     svpDesign: 137.85,
+//     zsv: 15
+//   }
+// ] 137.85
 
-console.log('rd get_rd_from_rsat_e', coreFuncs.get_rd_from_rsat_e(rsat, e))
-// => rd get_rd_from_rsat_e 14.240322580645163
+waterLevelUsual = 20
+waterLevelDesign = 20
+rows = [
+    {
+        depthStart: 0,
+        depthEnd: 5,
+        rd: 18, //kN/m3
+    },
+    {
+        depthStart: 5,
+        depthEnd: 10,
+        rd: 18, //kN/m3
+    },
+    {
+        depthStart: 10,
+        depthEnd: 20,
+        rd: 18, //kN/m3
+    },
+]
+rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })
+console.log(rowsNew, (18) * 15) //地下 15(m) 處之垂直總應力與垂直有效應力為 270(kN/m2)
+// => [
+//   {
+//     depthStart: 0,
+//     depthEnd: 5,
+//     rd: 18,
+//     waterLevelUsual: 20,
+//     waterLevelDesign: 20,
+//     sv: 45,
+//     svpUsual: 45,
+//     svpDesign: 45,
+//     zsv: 2.5
+//   },
+//   {
+//     depthStart: 5,
+//     depthEnd: 10,
+//     rd: 18,
+//     waterLevelUsual: 20,
+//     waterLevelDesign: 20,
+//     sv: 135,
+//     svpUsual: 135,
+//     svpDesign: 135,
+//     zsv: 7.5
+//   },
+//   {
+//     depthStart: 10,
+//     depthEnd: 20,
+//     rd: 18,
+//     waterLevelUsual: 20,
+//     waterLevelDesign: 20,
+//     sv: 270,
+//     svpUsual: 270,
+//     svpDesign: 270,
+//     zsv: 15
+//   }
+// ] 270
 
-console.log('rd get_rd_from_rsat_GS', coreFuncs.get_rd_from_rsat_GS(rsat, GS))
-// => rd get_rd_from_rsat_GS 14.240322580645161
+waterLevelUsual = 3
+waterLevelDesign = 3
+rows = [
+    {
+        depthStart: 0,
+        depthEnd: 3,
+        rd: 18, //kN/m3
+    },
+    {
+        depthStart: 3,
+        depthEnd: 11,
+        rsat: 20, //kN/m3
+    },
+]
+rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })
+console.log(rowsNew, 18 * 3 + (20 * 4 - 9.81 * 4)) //地下 7(m) 處之垂直有效應力為 94.76(kN/m2)
+// => [
+//   {
+//     depthStart: 0,
+//     depthEnd: 3,
+//     rd: 18,
+//     waterLevelUsual: 3,
+//     waterLevelDesign: 3,
+//     sv: 27,
+//     svpUsual: 27,
+//     svpDesign: 27,
+//     zsv: 1.5
+//   },
+//   {
+//     depthStart: 3,
+//     depthEnd: 11,
+//     rsat: 20,
+//     waterLevelUsual: 3,
+//     waterLevelDesign: 3,
+//     sv: 134,
+//     svpUsual: 94.75999999999999,
+//     svpDesign: 94.75999999999999,
+//     zsv: 7
+//   }
+// ] 94.75999999999999
 
-console.log('rsat get_rsat_from_GS_e', coreFuncs.get_rsat_from_GS_e(GS, e))
-// => rsat get_rsat_from_GS_e 18.776129032258066
+waterLevelUsual = 3
+waterLevelDesign = 3
+rows = [
+    {
+        depthStart: 0,
+        depthEnd: 1,
+        rd: 18, //kN/m3
+    },
+    {
+        depthStart: 1,
+        depthEnd: 5,
+        rd: 18, //kN/m3
+        rsat: 20, //kN/m3
+    },
+    {
+        depthStart: 5,
+        depthEnd: 9,
+        rsat: 20, //kN/m3
+    },
+]
+rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })
+console.log(rowsNew, 18 * 3 + (20 * 4 - 9.81 * 4)) //地下 7(m) 處之垂直有效應力為 94.76(kN/m2)
+// => [
+//   {
+//     depthStart: 0,
+//     depthEnd: 1,
+//     rd: 18,
+//     waterLevelUsual: 3,
+//     waterLevelDesign: 3,
+//     sv: 9,
+//     svpUsual: 9,
+//     svpDesign: 9,
+//     zsv: 0.5
+//   },
+//   {
+//     depthStart: 1,
+//     depthEnd: 5,
+//     rd: 18,
+//     rsat: 20,
+//     waterLevelUsual: 3,
+//     waterLevelDesign: 3,
+//     sv: 56,
+//     svpUsual: 56,
+//     svpDesign: 56,
+//     zsv: 3
+//   },
+//   {
+//     depthStart: 5,
+//     depthEnd: 9,
+//     rsat: 20,
+//     waterLevelUsual: 3,
+//     waterLevelDesign: 3,
+//     sv: 134,
+//     svpUsual: 94.75999999999999,
+//     svpDesign: 94.75999999999999,
+//     zsv: 7
+//   }
+// ] 94.75999999999999
 
-console.log('rsat get_rsat_from_rd_e', coreFuncs.get_rsat_from_rd_e(rd, e))
-// => rsat get_rsat_from_rd_e 18.776129032258066
-
-console.log('rsat get_rsat_from_rd_GS', coreFuncs.get_rsat_from_rd_GS(rd, GS))
-// => rsat get_rsat_from_rd_GS 18.77612903225807
-
-console.log('e get_e_from_GS_rd', coreFuncs.get_e_from_GS_rd(GS, rd))
-// => e get_e_from_GS_rd 0.8599999999999999
-
-console.log('e get_e_from_rd_rsat', coreFuncs.get_e_from_rd_rsat(rd, rsat))
-// => e get_e_from_rd_rsat 0.8599999999999998
-
-console.log('e get_e_from_GS_rsat', coreFuncs.get_e_from_GS_rsat(GS, rsat))
-// => e get_e_from_GS_rsat 0.86
-
-console.log('GS get_GS_from_rd_e', coreFuncs.get_GS_from_rd_e(rd, e))
-// => GS get_GS_from_rd_e 2.7
-
-console.log('GS get_GS_from_rd_rsat', coreFuncs.get_GS_from_rd_rsat(rd, rsat))
-// => GS get_GS_from_rd_rsat 2.6999999999999997
-
-console.log('GS get_GS_from_rsat_e', coreFuncs.get_GS_from_rsat_e(rsat, e))
-// => GS get_GS_from_rsat_e 2.7
-
-r = relaPorousParams(rd, rsat, null, null)
-console.log('rd,rsat', r)
-// => rd,rsat {
-//     rd: 14.240322580645163,
-//     rsat: 18.776129032258066,
-//     GS: 2.7,
-//     e: 0.8599999999999998
-// }
-
-r = relaPorousParams(rd, null, GS, null)
-console.log('rd,GS', r)
-// => rd,GS {
-//     rd: 14.240322580645163,
-//     rsat: 18.77612903225807,
-//     GS: 2.7,
-//     e: 0.8599999999999999
-// }
-
-r = relaPorousParams(rd, null, null, e)
-console.log('rd,e', r)
-// => rd,e {
-//     rd: 14.240322580645163,
-//     rsat: 18.776129032258066,
-//     GS: 2.7,
-//     e: 0.86
-// }
-
-r = relaPorousParams(null, rsat, GS, null)
-console.log('rsat,GS', r)
-// => rsat,GS {
-//     rd: 14.240322580645161,
-//     rsat: 18.776129032258066,
-//     GS: 2.7,
-//     e: 0.8600000000000001
-// }
-
-r = relaPorousParams(null, rsat, null, e)
-console.log('rsat,e', r)
-// => rsat,e {
-//     rd: 14.240322580645163,
-//     rsat: 18.776129032258066,
-//     GS: 2.7,
-//     e: 0.86
-// }
-
-r = relaPorousParams(null, null, GS, e)
-console.log('GS,e', r)
-// => GS,e {
-//     rd: 14.240322580645163,
-//     rsat: 18.776129032258066,
-//     GS: 2.7,
-//     e: 0.86
-// }
-
-r = relaPorousParams(rd, rsat, GS, null)
-console.log('rd,rsat,GS', r)
-// => rd,rsat,GS {
-//     rd: 14.240322580645163,
-//     rsat: 18.776129032258066,
-//     GS: 2.7,
-//     e: 0.8599999999999999
-// }
-
-r = relaPorousParams(rd, rsat, null, e)
-console.log('rd,rsat,e', r)
-// => rd,rsat,e {
-//     rd: 14.240322580645163,
-//     rsat: 18.776129032258066,
-//     GS: 2.7,
-//     e: 0.86
-// }
-
-r = relaPorousParams(rd, null, GS, e)
-console.log('rd,GS,e', r)
-// => rd,GS,e {
-//     rd: 14.240322580645163,
-//     rsat: 18.776129032258066,
-//     GS: 2.7,
-//     e: 0.86
-// }
-
-r = relaPorousParams(null, rsat, GS, e)
-console.log('rsat,GS,e', r)
-// => rsat,GS,e {
-//     rd: 14.240322580645163,
-//     rsat: 18.776129032258066,
-//     GS: 2.7,
-//     e: 0.86
-// }
-
-try {
-    r = relaPorousParams(14.1, null, GS, e)
-}
-catch (e) {
-    r = e.toString()
-}
-console.log('GS,e', r)
-// => Error: 輸入孔隙比[0.86]與反算出孔隙比[0.8785106382978726]差距過大
-
+waterLevelUsual = 3
+waterLevelDesign = 0
+rows = [
+    {
+        depthStart: 0,
+        depthEnd: 1,
+        rd: 18, //kN/m3
+        rsat: 20, //kN/m3
+    },
+    {
+        depthStart: 1,
+        depthEnd: 5,
+        rd: 18, //kN/m3
+        rsat: 20, //kN/m3
+    },
+    {
+        depthStart: 5,
+        depthEnd: 9,
+        rsat: 20, //kN/m3
+    },
+]
+rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })
+console.log(rowsNew, 18 * 3 + (20 * 4 - 9.81 * 4), (20 - 9.81) * 7) //地下 7(m) 處之常時垂直有效應力為 94.76(kN/m2), 設計垂直有效應力為 71.33(kN/m2)
+// => [
+//   {
+//     depthStart: 0,
+//     depthEnd: 1,
+//     rd: 18,
+//     rsat: 20,
+//     waterLevelUsual: 3,
+//     waterLevelDesign: 0,
+//     sv: 9,
+//     svpUsual: 9,
+//     svpDesign: 5.095,
+//     zsv: 0.5
+//   },
+//   {
+//     depthStart: 1,
+//     depthEnd: 5,
+//     rd: 18,
+//     rsat: 20,
+//     waterLevelUsual: 3,
+//     waterLevelDesign: 0,
+//     sv: 56,
+//     svpUsual: 56,
+//     svpDesign: 30.57,
+//     zsv: 3
+//   },
+//   {
+//     depthStart: 5,
+//     depthEnd: 9,
+//     rsat: 20,
+//     waterLevelUsual: 3,
+//     waterLevelDesign: 0,
+//     sv: 134,
+//     svpUsual: 94.75999999999999,
+//     svpDesign: 71.33,
+//     zsv: 7
+//   }
+// ] 94.75999999999999 71.33
 
 //node --experimental-modules --es-module-specifier-resolution=node g.mjs

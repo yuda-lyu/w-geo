@@ -163,7 +163,7 @@
 
     
 
-    <h4 class="name" id=".calcVerticalStress"><span class="type-signature">(static) </span>calcVerticalStress<span class="signature">(waterLevel, rows)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id=".calcVerticalStress"><span class="type-signature">(static) </span>calcVerticalStress<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
 
     
 
@@ -175,7 +175,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="calcVerticalStress.mjs.html">calcVerticalStress.mjs</a>, <a href="calcVerticalStress.mjs.html#line270">line 270</a>
+        <a href="calcVerticalStress.mjs.html">calcVerticalStress.mjs</a>, <a href="calcVerticalStress.mjs.html#line459">line 459</a>
     </li></ul></dd>
     
 
@@ -229,7 +229,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>let waterLevellet rowslet rowsNewwaterLevel = 0rows = [    {        depthStart: 0,        depthEnd: 5,        rsat: 18, //kN/m3    },    {        depthStart: 5,        depthEnd: 10,        rsat: 18, //kN/m3    },    {        depthStart: 10,        depthEnd: 20,        rsat: 18, //kN/m3    },]rowsNew = calcVerticalStress(waterLevel, rows)console.log(rowsNew, (18 - 9.81) * 15) //地下 15(m) 處之垂直有效應力為 122.85(kN/m2)// => [//     {//       depthStart: 0,//       depthEnd: 5,//       rsat: 18,//       waterLevel: 0,//       sv: 45,//       svp: 20.474999999999998,//       zsv: 2.5//     },//     {//       depthStart: 5,//       depthEnd: 10,//       rsat: 18,//       waterLevel: 0,//       sv: 135,//       svp: 61.425,//       zsv: 7.5//     },//     {//       depthStart: 10,//       depthEnd: 20,//       rsat: 18,//       waterLevel: 0,//       sv: 270,//       svp: 122.85,//       zsv: 15//     }// ]waterLevel = 0rows = [    {        depthStart: 0,        depthEnd: 5,        rsat: 18, //kN/m3    },    {        depthStart: 5,        depthEnd: 10,        rsat: 19, //kN/m3    },    {        depthStart: 10,        depthEnd: 20,        rsat: 20, //kN/m3    },]rowsNew = calcVerticalStress(waterLevel, rows)console.log(rowsNew, (19 - 9.81) * 15) //地下 15(m) 處之垂直有效應力為 137.85(kN/m2)// => [//     {//       depthStart: 0,//       depthEnd: 5,//       rsat: 18,//       waterLevel: 0,//       sv: 45,//       svp: 20.474999999999998,//       zsv: 2.5//     },//     {//       depthStart: 5,//       depthEnd: 10,//       rsat: 19,//       waterLevel: 0,//       sv: 137.5,//       svp: 63.925,//       zsv: 7.5//     },//     {//       depthStart: 10,//       depthEnd: 20,//       rsat: 20,//       waterLevel: 0,//       sv: 285,//       svp: 137.85,//       zsv: 15//     }// ]waterLevel = 20rows = [    {        depthStart: 0,        depthEnd: 5,        rd: 18, //kN/m3    },    {        depthStart: 5,        depthEnd: 10,        rd: 18, //kN/m3    },    {        depthStart: 10,        depthEnd: 20,        rd: 18, //kN/m3    },]rowsNew = calcVerticalStress(waterLevel, rows)console.log(rowsNew, (18) * 15) //地下 15(m) 處之垂直總應力與垂直有效應力為 270(kN/m2)// => [//     {//       depthStart: 0,//       depthEnd: 5,//       rd: 18,//       waterLevel: 20,//       sv: 45,//       svp: 45,//       zsv: 2.5//     },//     {//       depthStart: 5,//       depthEnd: 10,//       rd: 18,//       waterLevel: 20,//       sv: 135,//       svp: 135,//       zsv: 7.5//     },//     {//       depthStart: 10,//       depthEnd: 20,//       rd: 18,//       waterLevel: 20,//       sv: 270,//       svp: 270,//       zsv: 15//     }// ]waterLevel = 3rows = [    {        depthStart: 0,        depthEnd: 3,        rd: 18, //kN/m3    },    {        depthStart: 3,        depthEnd: 11,        rsat: 20, //kN/m3    },]rowsNew = calcVerticalStress(waterLevel, rows)console.log(rowsNew) //地下 7(m) 處之垂直有效應力為 94.76(kN/m2)// => [//     {//       depthStart: 0,//       depthEnd: 3,//       rd: 18,//       waterLevel: 3,//       sv: 27,//       svp: 27,//       zsv: 1.5//     },//     {//       depthStart: 3,//       depthEnd: 11,//       rsat: 20,//       waterLevel: 3,//       sv: 134,//       svp: 94.75999999999999,//       zsv: 7//     }// ]waterLevel = 3rows = [    {        depthStart: 0,        depthEnd: 1,        rd: 18, //kN/m3    },    {        depthStart: 1,        depthEnd: 5,        rd: 18, //kN/m3        rsat: 20, //kN/m3    },    {        depthStart: 5,        depthEnd: 9,        rsat: 20, //kN/m3    },]rowsNew = calcVerticalStress(waterLevel, rows)console.log(rowsNew) //地下 7(m) 處之垂直有效應力為 94.76(kN/m2)// => [//     {//       depthStart: 0,//       depthEnd: 1,//       rd: 18,//       waterLevel: 3,//       sv: 9,//       svp: 9,//       zsv: 0.5//     },//     {//       depthStart: 1,//       depthEnd: 5,//       rd: 18,//       rsat: 20,//       waterLevel: 3,//       sv: 56,//       svp: 56,//       zsv: 3//     },//     {//       depthStart: 5,//       depthEnd: 9,//       rsat: 20,//       waterLevel: 3,//       sv: 134,//       svp: 94.75999999999999,//       zsv: 7//     }// ]</code></pre>
+    <pre class="prettyprint"><code>let waterLevelUsuallet waterLevelDesignlet rowslet rowsNewwaterLevelUsual = 0waterLevelDesign = 0rows = [    {        depthStart: 0,        depthEnd: 5,        rsat: 18, //kN/m3    },    {        depthStart: 5,        depthEnd: 10,        rsat: 18, //kN/m3    },    {        depthStart: 10,        depthEnd: 20,        rsat: 18, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })console.log(rowsNew, (18 - 9.81) * 15) //地下 15(m) 處之垂直有效應力為 122.85(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 5,//     rsat: 18,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 45,//     svpUsual: 20.474999999999998,//     svpDesign: 20.474999999999998,//     zsv: 2.5//   },//   {//     depthStart: 5,//     depthEnd: 10,//     rsat: 18,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 135,//     svpUsual: 61.425,//     svpDesign: 61.425,//     zsv: 7.5//   },//   {//     depthStart: 10,//     depthEnd: 20,//     rsat: 18,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 270,//     svpUsual: 122.85,//     svpDesign: 122.85,//     zsv: 15//   }// ] 122.85waterLevelUsual = 0waterLevelDesign = 0rows = [    {        depthStart: 0,        depthEnd: 5,        rsat: 18, //kN/m3    },    {        depthStart: 5,        depthEnd: 10,        rsat: 19, //kN/m3    },    {        depthStart: 10,        depthEnd: 20,        rsat: 20, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })console.log(rowsNew, (19 - 9.81) * 15) //地下 15(m) 處之垂直有效應力為 137.85(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 5,//     rsat: 18,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 45,//     svpUsual: 20.474999999999998,//     svpDesign: 20.474999999999998,//     zsv: 2.5//   },//   {//     depthStart: 5,//     depthEnd: 10,//     rsat: 19,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 137.5,//     svpUsual: 63.925,//     svpDesign: 63.925,//     zsv: 7.5//   },//   {//     depthStart: 10,//     depthEnd: 20,//     rsat: 20,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 285,//     svpUsual: 137.85,//     svpDesign: 137.85,//     zsv: 15//   }// ] 137.85waterLevelUsual = 20waterLevelDesign = 20rows = [    {        depthStart: 0,        depthEnd: 5,        rd: 18, //kN/m3    },    {        depthStart: 5,        depthEnd: 10,        rd: 18, //kN/m3    },    {        depthStart: 10,        depthEnd: 20,        rd: 18, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })console.log(rowsNew, (18) * 15) //地下 15(m) 處之垂直總應力與垂直有效應力為 270(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 5,//     rd: 18,//     waterLevelUsual: 20,//     waterLevelDesign: 20,//     sv: 45,//     svpUsual: 45,//     svpDesign: 45,//     zsv: 2.5//   },//   {//     depthStart: 5,//     depthEnd: 10,//     rd: 18,//     waterLevelUsual: 20,//     waterLevelDesign: 20,//     sv: 135,//     svpUsual: 135,//     svpDesign: 135,//     zsv: 7.5//   },//   {//     depthStart: 10,//     depthEnd: 20,//     rd: 18,//     waterLevelUsual: 20,//     waterLevelDesign: 20,//     sv: 270,//     svpUsual: 270,//     svpDesign: 270,//     zsv: 15//   }// ] 270waterLevelUsual = 3waterLevelDesign = 3rows = [    {        depthStart: 0,        depthEnd: 3,        rd: 18, //kN/m3    },    {        depthStart: 3,        depthEnd: 11,        rsat: 20, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })console.log(rowsNew, 18 * 3 + (20 * 4 - 9.81 * 4)) //地下 7(m) 處之垂直有效應力為 94.76(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 3,//     rd: 18,//     waterLevelUsual: 3,//     waterLevelDesign: 3,//     sv: 27,//     svpUsual: 27,//     svpDesign: 27,//     zsv: 1.5//   },//   {//     depthStart: 3,//     depthEnd: 11,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 3,//     sv: 134,//     svpUsual: 94.75999999999999,//     svpDesign: 94.75999999999999,//     zsv: 7//   }// ] 94.75999999999999waterLevelUsual = 3waterLevelDesign = 3rows = [    {        depthStart: 0,        depthEnd: 1,        rd: 18, //kN/m3    },    {        depthStart: 1,        depthEnd: 5,        rd: 18, //kN/m3        rsat: 20, //kN/m3    },    {        depthStart: 5,        depthEnd: 9,        rsat: 20, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })console.log(rowsNew, 18 * 3 + (20 * 4 - 9.81 * 4)) //地下 7(m) 處之垂直有效應力為 94.76(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 1,//     rd: 18,//     waterLevelUsual: 3,//     waterLevelDesign: 3,//     sv: 9,//     svpUsual: 9,//     svpDesign: 9,//     zsv: 0.5//   },//   {//     depthStart: 1,//     depthEnd: 5,//     rd: 18,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 3,//     sv: 56,//     svpUsual: 56,//     svpDesign: 56,//     zsv: 3//   },//   {//     depthStart: 5,//     depthEnd: 9,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 3,//     sv: 134,//     svpUsual: 94.75999999999999,//     svpDesign: 94.75999999999999,//     zsv: 7//   }// ] 94.75999999999999waterLevelUsual = 3waterLevelDesign = 0rows = [    {        depthStart: 0,        depthEnd: 1,        rd: 18, //kN/m3        rsat: 20, //kN/m3    },    {        depthStart: 1,        depthEnd: 5,        rd: 18, //kN/m3        rsat: 20, //kN/m3    },    {        depthStart: 5,        depthEnd: 9,        rsat: 20, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })console.log(rowsNew, 18 * 3 + (20 * 4 - 9.81 * 4), (20 - 9.81) * 7) //地下 7(m) 處之常時垂直有效應力為 94.76(kN/m2), 設計垂直有效應力為 71.33(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 1,//     rd: 18,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 0,//     sv: 9,//     svpUsual: 9,//     svpDesign: 5.095,//     zsv: 0.5//   },//   {//     depthStart: 1,//     depthEnd: 5,//     rd: 18,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 0,//     sv: 56,//     svpUsual: 56,//     svpDesign: 30.57,//     zsv: 3//   },//   {//     depthStart: 5,//     depthEnd: 9,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 0,//     sv: 134,//     svpUsual: 94.75999999999999,//     svpDesign: 71.33,//     zsv: 7//   }// ] 94.75999999999999 71.33</code></pre>
 
 
 
@@ -247,7 +247,11 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -255,29 +259,6 @@
     </thead>
 
     <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>waterLevel</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>輸入地下水位數字，單位為m</p></td>
-        </tr>
-
     
 
         <tr>
@@ -295,10 +276,169 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last"><p>輸入數據陣列，各數據為物件，至少需包含起始深度(depthStart，單位m)與結束深度(depthEnd，單位m)，位於地下水位以上之樣本需提供乾單位重(rd，單位kN/m3)，位於地下水位以下之樣本需提供飽和單位重(rsat，單位kN/m3)，若地下水位位於該樣本起訖深度內，則需同時提供乾單位重與飽和單位重</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>opt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>{}</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入設定物件，預設{}</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>waterLevelUsual</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>0</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入常時地下水位數字，單位m，預設0</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>waterLevelDesign</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>0</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入設計地下水位數字，單位m，預設0</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -830,7 +970,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Sun Jul 04 2021 22:36:00 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Mon Jul 05 2021 09:58:00 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
