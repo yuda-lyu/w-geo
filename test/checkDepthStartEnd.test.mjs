@@ -37,7 +37,7 @@ describe(`checkDepthStartEnd`, function() {
         },
     ]
     // let errs2 = checkDepthStartEnd(rows)
-    let errs2 = ['第 1 樣本起訖深度depthEnd[5]不等於第 2 個樣本起始深度depthStart[10]']
+    let errs2 = ['第 1 樣本結束深度depthEnd[5]不等於第 2 個樣本起始深度depthStart[10]']
     it(`should return ${JSON.stringify(errs2)} when checkDepthStartEnd(${JSON.stringify(rows2)})`, function() {
         let r = checkDepthStartEnd(rows2)
         let rr = errs2
@@ -74,8 +74,8 @@ describe(`checkDepthStartEnd`, function() {
     ]
     // let errs4 = checkDepthStartEnd(rows4)
     let errs4 = [
-        '第 0 樣本起訖深度非有效數字: depthStart[0], depthEnd[abc]',
-        '第 1 樣本起訖深度非有效數字: depthStart[abc], depthEnd[10]'
+        '第 0 樣本結束depthEnd[abc]深度非有效數字',
+        '第 1 樣本起始depthStart[abc]深度非有效數字'
     ]
     it(`should return ${JSON.stringify(errs4)} when checkDepthStartEnd(${JSON.stringify(rows4)})`, function() {
         let r = checkDepthStartEnd(rows4)

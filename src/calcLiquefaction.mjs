@@ -19,6 +19,7 @@ import isnum from 'wsemi/src/isnum.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
 import cstr from 'wsemi/src/cstr.mjs'
 import interp1 from 'wsemi/src/interp1.mjs'
+import checkDepthStartEnd from './checkDepthStartEnd.mjs'
 import relaPorousParams from './relaPorousParams.mjs'
 import calcVerticalStress from './calcVerticalStress.mjs'
 
@@ -3606,55 +3607,6 @@ let methodSettlements = {
 function liquefaction(kind = 'auto', rows) {
     // console.log('liquefaction', kind, rows)
 
-    function checkDepth(rows) {
-        let errs = []
-
-        //判斷各樣本起訖深度需為有效數字
-        each(rows, (v, k) => {
-
-            //ds, de
-            let ds = get(v, 'depthStart', null)
-            let de = get(v, 'depthEnd', null)
-            let bDepth = isnum(ds) && isnum(de)
-            if (bDepth) {
-                ds = cdbl(ds)
-                de = cdbl(de)
-            }
-            else {
-                errs.push(`樣本起訖深度非有效數字: depthStart[${ds}], depthEnd[${de}]`)
-            }
-
-        })
-
-        //each
-        each(rows, (v, k) => {
-            if (k === 0) {
-                return true
-            }
-
-            //v0
-            let v0 = get(rows, k - 1)
-            let v1 = v
-
-            //ds, de
-            // let ds0 = get(v0, 'depthStart', null)
-            let de0 = get(v0, 'depthEnd', null)
-            let ds1 = get(v1, 'depthStart', null)
-            // let de1 = get(v1, 'depthEnd', null)
-
-            //比較「上個結束深度」與「下個起始深度」
-            let t1 = de0 === ds1 //原數值(不論是字串或數值型別)相等
-            let t2 = cdbl(de0) === cdbl(ds1) //數值相等
-            let b = t1 || t2 //有字串或數值相等則視為相等
-            if (!b) {
-                errs.push(`第[${k}]樣本起訖深度[${de0}]不等於第[${k + 1}個樣本起始深度[${ds1}]`)
-            }
-
-        })
-
-        return errs
-    }
-
     function getKeysFromRows(rows) {
 
         //row0
@@ -3954,10 +3906,10 @@ function liquefaction(kind = 'auto', rows) {
         throw new Error('無有效數據')
     }
 
-    //checkDepth
-    let ckds = checkDepth(rows)
+    //checkDepthStartEnd
+    let ckds = checkDepthStartEnd(rows)
     if (size(ckds) > 0) {
-        throw new Error(join(ckds, '; '))
+        throw new Error(join(ckds, ', '))
     }
 
     //cloneDeep

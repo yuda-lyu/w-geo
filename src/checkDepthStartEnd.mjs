@@ -46,7 +46,7 @@ import isnum from 'wsemi/src/isnum.mjs'
  * ]
  * errs = checkDepthStartEnd(rows)
  * console.log(errs)
- * // => [ '第 1 樣本起訖深度depthEnd[5]不等於第 2 個樣本起始深度depthStart[10]' ]
+ * // => [ '第 1 樣本結束深度depthEnd[5]不等於第 2 個樣本起始深度depthStart[10]' ]
  *
  * rows = [
  *     {
@@ -75,27 +75,27 @@ import isnum from 'wsemi/src/isnum.mjs'
  * errs = checkDepthStartEnd(rows)
  * console.log(errs)
  * // => [
- * //     '第 0 樣本起訖深度非有效數字: depthStart[0], depthEnd[abc]',
- * //     '第 1 樣本起訖深度非有效數字: depthStart[abc], depthEnd[10]'
+ * //     '第 0 樣本起始深度非有效數字: depthStart[0], depthEnd[abc]',
+ * //     '第 1 樣本起始深度非有效數字: depthStart[abc], depthEnd[10]'
  * // ]
  *
  */
 function checkDepthStartEnd(rows) {
     let errs = []
 
-    //判斷各樣本起訖深度需為有效數字
+    //判斷各樣本起始深度需為有效數字
     each(rows, (v, k) => {
 
         //ds, de
         let ds = get(v, 'depthStart', null)
         let de = get(v, 'depthEnd', null)
-        let bDepth = isnum(ds) && isnum(de)
-        if (bDepth) {
-            ds = cdbl(ds)
-            de = cdbl(de)
+
+        //check
+        if (!isnum(ds)) {
+            errs.push(`第 ${k} 樣本起始depthStart[${ds}]深度非有效數字`)
         }
-        else {
-            errs.push(`第 ${k} 樣本起訖深度非有效數字: depthStart[${ds}], depthEnd[${de}]`)
+        if (!isnum(de)) {
+            errs.push(`第 ${k} 樣本結束depthEnd[${de}]深度非有效數字`)
         }
 
     })
@@ -121,7 +121,7 @@ function checkDepthStartEnd(rows) {
         let t2 = cdbl(de0) === cdbl(ds1) //數值相等
         let b = t1 || t2 //有字串或數值相等則視為相等
         if (!b) {
-            errs.push(`第 ${k} 樣本起訖深度depthEnd[${de0}]不等於第 ${k + 1} 個樣本起始深度depthStart[${ds1}]`)
+            errs.push(`第 ${k} 樣本結束深度depthEnd[${de0}]不等於第 ${k + 1} 個樣本起始深度depthStart[${ds1}]`)
         }
 
     })
