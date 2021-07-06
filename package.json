@@ -1,6 +1,6 @@
 {
   "name": "w-geo",
-  "version": "1.0.9",
+  "version": "1.0.11",
   "description": "A tool for geotech analysis.",
   "main": "dist/w-geo.umd.js",
   "dependencies": {

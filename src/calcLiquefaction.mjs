@@ -1164,6 +1164,10 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
         err.push(`CRR75${brk(CRR75)} 非數字`)
         return ret()
     }
+    if (CRR75 > 0.6) {
+        err.push(`CRR75${brk(CRR75)}大於0.6超過原研究範疇，強制改為0.6`)
+        CRR75 = 0.6
+    }
 
     CRR = CRR75 * MSF
     CSR = 0.65 * (sv / svpDesign) * PGA * rd
@@ -3898,7 +3902,7 @@ function liquefaction(kind = 'auto', rows) {
         throw new Error('kind(分析種類)非字串')
     }
     if (kind !== 'SPT' && kind !== 'CPT' && kind !== 'VS' && kind !== 'auto') {
-        throw new Error(`kind(分析種類)[${kind}]非有效值: SPT, CPT, VS, auto`)
+        throw new Error(`kind(分析種類)${brk(kind)}非有效值: SPT, CPT, VS, auto`)
     }
 
     //check
