@@ -83,4 +83,22 @@ describe(`checkDepthStartEnd`, function() {
         assert.strict.deepStrictEqual(r, rr)
     })
 
+    let rows5 = [
+        {
+            top_depth: 0,
+            bottom_depth: 5,
+        },
+        {
+            top_depth: 5,
+            bottom_depth: 10,
+        },
+    ]
+    // let errs5 = checkDepthStartEnd(rows5)
+    let errs5 = []
+    it(`should return ${JSON.stringify(errs5)} when checkDepthStartEnd(${JSON.stringify(rows5)}, { keyDepthStart: 'top_depth', keyDepthEnd: 'bottom_depth' })`, function() {
+        let r = checkDepthStartEnd(rows5, { keyDepthStart: 'top_depth', keyDepthEnd: 'bottom_depth' })
+        let rr = errs5
+        assert.strict.deepStrictEqual(r, rr)
+    })
+
 })

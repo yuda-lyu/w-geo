@@ -150,14 +150,14 @@ describe(`relaPorousParams`, function() {
         assert.strict.deepStrictEqual(true, rr)
     })
 
-    it(`should return ${call} when relaPorousParams( 14.1, null, ${GS}, ${e} )`, function() {
-        let r = relaPorousParams(14.1, null, GS, e)
+    it(`should return ${call} when relaPorousParams( 13.9, null, ${GS}, ${e} )`, function() {
+        let r = relaPorousParams(13.9, null, GS, e)
         let rr = {
-            rd: 14.1,
+            rd: 13.9,
             rsat: 18.776129032258066,
             GS: 2.7,
             e: 0.86,
-            err: '輸入孔隙比[0.86]與反算出孔隙比[0.8785106382978726]差距過大'
+            err: '輸入孔隙比[0.86]與反算出孔隙比[0.9055395683453238]差距過大'
         }
         assert.strict.deepStrictEqual(r, rr)
     })

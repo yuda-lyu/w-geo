@@ -242,18 +242,18 @@ function get_GS_from_rsat_e(rsat, e) {
  * // }
  *
  * try {
- *     r = relaPorousParams(14.1, null, GS, e)
+ *     r = relaPorousParams(13.9, null, GS, e)
  * }
  * catch (e) {
  *     r = e.toString()
  * }
  * console.log('GS,e', r)
  * // => GS,e {
- * //   rd: 14.1,
+ * //   rd: 13.9,
  * //   rsat: 18.776129032258066,
  * //   GS: 2.7,
  * //   e: 0.86,
- * //   err: '輸入孔隙比[0.86]與反算出孔隙比[0.8785106382978726]差距過大'
+ * //   err: '輸入孔隙比[0.86]與反算出孔隙比[0.9055395683453238]差距過大'
  * // }
  *
  */

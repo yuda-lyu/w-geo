@@ -136,7 +136,7 @@ console.log('rsat,GS,e', r)
 // }
 
 try {
-    r = relaPorousParams(14.1, null, GS, e)
+    r = relaPorousParams(13.9, null, GS, e)
 }
 catch (e) {
     r = e.toString()
