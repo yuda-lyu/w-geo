@@ -99,7 +99,7 @@ function core(rows, waterLevel) {
             // console.log('pp', pp)
 
             //svp, 土層中點深度之垂直有效應力(kN/m2)
-            v.svp = sv - pp
+            v.svp = Math.max(sv - pp, 0)
 
         }
         catch (e) {

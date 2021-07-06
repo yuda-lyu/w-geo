@@ -258,7 +258,7 @@ function get_GS_from_rsat_e(rsat, e) {
  *
  */
 function relaPorousParams(rd, rsat, GS, e, opt = {}) {
-    let kpErr = {}
+    let kpErr = {} //非中斷報錯訊息
 
     //returnFuncs
     let returnFuncs = get(opt, 'returnFuncs')
