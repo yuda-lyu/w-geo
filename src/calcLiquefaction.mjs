@@ -833,25 +833,6 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
         return ret()
     }
 
-    //check N60
-    if (!isnum(N60)) {
-        err.push(`N60${brk(N60)} 非數字`)
-        return ret()
-    }
-    N60 = cdbl(N60)
-    if (N60 < 0) {
-        err.push(`N60${brk(N60)} < 0`)
-        return ret()
-    }
-
-    //非液化
-    if (N60 >= 50) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
-    }
-
     // //check waterLevelUsual
     // if (!isnum(waterLevelUsual)) {
     //     err.push(`waterLevelUsual${brk(waterLevelUsual)} 非數字，預設為0 (m)`)
@@ -891,6 +872,25 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
 
     //非液化: 深度大於20m
     if (depth > 20) {
+        CRR = '-'
+        CSR = '-'
+        FS = 10
+        return ret()
+    }
+
+    //check N60, 要放在偵測土壤分類或深度或PI之後, 可減少錯誤訊息
+    if (!isnum(N60)) {
+        err.push(`N60${brk(N60)} 非數字`)
+        return ret()
+    }
+    N60 = cdbl(N60)
+    if (N60 < 0) {
+        err.push(`N60${brk(N60)} < 0`)
+        return ret()
+    }
+
+    //非液化
+    if (N60 >= 50) {
         CRR = '-'
         CSR = '-'
         FS = 10
@@ -1254,25 +1254,6 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         return ret()
     }
 
-    //check N60
-    if (!isnum(N60)) {
-        err.push(`N60${brk(N60)} 非數字`)
-        return ret()
-    }
-    N60 = cdbl(N60)
-    if (N60 < 0) {
-        err.push(`N60${brk(N60)} < 0`)
-        return ret()
-    }
-
-    //非液化
-    if (N60 >= 50) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
-    }
-
     // //check waterLevelUsual
     // if (!isnum(waterLevelUsual)) {
     //     err.push(`waterLevelUsual${brk(waterLevelUsual)} 非數字，預設為0 (m)`)
@@ -1334,6 +1315,25 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
             FS = 10
             return ret()
         }
+    }
+
+    //check N60, 要放在偵測土壤分類或深度或PI之後, 可減少錯誤訊息
+    if (!isnum(N60)) {
+        err.push(`N60${brk(N60)} 非數字`)
+        return ret()
+    }
+    N60 = cdbl(N60)
+    if (N60 < 0) {
+        err.push(`N60${brk(N60)} < 0`)
+        return ret()
+    }
+
+    //非液化
+    if (N60 >= 50) {
+        CRR = '-'
+        CSR = '-'
+        FS = 10
+        return ret()
     }
 
     if (!isnum(FC)) {
@@ -1521,25 +1521,6 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
         return ret()
     }
 
-    //check N60
-    if (!isnum(N60)) {
-        err.push(`N60${brk(N60)} 非數字`)
-        return ret()
-    }
-    N60 = cdbl(N60)
-    if (N60 < 0) {
-        err.push(`N60${brk(N60)} < 0`)
-        return ret()
-    }
-
-    //非液化
-    if (N60 >= 50) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
-    }
-
     // //check waterLevelUsual
     // if (!isnum(waterLevelUsual)) {
     //     err.push(`waterLevelUsual${brk(waterLevelUsual)} 非數字，預設為0 (m)`)
@@ -1579,6 +1560,25 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
 
     //非液化: 深度大於20m
     if (depth > 20) {
+        CRR = '-'
+        CSR = '-'
+        FS = 10
+        return ret()
+    }
+
+    //check N60, 要放在偵測土壤分類或深度或PI之後, 可減少錯誤訊息
+    if (!isnum(N60)) {
+        err.push(`N60${brk(N60)} 非數字`)
+        return ret()
+    }
+    N60 = cdbl(N60)
+    if (N60 < 0) {
+        err.push(`N60${brk(N60)} < 0`)
+        return ret()
+    }
+
+    //非液化
+    if (N60 >= 50) {
         CRR = '-'
         CSR = '-'
         FS = 10
@@ -1778,25 +1778,6 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         return ret()
     }
 
-    //check N60
-    if (!isnum(N60)) {
-        err.push(`N60${brk(N60)} 非數字`)
-        return ret()
-    }
-    N60 = cdbl(N60)
-    if (N60 < 0) {
-        err.push(`N60${brk(N60)} < 0`)
-        return ret()
-    }
-
-    //非液化
-    if (N60 >= 50) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
-    }
-
     // //check waterLevelUsual
     // if (!isnum(waterLevelUsual)) {
     //     err.push(`waterLevelUsual${brk(waterLevelUsual)} 非數字，預設為0 (m)`)
@@ -1817,6 +1798,25 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
     if (waterLevelDesign < 0) {
         err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
         waterLevelDesign = 0
+    }
+
+    //check N60, 要放在偵測土壤分類或深度或PI之後, 可減少錯誤訊息
+    if (!isnum(N60)) {
+        err.push(`N60${brk(N60)} 非數字`)
+        return ret()
+    }
+    N60 = cdbl(N60)
+    if (N60 < 0) {
+        err.push(`N60${brk(N60)} < 0`)
+        return ret()
+    }
+
+    //非液化
+    if (N60 >= 50) {
+        CRR = '-'
+        CSR = '-'
+        FS = 10
+        return ret()
     }
 
     //check FC
@@ -2206,25 +2206,6 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
         return ret()
     }
 
-    //check N60
-    if (!isnum(N60)) {
-        err.push(`N60${brk(N60)} 非數字`)
-        return ret()
-    }
-    N60 = cdbl(N60)
-    if (N60 < 0) {
-        err.push(`N60${brk(N60)} < 0`)
-        return ret()
-    }
-
-    //非液化
-    if (N60 >= 50) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
-    }
-
     // //check waterLevelUsual
     // if (!isnum(waterLevelUsual)) {
     //     err.push(`waterLevelUsual${brk(waterLevelUsual)} 非數字，預設為0 (m)`)
@@ -2265,6 +2246,25 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
 
     //非液化: 深度大於20m
     if (depth > 20) {
+        CRR = '-'
+        CSR = '-'
+        FS = 10
+        return ret()
+    }
+
+    //check N60, 要放在偵測土壤分類或深度或PI之後, 可減少錯誤訊息
+    if (!isnum(N60)) {
+        err.push(`N60${brk(N60)} 非數字`)
+        return ret()
+    }
+    N60 = cdbl(N60)
+    if (N60 < 0) {
+        err.push(`N60${brk(N60)} < 0`)
+        return ret()
+    }
+
+    //非液化
+    if (N60 >= 50) {
         CRR = '-'
         CSR = '-'
         FS = 10
