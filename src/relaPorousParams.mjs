@@ -270,9 +270,7 @@ function relaPorousParams(rd, rsat, GS, e, opt = {}) {
     if (isnum(rd)) {
         rd = cdbl(rd)
         if (rd <= 0) {
-            return {
-                err: `乾單位重[${rd}]為數字但<=0`
-            }
+            kpErr['rd'] = `乾單位重[${rd}]為數字但<=0，自動清除`
         }
         if (rd <= rw) {
             kpErr['rd'] = `乾單位重[${rd}]<=水單位重[${rw}]`
@@ -286,9 +284,7 @@ function relaPorousParams(rd, rsat, GS, e, opt = {}) {
     if (isnum(rsat)) {
         rsat = cdbl(rsat)
         if (rsat <= 0) {
-            return {
-                err: `飽和單位重[${rsat}]為數字但<=0`
-            }
+            kpErr['rsat'] = `飽和單位重[${rsat}]為數字但<=0，自動清除`
         }
         if (rsat <= rw) {
             kpErr['rsat'] = `飽和單位重[${rsat}]<=水單位重[${rw}]`
@@ -302,9 +298,7 @@ function relaPorousParams(rd, rsat, GS, e, opt = {}) {
     if (isnum(GS)) {
         GS = cdbl(GS)
         if (GS <= 0) {
-            return {
-                err: `比重[${GS}]為數字但<=0`
-            }
+            kpErr['GS'] = `比重[${GS}]為數字但<=0，自動清除`
         }
     }
     else {
@@ -315,9 +309,7 @@ function relaPorousParams(rd, rsat, GS, e, opt = {}) {
     if (isnum(e)) {
         e = cdbl(e)
         if (e <= 0) {
-            return {
-                err: `孔隙比[${e}]為數字但<=0`
-            }
+            kpErr['e'] = `孔隙比[${e}]為數字但<=0，自動清除`
         }
     }
     else {

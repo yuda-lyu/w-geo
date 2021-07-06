@@ -3692,7 +3692,7 @@ function liquefaction(kind = 'auto', rows) {
             let rd = get(v, 'rd', null) //乾單位重rd(kN/m3)
             let rsat = get(v, 'rsat', null) //飽和單位重rsat(kN/m3)
             let t = relaPorousParams(rd, rsat, GS, e)
-            if (get(t, 'err')) { //err可能為中斷或非中斷之錯誤訊息, 故需直接儲存
+            if (get(t, 'err')) { //err為非中斷之錯誤訊息, 故需直接儲存
                 if (err === '') {
                     err = t.err
                 }
@@ -3703,7 +3703,7 @@ function liquefaction(kind = 'auto', rows) {
                 }
                 v.err = err
             }
-            //err有可能是非中斷訊息, 各參數獨立偵測是否為數值並儲存
+            //err為非中斷訊息, 故各參數需獨立偵測是否為數值並儲存
             if (isNumber(t.rd)) {
                 v.rd = t.rd
             }
