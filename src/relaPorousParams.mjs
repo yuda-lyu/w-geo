@@ -346,7 +346,7 @@ function relaPorousParams(rd, rsat, GS, e, opt = {}) {
         }
         else {
             // console.log('rd isNumber', Math.abs(rd - _rd) > eps)
-            if (Math.abs(rd - _rd) > _rd / 100) {
+            if (Math.abs(rd - _rd) > _rd / 100 * 5) {
                 kpErr['ck_rd'] = `輸入乾單位重[${rd}]與反算出乾單位重[${_rd}]差距過大`
             }
         }
@@ -367,7 +367,7 @@ function relaPorousParams(rd, rsat, GS, e, opt = {}) {
             bUpdate = true
         }
         else {
-            if (Math.abs(rsat - _rsat) > _rsat / 100) {
+            if (Math.abs(rsat - _rsat) > _rsat / 100 * 5) {
                 kpErr['ck_rsat'] = `輸入飽和單位重[${rsat}]與反算出飽和單位重[${_rsat}]差距過大`
             }
         }
@@ -392,7 +392,7 @@ function relaPorousParams(rd, rsat, GS, e, opt = {}) {
             bUpdate = true
         }
         else {
-            if (Math.abs(e - _e) > _e / 100) {
+            if (Math.abs(e - _e) > _e / 100 * 5) {
                 kpErr['ck_e'] = `輸入孔隙比[${e}]與反算出孔隙比[${_e}]差距過大`
             }
         }
@@ -415,7 +415,7 @@ function relaPorousParams(rd, rsat, GS, e, opt = {}) {
             bUpdate = true
         }
         else {
-            if (Math.abs(GS - _GS) > _GS / 100) {
+            if (Math.abs(GS - _GS) > _GS / 100 * 5) {
                 kpErr['ck_GS'] = `輸入比重[${GS}]與反算出比重[${_GS}]差距過大`
             }
         }
