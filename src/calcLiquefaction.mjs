@@ -3692,7 +3692,7 @@ function liquefaction(kind = 'auto', rows) {
             let rd = get(v, 'rd', null) //乾單位重rd(kN/m3)
             let rsat = get(v, 'rsat', null) //飽和單位重rsat(kN/m3)
             let t = relaPorousParams(rd, rsat, GS, e)
-            if (get(t, 'err')) {
+            if (get(t, 'err')) { //err可能為中斷或非中斷之錯誤訊息, 故需直接儲存
                 if (err === '') {
                     err = t.err
                 }
@@ -3703,31 +3703,30 @@ function liquefaction(kind = 'auto', rows) {
                 }
                 v.err = err
             }
+            //err有可能是非中斷訊息, 各參數獨立偵測是否為數值並儲存
+            if (isNumber(t.rd)) {
+                v.rd = t.rd
+            }
             else {
-                if (isNumber(t.rd)) {
-                    v.rd = t.rd
-                }
-                else {
-                    v.rd = ''
-                }
-                if (isNumber(t.rsat)) {
-                    v.rsat = t.rsat
-                }
-                else {
-                    v.rsat = ''
-                }
-                if (isNumber(t.GS)) {
-                    v.GS = t.GS
-                }
-                else {
-                    v.GS = ''
-                }
-                if (isNumber(t.e)) {
-                    v.e = t.e
-                }
-                else {
-                    v.e = ''
-                }
+                v.rd = ''
+            }
+            if (isNumber(t.rsat)) {
+                v.rsat = t.rsat
+            }
+            else {
+                v.rsat = ''
+            }
+            if (isNumber(t.GS)) {
+                v.GS = t.GS
+            }
+            else {
+                v.GS = ''
+            }
+            if (isNumber(t.e)) {
+                v.e = t.e
+            }
+            else {
+                v.e = ''
             }
 
             return v
@@ -3819,14 +3818,14 @@ function liquefaction(kind = 'auto', rows) {
                         let F = 1 - Math.min(Math.max(FL, 0), 1)
                         let W = 10 - 0.5 * z
                         sumPL += F * W * (ze - zs)
-                    // console.log('zs', zs)
-                    // console.log('ze', ze)
-                    // console.log('z', z)
-                    // console.log('FL', FL)
-                    // console.log('F', F)
-                    // console.log('W', W)
-                    // console.log('F * W * (ze - zs)', F * W * (ze - zs))
-                    // console.log('sumPL', sumPL)
+                        // console.log('zs', zs)
+                        // console.log('ze', ze)
+                        // console.log('z', z)
+                        // console.log('FL', FL)
+                        // console.log('F', F)
+                        // console.log('W', W)
+                        // console.log('F * W * (ze - zs)', F * W * (ze - zs))
+                        // console.log('sumPL', sumPL)
                     }
 
                     //save

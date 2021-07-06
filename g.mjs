@@ -1,21 +1,153 @@
-import fs from 'fs'
-import w from 'wsemi'
-// import relaPorousParams from './src/relaPorousParams.mjs'
-// import checkDepthStartEnd from './src/checkDepthStartEnd.mjs'
-// import calcVerticalStress from './src/calcVerticalStress.mjs'
-import calcLiquefaction from './src/calcLiquefaction.mjs'
+import relaPorousParams from './src/relaPorousParams.mjs'
 
-let rowsIn = `[{"depthStart":"0","depthEnd":"2.025","depth":"1.0125","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"ML","N60":"9.6","gravel":"","sand":"","silt":"","clay":"","FC":"83","w":"","Gs":"","e":"","rd":"","rsat":"19.52","sv":"","svp":"","LL":"","PI":"5","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"2.025","depthEnd":"3.525","depth":"2.775","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"CL","N60":"10.8","gravel":"","sand":"","silt":"","clay":"","FC":"91","w":"","Gs":"","e":"","rd":"","rsat":"18.64","sv":"","svp":"","LL":"","PI":"20","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"3.525","depthEnd":"5.025","depth":"4.275","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"SM","N60":"24","gravel":"","sand":"","silt":"","clay":"","FC":"14","w":"","Gs":"","e":"","rd":"","rsat":"19.03","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"5.025","depthEnd":"6.525","depth":"5.775","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"SM","N60":"27.6","gravel":"","sand":"","silt":"","clay":"","FC":"12","w":"","Gs":"","e":"","rd":"","rsat":"18.54","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"6.525","depthEnd":"8.025","depth":"7.275","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"SM","N60":"19.2","gravel":"","sand":"","silt":"","clay":"","FC":"15","w":"","Gs":"","e":"","rd":"","rsat":"19.18","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"8.025","depthEnd":"9.525","depth":"8.775","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"SM","N60":"18","gravel":"","sand":"","silt":"","clay":"","FC":"13","w":"","Gs":"","e":"","rd":"","rsat":"18.84","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"9.525","depthEnd":"11.025","depth":"10.275","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"ML","N60":"8.4","gravel":"","sand":"","silt":"","clay":"","FC":"52","w":"","Gs":"","e":"","rd":"","rsat":"18.39","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"11.025","depthEnd":"12.525","depth":"11.775","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"ML","N60":"9.6","gravel":"","sand":"","silt":"","clay":"","FC":"54","w":"","Gs":"","e":"","rd":"","rsat":"19.28","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"12.525","depthEnd":"14.025","depth":"13.275","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"ML","N60":"10.8","gravel":"","sand":"","silt":"","clay":"","FC":"57","w":"","Gs":"","e":"","rd":"","rsat":"17.85","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"14.025","depthEnd":"15.525","depth":"14.775","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"SM","N60":"9.6","gravel":"","sand":"","silt":"","clay":"","FC":"45","w":"","Gs":"","e":"","rd":"","rsat":"19.42","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"15.525","depthEnd":"17.025","depth":"16.275","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"CL","N60":"7.2","gravel":"","sand":"","silt":"","clay":"","FC":"97","w":"","Gs":"","e":"","rd":"","rsat":"18.64","sv":"","svp":"","LL":"","PI":"11","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"17.025","depthEnd":"18.525","depth":"17.775","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"CL","N60":"7.2","gravel":"","sand":"","silt":"","clay":"","FC":"95","w":"","Gs":"","e":"","rd":"","rsat":"19.03","sv":"","svp":"","LL":"","PI":"15","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"18.525","depthEnd":"20","depth":"19.2625","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"CL","N60":"8.4","gravel":"","sand":"","silt":"","clay":"","FC":"94","w":"","Gs":"","e":"","rd":"","rsat":"18.34","sv":"","svp":"","LL":"","PI":"13","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""}]`
-rowsIn = JSON.parse(rowsIn)
-// console.log('rowsIn',rowsIn)
 
-let rowsOut = calcLiquefaction.calc('SPT', rowsIn)
-// console.log('rowsOut',rowsOut)
+let GS = 2.7
+let e = 0.86
+let rd = 14.240322580645163 //kN/m3
+let rsat = 18.776129032258066 //kN/m3
+let r
 
-fs.writeFileSync('./rowsIn.json', JSON.stringify(rowsIn), 'utf8')
-fs.writeFileSync('./rowsOut.json', JSON.stringify(rowsOut), 'utf8')
+let coreFuncs = relaPorousParams(null, null, null, null, { returnFuncs: true }).coreFuncs
 
-// let mat = w.ltdtkeysheads2mat(rowsOut)
-// w.downloadExcelFileFromData('./mat.xlsx', 'mat', mat)
+console.log('rd get_rd_from_GS_e', coreFuncs.get_rd_from_GS_e(GS, e))
+// => rd get_rd_from_GS_e 14.240322580645163
+
+console.log('rd get_rd_from_rsat_e', coreFuncs.get_rd_from_rsat_e(rsat, e))
+// => rd get_rd_from_rsat_e 14.240322580645163
+
+console.log('rd get_rd_from_rsat_GS', coreFuncs.get_rd_from_rsat_GS(rsat, GS))
+// => rd get_rd_from_rsat_GS 14.240322580645161
+
+console.log('rsat get_rsat_from_GS_e', coreFuncs.get_rsat_from_GS_e(GS, e))
+// => rsat get_rsat_from_GS_e 18.776129032258066
+
+console.log('rsat get_rsat_from_rd_e', coreFuncs.get_rsat_from_rd_e(rd, e))
+// => rsat get_rsat_from_rd_e 18.776129032258066
+
+console.log('rsat get_rsat_from_rd_GS', coreFuncs.get_rsat_from_rd_GS(rd, GS))
+// => rsat get_rsat_from_rd_GS 18.77612903225807
+
+console.log('e get_e_from_GS_rd', coreFuncs.get_e_from_GS_rd(GS, rd))
+// => e get_e_from_GS_rd 0.8599999999999999
+
+console.log('e get_e_from_rd_rsat', coreFuncs.get_e_from_rd_rsat(rd, rsat))
+// => e get_e_from_rd_rsat 0.8599999999999998
+
+console.log('e get_e_from_GS_rsat', coreFuncs.get_e_from_GS_rsat(GS, rsat))
+// => e get_e_from_GS_rsat 0.86
+
+console.log('GS get_GS_from_rd_e', coreFuncs.get_GS_from_rd_e(rd, e))
+// => GS get_GS_from_rd_e 2.7
+
+console.log('GS get_GS_from_rd_rsat', coreFuncs.get_GS_from_rd_rsat(rd, rsat))
+// => GS get_GS_from_rd_rsat 2.6999999999999997
+
+console.log('GS get_GS_from_rsat_e', coreFuncs.get_GS_from_rsat_e(rsat, e))
+// => GS get_GS_from_rsat_e 2.7
+
+r = relaPorousParams(rd, rsat, null, null)
+console.log('rd,rsat', r)
+// => rd,rsat {
+//     rd: 14.240322580645163,
+//     rsat: 18.776129032258066,
+//     GS: 2.7,
+//     e: 0.8599999999999998
+// }
+
+r = relaPorousParams(rd, null, GS, null)
+console.log('rd,GS', r)
+// => rd,GS {
+//     rd: 14.240322580645163,
+//     rsat: 18.77612903225807,
+//     GS: 2.7,
+//     e: 0.8599999999999999
+// }
+
+r = relaPorousParams(rd, null, null, e)
+console.log('rd,e', r)
+// => rd,e {
+//     rd: 14.240322580645163,
+//     rsat: 18.776129032258066,
+//     GS: 2.7,
+//     e: 0.86
+// }
+
+r = relaPorousParams(null, rsat, GS, null)
+console.log('rsat,GS', r)
+// => rsat,GS {
+//     rd: 14.240322580645161,
+//     rsat: 18.776129032258066,
+//     GS: 2.7,
+//     e: 0.8600000000000001
+// }
+
+r = relaPorousParams(null, rsat, null, e)
+console.log('rsat,e', r)
+// => rsat,e {
+//     rd: 14.240322580645163,
+//     rsat: 18.776129032258066,
+//     GS: 2.7,
+//     e: 0.86
+// }
+
+r = relaPorousParams(null, null, GS, e)
+console.log('GS,e', r)
+// => GS,e {
+//     rd: 14.240322580645163,
+//     rsat: 18.776129032258066,
+//     GS: 2.7,
+//     e: 0.86
+// }
+
+r = relaPorousParams(rd, rsat, GS, null)
+console.log('rd,rsat,GS', r)
+// => rd,rsat,GS {
+//     rd: 14.240322580645163,
+//     rsat: 18.776129032258066,
+//     GS: 2.7,
+//     e: 0.8599999999999999
+// }
+
+r = relaPorousParams(rd, rsat, null, e)
+console.log('rd,rsat,e', r)
+// => rd,rsat,e {
+//     rd: 14.240322580645163,
+//     rsat: 18.776129032258066,
+//     GS: 2.7,
+//     e: 0.86
+// }
+
+r = relaPorousParams(rd, null, GS, e)
+console.log('rd,GS,e', r)
+// => rd,GS,e {
+//     rd: 14.240322580645163,
+//     rsat: 18.776129032258066,
+//     GS: 2.7,
+//     e: 0.86
+// }
+
+r = relaPorousParams(null, rsat, GS, e)
+console.log('rsat,GS,e', r)
+// => rsat,GS,e {
+//     rd: 14.240322580645163,
+//     rsat: 18.776129032258066,
+//     GS: 2.7,
+//     e: 0.86
+// }
+
+try {
+    r = relaPorousParams(14.1, null, GS, e)
+}
+catch (e) {
+    r = e.toString()
+}
+console.log('GS,e', r)
+// => GS,e {
+//   rd: 14.1,
+//   rsat: 18.776129032258066,
+//   GS: 2.7,
+//   e: 0.86,
+//   err: '輸入孔隙比[0.86]與反算出孔隙比[0.8785106382978726]差距過大'
+// }
 
 //node --experimental-modules --es-module-specifier-resolution=node g.mjs
