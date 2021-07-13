@@ -27,7 +27,7 @@
 
 <nav >
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcDepthStartEndFromCenter">calcDepthStartEndFromCenter</a></li><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPorousParams">relaPorousParams</a></li><li data-type='method'><a href="w-geo.html#.sptHBF">sptHBF</a></li><li data-type='method'><a href="w-geo.html#.sptNCEER">sptNCEER</a></li><li data-type='method'><a href="w-geo.html#.sptNJRA">sptNJRA</a></li><li data-type='method'><a href="w-geo.html#.sptSeed">sptSeed</a></li><li data-type='method'><a href="w-geo.html#.sptTY">sptTY</a></li></ul></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByGroup">calcDepthStartEndByGroup</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndFromCenter">calcDepthStartEndFromCenter</a></li><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPorousParams">relaPorousParams</a></li><li data-type='method'><a href="w-geo.html#.sptHBF">sptHBF</a></li><li data-type='method'><a href="w-geo.html#.sptNCEER">sptNCEER</a></li><li data-type='method'><a href="w-geo.html#.sptNJRA">sptNJRA</a></li><li data-type='method'><a href="w-geo.html#.sptSeed">sptSeed</a></li><li data-type='method'><a href="w-geo.html#.sptTY">sptTY</a></li></ul></li></ul>
 </nav>
 
 <div id="main">
@@ -236,6 +236,411 @@
 
     
 
+    <h4 class="name" id=".calcDepthStartEndByGroup"><span class="type-signature">(static) </span>calcDepthStartEndByGroup<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="calcDepthStartEndByGroup.mjs.html">calcDepthStartEndByGroup.mjs</a>, <a href="calcDepthStartEndByGroup.mjs.html#line259">line 259</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>由樣本指定鍵值作為群組代號，並依照樣本中點深度提取各群組之起訖深度</p>
+<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/calcDepthStartEndByGroup.test.js">Github</a></p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>let rowslet rsrows = [    {        depth: 0,        group: 'a',    },    {        depth: 6,        group: 'b',    },    {        depth: 20,        group: 'c',    },]rs = calcDepthStartEndByGroup(rows)console.log(JSON.stringify(rs, null, 2))// => [//   {//     "group": "a",//     "depthStart": 0,//     "depthEnd": 3,//     "rows": [//       {//         "depth": 0,//         "group": "a",//         "depthStart": 0,//         "depthEnd": 3//       }//     ]//   },//   {//     "group": "b",//     "depthStart": 3,//     "depthEnd": 13,//     "rows": [//       {//         "depth": 6,//         "group": "b",//         "depthStart": 3,//         "depthEnd": 13//       }//     ]//   },//   {//     "group": "c",//     "depthStart": 13,//     "depthEnd": 20,//     "rows": [//       {//         "depth": 20,//         "group": "c",//         "depthStart": 13,//         "depthEnd": 20//       }//     ]//   }// ]rows = [    {        depth: 0,        group: 'a',    },    {        depth: 2,        group: 'a',    },    {        depth: 4,        group: 'b',    },    {        depth: 6,        group: 'b',    },    {        depth: 8,        group: 'b',    },    {        depth: 10,        group: 'c',    },    {        depth: 12,        group: 'b',    },    {        depth: 14,        group: 'c',    },    {        depth: 16,        group: 'b',    },    {        depth: 18,        group: 'b',    },    {        depth: 30,        group: 'd',    },]rs = calcDepthStartEndByGroup(rows)console.log(JSON.stringify(rs, null, 2))// => [//   {//     "group": "a",//     "depthStart": 0,//     "depthEnd": 3,//     "rows": [//       {//         "depth": 0,//         "group": "a",//         "depthStart": 0,//         "depthEnd": 1//       },//       {//         "depth": 2,//         "group": "a",//         "depthStart": 1,//         "depthEnd": 3//       }//     ]//   },//   {//     "group": "b",//     "depthStart": 3,//     "depthEnd": 9,//     "rows": [//       {//         "depth": 4,//         "group": "b",//         "depthStart": 3,//         "depthEnd": 5//       },//       {//         "depth": 6,//         "group": "b",//         "depthStart": 5,//         "depthEnd": 7//       },//       {//         "depth": 8,//         "group": "b",//         "depthStart": 7,//         "depthEnd": 9//       }//     ]//   },//   {//     "group": "c",//     "depthStart": 9,//     "depthEnd": 11,//     "rows": [//       {//         "depth": 10,//         "group": "c",//         "depthStart": 9,//         "depthEnd": 11//       }//     ]//   },//   {//     "group": "b",//     "depthStart": 11,//     "depthEnd": 13,//     "rows": [//       {//         "depth": 12,//         "group": "b",//         "depthStart": 11,//         "depthEnd": 13//       }//     ]//   },//   {//     "group": "c",//     "depthStart": 13,//     "depthEnd": 15,//     "rows": [//       {//         "depth": 14,//         "group": "c",//         "depthStart": 13,//         "depthEnd": 15//       }//     ]//   },//   {//     "group": "b",//     "depthStart": 15,//     "depthEnd": 24,//     "rows": [//       {//         "depth": 16,//         "group": "b",//         "depthStart": 15,//         "depthEnd": 17//       },//       {//         "depth": 18,//         "group": "b",//         "depthStart": 17,//         "depthEnd": 24//       }//     ]//   },//   {//     "group": "d",//     "depthStart": 24,//     "depthEnd": 30,//     "rows": [//       {//         "depth": 30,//         "group": "d",//         "depthStart": 24,//         "depthEnd": 30//       }//     ]//   }// ]</code></pre>
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>rows</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入數據陣列，各數據為物件，至少需包含起始深度(depthStart)與結束深度(depthEnd)，深度單位為m</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>opt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>{}</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入設定物件，預設{}</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>keyDepth</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'depth'</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入中點深度欄位鍵值字串，預設'depth'</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>keyGroup</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'group'</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入群組代號欄位鍵值字串，預設'group'</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>keyDepthStart</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'depthStart'</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入欲儲存之起始深度欄位鍵值字串，預設'depthStart'</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>keyDepthEnd</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'depthEnd'</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入欲儲存之結束深度欄位鍵值字串，預設'depthEnd'</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>回傳群組化後添加起訖深度與所屬原數據的陣列</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
     <h4 class="name" id=".calcDepthStartEndFromCenter"><span class="type-signature">(static) </span>calcDepthStartEndFromCenter<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
 
     
@@ -248,7 +653,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="calcDepthStartEndFromCenter.mjs.html">calcDepthStartEndFromCenter.mjs</a>, <a href="calcDepthStartEndFromCenter.mjs.html#line85">line 85</a>
+        <a href="calcDepthStartEndFromCenter.mjs.html">calcDepthStartEndFromCenter.mjs</a>, <a href="calcDepthStartEndFromCenter.mjs.html#line87">line 87</a>
     </li></ul></dd>
     
 
@@ -941,7 +1346,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="checkDepthStartEnd.mjs.html">checkDepthStartEnd.mjs</a>, <a href="checkDepthStartEnd.mjs.html#line101">line 101</a>
+        <a href="checkDepthStartEnd.mjs.html">checkDepthStartEnd.mjs</a>, <a href="checkDepthStartEnd.mjs.html#line103">line 103</a>
     </li></ul></dd>
     
 
@@ -995,7 +1400,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>let rowslet errsrows = [    {        depthStart: 0,        depthEnd: 5,    },    {        depthStart: 5,        depthEnd: 10,    },    {        depthStart: 10,        depthEnd: 20,    },]errs = checkDepthStartEnd(rows)console.log(errs)// => []rows = [    {        depthStart: 0,        depthEnd: 5,    },    {        depthStart: 10,        depthEnd: 20,    },]errs = checkDepthStartEnd(rows)console.log(errs)// => [ '第 1 樣本結束深度depthEnd[5]不等於第 2 個樣本起始深度depthStart[10]' ]rows = [    {        depthStart: '0',        depthEnd: '5',    },    {        depthStart: '5',        depthEnd: '10',    },]errs = checkDepthStartEnd(rows)console.log(errs)// => []rows = [    {        depthStart: '0',        depthEnd: 'abc',    },    {        depthStart: 'abc',        depthEnd: '10',    },]errs = checkDepthStartEnd(rows)console.log(errs)// => [//     '第 0 樣本起始深度非有效數字: depthStart[0], depthEnd[abc]',//     '第 1 樣本起始深度非有效數字: depthStart[abc], depthEnd[10]'// ]rows = [    {        top_depth: 0,        bottom_depth: 5,    },    {        top_depth: 5,        bottom_depth: 10,    },]errs = checkDepthStartEnd(rows, { keyDepthStart: 'top_depth', keyDepthEnd: 'bottom_depth' })console.log(errs)// => []</code></pre>
+    <pre class="prettyprint"><code>let rowslet errsrows = [    {        depthStart: 0,        depthEnd: 5,    },    {        depthStart: 5,        depthEnd: 10,    },    {        depthStart: 10,        depthEnd: 20,    },]errs = checkDepthStartEnd(rows)console.log(errs)// => []rows = [    {        depthStart: 0,        depthEnd: 5,    },    {        depthStart: 10,        depthEnd: 20,    },]errs = checkDepthStartEnd(rows)console.log(errs)// => [ '第 1 樣本結束深度depthEnd[5]不等於第 2 個樣本起始深度depthStart[10]' ]rows = [    {        depthStart: '0',        depthEnd: '5',    },    {        depthStart: '5',        depthEnd: '10',    },]errs = checkDepthStartEnd(rows)console.log(errs)// => []rows = [    {        depthStart: '0',        depthEnd: 'abc',    },    {        depthStart: 'abc',        depthEnd: '10',    },]errs = checkDepthStartEnd(rows)console.log(errs)// => [//     '第 0 樣本起始非有效數字: depthStart[0], depthEnd[abc]',//     '第 1 樣本起始非有效數字: depthStart[abc], depthEnd[10]'// ]rows = [    {        top_depth: 0,        bottom_depth: 5,    },    {        top_depth: 5,        bottom_depth: 10,    },]errs = checkDepthStartEnd(rows, { keyDepthStart: 'top_depth', keyDepthEnd: 'bottom_depth' })console.log(errs)// => []</code></pre>
 
 
 
@@ -4818,7 +5223,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Tue Jul 13 2021 18:20:22 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Tue Jul 13 2021 23:05:03 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
