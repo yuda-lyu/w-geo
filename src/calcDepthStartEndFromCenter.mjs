@@ -130,7 +130,7 @@ function calcDepthStartEndFromCenter(rows, opt = {}) {
 
     //sortBy
     rows = sortBy(rows, (v) => {
-        return cdbl(v[keyDepthStart])
+        return cdbl(v[keyDepth])
     })
 
     //each

@@ -303,8 +303,8 @@ function calcDepthStartEndByGroup(rows, opt = {}) {
         let g = get(v, keyGroup, '')
 
         //check
-        if (!isestr(g)) {
-            errs.push(`第 ${k} 樣本群組代號${keyGroup}[${g}]非有效字串`)
+        if (!isestr(g) && !isnum(g)) {
+            errs.push(`第 ${k} 樣本群組代號${keyGroup}[${g}]非有效字串或數字`)
         }
 
     })
@@ -316,7 +316,7 @@ function calcDepthStartEndByGroup(rows, opt = {}) {
 
     //sortBy
     rows = sortBy(rows, (v) => {
-        return cdbl(v[keyDepthStart])
+        return cdbl(v[keyDepth])
     })
 
     //ks,ng
