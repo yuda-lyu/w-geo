@@ -1,8 +1,8 @@
 import assert from 'assert'
-import caclDepthStartEndFromCenter from '../src/caclDepthStartEndFromCenter.mjs'
+import calcDepthStartEndFromCenter from '../src/calcDepthStartEndFromCenter.mjs'
 
 
-describe(`caclDepthStartEndFromCenter`, function() {
+describe(`calcDepthStartEndFromCenter`, function() {
 
     let f1 = () => {
         let rows = [
@@ -22,8 +22,8 @@ describe(`caclDepthStartEndFromCenter`, function() {
             { depth: 20, depthStart: 13, depthEnd: 20 }
         ]
 
-        it(`should return ${JSON.stringify(rowsNew)} when caclDepthStartEndFromCenter(${JSON.stringify(rows)})`, function() {
-            let r = caclDepthStartEndFromCenter(rows)
+        it(`should return ${JSON.stringify(rowsNew)} when calcDepthStartEndFromCenter(${JSON.stringify(rows)})`, function() {
+            let r = calcDepthStartEndFromCenter(rows)
             let rr = rowsNew
             assert.strict.deepStrictEqual(r, rr)
         })
@@ -49,8 +49,8 @@ describe(`caclDepthStartEndFromCenter`, function() {
             { depth: 20, depthStart: 13, depthEnd: 20 }
         ]
 
-        it(`should return ${JSON.stringify(rowsNew)} when caclDepthStartEndFromCenter(${JSON.stringify(rows)})`, function() {
-            let r = caclDepthStartEndFromCenter(rows)
+        it(`should return ${JSON.stringify(rowsNew)} when calcDepthStartEndFromCenter(${JSON.stringify(rows)})`, function() {
+            let r = calcDepthStartEndFromCenter(rows)
             let rr = rowsNew
             assert.strict.deepStrictEqual(r, rr)
         })
@@ -76,8 +76,8 @@ describe(`caclDepthStartEndFromCenter`, function() {
             { dc: 20, ds: 13, de: 20 }
         ]
 
-        it(`should return ${JSON.stringify(rowsNew)} when caclDepthStartEndFromCenter(${JSON.stringify(rows)}, ${JSON.stringify({ keyDepth: 'dc', keyDepthStart: 'ds', keyDepthEnd: 'de' })})`, function() {
-            let r = caclDepthStartEndFromCenter(rows, { keyDepth: 'dc', keyDepthStart: 'ds', keyDepthEnd: 'de' })
+        it(`should return ${JSON.stringify(rowsNew)} when calcDepthStartEndFromCenter(${JSON.stringify(rows)}, ${JSON.stringify({ keyDepth: 'dc', keyDepthStart: 'ds', keyDepthEnd: 'de' })})`, function() {
+            let r = calcDepthStartEndFromCenter(rows, { keyDepth: 'dc', keyDepthStart: 'ds', keyDepthEnd: 'de' })
             let rr = rowsNew
             assert.strict.deepStrictEqual(r, rr)
         })

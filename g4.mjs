@@ -1,10 +1,10 @@
 import fs from 'fs'
 import w from 'wsemi'
 // import relaPorousParams from './src/relaPorousParams.mjs'
-// import caclDepthStartEndFromCenter from './src/caclDepthStartEndFromCenter.mjs'
+// import calcDepthStartEndFromCenter from './src/calcDepthStartEndFromCenter.mjs'
 // import calcVerticalStress from './src/calcVerticalStress.mjs'
 // import calcLiquefaction from './src/calcLiquefaction.mjs'
-import caclDepthStartEndFromCenter from './src/caclDepthStartEndFromCenter.mjs'
+import calcDepthStartEndFromCenter from './src/calcDepthStartEndFromCenter.mjs'
 
 
 let rows
@@ -21,7 +21,7 @@ rows = [
         depth: 20,
     },
 ]
-rs = caclDepthStartEndFromCenter(rows)
+rs = calcDepthStartEndFromCenter(rows)
 console.log(rs)
 // => [
 //   { depth: 0, depthStart: 0, depthEnd: 3 },
@@ -40,7 +40,7 @@ rows = [
         depth: 20,
     },
 ]
-rs = caclDepthStartEndFromCenter(rows)
+rs = calcDepthStartEndFromCenter(rows)
 console.log(rs)
 // => [
 //   { depth: 4, depthStart: 0, depthEnd: 5 },
@@ -59,7 +59,7 @@ rows = [
         dc: 20,
     },
 ]
-rs = caclDepthStartEndFromCenter(rows, { keyDepth: 'dc', keyDepthStart: 'ds', keyDepthEnd: 'de' })
+rs = calcDepthStartEndFromCenter(rows, { keyDepth: 'dc', keyDepthStart: 'ds', keyDepthEnd: 'de' })
 console.log(rs)
 // => [
 //   { dc: 4, ds: 0, de: 5 },
