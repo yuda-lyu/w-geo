@@ -3,8 +3,10 @@ import map from 'lodash/map'
 import get from 'lodash/get'
 import size from 'lodash/size'
 import join from 'lodash/join'
+import sortBy from 'lodash/sortBy'
 import cdbl from 'wsemi/src/cdbl.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
+import isearr from 'wsemi/src/isearr.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
 
 
@@ -85,6 +87,11 @@ import isnum from 'wsemi/src/isnum.mjs'
 function calcDepthStartEndFromCenter(rows, opt = {}) {
     let errs = []
 
+    //check
+    if (!isearr(rows)) {
+        throw new Error('無有效資料')
+    }
+
     //keyDepth
     let keyDepth = get(opt, 'keyDepth')
     if (!isestr(keyDepth)) {
@@ -111,7 +118,7 @@ function calcDepthStartEndFromCenter(rows, opt = {}) {
 
         //check
         if (!isnum(dc)) {
-            errs.push(`第 ${k} 樣本中點深度depth[${dc}]深度非有效數字`)
+            errs.push(`第 ${k} 樣本中點深度${keyDepth}[${dc}]非有效數字`)
         }
 
     })
@@ -120,6 +127,11 @@ function calcDepthStartEndFromCenter(rows, opt = {}) {
     if (size(errs) > 0) {
         throw new Error(join(errs, '; '))
     }
+
+    //sortBy
+    rows = sortBy(rows, (v) => {
+        return cdbl(v[keyDepthStart])
+    })
 
     //each
     let up = size(rows) - 1

@@ -63,8 +63,8 @@ rows = [
 errs = checkDepthStartEnd(rows)
 console.log(errs)
 // => [
-//     '第 0 樣本起始深度非有效數字: depthStart[0], depthEnd[abc]',
-//     '第 1 樣本起始深度非有效數字: depthStart[abc], depthEnd[10]'
+//     '第 0 樣本起始非有效數字: depthStart[0], depthEnd[abc]',
+//     '第 1 樣本起始非有效數字: depthStart[abc], depthEnd[10]'
 // ]
 
 rows = [

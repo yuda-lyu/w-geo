@@ -74,8 +74,8 @@ describe(`checkDepthStartEnd`, function() {
     ]
     // let errs4 = checkDepthStartEnd(rows4)
     let errs4 = [
-        '第 0 樣本結束depthEnd[abc]深度非有效數字',
-        '第 1 樣本起始depthStart[abc]深度非有效數字'
+        '第 0 樣本結束depthEnd[abc]非有效數字',
+        '第 1 樣本起始depthStart[abc]非有效數字'
     ]
     it(`should return ${JSON.stringify(errs4)} when checkDepthStartEnd(${JSON.stringify(rows4)})`, function() {
         let r = checkDepthStartEnd(rows4)

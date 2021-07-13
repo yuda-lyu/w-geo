@@ -1,7 +1,9 @@
 import each from 'lodash/each'
 import get from 'lodash/get'
+import sortBy from 'lodash/sortBy'
 import cdbl from 'wsemi/src/cdbl.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
+import isearr from 'wsemi/src/isearr.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
 
 
@@ -79,8 +81,8 @@ import isnum from 'wsemi/src/isnum.mjs'
  * errs = checkDepthStartEnd(rows)
  * console.log(errs)
  * // => [
- * //     '第 0 樣本起始深度非有效數字: depthStart[0], depthEnd[abc]',
- * //     '第 1 樣本起始深度非有效數字: depthStart[abc], depthEnd[10]'
+ * //     '第 0 樣本起始非有效數字: depthStart[0], depthEnd[abc]',
+ * //     '第 1 樣本起始非有效數字: depthStart[abc], depthEnd[10]'
  * // ]
  *
  * rows = [
@@ -100,6 +102,11 @@ import isnum from 'wsemi/src/isnum.mjs'
  */
 function checkDepthStartEnd(rows, opt = {}) {
     let errs = []
+
+    //check
+    if (!isearr(rows)) {
+        return errs
+    }
 
     //keyDepthStart
     let keyDepthStart = get(opt, 'keyDepthStart')
@@ -122,12 +129,17 @@ function checkDepthStartEnd(rows, opt = {}) {
 
         //check
         if (!isnum(ds)) {
-            errs.push(`第 ${k} 樣本起始depthStart[${ds}]深度非有效數字`)
+            errs.push(`第 ${k} 樣本起始${keyDepthStart}[${ds}]非有效數字`)
         }
         if (!isnum(de)) {
-            errs.push(`第 ${k} 樣本結束depthEnd[${de}]深度非有效數字`)
+            errs.push(`第 ${k} 樣本結束${keyDepthEnd}[${de}]非有效數字`)
         }
 
+    })
+
+    //sortBy
+    rows = sortBy(rows, (v) => {
+        return cdbl(v[keyDepthStart])
     })
 
     //each
@@ -151,7 +163,7 @@ function checkDepthStartEnd(rows, opt = {}) {
         let t2 = cdbl(de0) === cdbl(ds1) //數值相等
         let b = t1 || t2 //有字串或數值相等則視為相等
         if (!b) {
-            errs.push(`第 ${k} 樣本結束深度depthEnd[${de0}]不等於第 ${k + 1} 個樣本起始深度depthStart[${ds1}]`)
+            errs.push(`第 ${k} 樣本結束深度${keyDepthEnd}[${de0}]不等於第 ${k + 1} 個樣本起始深度${keyDepthStart}[${ds1}]`)
         }
 
     })
