@@ -857,10 +857,10 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
 
     //check soilClassification
     if (!isestr(soilClassification)) {
-        err.push(`soilClassification${brk(soilClassification)} 非有效字串，預設為SW`)
+        err.push(`soilClassification${brk(soilClassification)} 非有效字串，預設為SW`) //可在配合N60一併檢查才強制給SW
         soilClassification = 'SW'
     }
-    soilClassification = cstr(soilClassification)
+    //soilClassification = cstr(soilClassification)
 
     //非液化: 地下水位以上, 統一土壤分類屬黏土
     if (depth < waterLevelDesign || isNoLique(soilClassification)) {
@@ -1278,10 +1278,10 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
 
     //check soilClassification
     if (!isestr(soilClassification)) {
-        err.push(`soilClassification${brk(soilClassification)} 非有效字串，預設為SW`)
+        err.push(`soilClassification${brk(soilClassification)} 非有效字串，預設為SW`) //可在配合N60一併檢查才強制給SW
         soilClassification = 'SW'
     }
-    soilClassification = cstr(soilClassification)
+    //soilClassification = cstr(soilClassification)
 
     //非液化: 地下水位以上, 統一土壤分類屬黏土, (N160cs>=39, 於後面檢查)
     if (depth < waterLevelDesign || isNoLique(soilClassification)) {
@@ -1545,10 +1545,10 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
 
     //check soilClassification
     if (!isestr(soilClassification)) {
-        err.push(`soilClassification${brk(soilClassification)} 非有效字串，預設為SW`)
+        err.push(`soilClassification${brk(soilClassification)} 非有效字串，預設為SW`) //可在配合N60一併檢查才強制給SW
         soilClassification = 'SW'
     }
-    soilClassification = cstr(soilClassification)
+    //soilClassification = cstr(soilClassification)
 
     //非液化: 地下水位以上, 統一土壤分類屬黏土, (N160cs>=30, 於後面處理)
     if (depth < waterLevelDesign || isNoLique(soilClassification)) {
@@ -1923,10 +1923,10 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
 
     //check soilClassification, 暫時用統一土壤分類區分 2021/05/07
     if (!isestr(soilClassification)) {
-        err.push(`soilClassification${brk(soilClassification)} 非有效字串，預設為SW`)
+        err.push(`soilClassification${brk(soilClassification)} 非有效字串，預設為SW`) //可在配合N60一併檢查才強制給SW
         soilClassification = 'SW'
     }
-    soilClassification = cstr(soilClassification)
+    //soilClassification = cstr(soilClassification)
 
     //非液化: 非砂或礫質土, 強制視為非液化, 暫時用統一土壤分類區分 2021/05/07
     if (isNoLique(soilClassification)) {
@@ -2230,10 +2230,10 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
 
     //check soilClassification
     if (!isestr(soilClassification)) {
-        err.push(`soilClassification${brk(soilClassification)} 非有效字串，預設為SW`)
+        err.push(`soilClassification${brk(soilClassification)} 非有效字串，預設為SW`) //可在配合N60一併檢查才強制給SW
         soilClassification = 'SW'
     }
-    soilClassification = cstr(soilClassification)
+    //soilClassification = cstr(soilClassification)
 
     //尚無資料, 比照Seed法提供
     //非液化: 地下水位以上, 統一土壤分類屬黏土

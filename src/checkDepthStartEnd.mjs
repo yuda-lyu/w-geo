@@ -13,7 +13,7 @@ import isnum from 'wsemi/src/isnum.mjs'
  * @param {Array} rows 輸入數據陣列，各數據為物件，至少需包含起始深度(depthStart)與結束深度(depthEnd)，深度單位為m
  * @param {Object} [opt={}] 輸入設定物件，預設{}
  * @param {String} [opt.keyDepthStart='depthStart'] 輸入起始深度欄位鍵值字串，預設'depthStart'
- * @param {String} [opt.keyDepthEnd='depthEnd'] 輸入起始深度欄位鍵值字串，預設'depthEnd'
+ * @param {String} [opt.keyDepthEnd='depthEnd'] 輸入結束深度欄位鍵值字串，預設'depthEnd'
  * @returns {Array} 回傳錯誤訊息陣列
  * @example
  *
