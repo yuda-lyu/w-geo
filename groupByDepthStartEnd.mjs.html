@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>calcDepthStartEndByGroup.mjs - Documentation</title>
+    <title>groupByDepthStartEnd.mjs - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -32,7 +32,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">calcDepthStartEndByGroup.mjs</h1>
+    <h1 class="page-title">groupByDepthStartEnd.mjs</h1>
     
 
     
@@ -46,7 +46,6 @@
 import map from 'lodash/map'
 import get from 'lodash/get'
 import size from 'lodash/size'
-import keys from 'lodash/keys'
 import join from 'lodash/join'
 import sortBy from 'lodash/sortBy'
 import pullAt from 'lodash/pullAt'
@@ -55,13 +54,12 @@ import cdbl from 'wsemi/src/cdbl.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
 import isearr from 'wsemi/src/isearr.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
-import calcDepthStartEndFromCenter from './calcDepthStartEndFromCenter.mjs'
 
 
 /**
- * 由樣本指定鍵值作為群組代號，並依照樣本中點深度提取各群組之起訖深度
+ * 由指定起訖深度陣列並基於各樣本之中點深度，提取各所屬的樣本群組
  *
- * Unit Test: {@link https://github.com/yuda-lyu/w-geo/blob/master/test/calcDepthStartEndByGroup.test.js Github}
+ * Unit Test: {@link https://github.com/yuda-lyu/w-geo/blob/master/test/groupByDepthStartEnd.test.js Github}
  * @memberOf w-geo
  * @param {Array} rows 輸入數據陣列，各數據為物件，至少需包含起始深度(depthStart)與結束深度(depthEnd)，深度單位為m
  * @param {Object} [opt={}] 輸入設定物件，預設{}
@@ -73,61 +71,54 @@ import calcDepthStartEndFromCenter from './calcDepthStartEndFromCenter.mjs'
  * @example
  *
  * let rows
+ * let ranges
  * let rs
  *
  * rows = [
  *     {
  *         depth: 0,
- *         group: 'a',
  *     },
  *     {
- *         depth: 6,
- *         group: 'b',
+ *         depth: 1,
  *     },
  *     {
- *         depth: 20,
- *         group: 'c',
+ *         depth: 3,
+ *     },
+ *     {
+ *         depth: 10,
  *     },
  * ]
- * rs = calcDepthStartEndByGroup(rows)
+ * ranges = [
+ *     {
+ *         depthStart: 0,
+ *         depthEnd: 1,
+ *     },
+ *     {
+ *         depthStart: 1,
+ *         depthEnd: 4,
+ *     },
+ * ]
+ * rs = groupByDepthStartEnd(rows, ranges)
  * console.log(JSON.stringify(rs, null, 2))
  * // => [
  * //   {
- * //     "group": "a",
  * //     "depthStart": 0,
- * //     "depthEnd": 3,
+ * //     "depthEnd": 1,
  * //     "rows": [
  * //       {
- * //         "depth": 0,
- * //         "group": "a",
- * //         "depthStart": 0,
- * //         "depthEnd": 3
+ * //         "depth": 0
+ * //       },
+ * //       {
+ * //         "depth": 1
  * //       }
  * //     ]
  * //   },
  * //   {
- * //     "group": "b",
- * //     "depthStart": 3,
- * //     "depthEnd": 13,
+ * //     "depthStart": 1,
+ * //     "depthEnd": 4,
  * //     "rows": [
  * //       {
- * //         "depth": 6,
- * //         "group": "b",
- * //         "depthStart": 3,
- * //         "depthEnd": 13
- * //       }
- * //     ]
- * //   },
- * //   {
- * //     "group": "c",
- * //     "depthStart": 13,
- * //     "depthEnd": 20,
- * //     "rows": [
- * //       {
- * //         "depth": 20,
- * //         "group": "c",
- * //         "depthStart": 13,
- * //         "depthEnd": 20
+ * //         "depth": 3
  * //       }
  * //     ]
  * //   }
@@ -136,188 +127,195 @@ import calcDepthStartEndFromCenter from './calcDepthStartEndFromCenter.mjs'
  * rows = [
  *     {
  *         depth: 0,
- *         group: 'a',
  *     },
  *     {
- *         depth: 2,
- *         group: 'a',
+ *         depth: 1,
  *     },
  *     {
- *         depth: 4,
- *         group: 'b',
- *     },
- *     {
- *         depth: 6,
- *         group: 'b',
- *     },
- *     {
- *         depth: 8,
- *         group: 'b',
+ *         depth: 3,
  *     },
  *     {
  *         depth: 10,
- *         group: 'c',
- *     },
- *     {
- *         depth: 12,
- *         group: 'b',
- *     },
- *     {
- *         depth: 14,
- *         group: 'c',
- *     },
- *     {
- *         depth: 16,
- *         group: 'b',
- *     },
- *     {
- *         depth: 18,
- *         group: 'b',
- *     },
- *     {
- *         depth: 30,
- *         group: 'd',
  *     },
  * ]
- * rs = calcDepthStartEndByGroup(rows)
+ * ranges = [
+ *     {
+ *         depthStart: 0,
+ *         depthEnd: 3,
+ *     },
+ *     {
+ *         depthStart: 1,
+ *         depthEnd: 5,
+ *     },
+ * ]
+ * try {
+ *     rs = groupByDepthStartEnd(rows, ranges)
+ * }
+ * catch (err) {
+ *     rs = err.toString()
+ * }
+ * console.log(rs)
+ * // => Error: 第 1 樣本結束深度depthEnd[3]大於第 2 個樣本起始深度depthStart[1]
+ *
+ * rows = [
+ *     {
+ *         depth: 0,
+ *     },
+ *     {
+ *         depth: 1,
+ *     },
+ *     {
+ *         depth: 3,
+ *     },
+ *     {
+ *         depth: 10,
+ *     },
+ * ]
+ * ranges = [
+ *     {
+ *         depthStart: 0,
+ *         depthEnd: 2,
+ *     },
+ *     {
+ *         depthStart: 5,
+ *         depthEnd: 10,
+ *     },
+ * ]
+ * rs = groupByDepthStartEnd(rows, ranges)
  * console.log(JSON.stringify(rs, null, 2))
  * // => [
  * //   {
- * //     "group": "a",
  * //     "depthStart": 0,
- * //     "depthEnd": 3,
+ * //     "depthEnd": 2,
  * //     "rows": [
  * //       {
- * //         "depth": 0,
- * //         "group": "a",
- * //         "depthStart": 0,
- * //         "depthEnd": 1
+ * //         "depth": 0
  * //       },
  * //       {
- * //         "depth": 2,
- * //         "group": "a",
- * //         "depthStart": 1,
- * //         "depthEnd": 3
+ * //         "depth": 1
  * //       }
  * //     ]
  * //   },
  * //   {
- * //     "group": "b",
- * //     "depthStart": 3,
- * //     "depthEnd": 9,
+ * //     "depthStart": 5,
+ * //     "depthEnd": 10,
  * //     "rows": [
  * //       {
- * //         "depth": 4,
- * //         "group": "b",
- * //         "depthStart": 3,
- * //         "depthEnd": 5
+ * //         "depth": 10
+ * //       }
+ * //     ]
+ * //   }
+ * // ]
+ *
+ * rows = [
+ *     {
+ *         depth: 0,
+ *     },
+ *     {
+ *         depth: 1,
+ *     },
+ *     {
+ *         depth: 3,
+ *     },
+ *     {
+ *         depth: 10,
+ *     },
+ * ]
+ * ranges = [
+ *     {
+ *         depthStart: 0,
+ *         depthEnd: 10,
+ *     },
+ * ]
+ * rs = groupByDepthStartEnd(rows, ranges)
+ * console.log(JSON.stringify(rs, null, 2))
+ * // => [
+ * //   {
+ * //     "depthStart": 0,
+ * //     "depthEnd": 10,
+ * //     "rows": [
+ * //       {
+ * //         "depth": 0
  * //       },
  * //       {
- * //         "depth": 6,
- * //         "group": "b",
- * //         "depthStart": 5,
- * //         "depthEnd": 7
+ * //         "depth": 1
  * //       },
  * //       {
- * //         "depth": 8,
- * //         "group": "b",
- * //         "depthStart": 7,
- * //         "depthEnd": 9
- * //       }
- * //     ]
- * //   },
- * //   {
- * //     "group": "c",
- * //     "depthStart": 9,
- * //     "depthEnd": 11,
- * //     "rows": [
- * //       {
- * //         "depth": 10,
- * //         "group": "c",
- * //         "depthStart": 9,
- * //         "depthEnd": 11
- * //       }
- * //     ]
- * //   },
- * //   {
- * //     "group": "b",
- * //     "depthStart": 11,
- * //     "depthEnd": 13,
- * //     "rows": [
- * //       {
- * //         "depth": 12,
- * //         "group": "b",
- * //         "depthStart": 11,
- * //         "depthEnd": 13
- * //       }
- * //     ]
- * //   },
- * //   {
- * //     "group": "c",
- * //     "depthStart": 13,
- * //     "depthEnd": 15,
- * //     "rows": [
- * //       {
- * //         "depth": 14,
- * //         "group": "c",
- * //         "depthStart": 13,
- * //         "depthEnd": 15
- * //       }
- * //     ]
- * //   },
- * //   {
- * //     "group": "b",
- * //     "depthStart": 15,
- * //     "depthEnd": 24,
- * //     "rows": [
- * //       {
- * //         "depth": 16,
- * //         "group": "b",
- * //         "depthStart": 15,
- * //         "depthEnd": 17
+ * //         "depth": 3
  * //       },
  * //       {
- * //         "depth": 18,
- * //         "group": "b",
- * //         "depthStart": 17,
- * //         "depthEnd": 24
+ * //         "depth": 10
+ * //       }
+ * //     ]
+ * //   }
+ * // ]
+ *
+ * rows = [
+ *     {
+ *         dc: 0,
+ *     },
+ *     {
+ *         dc: 1,
+ *     },
+ *     {
+ *         dc: 3,
+ *     },
+ *     {
+ *         dc: 10,
+ *     },
+ * ]
+ * ranges = [
+ *     {
+ *         ds: 0,
+ *         de: 1,
+ *     },
+ *     {
+ *         ds: 1,
+ *         de: 4,
+ *     },
+ * ]
+ * rs = groupByDepthStartEnd(rows, ranges, { keyDepth: 'dc', keyDepthStart: 'ds', keyDepthEnd: 'de' })
+ * console.log(JSON.stringify(rs, null, 2))
+ * // => [
+ * //   {
+ * //     "ds": 0,
+ * //     "de": 1,
+ * //     "rows": [
+ * //       {
+ * //         "dc": 0
+ * //       },
+ * //       {
+ * //         "dc": 1
  * //       }
  * //     ]
  * //   },
  * //   {
- * //     "group": "d",
- * //     "depthStart": 24,
- * //     "depthEnd": 30,
+ * //     "ds": 1,
+ * //     "de": 4,
  * //     "rows": [
  * //       {
- * //         "depth": 30,
- * //         "group": "d",
- * //         "depthStart": 24,
- * //         "depthEnd": 30
+ * //         "dc": 3
  * //       }
  * //     ]
  * //   }
  * // ]
  *
  */
-function calcDepthStartEndByGroup(rows, opt = {}) {
+function groupByDepthStartEnd(rows, depthStartAndEnds, opt = {}) {
     let errs = []
 
     //check
     if (!isearr(rows)) {
         throw new Error('無有效資料')
     }
+    if (!isearr(depthStartAndEnds)) {
+        throw new Error('無有效起訖深度資料')
+    }
 
     //keyDepth
     let keyDepth = get(opt, 'keyDepth')
     if (!isestr(keyDepth)) {
         keyDepth = 'depth'
-    }
-
-    //keyGroup
-    let keyGroup = get(opt, 'keyGroup')
-    if (!isestr(keyGroup)) {
-        keyGroup = 'group'
     }
 
     //keyDepthStart
@@ -341,14 +339,6 @@ function calcDepthStartEndByGroup(rows, opt = {}) {
         //check
         if (!isnum(dc)) {
             errs.push(`第 ${k} 樣本中點深度${keyDepth}[${dc}]非有效數字`)
-        }
-
-        //g
-        let g = get(v, keyGroup, '')
-
-        //check
-        if (!isestr(g) &amp;&amp; !isnum(g)) {
-            errs.push(`第 ${k} 樣本群組代號${keyGroup}[${g}]非有效字串或數字`)
         }
 
     })
@@ -387,69 +377,79 @@ function calcDepthStartEndByGroup(rows, opt = {}) {
         throw new Error(join(errs, '; '))
     }
 
-    //ks,ng
-    let kg = {}
-    each(rows, (v) => {
-        let k = v[keyGroup]
-        kg[k] = true
-    })
-    let ks = keys(kg) //全部群組代號陣列
-    let ng = size(ks) //群數
+    //判斷depthStartAndEnds內各元素之起始深度需為有效數字
+    each(depthStartAndEnds, (v, k) => {
 
-    //check
-    if (ng === 0) {
-        throw new Error('無有效群數')
-    }
-
-    //calcDepthStartEndFromCenter
-    rows = calcDepthStartEndFromCenter(rows, { keyDepth, keyDepthStart, keyDepthEnd })
-
-    //ts, 備份
-    let ts = cloneDeep(rows)
-
-    //merge
-    let k = -1
-    while (true) {
-        k++
+        //ds, de
+        let ds = get(v, keyDepthStart, null)
+        let de = get(v, keyDepthEnd, null)
 
         //check
-        if (k >= size(rows) - 1) { //遇到最後1層就跳出
-            break
+        if (!isnum(ds)) {
+            errs.push(`群組用起訖深度陣列中，第 ${k} 元素之起始深度${keyDepthStart}[${ds}]非有效數字`)
+        }
+        if (!isnum(de)) {
+            errs.push(`群組用起訖深度陣列中，第 ${k} 元素之結束深度${keyDepthEnd}[${de}]非有效數字`)
         }
 
-        //v0, v1, v2
-        // let v0 = get(rows, k - 1)
-        let v1 = get(rows, k)
-        let v2 = get(rows, k + 1)
-
-        //g0, g1, g2
-        // let g0 = get(v0, keyGroup, null)
-        let g1 = get(v1, keyGroup, 'g1')
-        let g2 = get(v2, keyGroup, 'g2')
-
-        //detect
-        if (g1 === g2) {
-            rows[k][keyDepthEnd] = rows[k + 1][keyDepthEnd] //下層深度儲存至本層
-            pullAt(rows, k + 1) //刪除下層
-            k--
-        }
-
-    }
-
-    //pure
-    let rs = map(rows, (v) => {
-        return {
-            [keyGroup]: v[keyGroup],
-            [keyDepthStart]: v[keyDepthStart],
-            [keyDepthEnd]: v[keyDepthEnd],
-        }
     })
 
-    //add rows
-    rs = map(rs, (v) => {
-        let ds = v[keyDepthStart]
-        let de = v[keyDepthEnd]
+    //check
+    if (size(errs) > 0) {
+        throw new Error(join(errs, '; '))
+    }
 
+    //each
+    each(depthStartAndEnds, (v, k) => {
+
+        //ds1, de1
+        let ds1 = get(v, keyDepthStart, null)
+        let de1 = get(v, keyDepthEnd, null)
+        ds1 = cdbl(ds1)
+        de1 = cdbl(de1)
+
+        //check
+        if (ds1 > de1) {
+            errs.push(`群組用起訖深度陣列中，第 ${k} 元素之起始深度${keyDepthStart}[${ds1}]大於結束深度${keyDepthEnd}[${de1}]`)
+        }
+
+        if (k === 0) {
+            return true
+        }
+
+        //v0
+        let v0 = get(depthStartAndEnds, k - 1)
+
+        //de0
+        let de0 = get(v0, keyDepthEnd, null)
+        de0 = cdbl(de0)
+
+        //比較「上層結束深度」是否大於「下層起始深度」, 不要求上下層連續(上層結束深度等於下層起始深度)
+        if (de0 > ds1) {
+            errs.push(`第 ${k} 樣本結束深度${keyDepthEnd}[${de0}]大於第 ${k + 1} 個樣本起始深度${keyDepthStart}[${ds1}]`)
+        }
+
+    })
+
+    //check
+    if (size(errs) > 0) {
+        throw new Error(join(errs, '; '))
+    }
+
+    //ts, 備份, 後續會動態刪除提速
+    let ts = cloneDeep(rows)
+
+    //rs
+    let rs = cloneDeep(depthStartAndEnds)
+    rs = map(rs, (v, k) => {
+
+        //ds, de
+        let ds = get(v, keyDepthStart, null)
+        let de = get(v, keyDepthEnd, null)
+        ds = cdbl(ds)
+        de = cdbl(de)
+
+        //detect
         let rdels = [] //本群(輪)可刪除的ts指標
         let rrows = [] //本群(輪)所屬的ts樣本
         each(ts, (t, kt) => {
@@ -476,7 +476,7 @@ function calcDepthStartEndByGroup(rows, opt = {}) {
 }
 
 
-export default calcDepthStartEndByGroup
+export default groupByDepthStartEnd
 </code></pre>
         </article>
     </section>
