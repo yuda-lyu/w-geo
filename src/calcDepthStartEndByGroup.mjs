@@ -319,6 +319,30 @@ function calcDepthStartEndByGroup(rows, opt = {}) {
         return cdbl(v[keyDepth])
     })
 
+    //check
+    each(rows, (v, k) => {
+        if (k === 0) {
+            return true
+        }
+
+        //dc0, dc1
+        let dc0 = get(rows, `${k - 1}.${keyDepth}`, null)
+        let dc1 = get(v, keyDepth, null)
+        dc0 = cdbl(dc0)
+        dc1 = cdbl(dc1)
+
+        //check
+        if (dc0 >= dc1) {
+            errs.push(`第 ${k - 1} 樣本之中點深度${keyDepth}[${dc0}]大於等於第 ${k} 樣本之中點深度${keyDepth}[${dc1}]`)
+        }
+
+    })
+
+    //check
+    if (size(errs) > 0) {
+        throw new Error(join(errs, '; '))
+    }
+
     //ks,ng
     let kg = {}
     each(rows, (v) => {
@@ -328,27 +352,9 @@ function calcDepthStartEndByGroup(rows, opt = {}) {
     let ks = keys(kg) //全部群組代號陣列
     let ng = size(ks) //群數
 
-    //depthMin, depthMax
-    let depthMin = 0
-    let depthMax = 0
-    each(rows, (v) => {
-        let depth = cdbl(v[keyDepth])
-        depthMax = Math.max(depth, depthMax)
-    })
-
     //check
     if (ng === 0) {
         throw new Error('無有效群數')
-    }
-    else if (ng === 1) {
-        return [
-            {
-                [keyGroup]: ng[0],
-                [keyDepthStart]: depthMin,
-                [keyDepthEnd]: depthMax,
-                rows,
-            },
-        ]
     }
 
     //calcDepthStartEndFromCenter

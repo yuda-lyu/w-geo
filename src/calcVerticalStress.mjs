@@ -484,6 +484,8 @@ function calcVerticalStress(rows, opt = {}) {
         throw new Error(`樣本數據(rows)非有效陣列`)
     }
 
+    //待補上可變更起訖深度鍵值
+
     //checkDepthStartEnd
     let ckds = checkDepthStartEnd(rows)
     if (size(ckds) > 0) {

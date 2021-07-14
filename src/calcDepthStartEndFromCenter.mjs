@@ -133,6 +133,30 @@ function calcDepthStartEndFromCenter(rows, opt = {}) {
         return cdbl(v[keyDepth])
     })
 
+    //check
+    each(rows, (v, k) => {
+        if (k === 0) {
+            return true
+        }
+
+        //dc0, dc1
+        let dc0 = get(rows, `${k - 1}.${keyDepth}`, null)
+        let dc1 = get(v, keyDepth, null)
+        dc0 = cdbl(dc0)
+        dc1 = cdbl(dc1)
+
+        //check
+        if (dc0 >= dc1) {
+            errs.push(`第 ${k - 1} 樣本之中點深度${keyDepth}[${dc0}]大於等於第 ${k} 樣本之中點深度${keyDepth}[${dc1}]`)
+        }
+
+    })
+
+    //check
+    if (size(errs) > 0) {
+        throw new Error(join(errs, '; '))
+    }
+
     //each
     let up = size(rows) - 1
     rows = map(rows, (v, k) => {

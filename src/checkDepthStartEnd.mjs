@@ -129,10 +129,10 @@ function checkDepthStartEnd(rows, opt = {}) {
 
         //check
         if (!isnum(ds)) {
-            errs.push(`第 ${k} 樣本起始${keyDepthStart}[${ds}]非有效數字`)
+            errs.push(`第 ${k} 樣本起始深度${keyDepthStart}[${ds}]非有效數字`)
         }
         if (!isnum(de)) {
-            errs.push(`第 ${k} 樣本結束${keyDepthEnd}[${de}]非有效數字`)
+            errs.push(`第 ${k} 樣本結束深度${keyDepthEnd}[${de}]非有效數字`)
         }
 
     })
@@ -144,25 +144,33 @@ function checkDepthStartEnd(rows, opt = {}) {
 
     //each
     each(rows, (v, k) => {
+
+        //ds1, de1
+        let ds1 = get(v, keyDepthStart, null)
+        let de1 = get(v, keyDepthEnd, null)
+        ds1 = cdbl(ds1)
+        de1 = cdbl(de1)
+
+        //比較起始深度是否大於結束深度
+        if (ds1 > de1) {
+            errs.push(`第 ${k} 個樣本起始深度${keyDepthStart}[${ds1}]大於結束深度${keyDepthEnd}[${de1}]`)
+        }
+
         if (k === 0) {
             return true
         }
 
         //v0
         let v0 = get(rows, k - 1)
-        let v1 = v
 
-        //ds, de
+        //ds0, de0
         // let ds0 = get(v0, keyDepthStart, null)
         let de0 = get(v0, keyDepthEnd, null)
-        let ds1 = get(v1, keyDepthStart, null)
-        // let de1 = get(v1, keyDepthEnd, null)
+        // ds0 = cdbl(ds0)
+        de0 = cdbl(de0)
 
-        //比較「上個結束深度」與「下個起始深度」
-        let t1 = de0 === ds1 //原數值(不論是字串或數值型別)相等
-        let t2 = cdbl(de0) === cdbl(ds1) //數值相等
-        let b = t1 || t2 //有字串或數值相等則視為相等
-        if (!b) {
+        //比較「上層結束深度」與「下層起始深度」是否相同
+        if (de0 !== ds1) {
             errs.push(`第 ${k} 樣本結束深度${keyDepthEnd}[${de0}]不等於第 ${k + 1} 個樣本起始深度${keyDepthStart}[${ds1}]`)
         }
 
