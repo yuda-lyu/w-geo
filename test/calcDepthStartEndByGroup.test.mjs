@@ -73,6 +73,72 @@ describe(`calcDepthStartEndByGroup`, function() {
     let f2 = () => {
         let rows = [
             {
+                depth: 0,
+                group: 'a',
+            },
+            {
+                depth: 6,
+                group: 'b',
+            },
+            {
+                depth: 20,
+                group: 'c',
+            },
+        ]
+        let rowsNew = [
+            {
+                'group': 'a',
+                'depthStart': 0,
+                'depthEnd': 3,
+                'rows': [
+                    {
+                        'depth': 0,
+                        'group': 'a',
+                        'depthStart': 0,
+                        'depthEnd': 3
+                    }
+                ]
+            },
+            {
+                'group': 'b',
+                'depthStart': 3,
+                'depthEnd': 13,
+                'rows': [
+                    {
+                        'depth': 6,
+                        'group': 'b',
+                        'depthStart': 3,
+                        'depthEnd': 13
+                    }
+                ]
+            },
+            {
+                'group': 'c',
+                'depthStart': 13,
+                'depthEnd': 25,
+                'rows': [
+                    {
+                        'depth': 20,
+                        'group': 'c',
+                        'depthStart': 13,
+                        'depthEnd': 25
+                    }
+                ]
+            }
+        ]
+
+        it(`should return ${JSON.stringify(rowsNew)} when calcDepthStartEndByGroup(${JSON.stringify(rows)}, ${JSON.stringify({ depthEndMax: 25 })})`, function() {
+            let r = calcDepthStartEndByGroup(rows, { depthEndMax: 25 })
+            let rr = rowsNew
+            assert.strict.deepStrictEqual(r, rr)
+        })
+
+    }
+    f2()
+
+    let f3 = () => {
+        let rows = [
+            {
                 dc: 0,
                 g: 'a',
             },
@@ -134,9 +200,9 @@ describe(`calcDepthStartEndByGroup`, function() {
         })
 
     }
-    f2()
+    f3()
 
-    let f3 = () => {
+    let f4 = () => {
         let rows = [
             {
                 depth: 0,
@@ -308,6 +374,6 @@ describe(`calcDepthStartEndByGroup`, function() {
         })
 
     }
-    f3()
+    f4()
 
 })

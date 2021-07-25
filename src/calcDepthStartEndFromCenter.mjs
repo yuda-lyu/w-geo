@@ -2,6 +2,7 @@ import each from 'lodash/each'
 import map from 'lodash/map'
 import get from 'lodash/get'
 import size from 'lodash/size'
+import isNumber from 'lodash/isNumber'
 import join from 'lodash/join'
 import sortBy from 'lodash/sortBy'
 import cdbl from 'wsemi/src/cdbl.mjs'
@@ -11,7 +12,7 @@ import isnum from 'wsemi/src/isnum.mjs'
 
 
 /**
- * 由樣本中點深度反算各樣本起訖深度
+ * 由樣本中點深度反算各樣本起訖深度，注意樣本添加起訖深度可能因最淺樣本起始深度最大為0，以及最深樣本可被修改為depthEndMax，故各樣本中點深度不一定是起訖深度之平均值
  *
  * Unit Test: {@link https://github.com/yuda-lyu/w-geo/blob/master/test/calcDepthStartEndFromCenter.test.js Github}
  * @memberOf w-geo
@@ -20,6 +21,7 @@ import isnum from 'wsemi/src/isnum.mjs'
  * @param {String} [opt.keyDepth='depth'] 輸入中點深度欄位鍵值字串，預設'depth'
  * @param {String} [opt.keyDepthStart='depthStart'] 輸入欲儲存之起始深度欄位鍵值字串，預設'depthStart'
  * @param {String} [opt.keyDepthEnd='depthEnd'] 輸入欲儲存之結束深度欄位鍵值字串，預設'depthEnd'
+ * @param {Number} [opt.depthEndMax=null] 輸入最大結束深度數字，若最深樣本的結束深度若小於depthEndMax，則自動給予depthEndMax，預設null
  * @returns {Array} 回傳添加起訖深度的數據陣列
  * @example
  *
@@ -57,6 +59,44 @@ import isnum from 'wsemi/src/isnum.mjs'
  *     },
  * ]
  * rs = calcDepthStartEndFromCenter(rows)
+ * console.log(rs)
+ * // => [
+ * //   { depth: 4, depthStart: 0, depthEnd: 5 },
+ * //   { depth: 6, depthStart: 5, depthEnd: 13 },
+ * //   { depth: 20, depthStart: 13, depthEnd: 20 }
+ * // ]
+ *
+ * rows = [
+ *     {
+ *         depth: 4,
+ *     },
+ *     {
+ *         depth: 6,
+ *     },
+ *     {
+ *         depth: 20,
+ *     },
+ * ]
+ * rs = calcDepthStartEndFromCenter(rows, { depthEndMax: 25 })
+ * console.log(rs)
+ * // => [
+ * //   { depth: 4, depthStart: 0, depthEnd: 5 },
+ * //   { depth: 6, depthStart: 5, depthEnd: 13 },
+ * //   { depth: 20, depthStart: 13, depthEnd: 25 }
+ * // ]
+ *
+ * rows = [
+ *     {
+ *         depth: 4,
+ *     },
+ *     {
+ *         depth: 6,
+ *     },
+ *     {
+ *         depth: 20,
+ *     },
+ * ]
+ * rs = calcDepthStartEndFromCenter(rows, { depthEndMax: 15 })
  * console.log(rs)
  * // => [
  * //   { depth: 4, depthStart: 0, depthEnd: 5 },
@@ -108,6 +148,15 @@ function calcDepthStartEndFromCenter(rows, opt = {}) {
     let keyDepthEnd = get(opt, 'keyDepthEnd')
     if (!isestr(keyDepthEnd)) {
         keyDepthEnd = 'depthEnd'
+    }
+
+    //depthEndMax
+    let depthEndMax = get(opt, 'depthEndMax')
+    if (isnum(depthEndMax)) {
+        depthEndMax = cdbl(depthEndMax)
+    }
+    else {
+        depthEndMax = null
     }
 
     //判斷中點深度需為有效數字
@@ -179,11 +228,17 @@ function calcDepthStartEndFromCenter(rows, opt = {}) {
                 dc1 = cdbl(dc1)
                 ds = Math.min(ds, dc1) //k=0樣本深度若<0則取之
             }
+            else {
+                throw new Error('dc1 is not a number')
+            }
         }
         else if (isnum(dc0) && isnum(dc1)) {
             dc0 = cdbl(dc0)
             dc1 = cdbl(dc1)
             ds = (dc0 + dc1) / 2
+        }
+        else {
+            throw new Error('unexpected error: invalid ds')
         }
 
         //de
@@ -192,11 +247,17 @@ function calcDepthStartEndFromCenter(rows, opt = {}) {
             if (isnum(dc1)) {
                 de = cdbl(dc1) //若本層樣本深度為數字則使用之, 否則仍保持null
             }
+            else {
+                throw new Error('dc1 is not a number')
+            }
         }
         else if (isnum(dc1) && isnum(dc2)) {
             dc1 = cdbl(dc1)
             dc2 = cdbl(dc2)
             de = (dc1 + dc2) / 2
+        }
+        else {
+            throw new Error('unexpected error: invalid de')
         }
 
         //save
@@ -205,6 +266,15 @@ function calcDepthStartEndFromCenter(rows, opt = {}) {
 
         return v
     })
+
+    //depthEndMax
+    if (isNumber(depthEndMax)) {
+        let rowsEnd = rows[up]
+        let de = rowsEnd[keyDepthEnd]
+        if (de < depthEndMax) { //若最後樣本結束深度小於depthEndMax, 則自動改為depthEndMax
+            rows[up][keyDepthEnd] = depthEndMax
+        }
+    }
 
     return rows
 }

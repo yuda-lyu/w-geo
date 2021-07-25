@@ -248,7 +248,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="calcDepthStartEndByGroup.mjs.html">calcDepthStartEndByGroup.mjs</a>, <a href="calcDepthStartEndByGroup.mjs.html#line259">line 259</a>
+        <a href="calcDepthStartEndByGroup.mjs.html">calcDepthStartEndByGroup.mjs</a>, <a href="calcDepthStartEndByGroup.mjs.html#line318">line 318</a>
     </li></ul></dd>
     
 
@@ -302,7 +302,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>let rowslet rsrows = [    {        depth: 0,        group: 'a',    },    {        depth: 6,        group: 'b',    },    {        depth: 20,        group: 'c',    },]rs = calcDepthStartEndByGroup(rows)console.log(JSON.stringify(rs, null, 2))// => [//   {//     "group": "a",//     "depthStart": 0,//     "depthEnd": 3,//     "rows": [//       {//         "depth": 0,//         "group": "a",//         "depthStart": 0,//         "depthEnd": 3//       }//     ]//   },//   {//     "group": "b",//     "depthStart": 3,//     "depthEnd": 13,//     "rows": [//       {//         "depth": 6,//         "group": "b",//         "depthStart": 3,//         "depthEnd": 13//       }//     ]//   },//   {//     "group": "c",//     "depthStart": 13,//     "depthEnd": 20,//     "rows": [//       {//         "depth": 20,//         "group": "c",//         "depthStart": 13,//         "depthEnd": 20//       }//     ]//   }// ]rows = [    {        depth: 0,        group: 'a',    },    {        depth: 2,        group: 'a',    },    {        depth: 4,        group: 'b',    },    {        depth: 6,        group: 'b',    },    {        depth: 8,        group: 'b',    },    {        depth: 10,        group: 'c',    },    {        depth: 12,        group: 'b',    },    {        depth: 14,        group: 'c',    },    {        depth: 16,        group: 'b',    },    {        depth: 18,        group: 'b',    },    {        depth: 30,        group: 'd',    },]rs = calcDepthStartEndByGroup(rows)console.log(JSON.stringify(rs, null, 2))// => [//   {//     "group": "a",//     "depthStart": 0,//     "depthEnd": 3,//     "rows": [//       {//         "depth": 0,//         "group": "a",//         "depthStart": 0,//         "depthEnd": 1//       },//       {//         "depth": 2,//         "group": "a",//         "depthStart": 1,//         "depthEnd": 3//       }//     ]//   },//   {//     "group": "b",//     "depthStart": 3,//     "depthEnd": 9,//     "rows": [//       {//         "depth": 4,//         "group": "b",//         "depthStart": 3,//         "depthEnd": 5//       },//       {//         "depth": 6,//         "group": "b",//         "depthStart": 5,//         "depthEnd": 7//       },//       {//         "depth": 8,//         "group": "b",//         "depthStart": 7,//         "depthEnd": 9//       }//     ]//   },//   {//     "group": "c",//     "depthStart": 9,//     "depthEnd": 11,//     "rows": [//       {//         "depth": 10,//         "group": "c",//         "depthStart": 9,//         "depthEnd": 11//       }//     ]//   },//   {//     "group": "b",//     "depthStart": 11,//     "depthEnd": 13,//     "rows": [//       {//         "depth": 12,//         "group": "b",//         "depthStart": 11,//         "depthEnd": 13//       }//     ]//   },//   {//     "group": "c",//     "depthStart": 13,//     "depthEnd": 15,//     "rows": [//       {//         "depth": 14,//         "group": "c",//         "depthStart": 13,//         "depthEnd": 15//       }//     ]//   },//   {//     "group": "b",//     "depthStart": 15,//     "depthEnd": 24,//     "rows": [//       {//         "depth": 16,//         "group": "b",//         "depthStart": 15,//         "depthEnd": 17//       },//       {//         "depth": 18,//         "group": "b",//         "depthStart": 17,//         "depthEnd": 24//       }//     ]//   },//   {//     "group": "d",//     "depthStart": 24,//     "depthEnd": 30,//     "rows": [//       {//         "depth": 30,//         "group": "d",//         "depthStart": 24,//         "depthEnd": 30//       }//     ]//   }// ]</code></pre>
+    <pre class="prettyprint"><code>let rowslet rsrows = [    {        depth: 0,        group: 'a',    },    {        depth: 6,        group: 'b',    },    {        depth: 20,        group: 'c',    },]rs = calcDepthStartEndByGroup(rows)console.log(JSON.stringify(rs, null, 2))// => [//   {//     "group": "a",//     "depthStart": 0,//     "depthEnd": 3,//     "rows": [//       {//         "depth": 0,//         "group": "a",//         "depthStart": 0,//         "depthEnd": 3//       }//     ]//   },//   {//     "group": "b",//     "depthStart": 3,//     "depthEnd": 13,//     "rows": [//       {//         "depth": 6,//         "group": "b",//         "depthStart": 3,//         "depthEnd": 13//       }//     ]//   },//   {//     "group": "c",//     "depthStart": 13,//     "depthEnd": 20,//     "rows": [//       {//         "depth": 20,//         "group": "c",//         "depthStart": 13,//         "depthEnd": 20//       }//     ]//   }// ]rows = [    {        depth: 2,        group: 'a',    },    {        depth: 6,        group: 'b',    },    {        depth: 20,        group: 'c',    },]rs = calcDepthStartEndByGroup(rows, { depthEndMax: 25 })console.log(JSON.stringify(rs, null, 2))// => [//   {//     "group": "a",//     "depthStart": 0,//     "depthEnd": 4,//     "rows": [//       {//         "depth": 2,//         "group": "a",//         "depthStart": 0,//         "depthEnd": 4//       }//     ]//   },//   {//     "group": "b",//     "depthStart": 4,//     "depthEnd": 13,//     "rows": [//       {//         "depth": 6,//         "group": "b",//         "depthStart": 4,//         "depthEnd": 13//       }//     ]//   },//   {//     "group": "c",//     "depthStart": 13,//     "depthEnd": 25,//     "rows": [//       {//         "depth": 20,//         "group": "c",//         "depthStart": 13,//         "depthEnd": 25//       }//     ]//   }// ]rows = [    {        depth: 0,        group: 'a',    },    {        depth: 2,        group: 'a',    },    {        depth: 4,        group: 'b',    },    {        depth: 6,        group: 'b',    },    {        depth: 8,        group: 'b',    },    {        depth: 10,        group: 'c',    },    {        depth: 12,        group: 'b',    },    {        depth: 14,        group: 'c',    },    {        depth: 16,        group: 'b',    },    {        depth: 18,        group: 'b',    },    {        depth: 30,        group: 'd',    },]rs = calcDepthStartEndByGroup(rows)console.log(JSON.stringify(rs, null, 2))// => [//   {//     "group": "a",//     "depthStart": 0,//     "depthEnd": 3,//     "rows": [//       {//         "depth": 0,//         "group": "a",//         "depthStart": 0,//         "depthEnd": 1//       },//       {//         "depth": 2,//         "group": "a",//         "depthStart": 1,//         "depthEnd": 3//       }//     ]//   },//   {//     "group": "b",//     "depthStart": 3,//     "depthEnd": 9,//     "rows": [//       {//         "depth": 4,//         "group": "b",//         "depthStart": 3,//         "depthEnd": 5//       },//       {//         "depth": 6,//         "group": "b",//         "depthStart": 5,//         "depthEnd": 7//       },//       {//         "depth": 8,//         "group": "b",//         "depthStart": 7,//         "depthEnd": 9//       }//     ]//   },//   {//     "group": "c",//     "depthStart": 9,//     "depthEnd": 11,//     "rows": [//       {//         "depth": 10,//         "group": "c",//         "depthStart": 9,//         "depthEnd": 11//       }//     ]//   },//   {//     "group": "b",//     "depthStart": 11,//     "depthEnd": 13,//     "rows": [//       {//         "depth": 12,//         "group": "b",//         "depthStart": 11,//         "depthEnd": 13//       }//     ]//   },//   {//     "group": "c",//     "depthStart": 13,//     "depthEnd": 15,//     "rows": [//       {//         "depth": 14,//         "group": "c",//         "depthStart": 13,//         "depthEnd": 15//       }//     ]//   },//   {//     "group": "b",//     "depthStart": 15,//     "depthEnd": 24,//     "rows": [//       {//         "depth": 16,//         "group": "b",//         "depthStart": 15,//         "depthEnd": 17//       },//       {//         "depth": 18,//         "group": "b",//         "depthStart": 17,//         "depthEnd": 24//       }//     ]//   },//   {//     "group": "d",//     "depthStart": 24,//     "depthEnd": 30,//     "rows": [//       {//         "depth": 30,//         "group": "d",//         "depthStart": 24,//         "depthEnd": 30//       }//     ]//   }// ]</code></pre>
 
 
 
@@ -586,6 +586,45 @@
         </tr>
 
     
+
+        <tr>
+            
+                <td class="name"><code>depthEndMax</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>null</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入最大結束深度數字，若最深樣本的結束深度若小於depthEndMax，則自動給予depthEndMax，預設null</p></td>
+        </tr>
+
+    
     </tbody>
 </table>
 
@@ -653,7 +692,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="calcDepthStartEndFromCenter.mjs.html">calcDepthStartEndFromCenter.mjs</a>, <a href="calcDepthStartEndFromCenter.mjs.html#line87">line 87</a>
+        <a href="calcDepthStartEndFromCenter.mjs.html">calcDepthStartEndFromCenter.mjs</a>, <a href="calcDepthStartEndFromCenter.mjs.html#line127">line 127</a>
     </li></ul></dd>
     
 
@@ -693,7 +732,7 @@
 
 
 <div class="description usertext">
-    <p>由樣本中點深度反算各樣本起訖深度</p>
+    <p>由樣本中點深度反算各樣本起訖深度，注意樣本添加起訖深度可能因最淺樣本起始深度最大為0，以及最深樣本可被修改為depthEndMax，故各樣本中點深度不一定是起訖深度之平均值</p>
 <p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/calcDepthStartEndFromCenter.test.js">Github</a></p>
 </div>
 
@@ -707,7 +746,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>let rowslet rsrows = [    {        depth: 0,    },    {        depth: 6,    },    {        depth: 20,    },]rs = calcDepthStartEndFromCenter(rows)console.log(rs)// => [//   { depth: 0, depthStart: 0, depthEnd: 3 },//   { depth: 6, depthStart: 3, depthEnd: 13 },//   { depth: 20, depthStart: 13, depthEnd: 20 }// ]rows = [    {        depth: 4,    },    {        depth: 6,    },    {        depth: 20,    },]rs = calcDepthStartEndFromCenter(rows)console.log(rs)// => [//   { depth: 4, depthStart: 0, depthEnd: 5 },//   { depth: 6, depthStart: 5, depthEnd: 13 },//   { depth: 20, depthStart: 13, depthEnd: 20 }// ]rows = [    {        dc: 4,    },    {        dc: 6,    },    {        dc: 20,    },]rs = calcDepthStartEndFromCenter(rows, { keyDepth: 'dc', keyDepthStart: 'ds', keyDepthEnd: 'de' })console.log(rs)// => [//   { dc: 4, ds: 0, de: 5 },//   { dc: 6, ds: 5, de: 13 },//   { dc: 20, ds: 13, de: 20 }// ]</code></pre>
+    <pre class="prettyprint"><code>let rowslet rsrows = [    {        depth: 0,    },    {        depth: 6,    },    {        depth: 20,    },]rs = calcDepthStartEndFromCenter(rows)console.log(rs)// => [//   { depth: 0, depthStart: 0, depthEnd: 3 },//   { depth: 6, depthStart: 3, depthEnd: 13 },//   { depth: 20, depthStart: 13, depthEnd: 20 }// ]rows = [    {        depth: 4,    },    {        depth: 6,    },    {        depth: 20,    },]rs = calcDepthStartEndFromCenter(rows)console.log(rs)// => [//   { depth: 4, depthStart: 0, depthEnd: 5 },//   { depth: 6, depthStart: 5, depthEnd: 13 },//   { depth: 20, depthStart: 13, depthEnd: 20 }// ]rows = [    {        depth: 4,    },    {        depth: 6,    },    {        depth: 20,    },]rs = calcDepthStartEndFromCenter(rows, { depthEndMax: 25 })console.log(rs)// => [//   { depth: 4, depthStart: 0, depthEnd: 5 },//   { depth: 6, depthStart: 5, depthEnd: 13 },//   { depth: 20, depthStart: 13, depthEnd: 25 }// ]rows = [    {        depth: 4,    },    {        depth: 6,    },    {        depth: 20,    },]rs = calcDepthStartEndFromCenter(rows, { depthEndMax: 15 })console.log(rs)// => [//   { depth: 4, depthStart: 0, depthEnd: 5 },//   { depth: 6, depthStart: 5, depthEnd: 13 },//   { depth: 20, depthStart: 13, depthEnd: 20 }// ]rows = [    {        dc: 4,    },    {        dc: 6,    },    {        dc: 20,    },]rs = calcDepthStartEndFromCenter(rows, { keyDepth: 'dc', keyDepthStart: 'ds', keyDepthEnd: 'de' })console.log(rs)// => [//   { dc: 4, ds: 0, de: 5 },//   { dc: 6, ds: 5, de: 13 },//   { dc: 20, ds: 13, de: 20 }// ]</code></pre>
 
 
 
@@ -949,6 +988,45 @@
             
 
             <td class="description last"><p>輸入欲儲存之結束深度欄位鍵值字串，預設'depthEnd'</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>depthEndMax</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>null</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入最大結束深度數字，若最深樣本的結束深度若小於depthEndMax，則自動給予depthEndMax，預設null</p></td>
         </tr>
 
     
@@ -5628,7 +5706,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Wed Jul 14 2021 09:42:52 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Sun Jul 25 2021 20:21:08 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

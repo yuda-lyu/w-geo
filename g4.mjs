@@ -1,7 +1,6 @@
 import fs from 'fs'
 import w from 'wsemi'
 // import relaPorousParams from './src/relaPorousParams.mjs'
-// import calcDepthStartEndFromCenter from './src/calcDepthStartEndFromCenter.mjs'
 // import calcVerticalStress from './src/calcVerticalStress.mjs'
 // import calcLiquefaction from './src/calcLiquefaction.mjs'
 import calcDepthStartEndFromCenter from './src/calcDepthStartEndFromCenter.mjs'
@@ -41,6 +40,44 @@ rows = [
     },
 ]
 rs = calcDepthStartEndFromCenter(rows)
+console.log(rs)
+// => [
+//   { depth: 4, depthStart: 0, depthEnd: 5 },
+//   { depth: 6, depthStart: 5, depthEnd: 13 },
+//   { depth: 20, depthStart: 13, depthEnd: 20 }
+// ]
+
+rows = [
+    {
+        depth: 4,
+    },
+    {
+        depth: 6,
+    },
+    {
+        depth: 20,
+    },
+]
+rs = calcDepthStartEndFromCenter(rows, { depthEndMax: 25 })
+console.log(rs)
+// => [
+//   { depth: 4, depthStart: 0, depthEnd: 5 },
+//   { depth: 6, depthStart: 5, depthEnd: 13 },
+//   { depth: 20, depthStart: 13, depthEnd: 25 }
+// ]
+
+rows = [
+    {
+        depth: 4,
+    },
+    {
+        depth: 6,
+    },
+    {
+        depth: 20,
+    },
+]
+rs = calcDepthStartEndFromCenter(rows, { depthEndMax: 15 })
 console.log(rs)
 // => [
 //   { depth: 4, depthStart: 0, depthEnd: 5 },

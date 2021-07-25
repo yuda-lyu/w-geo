@@ -9,7 +9,7 @@ rollupFiles({ //rollupFiles預設會clean folder
     fdSrc,
     fdTar,
     nameDistType: 'kebabCase',
-    bNodePolyfill: true,
+    // bNodePolyfill: true,
     // bMinify: false,
     globals: {
     },

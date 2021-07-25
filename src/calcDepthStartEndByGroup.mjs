@@ -25,6 +25,7 @@ import calcDepthStartEndFromCenter from './calcDepthStartEndFromCenter.mjs'
  * @param {String} [opt.keyGroup='group'] 輸入群組代號欄位鍵值字串，預設'group'
  * @param {String} [opt.keyDepthStart='depthStart'] 輸入欲儲存之起始深度欄位鍵值字串，預設'depthStart'
  * @param {String} [opt.keyDepthEnd='depthEnd'] 輸入欲儲存之結束深度欄位鍵值字串，預設'depthEnd'
+ * @param {Number} [opt.depthEndMax=null] 輸入最大結束深度數字，若最深樣本的結束深度若小於depthEndMax，則自動給予depthEndMax，預設null
  * @returns {Array} 回傳群組化後添加起訖深度與所屬原數據的陣列
  * @example
  *
@@ -84,6 +85,64 @@ import calcDepthStartEndFromCenter from './calcDepthStartEndFromCenter.mjs'
  * //         "group": "c",
  * //         "depthStart": 13,
  * //         "depthEnd": 20
+ * //       }
+ * //     ]
+ * //   }
+ * // ]
+ *
+ * rows = [
+ *     {
+ *         depth: 2,
+ *         group: 'a',
+ *     },
+ *     {
+ *         depth: 6,
+ *         group: 'b',
+ *     },
+ *     {
+ *         depth: 20,
+ *         group: 'c',
+ *     },
+ * ]
+ * rs = calcDepthStartEndByGroup(rows, { depthEndMax: 25 })
+ * console.log(JSON.stringify(rs, null, 2))
+ * // => [
+ * //   {
+ * //     "group": "a",
+ * //     "depthStart": 0,
+ * //     "depthEnd": 4,
+ * //     "rows": [
+ * //       {
+ * //         "depth": 2,
+ * //         "group": "a",
+ * //         "depthStart": 0,
+ * //         "depthEnd": 4
+ * //       }
+ * //     ]
+ * //   },
+ * //   {
+ * //     "group": "b",
+ * //     "depthStart": 4,
+ * //     "depthEnd": 13,
+ * //     "rows": [
+ * //       {
+ * //         "depth": 6,
+ * //         "group": "b",
+ * //         "depthStart": 4,
+ * //         "depthEnd": 13
+ * //       }
+ * //     ]
+ * //   },
+ * //   {
+ * //     "group": "c",
+ * //     "depthStart": 13,
+ * //     "depthEnd": 25,
+ * //     "rows": [
+ * //       {
+ * //         "depth": 20,
+ * //         "group": "c",
+ * //         "depthStart": 13,
+ * //         "depthEnd": 25
  * //       }
  * //     ]
  * //   }
@@ -288,6 +347,15 @@ function calcDepthStartEndByGroup(rows, opt = {}) {
         keyDepthEnd = 'depthEnd'
     }
 
+    //depthEndMax
+    let depthEndMax = get(opt, 'depthEndMax')
+    if (isnum(depthEndMax)) {
+        depthEndMax = cdbl(depthEndMax)
+    }
+    else {
+        depthEndMax = null
+    }
+
     //判斷中點深度需為有效數字
     each(rows, (v, k) => {
 
@@ -358,7 +426,7 @@ function calcDepthStartEndByGroup(rows, opt = {}) {
     }
 
     //calcDepthStartEndFromCenter
-    rows = calcDepthStartEndFromCenter(rows, { keyDepth, keyDepthStart, keyDepthEnd })
+    rows = calcDepthStartEndFromCenter(rows, { keyDepth, keyDepthStart, keyDepthEnd, depthEndMax })
 
     //ts, 備份
     let ts = cloneDeep(rows)
