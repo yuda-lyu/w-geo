@@ -5,6 +5,7 @@ import size from 'lodash/size'
 import isNumber from 'lodash/isNumber'
 import join from 'lodash/join'
 import sortBy from 'lodash/sortBy'
+import cloneDeep from 'lodash/cloneDeep'
 import cdbl from 'wsemi/src/cdbl.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
 import isearr from 'wsemi/src/isearr.mjs'
@@ -176,6 +177,9 @@ function calcDepthStartEndFromCenter(rows, opt = {}) {
     if (size(errs) > 0) {
         throw new Error(join(errs, '; '))
     }
+
+    //cloneDeep
+    rows = cloneDeep(rows)
 
     //sortBy
     rows = sortBy(rows, (v) => {

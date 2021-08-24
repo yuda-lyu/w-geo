@@ -382,6 +382,9 @@ function calcDepthStartEndByGroup(rows, opt = {}) {
         throw new Error(join(errs, '; '))
     }
 
+    //cloneDeep
+    rows = cloneDeep(rows)
+
     //sortBy
     rows = sortBy(rows, (v) => {
         return cdbl(v[keyDepth])
