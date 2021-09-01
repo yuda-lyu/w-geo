@@ -27,7 +27,7 @@
 
 <nav >
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByGroup">calcDepthStartEndByGroup</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndFromCenter">calcDepthStartEndFromCenter</a></li><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.groupByDepthStartEnd">groupByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPorousParams">relaPorousParams</a></li><li data-type='method'><a href="w-geo.html#.sptHBF">sptHBF</a></li><li data-type='method'><a href="w-geo.html#.sptNCEER">sptNCEER</a></li><li data-type='method'><a href="w-geo.html#.sptNJRA">sptNJRA</a></li><li data-type='method'><a href="w-geo.html#.sptSeed">sptSeed</a></li><li data-type='method'><a href="w-geo.html#.sptTY">sptTY</a></li></ul></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByGroup">calcDepthStartEndByGroup</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndFromCenter">calcDepthStartEndFromCenter</a></li><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepth">checkDepth</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.groupByDepthStartEnd">groupByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPorousParams">relaPorousParams</a></li><li data-type='method'><a href="w-geo.html#.sepDepthStartEndByDepth">sepDepthStartEndByDepth</a></li><li data-type='method'><a href="w-geo.html#.sptHBF">sptHBF</a></li><li data-type='method'><a href="w-geo.html#.sptNCEER">sptNCEER</a></li><li data-type='method'><a href="w-geo.html#.sptNJRA">sptNJRA</a></li><li data-type='method'><a href="w-geo.html#.sptSeed">sptSeed</a></li><li data-type='method'><a href="w-geo.html#.sptTY">sptTY</a></li></ul></li></ul>
 </nav>
 
 <div id="main">
@@ -1412,6 +1412,294 @@
 
     
 
+    <h4 class="name" id=".checkDepth"><span class="type-signature">(static) </span>checkDepth<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="checkDepth.mjs.html">checkDepth.mjs</a>, <a href="checkDepth.mjs.html#line90">line 90</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>檢核樣本數據內深度是否有效與連續</p>
+<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/checkDepth.test.js">Github</a></p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>let rowslet errsrows = [    {        depth: 0,    },    {        depth: 5,    },    {        depth: 10,    },]errs = checkDepth(rows)console.log(errs)// => []rows = [    {        depth: 0,    },    {        depth: 10,    },]errs = checkDepth(rows)console.log(errs)// => []rows = [    {        depth: '0',    },    {        depth: '5',    },]errs = checkDepth(rows)console.log(errs)// => []rows = [    {        depth: '0',    },    {        depth: 'abc',    },]errs = checkDepth(rows)console.log(errs)// => [ '第 1 樣本中點深度depth[abc]非有效數字' ]rows = [    {        center_depth: 0,    },    {        center_depth: 5,    },]errs = checkDepth(rows, { keyDepth: 'center_depth' })console.log(errs)// => []</code></pre>
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>rows</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入數據陣列，各數據為物件，至少需包含起始深度(depthStart)與結束深度(depthEnd)，深度單位為m</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>opt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>{}</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入設定物件，預設{}</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>keyDepth</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'depth'</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入深度欄位鍵值字串，預設'depth'</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>回傳錯誤訊息陣列</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
     <h4 class="name" id=".checkDepthStartEnd"><span class="type-signature">(static) </span>checkDepthStartEnd<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
 
     
@@ -1751,7 +2039,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="groupByDepthStartEnd.mjs.html">groupByDepthStartEnd.mjs</a>, <a href="groupByDepthStartEnd.mjs.html#line260">line 260</a>
+        <a href="groupByDepthStartEnd.mjs.html">groupByDepthStartEnd.mjs</a>, <a href="groupByDepthStartEnd.mjs.html#line261">line 261</a>
     </li></ul></dd>
     
 
@@ -2431,6 +2719,372 @@
     <dd>
         
 <span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".sepDepthStartEndByDepth"><span class="type-signature">(static) </span>sepDepthStartEndByDepth<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="sepDepthStartEndByDepth.mjs.html">sepDepthStartEndByDepth.mjs</a>, <a href="sepDepthStartEndByDepth.mjs.html#line157">line 157</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>通過指定樣本(例如中點)深度對各樣本起訖深度進行分切</p>
+<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/sepDepthStartEndByDepth.test.js">Github</a></p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>let rowslet pointslet rrows = [    {        depthStart: 0,        depthEnd: 5,        data: 'abc',    },    {        depthStart: 5,        depthEnd: 10,        data: 'def',    },]points = [{ depth: 2.5 }]r = sepDepthStartEndByDepth(rows, points)console.log(r)// => [//  { depthStart: 0, depthEnd: 2.5, data: 'abc' },//  { depthStart: 2.5, depthEnd: 5, data: 'abc' },//  { depthStart: 5, depthEnd: 10, data: 'def' }//]rows = [    {        depthStart: 0,        depthEnd: 5,        data: 'abc',    },    {        depthStart: 5,        depthEnd: 10,        data: 'def',    },]points = [{ depth: 0 }]r = sepDepthStartEndByDepth(rows, points)console.log(r)// => [//  { depthStart: 0, depthEnd: 5, data: 'abc' },//  { depthStart: 5, depthEnd: 10, data: 'def' }//]rows = [    {        depthStart: 0,        depthEnd: 5,        data: 'abc',    },    {        depthStart: 5,        depthEnd: 10,        data: 'def',    },]points = [{ depth: 5 }]r = sepDepthStartEndByDepth(rows, points)console.log(r)// => [//  { depthStart: 0, depthEnd: 5, data: 'abc' },//  { depthStart: 5, depthEnd: 10, data: 'def' }//]rows = [    {        depthStart: 0,        depthEnd: 5,        data: 'abc',    },    {        depthStart: 5,        depthEnd: 10,        data: 'def',    },]points = [{ depth: -1 }]r = sepDepthStartEndByDepth(rows, points)console.log(r)// => [//  { depthStart: 0, depthEnd: 5, data: 'abc' },//  { depthStart: 5, depthEnd: 10, data: 'def' }//]rows = [    {        depthStart: 0,        depthEnd: 5,        data: 'abc',    },    {        depthStart: 5,        depthEnd: 10,        data: 'def',    },]points = [{ depth: 11 }]r = sepDepthStartEndByDepth(rows, points)console.log(r)// => [//  { depthStart: 0, depthEnd: 5, data: 'abc' },//  { depthStart: 5, depthEnd: 10, data: 'def' }//]rows = [    {        top_depth: 0,        bottom_depth: 5,        data: 'abc',    },    {        top_depth: 5,        bottom_depth: 10,        data: 'def',    },]points = [{ center_depth: 5.5 }]r = sepDepthStartEndByDepth(rows, points, { keyDepthStart: 'top_depth', keyDepthEnd: 'bottom_depth', keyDepth: 'center_depth' })console.log(r)// => [//  { top_depth: 0, bottom_depth: 5, data: 'abc' },//  { top_depth: 5, bottom_depth: 5.5, data: 'def' },//  { top_depth: 5.5, bottom_depth: 10, data: 'def' }//]</code></pre>
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>rows</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入數據陣列，各數據為物件，至少需包含起始深度(depthStart)與結束深度(depthEnd)，深度單位為m</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>opt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>{}</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入設定物件，預設{}</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>keyDepth</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'depth'</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入中點深度欄位鍵值字串，預設'depth'</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>keyDepthStart</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'depthStart'</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入欲儲存之起始深度欄位鍵值字串，預設'depthStart'</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>keyDepthEnd</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'depthEnd'</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入欲儲存之結束深度欄位鍵值字串，預設'depthEnd'</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>回傳添加起訖深度的數據陣列</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array</span>
 
 
     </dd>
@@ -5706,7 +6360,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Tue Aug 24 2021 23:13:55 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Wed Sep 01 2021 16:29:41 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
