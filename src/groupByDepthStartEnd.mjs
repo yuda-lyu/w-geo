@@ -10,6 +10,7 @@ import cdbl from 'wsemi/src/cdbl.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
 import isearr from 'wsemi/src/isearr.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
+import checkDepth from './checkDepth.mjs'
 
 
 /**
@@ -286,6 +287,9 @@ function groupByDepthStartEnd(rows, depthStartAndEnds, opt = {}) {
         keyDepthEnd = 'depthEnd'
     }
 
+    //cloneDeep
+    rows = cloneDeep(rows)
+
     //判斷中點深度需為有效數字
     each(rows, (v, k) => {
 
@@ -304,36 +308,15 @@ function groupByDepthStartEnd(rows, depthStartAndEnds, opt = {}) {
         throw new Error(join(errs, '; '))
     }
 
-    //cloneDeep
-    rows = cloneDeep(rows)
-
     //sortBy
     rows = sortBy(rows, (v) => {
         return cdbl(v[keyDepth])
     })
 
-    //check
-    each(rows, (v, k) => {
-        if (k === 0) {
-            return true
-        }
-
-        //dc0, dc1
-        let dc0 = get(rows, `${k - 1}.${keyDepth}`, null)
-        let dc1 = get(v, keyDepth, null)
-        dc0 = cdbl(dc0)
-        dc1 = cdbl(dc1)
-
-        //check
-        if (dc0 >= dc1) {
-            errs.push(`第 ${k - 1} 樣本之中點深度${keyDepth}[${dc0}]大於等於第 ${k} 樣本之中點深度${keyDepth}[${dc1}]`)
-        }
-
-    })
-
-    //check
-    if (size(errs) > 0) {
-        throw new Error(join(errs, '; '))
+    //checkDepth
+    let ckd = checkDepth(rows, { keyDepth })
+    if (size(ckd) > 0) {
+        throw new Error(join(ckd, ', '))
     }
 
     //判斷depthStartAndEnds內各元素之起始深度需為有效數字

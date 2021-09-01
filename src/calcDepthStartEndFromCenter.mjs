@@ -160,6 +160,9 @@ function calcDepthStartEndFromCenter(rows, opt = {}) {
         depthEndMax = null
     }
 
+    //cloneDeep
+    rows = cloneDeep(rows)
+
     //判斷中點深度需為有效數字
     each(rows, (v, k) => {
 
@@ -177,9 +180,6 @@ function calcDepthStartEndFromCenter(rows, opt = {}) {
     if (size(errs) > 0) {
         throw new Error(join(errs, '; '))
     }
-
-    //cloneDeep
-    rows = cloneDeep(rows)
 
     //sortBy
     rows = sortBy(rows, (v) => {
