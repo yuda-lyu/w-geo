@@ -9,6 +9,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import cdbl from 'wsemi/src/cdbl.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
 import isearr from 'wsemi/src/isearr.mjs'
+import iseobj from 'wsemi/src/iseobj.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
 import checkDepth from './checkDepth.mjs'
 
@@ -18,7 +19,8 @@ import checkDepth from './checkDepth.mjs'
  *
  * Unit Test: {@link https://github.com/yuda-lyu/w-geo/blob/master/test/groupByDepthStartEnd.test.js Github}
  * @memberOf w-geo
- * @param {Array} rows 輸入數據陣列，各數據為物件，至少需包含起始深度(depthStart)與結束深度(depthEnd)，深度單位為m
+ * @param {Array} rows 輸入數據陣列，各數據為物件，至少需包含深度(depth)，深度單位為m
+ * @param {Array|Object} depthStartAndEnds 輸入欲提取數據的起訖深度陣列或物件，為物件時需有至少需包含起始深度(depthStart)與結束深度(depthEnd)，為陣列時則須由前述物件組成之陣列，深度單位為m
  * @param {Object} [opt={}] 輸入設定物件，預設{}
  * @param {String} [opt.keyDepth='depth'] 輸入中點深度欄位鍵值字串，預設'depth'
  * @param {String} [opt.keyGroup='group'] 輸入群組代號欄位鍵值字串，預設'group'
@@ -265,7 +267,7 @@ function groupByDepthStartEnd(rows, depthStartAndEnds, opt = {}) {
     if (!isearr(rows)) {
         throw new Error('無有效資料')
     }
-    if (!isearr(depthStartAndEnds)) {
+    if (!isearr(depthStartAndEnds) && !iseobj(depthStartAndEnds)) {
         throw new Error('無有效起訖深度資料')
     }
 
@@ -317,6 +319,11 @@ function groupByDepthStartEnd(rows, depthStartAndEnds, opt = {}) {
     let ckd = checkDepth(rows, { keyDepth })
     if (size(ckd) > 0) {
         throw new Error(join(ckd, ', '))
+    }
+
+    //check
+    if (iseobj(depthStartAndEnds)) {
+        depthStartAndEnds = [depthStartAndEnds]
     }
 
     //判斷depthStartAndEnds內各元素之起始深度需為有效數字
