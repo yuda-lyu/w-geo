@@ -370,6 +370,22 @@ function sptVolumetricStrainTokimatsuAndSeed(N160, CSR) {
     })
     // console.log('TS: N160s', N160s)
 
+    //因數化時體積應變之線段貼太近(例如1%,0.5%), 可能會在小CSR時計算當前N160對體積應變曲線時出現非遞減問題, 並導致無法內插, 故得先剔除非遞減數據
+    let N160sNewMax = N160s[0] //使用第1點
+    let N160sNew = [N160s[0]]
+    let volumetricStrainsNew = [volumetricStrains[0]]
+    each(N160s, (v, k) => {
+        if (k > 0) {
+            if (N160s[k] >= N160sNewMax) { //N160比上個儲存值還大或等於就push, N變大volumetricStrain變小
+                N160sNewMax = N160s[k]
+                N160sNew.push(N160s[k])
+                volumetricStrainsNew.push(volumetricStrains[k])
+            }
+        }
+    })
+    N160s = N160sNew
+    volumetricStrains = volumetricStrainsNew
+
     //volumetricStrain
     let volumetricStrain = interp(N160s, volumetricStrains, N160)
     if (get(volumetricStrain, 'err')) {
@@ -661,6 +677,22 @@ function sptVolumetricStrainIshiharaAndYoshimine(N172, FS) {
         return r
     })
     // console.log('IY: volumetricStrains', volumetricStrains)
+
+    //因數化時較大FS之線段貼太近, 可能會在較大FS計算當前N172對體積應變曲線時出現非遞減問題, 並導致無法內插, 故得先剔除非遞減數據
+    let volumetricStrainsNewMax = volumetricStrains[0] //使用第1點
+    let volumetricStrainsNew = [volumetricStrains[0]]
+    let N172sNew = [N172s[0]]
+    each(volumetricStrains, (v, k) => {
+        if (k > 0) {
+            if (volumetricStrains[k] <= volumetricStrainsNewMax) { //volumetricStrains比上個儲存值還小或等於就push, N變大volumetricStrain變小
+                volumetricStrainsNewMax = volumetricStrains[k]
+                volumetricStrainsNew.push(volumetricStrains[k])
+                N172sNew.push(N172s[k])
+            }
+        }
+    })
+    volumetricStrains = volumetricStrainsNew
+    N172s = N172sNew
 
     //volumetricStrain
     let volumetricStrain = interp(N172s, volumetricStrains, N172)
