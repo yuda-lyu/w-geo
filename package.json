@@ -1,14 +1,14 @@
 {
   "name": "w-geo",
-  "version": "1.0.27",
+  "version": "1.0.28",
   "description": "A tool for geotech analysis.",
   "main": "dist/w-geo.umd.js",
   "dependencies": {
     "lodash": "^4.17.21",
-    "wsemi": "^1.6.18"
+    "wsemi": "^1.6.19"
   },
   "devDependencies": {
-    "w-package-tools": "^1.0.56"
+    "w-package-tools": "^1.0.59"
   },
   "scripts": {
     "test": "mocha --parallel --timeout 60000 --experimental-modules --es-module-specifier-resolution=node",

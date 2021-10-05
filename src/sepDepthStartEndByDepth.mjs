@@ -9,7 +9,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import cdbl from 'wsemi/src/cdbl.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
 import isearr from 'wsemi/src/isearr.mjs'
-import arrinsert from 'wsemi/src/arrinsert.mjs'
+import arrInsert from 'wsemi/src/arrInsert.mjs'
 import checkDepthStartEnd from './checkDepthStartEnd.mjs'
 import checkDepth from './checkDepth.mjs'
 
@@ -234,8 +234,8 @@ function sepDepthStartEndByDepth(rows, points, opt = {}) {
                 //pullAt
                 pullAt(rows, k)
 
-                //arrinsert
-                rows = arrinsert(rows, k, [rowNew1, rowNew2])
+                //arrInsert
+                rows = arrInsert(rows, k, [rowNew1, rowNew2])
 
                 return false //強制跳出, 一次只插入一個, 故rows也需滿足checkDepthStartEnd
             }
