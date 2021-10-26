@@ -1275,6 +1275,12 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         return { rd, ks, CN, N160, N160cs, N172, CSR, CRR, FS, vstrTS, vstrIY, err: join(err, ', ') }
     }
 
+    //check ver
+    if (ver !== '2012' && ver === '2017') {
+        err.push(`ver${brk(ver)} 非2012或2017`)
+        return ret()
+    }
+
     //check depth
     if (!isnum(depth)) {
         err.push(`depth${brk(depth)} 非數字`)
@@ -1435,10 +1441,6 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
     }
     else if (ver === '2017') {
         MSFPow = -1.8 //-1.8為「依據2016土壤液化評估方法研討會結論後修正」, 依照「楊智堯_臺中市中級土壤液化潛勢地圖製作與系統說明.pdf」標注此為2017版
-    }
-    else {
-        console.log('invalid ver', ver)
-        err.push(`invalid ver=${ver}`)
     }
     MSF = (Mw / 7.5) ** (MSFPow)
     if (depth <= 10) {
@@ -1799,6 +1801,12 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         return { rd, N160, N172, c1, c2, cFC, Na, RL, cw, CN, CSR, CRR, FS, vstrTS, vstrIY, err: join(err, ', ') }
     }
 
+    //check ver
+    if (ver !== '1996' && ver === '2017') {
+        err.push(`ver${brk(ver)} 非1996或2017`)
+        return ret()
+    }
+
     //check depth
     if (!isnum(depth)) {
         err.push(`depth${brk(depth)} 非數字`)
@@ -2069,6 +2077,8 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
     let getNa = () => {
         let _Na = 0
         let cty = ''
+
+        //cty
         if (isnum(D50)) {
             if (cdbl(D50) < 2) { //D50單位(mm)
                 cty = 'sand'
@@ -2088,6 +2098,13 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
                 //不是砂或礫質土
             }
         }
+
+        //check
+        if (cty !== 'sand' && cty !== 'gravel') {
+            err.push(`無法由D50${brk(D50)}或土壤分類${brk(soilClassification)}區分砂或礫石，強制視為砂土`)
+            cty = 'sand'
+        }
+
         if (cty === 'sand') {
             if (ver === '1996') {
                 _Na = getNaForSand1996()
@@ -2095,26 +2112,20 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
             else if (ver === '2017') {
                 _Na = getNaForSand2017()
             }
-            else {
-                console.log('invalid ver', ver)
-                err.push(`invalid ver=${ver}`)
-                _Na = 0
-            }
         }
         else if (cty === 'gravel') {
-            if (isnum(D50)) {
-                D50 = cdbl(D50)
-                _Na = (1 - 0.361 * Math.log10(D50 / 2)) * N172 //D50單位(mm)
+
+            //check
+            if (!isnum(D50)) {
+                err.push(`因D50${brk(D50)}未給予或非數字，故改使用土壤分類來區分砂或礫質土，卻又被分為礫質土仍需要用D50，故強制設定D50為10(mm)`)
+                D50 = 10
             }
-            else {
-                err.push(`因D50${brk(D50)}未給予或非數字，故改使用土壤分類來區分砂或礫質土，卻又分為礫質土仍需要用D50，故強制設定Na為0`)
-                _Na = 0
-            }
+
+            D50 = cdbl(D50)
+            _Na = (1 - 0.361 * Math.log10(D50 / 2)) * N172 //D50單位(mm)
+
         }
-        else {
-            err.push(`因無D50故使用土壤分類${brk(soilClassification)}來計算Na，因不是砂或礫質土，故強制設定Na為0`)
-            _Na = 0
-        }
+
         return _Na
     }
     Na = getNa()
@@ -2124,10 +2135,6 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         }
         else if (ver === '2017') {
             RL = 0.0882 * Math.sqrt((0.85 * Na + 2.1) / 1.7)
-        }
-        else {
-            console.log('invalid ver', ver)
-            err.push(`invalid ver=${ver}`)
         }
     }
     else {
