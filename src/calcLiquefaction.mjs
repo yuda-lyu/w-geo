@@ -749,7 +749,7 @@ function sptSettlement(N160, N172, CSR, FS) {
 
         //check
         if (CSR < 0) {
-            err.push(`Volumetric Strain(Tokimatsu And Seed): CSR${brk(CSR)} < 0`)
+            err.push(`Volumetric Strain(Tokimatsu And Seed): CSR${brk(CSR)}<0`)
             vstrTS = ''
             return //清空vstr並強制跳出
         }
@@ -782,7 +782,7 @@ function sptSettlement(N160, N172, CSR, FS) {
 
         //check
         if (FS < 0) {
-            err.push(`Volumetric Strain(Ishihara And Yoshimine): FS${brk(FS)} < 0`)
+            err.push(`Volumetric Strain(Ishihara And Yoshimine): FS${brk(FS)}<0`)
             vstrIY = ''
             return //清空vstr並強制跳出
         }
@@ -851,142 +851,221 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
     let vstrIY = ''
 
     function ret() {
-        return { rd, CN, N160, N172, CSR, CRR, FS, vstrTS, vstrIY, err: join(err, ', ') }
+        return { rd, CN, N160, N172, CSR, CRR, FS, vstrTS, vstrIY, err: join(err, '; ') }
     }
 
-    //check depth
-    if (!isnum(depth)) {
-        err.push(`depth${brk(depth)} 非數字`)
-        return ret()
-    }
-    depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
-        return ret()
+    //check
+    let noLique = false
+    while (true) {
+
+        //check depth
+        if (!isnum(depth)) {
+            err.push(`depth${brk(depth)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            depth = cdbl(depth)
+
+            //check
+            if (depth < 0) {
+                err.push(`depth${brk(depth)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check waterLevelUsual, 不使用故不需檢查
+
+        //check waterLevelDesign
+        if (!isnum(waterLevelDesign)) {
+            err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
+            waterLevelDesign = 0
+        }
+        else {
+
+            //cdbl
+            waterLevelDesign = cdbl(waterLevelDesign)
+
+            //check
+            if (waterLevelDesign < 0) {
+                err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
+                waterLevelDesign = 0
+            }
+
+        }
+
+        //check soilClassification, 暫時用統一土壤分類區分 2021/05/07
+        if (!isestr(soilClassification)) {
+            err.push(`soilClassification${brk(soilClassification)}非有效字串，強制預設為SW`) //可在配合N60一併檢查才強制給SW
+            soilClassification = 'SW'
+        }
+        //soilClassification = cstr(soilClassification)
+
+        //非液化: 地下水位以上, 統一土壤分類屬黏土
+        if (depth < waterLevelDesign || isNoLique(soilClassification)) {
+            noLique = true
+            // CRR = '-'
+            // CSR = '-'
+            // FS = 10
+            // return ret()
+        }
+
+        //非液化: 深度大於20m
+        if (depth > 20) {
+            noLique = true
+            // CRR = '-'
+            // CSR = '-'
+            // FS = 10
+            // return ret()
+        }
+
+        //check N60
+        if (!isnum(N60)) {
+            err.push(`N60${brk(N60)}非數字`)
+            // return ret()
+        }
+        else {
+
+            //cdbl
+            N60 = cdbl(N60)
+
+            //check
+            if (N60 < 0) {
+                err.push(`N60${brk(N60)}<0`)
+                // return ret()
+            }
+
+            //非液化: N值>=50
+            if (N60 >= 50) {
+                noLique = true
+                // CRR = '-'
+                // CSR = '-'
+                // FS = 10
+                // return ret()
+            }
+
+        }
+
+        //check FC
+        if (!isnum(FC)) {
+            err.push(`FC${brk(FC)}非數字`)
+            // return ret()
+        }
+        else {
+
+            //cdbl
+            FC = cdbl(FC)
+
+            //check
+            if (FC < 0) {
+                err.push(`FC${brk(FC)}<0`)
+                // return ret()
+            }
+
+        }
+
+        //check svpUsual
+        if (!isnum(svpUsual)) {
+            err.push(`svpUsual${brk(svpUsual)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            svpUsual = cdbl(svpUsual)
+
+            //check
+            if (svpUsual < 0) {
+                err.push(`svpUsual${brk(svpUsual)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check svpDesign
+        if (!isnum(svpDesign)) {
+            err.push(`svpDesign${brk(svpDesign)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            svpDesign = cdbl(svpDesign)
+
+            //check
+            if (svpDesign < 0) {
+                err.push(`svpDesign${brk(svpDesign)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check sv
+        if (!isnum(sv)) {
+            err.push(`sv${brk(sv)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            sv = cdbl(sv)
+
+            //check
+            if (sv < 0) {
+                err.push(`sv${brk(sv)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check PGA
+        if (!isnum(PGA)) {
+            err.push(`PGA${brk(PGA)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            PGA = cdbl(PGA)
+
+            //check
+            if (PGA < 0) {
+                err.push(`PGA${brk(PGA)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check Mw
+        if (!isnum(Mw)) {
+            err.push(`Mw${brk(Mw)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            Mw = cdbl(Mw)
+
+            //check
+            if (Mw < 0) {
+                err.push(`Mw${brk(Mw)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        break
     }
 
-    // //check waterLevelUsual
-    // if (!isnum(waterLevelUsual)) {
-    //     err.push(`waterLevelUsual${brk(waterLevelUsual)} 非數字，預設為0 (m)`)
-    //     waterLevelUsual = 0
-    // }
-    // waterLevelUsual = cdbl(waterLevelUsual)
-    // if (waterLevelUsual < 0) {
-    //     err.push(`waterLevelUsual${brk(waterLevelUsual)} < 0，預設為0 (m)`)
-    //     waterLevelUsual = 0
-    // }
-
-    //check waterLevelDesign
-    if (!isnum(waterLevelDesign)) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} 非數字，預設為0 (m)`)
-        waterLevelDesign = 0
-    }
-    waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
-        waterLevelDesign = 0
-    }
-
-    //check soilClassification
-    if (!isestr(soilClassification)) {
-        err.push(`soilClassification${brk(soilClassification)} 非有效字串，預設為SW`) //可在配合N60一併檢查才強制給SW
-        soilClassification = 'SW'
-    }
-    //soilClassification = cstr(soilClassification)
-
-    //非液化: 地下水位以上, 統一土壤分類屬黏土
-    if (depth < waterLevelDesign || isNoLique(soilClassification)) {
+    //check noLique
+    if (noLique === true) {
+        err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
         FS = 10
-        return ret()
-    }
-
-    //非液化: 深度大於20m
-    if (depth > 20) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
-    }
-
-    //check N60, 要放在偵測土壤分類或深度或PI之後, 可減少錯誤訊息
-    if (!isnum(N60)) {
-        err.push(`N60${brk(N60)} 非數字`)
-        return ret()
-    }
-    N60 = cdbl(N60)
-    if (N60 < 0) {
-        err.push(`N60${brk(N60)} < 0`)
-        return ret()
-    }
-
-    //非液化
-    if (N60 >= 50) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
-    }
-
-    if (!isnum(FC)) {
-        err.push(`FC${brk(FC)} 非數字`)
-        return ret()
-    }
-    FC = cdbl(FC)
-    if (FC < 0) {
-        err.push(`FC${brk(FC)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(svpUsual)) {
-        err.push(`svpUsual${brk(svpUsual)} 非數字`)
-        return ret()
-    }
-    svpUsual = cdbl(svpUsual)
-    if (svpUsual < 0) {
-        err.push(`svpUsual${brk(svpUsual)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(svpDesign)) {
-        err.push(`svpDesign${brk(svpDesign)} 非數字`)
-        return ret()
-    }
-    svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(sv)) {
-        err.push(`sv${brk(sv)} 非數字`)
-        return ret()
-    }
-    sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(PGA)) {
-        err.push(`PGA${brk(PGA)} 非數字`)
-        return ret()
-    }
-    PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(Mw)) {
-        err.push(`Mw${brk(Mw)} 非數字`)
-        return ret()
-    }
-    Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
-        return ret()
+        return ret() //無錯誤並結束
     }
 
     MSF = (Mw / 7.5) ** (-1.11) //投影片資料
@@ -1179,22 +1258,22 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
             else {
                 err.push(`非預期外插情形，請洽開發者修復問題`)
                 CRR75 = ''
-                return ret()
+                return ret() //報錯並結束
             }
 
         }
         else {
             err.push(CRR75.err)
             CRR75 = ''
-            return ret()
+            return ret() //報錯並結束
         }
 
     }
 
     //check
     if (!isNumber(CRR75)) {
-        err.push(`CRR75${brk(CRR75)} 非數字`)
-        return ret()
+        err.push(`CRR75${brk(CRR75)}非數字`)
+        return ret() //報錯並結束
     }
     if (CRR75 > 0.6) {
         err.push(`CRR75${brk(CRR75)}大於0.6超過原研究範疇，強制改為0.6`)
@@ -1212,13 +1291,13 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
 
     //check
     if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+        err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)} <= 0`)
     }
     if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+        err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
 
@@ -1272,166 +1351,246 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
     let vstrIY = ''
 
     function ret() {
-        return { rd, ks, CN, N160, N160cs, N172, CSR, CRR, FS, vstrTS, vstrIY, err: join(err, ', ') }
+        return { rd, ks, CN, N160, N160cs, N172, CSR, CRR, FS, vstrTS, vstrIY, err: join(err, '; ') }
     }
 
-    //check ver
-    if (ver !== '2012' && ver !== '2017') {
-        err.push(`ver${brk(ver)} 非2012或2017`)
-        return ret()
-    }
+    //check
+    let noLique = false
+    while (true) {
 
-    //check depth
-    if (!isnum(depth)) {
-        err.push(`depth${brk(depth)} 非數字`)
-        return ret()
-    }
-    depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
-        return ret()
-    }
-
-    // //check waterLevelUsual
-    // if (!isnum(waterLevelUsual)) {
-    //     err.push(`waterLevelUsual${brk(waterLevelUsual)} 非數字，預設為0 (m)`)
-    //     waterLevelUsual = 0
-    // }
-    // waterLevelUsual = cdbl(waterLevelUsual)
-    // if (waterLevelUsual < 0) {
-    //     err.push(`waterLevelUsual${brk(waterLevelUsual)} < 0，預設為0 (m)`)
-    //     waterLevelUsual = 0
-    // }
-
-    //check waterLevelDesign
-    if (!isnum(waterLevelDesign)) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} 非數字，預設為0 (m)`)
-        waterLevelDesign = 0
-    }
-    waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
-        waterLevelDesign = 0
-    }
-
-    //check soilClassification
-    if (!isestr(soilClassification)) {
-        err.push(`soilClassification${brk(soilClassification)} 非有效字串，預設為SW`) //可在配合N60一併檢查才強制給SW
-        soilClassification = 'SW'
-    }
-    //soilClassification = cstr(soilClassification)
-
-    //非液化: 地下水位以上, 統一土壤分類屬黏土, (N160cs>=39, 於後面檢查)
-    if (depth < waterLevelDesign || isNoLique(soilClassification)) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
-    }
-
-    //非液化: 深度大於20m
-    if (depth > 20) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
-    }
-
-    //check PI為NP, 不需阿太堡時，預設樣品PI、LL位於塑性圖Aline以下，並隸屬於ML(LL<50)，此時使用PI=0、LL=40
-    if (trim(cstr(PI)) === 'NP') {
-        PI = 0
-    }
-
-    //非液化: 新規範「第十一章_耐震設計規範之土壤液化修訂條文」中訂立PI值>7為非液化 2021/02/04
-    if (!isnum(PI)) {
-        err.push(`PI${brk(PI)} 非數字與非NP，略過部份非液化條件檢核`) //經與所方的討論，傾向不管排除條件，能算的都算還是照算，不然孔數會不符合密度需求 2021/05/21
-    }
-    else {
-        if (cdbl(PI) > 7) { //PI單位(%)
-            CRR = '-'
-            CSR = '-'
-            FS = 10
-            return ret()
+        //check ver
+        if (ver !== '2012' && ver !== '2017') {
+            err.push(`ver${brk(ver)} 非2012或2017`)
+            return ret() //報錯並結束
         }
+
+        //check depth
+        if (!isnum(depth)) {
+            err.push(`depth${brk(depth)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            depth = cdbl(depth)
+
+            //check
+            if (depth < 0) {
+                err.push(`depth${brk(depth)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check waterLevelUsual, 不使用故不需檢查
+
+        //check waterLevelDesign
+        if (!isnum(waterLevelDesign)) {
+            err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
+            waterLevelDesign = 0
+        }
+        else {
+
+            //cdbl
+            waterLevelDesign = cdbl(waterLevelDesign)
+
+            //check
+            if (waterLevelDesign < 0) {
+                err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
+                waterLevelDesign = 0
+            }
+
+        }
+
+        //check soilClassification, 暫時用統一土壤分類區分 2021/05/07
+        if (!isestr(soilClassification)) {
+            err.push(`soilClassification${brk(soilClassification)}非有效字串，強制預設為SW`) //可在配合N60一併檢查才強制給SW
+            soilClassification = 'SW'
+        }
+        //soilClassification = cstr(soilClassification)
+
+        //非液化: 地下水位以上, 統一土壤分類屬黏土, (N160cs>=39, 於後面檢查)
+        if (depth < waterLevelDesign || isNoLique(soilClassification)) {
+            noLique = true
+            // CRR = '-'
+            // CSR = '-'
+            // FS = 10
+            // return ret()
+        }
+
+        //非液化: 深度大於20m
+        if (depth > 20) {
+            noLique = true
+            // CRR = '-'
+            // CSR = '-'
+            // FS = 10
+            // return ret()
+        }
+
+        //check PI為NP, 不需阿太堡時，預設樣品PI、LL位於塑性圖Aline以下，並隸屬於ML(LL<50)，此時使用PI=0、LL=40
+        if (trim(cstr(PI)) === 'NP') {
+            PI = 0
+        }
+
+        //非液化: 新規範「第十一章_耐震設計規範之土壤液化修訂條文」中訂立PI值>7為非液化 2021/02/04
+        if (!isnum(PI)) {
+            err.push(`PI${brk(PI)}非數字與非NP，強制略過部份非液化條件檢核`) //經與所方的討論，傾向不管排除條件，能算的都算還是照算，不然孔數會不符合密度需求 2021/05/21
+        }
+        else {
+            if (cdbl(PI) > 7) { //PI單位(%)
+                noLique = true
+                // CRR = '-'
+                // CSR = '-'
+                // FS = 10
+                // return ret()
+            }
+        }
+
+        //check N60
+        if (!isnum(N60)) {
+            err.push(`N60${brk(N60)}非數字`)
+            // return ret()
+        }
+        else {
+
+            //cdbl
+            N60 = cdbl(N60)
+
+            //check
+            if (N60 < 0) {
+                err.push(`N60${brk(N60)}<0`)
+                // return ret()
+            }
+
+            //非液化: N值>=50
+            if (N60 >= 50) {
+                noLique = true
+                // CRR = '-'
+                // CSR = '-'
+                // FS = 10
+                // return ret()
+            }
+
+        }
+
+        //check FC
+        if (!isnum(FC)) {
+            err.push(`FC${brk(FC)}非數字`)
+            // return ret()
+        }
+        else {
+
+            //cdbl
+            FC = cdbl(FC)
+
+            //check
+            if (FC < 0) {
+                err.push(`FC${brk(FC)}<0`)
+                // return ret()
+            }
+
+        }
+
+        //check svpUsual
+        if (!isnum(svpUsual)) {
+            err.push(`svpUsual${brk(svpUsual)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            svpUsual = cdbl(svpUsual)
+
+            //check
+            if (svpUsual < 0) {
+                err.push(`svpUsual${brk(svpUsual)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check svpDesign
+        if (!isnum(svpDesign)) {
+            err.push(`svpDesign${brk(svpDesign)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            svpDesign = cdbl(svpDesign)
+
+            //check
+            if (svpDesign < 0) {
+                err.push(`svpDesign${brk(svpDesign)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check sv
+        if (!isnum(sv)) {
+            err.push(`sv${brk(sv)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            sv = cdbl(sv)
+
+            //check
+            if (sv < 0) {
+                err.push(`sv${brk(sv)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check PGA
+        if (!isnum(PGA)) {
+            err.push(`PGA${brk(PGA)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            PGA = cdbl(PGA)
+
+            //check
+            if (PGA < 0) {
+                err.push(`PGA${brk(PGA)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check Mw
+        if (!isnum(Mw)) {
+            err.push(`Mw${brk(Mw)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            Mw = cdbl(Mw)
+
+            //check
+            if (Mw < 0) {
+                err.push(`Mw${brk(Mw)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        break
     }
 
-    //check N60, 要放在偵測土壤分類或深度或PI之後, 可減少錯誤訊息
-    if (!isnum(N60)) {
-        err.push(`N60${brk(N60)} 非數字`)
-        return ret()
-    }
-    N60 = cdbl(N60)
-    if (N60 < 0) {
-        err.push(`N60${brk(N60)} < 0`)
-        return ret()
-    }
-
-    //非液化
-    if (N60 >= 50) {
+    //check noLique
+    if (noLique === true) {
+        err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
         FS = 10
-        return ret()
-    }
-
-    if (!isnum(FC)) {
-        err.push(`FC${brk(FC)} 非數字`)
-        return ret()
-    }
-    FC = cdbl(FC)
-    if (FC < 0) {
-        err.push(`FC${brk(FC)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(svpUsual)) {
-        err.push(`svpUsual${brk(svpUsual)} 非數字`)
-        return ret()
-    }
-    svpUsual = cdbl(svpUsual)
-    if (svpUsual < 0) {
-        err.push(`svpUsual${brk(svpUsual)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(svpDesign)) {
-        err.push(`svpDesign${brk(svpDesign)} 非數字`)
-        return ret()
-    }
-    svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(sv)) {
-        err.push(`sv${brk(sv)} 非數字`)
-        return ret()
-    }
-    sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(PGA)) {
-        err.push(`PGA${brk(PGA)} 非數字`)
-        return ret()
-    }
-    PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(Mw)) {
-        err.push(`Mw${brk(Mw)} 非數字`)
-        return ret()
-    }
-    Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
-        return ret()
+        return ret() //無錯誤並結束
     }
 
     //MSFPow, 原莊長賢excel內MSFPow=-1.11
@@ -1463,10 +1622,11 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
 
     //非液化: (地下水位以上, 統一土壤分類屬黏土, 已於前面檢查), N160cs>=39
     if (N160cs >= 39) {
+        err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
         FS = 10
-        return ret()
+        return ret() //已於while區塊外, 無錯誤並結束
     }
 
     let CRR75 = 0.08 + 0.0035 * N160cs / (1 - N160cs / 39)
@@ -1481,13 +1641,13 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
 
     //check
     if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+        err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)} <= 0`)
     }
     if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+        err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
 
@@ -1541,142 +1701,221 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
     let vstrIY = ''
 
     function ret() {
-        return { rd, alpha, beta, CN, N160, N160cs, N172, CSR, CRR, FS, vstrTS, vstrIY, err: join(err, ', ') }
+        return { rd, alpha, beta, CN, N160, N160cs, N172, CSR, CRR, FS, vstrTS, vstrIY, err: join(err, '; ') }
     }
 
-    //check depth
-    if (!isnum(depth)) {
-        err.push(`depth${brk(depth)} 非數字`)
-        return ret()
-    }
-    depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
-        return ret()
+    //check
+    let noLique = false
+    while (true) {
+
+        //check depth
+        if (!isnum(depth)) {
+            err.push(`depth${brk(depth)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            depth = cdbl(depth)
+
+            //check
+            if (depth < 0) {
+                err.push(`depth${brk(depth)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check waterLevelUsual, 不使用故不需檢查
+
+        //check waterLevelDesign
+        if (!isnum(waterLevelDesign)) {
+            err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
+            waterLevelDesign = 0
+        }
+        else {
+
+            //cdbl
+            waterLevelDesign = cdbl(waterLevelDesign)
+
+            //check
+            if (waterLevelDesign < 0) {
+                err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
+                waterLevelDesign = 0
+            }
+
+        }
+
+        //check soilClassification, 暫時用統一土壤分類區分 2021/05/07
+        if (!isestr(soilClassification)) {
+            err.push(`soilClassification${brk(soilClassification)}非有效字串，強制預設為SW`) //可在配合N60一併檢查才強制給SW
+            soilClassification = 'SW'
+        }
+        //soilClassification = cstr(soilClassification)
+
+        //非液化: 地下水位以上, 統一土壤分類屬黏土, (N160cs>=30, 於後面處理)
+        if (depth < waterLevelDesign || isNoLique(soilClassification)) {
+            noLique = true
+            // CRR = '-'
+            // CSR = '-'
+            // FS = 10
+            // return ret()
+        }
+
+        //非液化: 深度大於20m
+        if (depth > 20) {
+            noLique = true
+            // CRR = '-'
+            // CSR = '-'
+            // FS = 10
+            // return ret()
+        }
+
+        //check N60
+        if (!isnum(N60)) {
+            err.push(`N60${brk(N60)}非數字`)
+            // return ret()
+        }
+        else {
+
+            //cdbl
+            N60 = cdbl(N60)
+
+            //check
+            if (N60 < 0) {
+                err.push(`N60${brk(N60)}<0`)
+                // return ret()
+            }
+
+            //非液化: N值>=50
+            if (N60 >= 50) {
+                noLique = true
+                // CRR = '-'
+                // CSR = '-'
+                // FS = 10
+                // return ret()
+            }
+
+        }
+
+        //check FC
+        if (!isnum(FC)) {
+            err.push(`FC${brk(FC)}非數字`)
+            // return ret()
+        }
+        else {
+
+            //cdbl
+            FC = cdbl(FC)
+
+            //check
+            if (FC < 0) {
+                err.push(`FC${brk(FC)}<0`)
+                // return ret()
+            }
+
+        }
+
+        //check svpUsual
+        if (!isnum(svpUsual)) {
+            err.push(`svpUsual${brk(svpUsual)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            svpUsual = cdbl(svpUsual)
+
+            //check
+            if (svpUsual < 0) {
+                err.push(`svpUsual${brk(svpUsual)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check svpDesign
+        if (!isnum(svpDesign)) {
+            err.push(`svpDesign${brk(svpDesign)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            svpDesign = cdbl(svpDesign)
+
+            //check
+            if (svpDesign < 0) {
+                err.push(`svpDesign${brk(svpDesign)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check sv
+        if (!isnum(sv)) {
+            err.push(`sv${brk(sv)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            sv = cdbl(sv)
+
+            //check
+            if (sv < 0) {
+                err.push(`sv${brk(sv)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check PGA
+        if (!isnum(PGA)) {
+            err.push(`PGA${brk(PGA)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            PGA = cdbl(PGA)
+
+            //check
+            if (PGA < 0) {
+                err.push(`PGA${brk(PGA)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check Mw
+        if (!isnum(Mw)) {
+            err.push(`Mw${brk(Mw)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            Mw = cdbl(Mw)
+
+            //check
+            if (Mw < 0) {
+                err.push(`Mw${brk(Mw)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        break
     }
 
-    // //check waterLevelUsual
-    // if (!isnum(waterLevelUsual)) {
-    //     err.push(`waterLevelUsual${brk(waterLevelUsual)} 非數字，預設為0 (m)`)
-    //     waterLevelUsual = 0
-    // }
-    // waterLevelUsual = cdbl(waterLevelUsual)
-    // if (waterLevelUsual < 0) {
-    //     err.push(`waterLevelUsual${brk(waterLevelUsual)} < 0，預設為0 (m)`)
-    //     waterLevelUsual = 0
-    // }
-
-    //check waterLevelDesign
-    if (!isnum(waterLevelDesign)) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} 非數字，預設為0 (m)`)
-        waterLevelDesign = 0
-    }
-    waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
-        waterLevelDesign = 0
-    }
-
-    //check soilClassification
-    if (!isestr(soilClassification)) {
-        err.push(`soilClassification${brk(soilClassification)} 非有效字串，預設為SW`) //可在配合N60一併檢查才強制給SW
-        soilClassification = 'SW'
-    }
-    //soilClassification = cstr(soilClassification)
-
-    //非液化: 地下水位以上, 統一土壤分類屬黏土, (N160cs>=30, 於後面處理)
-    if (depth < waterLevelDesign || isNoLique(soilClassification)) {
+    //check noLique
+    if (noLique === true) {
+        err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
         FS = 10
-        return ret()
-    }
-
-    //非液化: 深度大於20m
-    if (depth > 20) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
-    }
-
-    //check N60, 要放在偵測土壤分類或深度或PI之後, 可減少錯誤訊息
-    if (!isnum(N60)) {
-        err.push(`N60${brk(N60)} 非數字`)
-        return ret()
-    }
-    N60 = cdbl(N60)
-    if (N60 < 0) {
-        err.push(`N60${brk(N60)} < 0`)
-        return ret()
-    }
-
-    //非液化
-    if (N60 >= 50) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
-    }
-
-    if (!isnum(FC)) {
-        err.push(`FC${brk(FC)} 非數字`)
-        return ret()
-    }
-    FC = cdbl(FC)
-    if (FC < 0) {
-        err.push(`FC${brk(FC)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(svpUsual)) {
-        err.push(`svpUsual${brk(svpUsual)} 非數字`)
-        return ret()
-    }
-    svpUsual = cdbl(svpUsual)
-    if (svpUsual < 0) {
-        err.push(`svpUsual${brk(svpUsual)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(svpDesign)) {
-        err.push(`svpDesign${brk(svpDesign)} 非數字`)
-        return ret()
-    }
-    svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(sv)) {
-        err.push(`sv${brk(sv)} 非數字`)
-        return ret()
-    }
-    sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(PGA)) {
-        err.push(`PGA${brk(PGA)} 非數字`)
-        return ret()
-    }
-    PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(Mw)) {
-        err.push(`Mw${brk(Mw)} 非數字`)
-        return ret()
-    }
-    Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
-        return ret()
+        return ret() //無錯誤並結束
     }
 
     MSF = (Mw / 7.5) ** (-2.56)
@@ -1706,10 +1945,11 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
 
     //非液化: (地下水位以上, 統一土壤分類屬黏土, 已於前面處理), N160cs>=30
     if (N160cs >= 30) {
+        err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
         FS = 10
-        return ret()
+        return ret() //已於while區塊外, 無錯誤並結束
     }
 
     let a = 4.844e-2
@@ -1732,13 +1972,13 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
 
     //check
     if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+        err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)} <= 0`)
     }
     if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+        err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
 
@@ -1798,239 +2038,317 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
     let vstrIY = ''
 
     function ret() {
-        return { rd, N160, N172, c1, c2, cFC, Na, RL, cw, CN, CSR, CRR, FS, vstrTS, vstrIY, err: join(err, ', ') }
+        return { rd, N160, N172, c1, c2, cFC, Na, RL, cw, CN, CSR, CRR, FS, vstrTS, vstrIY, err: join(err, '; ') }
     }
 
-    //check ver
-    if (ver !== '1996' && ver !== '2017') {
-        err.push(`ver${brk(ver)} 非1996或2017`)
-        return ret()
-    }
+    //check
+    let noLique = false
+    while (true) {
 
-    //check depth
-    if (!isnum(depth)) {
-        err.push(`depth${brk(depth)} 非數字`)
-        return ret()
-    }
-    depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
-        return ret()
-    }
-
-    // //check waterLevelUsual
-    // if (!isnum(waterLevelUsual)) {
-    //     err.push(`waterLevelUsual${brk(waterLevelUsual)} 非數字，預設為0 (m)`)
-    //     waterLevelUsual = 0
-    // }
-    // waterLevelUsual = cdbl(waterLevelUsual)
-    // if (waterLevelUsual < 0) {
-    //     err.push(`waterLevelUsual${brk(waterLevelUsual)} < 0，預設為0 (m)`)
-    //     waterLevelUsual = 0
-    // }
-
-    //check waterLevelDesign
-    if (!isnum(waterLevelDesign)) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} 非數字，預設為0 (m)`)
-        waterLevelDesign = 0
-    }
-    waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
-        waterLevelDesign = 0
-    }
-
-    //check N60, 要放在偵測土壤分類或深度或PI之後, 可減少錯誤訊息
-    if (!isnum(N60)) {
-        err.push(`N60${brk(N60)} 非數字`)
-        return ret()
-    }
-    N60 = cdbl(N60)
-    if (N60 < 0) {
-        err.push(`N60${brk(N60)} < 0`)
-        return ret()
-    }
-
-    //非液化
-    if (N60 >= 50) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
-    }
-
-    //check FC
-    if (!isnum(FC)) {
-        err.push(`FC${brk(FC)} 非數字`)
-        return ret()
-    }
-    FC = cdbl(FC)
-    if (FC < 0) {
-        err.push(`FC${brk(FC)} < 0`)
-        return ret()
-    }
-
-    //check D50
-    if (!isnum(D50)) {
-        err.push(`D50${brk(D50)} 非數字，略過部份非液化條件檢核`) //經與所方的討論，傾向不管排除條件，能算的都算還是照算，不然孔數會不符合密度需求 2021/05/21
-    }
-
-    //check D10
-    if (!isnum(D10)) {
-        err.push(`D10${brk(D10)} 非數字，略過部份非液化條件檢核`) //經與所方的討論，傾向不管排除條件，能算的都算還是照算，不然孔數會不符合密度需求 2021/05/21
-    }
-
-    //沖積層の土層で、以下の３つの条件のすべてに該当する場合には、地震時に橋に影響を与える液状化が生じる可能性があるため、液状化の判定を行わなければならない。
-    //如果在沖積土層中滿足以下所有三個條件，則在地震期間可能會發生影響橋樑的液化，因此必須確定液化。
-
-    //1.地下水位が地表面から10ｍ以内にあり、かつ地表面から20ｍ以内のさに存在する飽和土層
-    //1.地下水位距地面10m以內，距地面20m以內的飽和土層
-
-    //2.細粒分含有率FCが35％以下の土層またはFCが35％を超えても塑性指数IPが15以下の土層
-    //2.細顆粒含量FC為35％以下的土層，或者FC超過35％但塑性指數IP小於15的土層
-
-    //3.50％粒径Ｄ50が10㎜以下で、かつ10％粒径Ｄ10が１㎜以下である土層
-    //3.50％粒徑D50為10mm以下的土層，和10％粒徑D10為1mm以下的土層
-
-    //非液化: 地下水位以上, 地下水低於地表下10m以下, 細料含量>35%且PI值>=15, D50>10mm或D10>1mm
-    if (depth < waterLevelDesign || waterLevelDesign > 10) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
-    }
-
-    //非液化: 地下水位以上, 地下水低於地表下10m以下, 細料含量>35%且PI值>=15, D50>10mm或D10>1mm
-    // if (!isnum(PI)) {
-    //     err.push(`PI${brk(PI)} 非數字與非NP，略過部份非液化條件檢核`) //經與所方的討論，傾向不管排除條件，能算的都算還是照算，不然孔數會不符合密度需求 2021/05/21
-    // }
-    // else {
-    //     if (FC > 35 && cdbl(PI) >= 15) { //PI單位(%)
-    //         // console.log(`PI: 因 FC > 35 && cdbl(PI) >= 15, 故 FS=10`)
-    //         CRR = '-'
-    //         CSR = '-'
-    //         FS = 10
-    //         return ret()
-    //     }
-    // }
-    if (FC <= 35) {
-        //可能液化
-    }
-    else {
-        //FC > 35
-
-        //check PI為NP, 不需阿太堡時，預設樣品PI、LL位於塑性圖Aline以下，並隸屬於ML(LL<50)，此時使用PI=0、LL=40
-        if (trim(cstr(PI)) === 'NP') {
-            PI = 0
+        //check ver
+        if (ver !== '1996' && ver !== '2017') {
+            err.push(`ver${brk(ver)} 非1996或2017`)
+            return ret() //報錯並結束
         }
 
-        //check PI
-        if (!isnum(PI)) {
-            err.push(`PI${brk(PI)} 非數字與非NP，略過部份非液化條件檢核`) //經與所方的討論，傾向不管排除條件，能算的都算還是照算，不然孔數會不符合密度需求 2021/05/21
+        //check depth
+        if (!isnum(depth)) {
+            err.push(`depth${brk(depth)}非數字`)
+            return ret() //報錯並結束
         }
         else {
-            if (cdbl(PI) < 15) { //PI單位(%)
-                //可能液化, FC超過35％但塑性指數IP小於15的土層
+
+            //cdbl
+            depth = cdbl(depth)
+
+            //check
+            if (depth < 0) {
+                err.push(`depth${brk(depth)}<0`)
+                return ret() //報錯並結束
             }
-            else {
-                // console.log(`PI: 因 FC > 35 && cdbl(PI) >= 15, 故 FS=10`)
-                CRR = '-'
-                CSR = '-'
-                FS = 10
-                return ret()
+
+        }
+
+        //check waterLevelUsual, 不使用故不需檢查
+
+        //check waterLevelDesign
+        if (!isnum(waterLevelDesign)) {
+            err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
+            waterLevelDesign = 0
+        }
+        else {
+
+            //cdbl
+            waterLevelDesign = cdbl(waterLevelDesign)
+
+            //check
+            if (waterLevelDesign < 0) {
+                err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
+                waterLevelDesign = 0
             }
+
         }
 
-    }
-
-    //非液化: 地下水位以上, 地下水低於地表下10m以下, 細料含量>35%且PI值>=15, D50>10mm或D10>1mm
-    if (isnum(D50) && isnum(D10)) {
-        if (cdbl(D50) > 10) { //D50單位(mm)
-            // console.log(`D50: 因 cdbl(D50) > 10, 故 FS=10`)
-            CRR = '-'
-            CSR = '-'
-            FS = 10
-            return ret()
+        //check soilClassification, 暫時用統一土壤分類區分 2021/05/07
+        if (!isestr(soilClassification)) {
+            err.push(`soilClassification${brk(soilClassification)}非有效字串，強制預設為SW`) //可在配合N60一併檢查才強制給SW
+            soilClassification = 'SW'
         }
-        if (cdbl(D10) > 1) { //D10單位(mm)
-            // console.log(`D10: 因 cdbl(D10) > 1, 故 FS=10`)
-            CRR = '-'
-            CSR = '-'
-            FS = 10
-            return ret()
+        //soilClassification = cstr(soilClassification)
+
+        //非液化: 非砂或礫質土, 強制視為非液化, 暫時用統一土壤分類區分 2021/05/07
+        if (isNoLique(soilClassification)) {
+            noLique = true
+            // CRR = '-'
+            // CSR = '-'
+            // FS = 10
+            // return ret()
         }
+
+        //非液化: 深度大於20m
+        if (depth > 20) {
+            noLique = true
+            // CRR = '-'
+            // CSR = '-'
+            // FS = 10
+            // return ret()
+        }
+
+        //check N60
+        if (!isnum(N60)) {
+            err.push(`N60${brk(N60)}非數字`)
+            // return ret()
+        }
+        else {
+
+            //cdbl
+            N60 = cdbl(N60)
+
+            //check
+            if (N60 < 0) {
+                err.push(`N60${brk(N60)}<0`)
+                // return ret()
+            }
+
+            //非液化: N值>=50
+            if (N60 >= 50) {
+                noLique = true
+                // CRR = '-'
+                // CSR = '-'
+                // FS = 10
+                // return ret()
+            }
+
+        }
+
+        //沖積層の土層で、以下の３つの条件のすべてに該当する場合には、地震時に橋に影響を与える液状化が生じる可能性があるため、液状化の判定を行わなければならない。
+        //如果在沖積土層中滿足以下所有三個條件，則在地震期間可能會發生影響橋樑的液化，因此必須確定液化。
+
+        //1.地下水位が地表面から10ｍ以内にあり、かつ地表面から20ｍ以内のさに存在する飽和土層
+        //1.地下水位距地面10m以內，距地面20m以內的飽和土層
+
+        //2.細粒分含有率FCが35％以下の土層またはFCが35％を超えても塑性指数IPが15以下の土層
+        //2.細顆粒含量FC為35％以下的土層，或者FC超過35％但塑性指數IP小於15的土層
+
+        //3.50％粒径Ｄ50が10㎜以下で、かつ10％粒径Ｄ10が１㎜以下である土層
+        //3.50％粒徑D50為10mm以下的土層，和10％粒徑D10為1mm以下的土層
+
+        //非液化: 地下水位以上, 地下水低於地表下10m以下, 細料含量>35%且PI值>=15, D50>10mm或D10>1mm
+        if (depth < waterLevelDesign || waterLevelDesign > 10) {
+            noLique = true
+            // CRR = '-'
+            // CSR = '-'
+            // FS = 10
+            // return ret()
+        }
+
+        //check FC
+        if (!isnum(FC)) {
+            err.push(`FC${brk(FC)}非數字`)
+            // return ret()
+        }
+        else {
+
+            //cdbl
+            FC = cdbl(FC)
+
+            //check
+            if (FC < 0) {
+                err.push(`FC${brk(FC)}<0`)
+                // return ret()
+            }
+            else if (FC <= 35) { //可能液化
+            }
+            else { //FC > 35
+                //非液化: 地下水位以上, 地下水低於地表下10m以下, 細料含量>35%且PI值>=15, D50>10mm或D10>1mm
+
+                //check PI為NP, 不需阿太堡時，預設樣品PI、LL位於塑性圖Aline以下，並隸屬於ML(LL<50)，此時使用PI=0、LL=40
+                if (trim(cstr(PI)) === 'NP') {
+                    PI = 0
+                }
+
+                //check PI
+                if (!isnum(PI)) {
+                    err.push(`PI${brk(PI)}非數字與非NP，強制略過部份非液化條件檢核`) //經與所方的討論，傾向不管排除條件，能算的都算還是照算，不然孔數會不符合密度需求 2021/05/21
+                }
+                else {
+
+                    //cdbl
+                    PI = cdbl(PI) //PI單位(%)
+
+                    //check
+                    if (PI < 15) {
+                        //可能液化, FC超過35％但塑性指數IP小於15的土層
+                    }
+                    else {
+                        noLique = true
+                        // CRR = '-'
+                        // CSR = '-'
+                        // FS = 10
+                        // return ret()
+                    }
+                }
+
+            }
+
+        }
+
+        //check D50
+        if (!isnum(D50)) {
+            err.push(`D50${brk(D50)}非數字，強制略過部份非液化條件檢核`) //經與所方的討論，傾向不管排除條件，能算的都算還是照算，不然孔數會不符合密度需求 2021/05/21
+        }
+
+        //check D10
+        if (!isnum(D10)) {
+            err.push(`D10${brk(D10)}非數字，強制略過部份非液化條件檢核`) //經與所方的討論，傾向不管排除條件，能算的都算還是照算，不然孔數會不符合密度需求 2021/05/21
+        }
+
+        //非液化: 地下水位以上, 地下水低於地表下10m以下, 細料含量>35%且PI值>=15, D50>10mm或D10>1mm
+        if (isnum(D50) && isnum(D10)) {
+
+            //cdbl
+            D50 = cdbl(D50) //D50單位(mm)
+            D10 = cdbl(D10) //D10單位(mm)
+
+            //check
+            if (D50 > 10) {
+                noLique = true
+                // CRR = '-'
+                // CSR = '-'
+                // FS = 10
+                // return ret()
+            }
+
+            //check
+            if (D10 > 1) {
+                noLique = true
+                // CRR = '-'
+                // CSR = '-'
+                // FS = 10
+                // return ret()
+            }
+
+        }
+
+        //check vibrationType
+        if (!isnum(vibrationType)) {
+            err.push(`vibrationType${brk(vibrationType)}非數字`)
+        }
+        else {
+
+            //cint
+            vibrationType = cint(vibrationType)
+
+            //check
+            if (vibrationType !== 1 && vibrationType !== 2) {
+                err.push(`vibrationType${brk(vibrationType)} 不等於 1 或 2，更改為預設值1`)
+                vibrationType = 1
+            }
+
+        }
+
+        //check svpUsual
+        if (!isnum(svpUsual)) {
+            err.push(`svpUsual${brk(svpUsual)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            svpUsual = cdbl(svpUsual)
+
+            //check
+            if (svpUsual < 0) {
+                err.push(`svpUsual${brk(svpUsual)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check svpDesign
+        if (!isnum(svpDesign)) {
+            err.push(`svpDesign${brk(svpDesign)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            svpDesign = cdbl(svpDesign)
+
+            //check
+            if (svpDesign < 0) {
+                err.push(`svpDesign${brk(svpDesign)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check sv
+        if (!isnum(sv)) {
+            err.push(`sv${brk(sv)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            sv = cdbl(sv)
+
+            //check
+            if (sv < 0) {
+                err.push(`sv${brk(sv)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check PGA
+        if (!isnum(PGA)) {
+            err.push(`PGA${brk(PGA)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            PGA = cdbl(PGA)
+
+            //check
+            if (PGA < 0) {
+                err.push(`PGA${brk(PGA)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        break
     }
 
-    //check soilClassification, 暫時用統一土壤分類區分 2021/05/07
-    if (!isestr(soilClassification)) {
-        err.push(`soilClassification${brk(soilClassification)} 非有效字串，預設為SW`) //可在配合N60一併檢查才強制給SW
-        soilClassification = 'SW'
-    }
-    //soilClassification = cstr(soilClassification)
-
-    //非液化: 非砂或礫質土, 強制視為非液化, 暫時用統一土壤分類區分 2021/05/07
-    if (isNoLique(soilClassification)) {
+    //check noLique
+    if (noLique === true) {
+        err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
         FS = 10
-        return ret()
-    }
-
-    //非液化: 深度大於20m
-    if (depth > 20) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
-    }
-
-    if (!isnum(vibrationType)) {
-        err.push(`vibrationType${brk(vibrationType)} 非數字`)
-    }
-    vibrationType = cint(vibrationType)
-    if (vibrationType !== 1 && vibrationType !== 2) {
-        err.push(`vibrationType${brk(vibrationType)} 不等於 1 或 2，更改為預設值1`)
-        vibrationType = 1
-    }
-
-    if (!isnum(svpUsual)) {
-        err.push(`svpUsual${brk(svpUsual)} 非數字`)
-        return ret()
-    }
-    svpUsual = cdbl(svpUsual)
-    if (svpUsual < 0) {
-        err.push(`svpUsual${brk(svpUsual)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(svpDesign)) {
-        err.push(`svpDesign${brk(svpDesign)} 非數字`)
-        return ret()
-    }
-    svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(sv)) {
-        err.push(`sv${brk(sv)} 非數字`)
-        return ret()
-    }
-    sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(PGA)) {
-        err.push(`PGA${brk(PGA)} 非數字`)
-        return ret()
-    }
-    PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
-        return ret()
+        return ret() //無錯誤並結束
     }
 
     rd = 1 - 0.015 * depth
@@ -2167,13 +2485,13 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
 
     //check
     if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+        err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)} <= 0`)
     }
     if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+        err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
 
@@ -2231,143 +2549,222 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
     let vstrIY = ''
 
     function ret() {
-        return { rd, N160, N172, dNf, Na, CN, CSR, CRR, FS, vstrTS, vstrIY, err: join(err, ', ') }
+        return { rd, N160, N172, dNf, Na, CN, CSR, CRR, FS, vstrTS, vstrIY, err: join(err, '; ') }
     }
 
-    //check depth
-    if (!isnum(depth)) {
-        err.push(`depth${brk(depth)} 非數字`)
-        return ret()
-    }
-    depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
-        return ret()
+    //check
+    let noLique = false
+    while (true) {
+
+        //check depth
+        if (!isnum(depth)) {
+            err.push(`depth${brk(depth)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            depth = cdbl(depth)
+
+            //check
+            if (depth < 0) {
+                err.push(`depth${brk(depth)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check waterLevelUsual, 不使用故不需檢查
+
+        //check waterLevelDesign
+        if (!isnum(waterLevelDesign)) {
+            err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
+            waterLevelDesign = 0
+        }
+        else {
+
+            //cdbl
+            waterLevelDesign = cdbl(waterLevelDesign)
+
+            //check
+            if (waterLevelDesign < 0) {
+                err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
+                waterLevelDesign = 0
+            }
+
+        }
+
+        //check soilClassification, 暫時用統一土壤分類區分 2021/05/07
+        if (!isestr(soilClassification)) {
+            err.push(`soilClassification${brk(soilClassification)}非有效字串，強制預設為SW`) //可在配合N60一併檢查才強制給SW
+            soilClassification = 'SW'
+        }
+        //soilClassification = cstr(soilClassification)
+
+        //尚無資料, 比照Seed法提供
+        //非液化: 地下水位以上, 統一土壤分類屬黏土
+        if (depth < waterLevelDesign || isNoLique(soilClassification)) {
+            noLique = true
+            // CRR = '-'
+            // CSR = '-'
+            // FS = 10
+            // return ret()
+        }
+
+        //非液化: 深度大於20m
+        if (depth > 20) {
+            noLique = true
+            // CRR = '-'
+            // CSR = '-'
+            // FS = 10
+            // return ret()
+        }
+
+        //check N60
+        if (!isnum(N60)) {
+            err.push(`N60${brk(N60)}非數字`)
+            // return ret()
+        }
+        else {
+
+            //cdbl
+            N60 = cdbl(N60)
+
+            //check
+            if (N60 < 0) {
+                err.push(`N60${brk(N60)}<0`)
+                // return ret()
+            }
+
+            //非液化: N值>=50
+            if (N60 >= 50) {
+                noLique = true
+                // CRR = '-'
+                // CSR = '-'
+                // FS = 10
+                // return ret()
+            }
+
+        }
+
+        //check FC
+        if (!isnum(FC)) {
+            err.push(`FC${brk(FC)}非數字`)
+            // return ret()
+        }
+        else {
+
+            //cdbl
+            FC = cdbl(FC)
+
+            //check
+            if (FC < 0) {
+                err.push(`FC${brk(FC)}<0`)
+                // return ret()
+            }
+
+        }
+
+        //check svpUsual
+        if (!isnum(svpUsual)) {
+            err.push(`svpUsual${brk(svpUsual)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            svpUsual = cdbl(svpUsual)
+
+            //check
+            if (svpUsual < 0) {
+                err.push(`svpUsual${brk(svpUsual)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check svpDesign
+        if (!isnum(svpDesign)) {
+            err.push(`svpDesign${brk(svpDesign)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            svpDesign = cdbl(svpDesign)
+
+            //check
+            if (svpDesign < 0) {
+                err.push(`svpDesign${brk(svpDesign)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check sv
+        if (!isnum(sv)) {
+            err.push(`sv${brk(sv)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            sv = cdbl(sv)
+
+            //check
+            if (sv < 0) {
+                err.push(`sv${brk(sv)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check PGA
+        if (!isnum(PGA)) {
+            err.push(`PGA${brk(PGA)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            PGA = cdbl(PGA)
+
+            //check
+            if (PGA < 0) {
+                err.push(`PGA${brk(PGA)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        //check Mw
+        if (!isnum(Mw)) {
+            err.push(`Mw${brk(Mw)}非數字`)
+            return ret() //報錯並結束
+        }
+        else {
+
+            //cdbl
+            Mw = cdbl(Mw)
+
+            //check
+            if (Mw < 0) {
+                err.push(`Mw${brk(Mw)}<0`)
+                return ret() //報錯並結束
+            }
+
+        }
+
+        break
     }
 
-    // //check waterLevelUsual
-    // if (!isnum(waterLevelUsual)) {
-    //     err.push(`waterLevelUsual${brk(waterLevelUsual)} 非數字，預設為0 (m)`)
-    //     waterLevelUsual = 0
-    // }
-    // waterLevelUsual = cdbl(waterLevelUsual)
-    // if (waterLevelUsual < 0) {
-    //     err.push(`waterLevelUsual${brk(waterLevelUsual)} < 0，預設為0 (m)`)
-    //     waterLevelUsual = 0
-    // }
-
-    //check waterLevelDesign
-    if (!isnum(waterLevelDesign)) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} 非數字，預設為0 (m)`)
-        waterLevelDesign = 0
-    }
-    waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
-        waterLevelDesign = 0
-    }
-
-    //check soilClassification
-    if (!isestr(soilClassification)) {
-        err.push(`soilClassification${brk(soilClassification)} 非有效字串，預設為SW`) //可在配合N60一併檢查才強制給SW
-        soilClassification = 'SW'
-    }
-    //soilClassification = cstr(soilClassification)
-
-    //尚無資料, 比照Seed法提供
-    //非液化: 地下水位以上, 統一土壤分類屬黏土
-    if (depth < waterLevelDesign || isNoLique(soilClassification)) {
+    //check noLique
+    if (noLique === true) {
+        err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
         FS = 10
-        return ret()
-    }
-
-    //非液化: 深度大於20m
-    if (depth > 20) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
-    }
-
-    //check N60, 要放在偵測土壤分類或深度或PI之後, 可減少錯誤訊息
-    if (!isnum(N60)) {
-        err.push(`N60${brk(N60)} 非數字`)
-        return ret()
-    }
-    N60 = cdbl(N60)
-    if (N60 < 0) {
-        err.push(`N60${brk(N60)} < 0`)
-        return ret()
-    }
-
-    //非液化
-    if (N60 >= 50) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
-    }
-
-    if (!isnum(FC)) {
-        err.push(`FC${brk(FC)} 非數字`)
-        return ret()
-    }
-    FC = cdbl(FC)
-    if (FC < 0) {
-        err.push(`FC${brk(FC)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(svpUsual)) {
-        err.push(`svpUsual${brk(svpUsual)} 非數字`)
-        return ret()
-    }
-    svpUsual = cdbl(svpUsual)
-    if (svpUsual < 0) {
-        err.push(`svpUsual${brk(svpUsual)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(svpDesign)) {
-        err.push(`svpDesign${brk(svpDesign)} 非數字`)
-        return ret()
-    }
-    svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(sv)) {
-        err.push(`sv${brk(sv)} 非數字`)
-        return ret()
-    }
-    sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(PGA)) {
-        err.push(`PGA${brk(PGA)} 非數字`)
-        return ret()
-    }
-    PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
-        return ret()
-    }
-
-    if (!isnum(Mw)) {
-        err.push(`Mw${brk(Mw)} 非數字`)
-        return ret()
-    }
-    Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
-        return ret()
+        return ret() //無錯誤並結束
     }
 
     // let st = {
@@ -2424,13 +2821,13 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
 
     //check
     if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+        err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)} <= 0`)
     }
     if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+        err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
 
@@ -2454,87 +2851,87 @@ function cptJuang({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
     let FS = ''
 
     function ret() {
-        return { CSR, CRR, FS, err: join(err, ', ') }
+        return { CSR, CRR, FS, err: join(err, '; ') }
     }
 
     //check
     if (!isnum(waterLevelDesign)) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} 非數字，預設為0 (m)`)
+        err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
         waterLevelDesign = 0
     }
     waterLevelDesign = cdbl(waterLevelDesign)
     if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
+        err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
         waterLevelDesign = 0
     }
 
     if (!isnum(depth)) {
-        err.push(`depth${brk(depth)} 非數字`)
+        err.push(`depth${brk(depth)}非數字`)
         return ret()
     }
     depth = cdbl(depth)
     if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
+        err.push(`depth${brk(depth)}<0`)
         return ret()
     }
 
     if (!isnum(qc)) {
-        err.push(`qc${brk(qc)} 非數字`)
+        err.push(`qc${brk(qc)}非數字`)
         return ret()
     }
     qc = cdbl(qc)
     if (qc < 0) {
-        err.push(`qc${brk(qc)} < 0`)
+        err.push(`qc${brk(qc)}<0`)
         return ret()
     }
 
     if (!isnum(fs)) {
-        err.push(`fs${brk(fs)} 非數字`)
+        err.push(`fs${brk(fs)}非數字`)
         return ret()
     }
     fs = cdbl(fs)
     if (fs < 0) {
-        err.push(`fs${brk(fs)} < 0`)
+        err.push(`fs${brk(fs)}<0`)
         return ret()
     }
 
     if (!isnum(svpDesign)) {
-        err.push(`svpDesign${brk(svpDesign)} 非數字`)
+        err.push(`svpDesign${brk(svpDesign)}非數字`)
         return ret()
     }
     svpDesign = cdbl(svpDesign)
     if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
+        err.push(`svpDesign${brk(svpDesign)}<0`)
         return ret()
     }
 
     if (!isnum(sv)) {
-        err.push(`sv${brk(sv)} 非數字`)
+        err.push(`sv${brk(sv)}非數字`)
         return ret()
     }
     sv = cdbl(sv)
     if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
+        err.push(`sv${brk(sv)}<0`)
         return ret()
     }
 
     if (!isnum(PGA)) {
-        err.push(`PGA${brk(PGA)} 非數字`)
+        err.push(`PGA${brk(PGA)}非數字`)
         return ret()
     }
     PGA = cdbl(PGA)
     if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
+        err.push(`PGA${brk(PGA)}<0`)
         return ret()
     }
 
     if (!isnum(Mw)) {
-        err.push(`Mw${brk(Mw)} 非數字`)
+        err.push(`Mw${brk(Mw)}非數字`)
         return ret()
     }
     Mw = cdbl(Mw)
     if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
+        err.push(`Mw${brk(Mw)}<0`)
         return ret()
     }
 
@@ -2568,13 +2965,13 @@ function cptJuang({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
 
     //check
     if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+        err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)} <= 0`)
     }
     if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+        err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
 
@@ -2589,87 +2986,87 @@ function cptHBF({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
     let FS = ''
 
     function ret() {
-        return { CSR, CRR, FS, err: join(err, ', ') }
+        return { CSR, CRR, FS, err: join(err, '; ') }
     }
 
     //check
     if (!isnum(waterLevelDesign)) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} 非數字，預設為0 (m)`)
+        err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
         waterLevelDesign = 0
     }
     waterLevelDesign = cdbl(waterLevelDesign)
     if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
+        err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
         waterLevelDesign = 0
     }
 
     if (!isnum(depth)) {
-        err.push(`depth${brk(depth)} 非數字`)
+        err.push(`depth${brk(depth)}非數字`)
         return ret()
     }
     depth = cdbl(depth)
     if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
+        err.push(`depth${brk(depth)}<0`)
         return ret()
     }
 
     if (!isnum(qc)) {
-        err.push(`qc${brk(qc)} 非數字`)
+        err.push(`qc${brk(qc)}非數字`)
         return ret()
     }
     qc = cdbl(qc)
     if (qc < 0) {
-        err.push(`qc${brk(qc)} < 0`)
+        err.push(`qc${brk(qc)}<0`)
         return ret()
     }
 
     if (!isnum(fs)) {
-        err.push(`fs${brk(fs)} 非數字`)
+        err.push(`fs${brk(fs)}非數字`)
         return ret()
     }
     fs = cdbl(fs)
     if (fs < 0) {
-        err.push(`fs${brk(fs)} < 0`)
+        err.push(`fs${brk(fs)}<0`)
         return ret()
     }
 
     if (!isnum(svpDesign)) {
-        err.push(`svpDesign${brk(svpDesign)} 非數字`)
+        err.push(`svpDesign${brk(svpDesign)}非數字`)
         return ret()
     }
     svpDesign = cdbl(svpDesign)
     if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
+        err.push(`svpDesign${brk(svpDesign)}<0`)
         return ret()
     }
 
     if (!isnum(sv)) {
-        err.push(`sv${brk(sv)} 非數字`)
+        err.push(`sv${brk(sv)}非數字`)
         return ret()
     }
     sv = cdbl(sv)
     if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
+        err.push(`sv${brk(sv)}<0`)
         return ret()
     }
 
     if (!isnum(PGA)) {
-        err.push(`PGA${brk(PGA)} 非數字`)
+        err.push(`PGA${brk(PGA)}非數字`)
         return ret()
     }
     PGA = cdbl(PGA)
     if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
+        err.push(`PGA${brk(PGA)}<0`)
         return ret()
     }
 
     if (!isnum(Mw)) {
-        err.push(`Mw${brk(Mw)} 非數字`)
+        err.push(`Mw${brk(Mw)}非數字`)
         return ret()
     }
     Mw = cdbl(Mw)
     if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
+        err.push(`Mw${brk(Mw)}<0`)
         return ret()
     }
 
@@ -2708,13 +3105,13 @@ function cptHBF({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
 
     //check
     if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+        err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)} <= 0`)
     }
     if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+        err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
 
@@ -2729,87 +3126,87 @@ function cptOlsen({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
     let FS = ''
 
     function ret() {
-        return { CSR, CRR, FS, err: join(err, ', ') }
+        return { CSR, CRR, FS, err: join(err, '; ') }
     }
 
     //check
     if (!isnum(waterLevelDesign)) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} 非數字，預設為0 (m)`)
+        err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
         waterLevelDesign = 0
     }
     waterLevelDesign = cdbl(waterLevelDesign)
     if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
+        err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
         waterLevelDesign = 0
     }
 
     if (!isnum(depth)) {
-        err.push(`depth${brk(depth)} 非數字`)
+        err.push(`depth${brk(depth)}非數字`)
         return ret()
     }
     depth = cdbl(depth)
     if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
+        err.push(`depth${brk(depth)}<0`)
         return ret()
     }
 
     if (!isnum(qc)) {
-        err.push(`qc${brk(qc)} 非數字`)
+        err.push(`qc${brk(qc)}非數字`)
         return ret()
     }
     qc = cdbl(qc)
     if (qc < 0) {
-        err.push(`qc${brk(qc)} < 0`)
+        err.push(`qc${brk(qc)}<0`)
         return ret()
     }
 
     if (!isnum(fs)) {
-        err.push(`fs${brk(fs)} 非數字`)
+        err.push(`fs${brk(fs)}非數字`)
         return ret()
     }
     fs = cdbl(fs)
     if (fs < 0) {
-        err.push(`fs${brk(fs)} < 0`)
+        err.push(`fs${brk(fs)}<0`)
         return ret()
     }
 
     if (!isnum(svpDesign)) {
-        err.push(`svpDesign${brk(svpDesign)} 非數字`)
+        err.push(`svpDesign${brk(svpDesign)}非數字`)
         return ret()
     }
     svpDesign = cdbl(svpDesign)
     if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
+        err.push(`svpDesign${brk(svpDesign)}<0`)
         return ret()
     }
 
     if (!isnum(sv)) {
-        err.push(`sv${brk(sv)} 非數字`)
+        err.push(`sv${brk(sv)}非數字`)
         return ret()
     }
     sv = cdbl(sv)
     if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
+        err.push(`sv${brk(sv)}<0`)
         return ret()
     }
 
     if (!isnum(PGA)) {
-        err.push(`PGA${brk(PGA)} 非數字`)
+        err.push(`PGA${brk(PGA)}非數字`)
         return ret()
     }
     PGA = cdbl(PGA)
     if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
+        err.push(`PGA${brk(PGA)}<0`)
         return ret()
     }
 
     if (!isnum(Mw)) {
-        err.push(`Mw${brk(Mw)} 非數字`)
+        err.push(`Mw${brk(Mw)}非數字`)
         return ret()
     }
     Mw = cdbl(Mw)
     if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
+        err.push(`Mw${brk(Mw)}<0`)
         return ret()
     }
 
@@ -2837,13 +3234,13 @@ function cptOlsen({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
 
     //check
     if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+        err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)} <= 0`)
     }
     if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+        err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
 
@@ -2858,96 +3255,96 @@ function cptShibata({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw, D
     let FS = ''
 
     function ret() {
-        return { CSR, CRR, FS, err: join(err, ', ') }
+        return { CSR, CRR, FS, err: join(err, '; ') }
     }
 
     //check
     if (!isnum(waterLevelDesign)) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} 非數字，預設為0 (m)`)
+        err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
         waterLevelDesign = 0
     }
     waterLevelDesign = cdbl(waterLevelDesign)
     if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
+        err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
         waterLevelDesign = 0
     }
 
     if (!isnum(depth)) {
-        err.push(`depth${brk(depth)} 非數字`)
+        err.push(`depth${brk(depth)}非數字`)
         return ret()
     }
     depth = cdbl(depth)
     if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
+        err.push(`depth${brk(depth)}<0`)
         return ret()
     }
 
     if (!isnum(qc)) {
-        err.push(`qc${brk(qc)} 非數字`)
+        err.push(`qc${brk(qc)}非數字`)
         return ret()
     }
     qc = cdbl(qc)
     if (qc < 0) {
-        err.push(`qc${brk(qc)} < 0`)
+        err.push(`qc${brk(qc)}<0`)
         return ret()
     }
 
     if (!isnum(fs)) {
-        err.push(`fs${brk(fs)} 非數字`)
+        err.push(`fs${brk(fs)}非數字`)
         return ret()
     }
     fs = cdbl(fs)
     if (fs < 0) {
-        err.push(`fs${brk(fs)} < 0`)
+        err.push(`fs${brk(fs)}<0`)
         return ret()
     }
 
     if (!isnum(svpDesign)) {
-        err.push(`svpDesign${brk(svpDesign)} 非數字`)
+        err.push(`svpDesign${brk(svpDesign)}非數字`)
         return ret()
     }
     svpDesign = cdbl(svpDesign)
     if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
+        err.push(`svpDesign${brk(svpDesign)}<0`)
         return ret()
     }
 
     if (!isnum(sv)) {
-        err.push(`sv${brk(sv)} 非數字`)
+        err.push(`sv${brk(sv)}非數字`)
         return ret()
     }
     sv = cdbl(sv)
     if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
+        err.push(`sv${brk(sv)}<0`)
         return ret()
     }
 
     if (!isnum(PGA)) {
-        err.push(`PGA${brk(PGA)} 非數字`)
+        err.push(`PGA${brk(PGA)}非數字`)
         return ret()
     }
     PGA = cdbl(PGA)
     if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
+        err.push(`PGA${brk(PGA)}<0`)
         return ret()
     }
 
     if (!isnum(Mw)) {
-        err.push(`Mw${brk(Mw)} 非數字`)
+        err.push(`Mw${brk(Mw)}非數字`)
         return ret()
     }
     Mw = cdbl(Mw)
     if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
+        err.push(`Mw${brk(Mw)}<0`)
         return ret()
     }
     if (!isnum(D50)) {
-        err.push(`D50${brk(D50)} 非數字`)
+        err.push(`D50${brk(D50)}非數字`)
         return ret()
     }
     D50 = cdbl(D50)
     if (D50 < 0) {
-        err.push(`D50${brk(D50)} < 0`)
+        err.push(`D50${brk(D50)}<0`)
         return ret()
     }
 
@@ -2983,13 +3380,13 @@ function cptShibata({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw, D
 
     //check
     if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+        err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)} <= 0`)
     }
     if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+        err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
 
@@ -3004,87 +3401,87 @@ function cptNCEER({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
     let FS = ''
 
     function ret() {
-        return { CSR, CRR, FS, err: join(err, ', ') }
+        return { CSR, CRR, FS, err: join(err, '; ') }
     }
 
     //check
     if (!isnum(waterLevelDesign)) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} 非數字，預設為0 (m)`)
+        err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
         waterLevelDesign = 0
     }
     waterLevelDesign = cdbl(waterLevelDesign)
     if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
+        err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
         waterLevelDesign = 0
     }
 
     if (!isnum(depth)) {
-        err.push(`depth${brk(depth)} 非數字`)
+        err.push(`depth${brk(depth)}非數字`)
         return ret()
     }
     depth = cdbl(depth)
     if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
+        err.push(`depth${brk(depth)}<0`)
         return ret()
     }
 
     if (!isnum(qc)) {
-        err.push(`qc${brk(qc)} 非數字`)
+        err.push(`qc${brk(qc)}非數字`)
         return ret()
     }
     qc = cdbl(qc)
     if (qc < 0) {
-        err.push(`qc${brk(qc)} < 0`)
+        err.push(`qc${brk(qc)}<0`)
         return ret()
     }
 
     if (!isnum(fs)) {
-        err.push(`fs${brk(fs)} 非數字`)
+        err.push(`fs${brk(fs)}非數字`)
         return ret()
     }
     fs = cdbl(fs)
     if (fs < 0) {
-        err.push(`fs${brk(fs)} < 0`)
+        err.push(`fs${brk(fs)}<0`)
         return ret()
     }
 
     if (!isnum(svpDesign)) {
-        err.push(`svpDesign${brk(svpDesign)} 非數字`)
+        err.push(`svpDesign${brk(svpDesign)}非數字`)
         return ret()
     }
     svpDesign = cdbl(svpDesign)
     if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
+        err.push(`svpDesign${brk(svpDesign)}<0`)
         return ret()
     }
 
     if (!isnum(sv)) {
-        err.push(`sv${brk(sv)} 非數字`)
+        err.push(`sv${brk(sv)}非數字`)
         return ret()
     }
     sv = cdbl(sv)
     if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
+        err.push(`sv${brk(sv)}<0`)
         return ret()
     }
 
     if (!isnum(PGA)) {
-        err.push(`PGA${brk(PGA)} 非數字`)
+        err.push(`PGA${brk(PGA)}非數字`)
         return ret()
     }
     PGA = cdbl(PGA)
     if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
+        err.push(`PGA${brk(PGA)}<0`)
         return ret()
     }
 
     if (!isnum(Mw)) {
-        err.push(`Mw${brk(Mw)} 非數字`)
+        err.push(`Mw${brk(Mw)}非數字`)
         return ret()
     }
     Mw = cdbl(Mw)
     if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
+        err.push(`Mw${brk(Mw)}<0`)
         return ret()
     }
 
@@ -3157,13 +3554,13 @@ function cptNCEER({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
 
     //check
     if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+        err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)} <= 0`)
     }
     if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+        err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
 
@@ -3178,87 +3575,87 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     let FS = ''
 
     function ret() {
-        return { CSR, CRR, FS, err: join(err, ', ') }
+        return { CSR, CRR, FS, err: join(err, '; ') }
     }
 
     //check
     if (!isnum(waterLevelDesign)) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} 非數字，預設為0 (m)`)
+        err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
         waterLevelDesign = 0
     }
     waterLevelDesign = cdbl(waterLevelDesign)
     if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
+        err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
         waterLevelDesign = 0
     }
 
     if (!isnum(depth)) {
-        err.push(`depth${brk(depth)} 非數字`)
+        err.push(`depth${brk(depth)}非數字`)
         return ret()
     }
     depth = cdbl(depth)
     if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
+        err.push(`depth${brk(depth)}<0`)
         return ret()
     }
 
     if (!isnum(Vs)) {
-        err.push(`Vs${brk(Vs)} 非數字`)
+        err.push(`Vs${brk(Vs)}非數字`)
         return ret()
     }
     Vs = cdbl(Vs)
     if (Vs < 0) {
-        err.push(`Vs${brk(Vs)} < 0`)
+        err.push(`Vs${brk(Vs)}<0`)
         return ret()
     }
 
     if (!isnum(FC)) {
-        err.push(`FC${brk(FC)} 非數字`)
+        err.push(`FC${brk(FC)}非數字`)
         return ret()
     }
     FC = cdbl(FC)
     if (FC < 0) {
-        err.push(`FC${brk(FC)} < 0`)
+        err.push(`FC${brk(FC)}<0`)
         return ret()
     }
 
     if (!isnum(svpDesign)) {
-        err.push(`svpDesign${brk(svpDesign)} 非數字`)
+        err.push(`svpDesign${brk(svpDesign)}非數字`)
         return ret()
     }
     svpDesign = cdbl(svpDesign)
     if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
+        err.push(`svpDesign${brk(svpDesign)}<0`)
         return ret()
     }
 
     if (!isnum(sv)) {
-        err.push(`sv${brk(sv)} 非數字`)
+        err.push(`sv${brk(sv)}非數字`)
         return ret()
     }
     sv = cdbl(sv)
     if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
+        err.push(`sv${brk(sv)}<0`)
         return ret()
     }
 
     if (!isnum(PGA)) {
-        err.push(`PGA${brk(PGA)} 非數字`)
+        err.push(`PGA${brk(PGA)}非數字`)
         return ret()
     }
     PGA = cdbl(PGA)
     if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
+        err.push(`PGA${brk(PGA)}<0`)
         return ret()
     }
 
     if (!isnum(Mw)) {
-        err.push(`Mw${brk(Mw)} 非數字`)
+        err.push(`Mw${brk(Mw)}非數字`)
         return ret()
     }
     Mw = cdbl(Mw)
     if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
+        err.push(`Mw${brk(Mw)}<0`)
         return ret()
     }
 
@@ -3302,13 +3699,13 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
 
     //check
     if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+        err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)} <= 0`)
     }
     if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+        err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
 
@@ -3323,87 +3720,87 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     let FS = ''
 
     function ret() {
-        return { CSR, CRR, FS, err: join(err, ', ') }
+        return { CSR, CRR, FS, err: join(err, '; ') }
     }
 
     //check
     if (!isnum(waterLevelDesign)) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} 非數字，預設為0 (m)`)
+        err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
         waterLevelDesign = 0
     }
     waterLevelDesign = cdbl(waterLevelDesign)
     if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
+        err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
         waterLevelDesign = 0
     }
 
     if (!isnum(depth)) {
-        err.push(`depth${brk(depth)} 非數字`)
+        err.push(`depth${brk(depth)}非數字`)
         return ret()
     }
     depth = cdbl(depth)
     if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
+        err.push(`depth${brk(depth)}<0`)
         return ret()
     }
 
     if (!isnum(Vs)) {
-        err.push(`Vs${brk(Vs)} 非數字`)
+        err.push(`Vs${brk(Vs)}非數字`)
         return ret()
     }
     Vs = cdbl(Vs)
     if (Vs < 0) {
-        err.push(`Vs${brk(Vs)} < 0`)
+        err.push(`Vs${brk(Vs)}<0`)
         return ret()
     }
 
     if (!isnum(FC)) {
-        err.push(`FC${brk(FC)} 非數字`)
+        err.push(`FC${brk(FC)}非數字`)
         return ret()
     }
     FC = cdbl(FC)
     if (FC < 0) {
-        err.push(`FC${brk(FC)} < 0`)
+        err.push(`FC${brk(FC)}<0`)
         return ret()
     }
 
     if (!isnum(svpDesign)) {
-        err.push(`svpDesign${brk(svpDesign)} 非數字`)
+        err.push(`svpDesign${brk(svpDesign)}非數字`)
         return ret()
     }
     svpDesign = cdbl(svpDesign)
     if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
+        err.push(`svpDesign${brk(svpDesign)}<0`)
         return ret()
     }
 
     if (!isnum(sv)) {
-        err.push(`sv${brk(sv)} 非數字`)
+        err.push(`sv${brk(sv)}非數字`)
         return ret()
     }
     sv = cdbl(sv)
     if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
+        err.push(`sv${brk(sv)}<0`)
         return ret()
     }
 
     if (!isnum(PGA)) {
-        err.push(`PGA${brk(PGA)} 非數字`)
+        err.push(`PGA${brk(PGA)}非數字`)
         return ret()
     }
     PGA = cdbl(PGA)
     if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
+        err.push(`PGA${brk(PGA)}<0`)
         return ret()
     }
 
     if (!isnum(Mw)) {
-        err.push(`Mw${brk(Mw)} 非數字`)
+        err.push(`Mw${brk(Mw)}非數字`)
         return ret()
     }
     Mw = cdbl(Mw)
     if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
+        err.push(`Mw${brk(Mw)}<0`)
         return ret()
     }
 
@@ -3444,13 +3841,13 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
 
     //check
     if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+        err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)} <= 0`)
     }
     if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+        err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
 
@@ -3465,87 +3862,87 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     let FS = ''
 
     function ret() {
-        return { CSR, CRR, FS, err: join(err, ', ') }
+        return { CSR, CRR, FS, err: join(err, '; ') }
     }
 
     //check
     if (!isnum(waterLevelDesign)) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} 非數字，預設為0 (m)`)
+        err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
         waterLevelDesign = 0
     }
     waterLevelDesign = cdbl(waterLevelDesign)
     if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)} < 0，預設為0 (m)`)
+        err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
         waterLevelDesign = 0
     }
 
     if (!isnum(depth)) {
-        err.push(`depth${brk(depth)} 非數字`)
+        err.push(`depth${brk(depth)}非數字`)
         return ret()
     }
     depth = cdbl(depth)
     if (depth < 0) {
-        err.push(`depth${brk(depth)} < 0`)
+        err.push(`depth${brk(depth)}<0`)
         return ret()
     }
 
     if (!isnum(Vs)) {
-        err.push(`Vs${brk(Vs)} 非數字`)
+        err.push(`Vs${brk(Vs)}非數字`)
         return ret()
     }
     Vs = cdbl(Vs)
     if (Vs < 0) {
-        err.push(`Vs${brk(Vs)} < 0`)
+        err.push(`Vs${brk(Vs)}<0`)
         return ret()
     }
 
     if (!isnum(FC)) {
-        err.push(`FC${brk(FC)} 非數字`)
+        err.push(`FC${brk(FC)}非數字`)
         return ret()
     }
     FC = cdbl(FC)
     if (FC < 0) {
-        err.push(`FC${brk(FC)} < 0`)
+        err.push(`FC${brk(FC)}<0`)
         return ret()
     }
 
     if (!isnum(svpDesign)) {
-        err.push(`svpDesign${brk(svpDesign)} 非數字`)
+        err.push(`svpDesign${brk(svpDesign)}非數字`)
         return ret()
     }
     svpDesign = cdbl(svpDesign)
     if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)} < 0`)
+        err.push(`svpDesign${brk(svpDesign)}<0`)
         return ret()
     }
 
     if (!isnum(sv)) {
-        err.push(`sv${brk(sv)} 非數字`)
+        err.push(`sv${brk(sv)}非數字`)
         return ret()
     }
     sv = cdbl(sv)
     if (sv < 0) {
-        err.push(`sv${brk(sv)} < 0`)
+        err.push(`sv${brk(sv)}<0`)
         return ret()
     }
 
     if (!isnum(PGA)) {
-        err.push(`PGA${brk(PGA)} 非數字`)
+        err.push(`PGA${brk(PGA)}非數字`)
         return ret()
     }
     PGA = cdbl(PGA)
     if (PGA < 0) {
-        err.push(`PGA${brk(PGA)} < 0`)
+        err.push(`PGA${brk(PGA)}<0`)
         return ret()
     }
 
     if (!isnum(Mw)) {
-        err.push(`Mw${brk(Mw)} 非數字`)
+        err.push(`Mw${brk(Mw)}非數字`)
         return ret()
     }
     Mw = cdbl(Mw)
     if (Mw < 0) {
-        err.push(`Mw${brk(Mw)} < 0`)
+        err.push(`Mw${brk(Mw)}<0`)
         return ret()
     }
 
@@ -3586,13 +3983,13 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
 
     //check
     if (CRR < 0) {
-        err.push(`CRR${brk(CRR)} < 0`)
+        err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)} <= 0`)
     }
     if (FS < 0) {
-        err.push(`FS${brk(FS)} < 0，強制改為0`)
+        err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
 
@@ -3694,7 +4091,7 @@ function liquefaction(kind = 'auto', rows) {
 
     function addDepthAndPorousParams(rows, waterLevelUsual, waterLevelDesign) {
 
-        //waterLevelUsual,waterLevelDesign
+        //waterLevelUsual, waterLevelDesign
         waterLevelUsual = cdbl(waterLevelUsual)
         waterLevelDesign = cdbl(waterLevelDesign)
 
