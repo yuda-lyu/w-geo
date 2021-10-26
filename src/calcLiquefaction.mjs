@@ -1276,7 +1276,7 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
     }
 
     //check ver
-    if (ver !== '2012' && ver === '2017') {
+    if (ver !== '2012' && ver !== '2017') {
         err.push(`ver${brk(ver)} 非2012或2017`)
         return ret()
     }
@@ -1802,7 +1802,7 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
     }
 
     //check ver
-    if (ver !== '1996' && ver === '2017') {
+    if (ver !== '1996' && ver !== '2017') {
         err.push(`ver${brk(ver)} 非1996或2017`)
         return ret()
     }
