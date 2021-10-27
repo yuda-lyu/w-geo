@@ -49,14 +49,24 @@ function brk(c) {
 }
 
 
-function isNoLique(soilClassification) {
+function isNoLiqueByUSCS(soilClassification, mode = 'new') {
     let r1 = strleft(soilClassification, 1)
     let r2 = strleft(soilClassification, 2)
-    //開頭C,O,P,M(除了ML與MH)視為非液化條件 (2021/02/04)
-    if (r1 === 'C' || r1 === 'O' || r1 === 'P') {
-        return true
+    if (mode === 'new') {
+        //開頭C,O,P,M(除了ML)視為非液化條件 (2020/07/30)
+        //開頭C,O,P,M(除了ML與MH)視為非液化條件 (2021/02/04)
+        if (r1 === 'C' || r1 === 'O' || r1 === 'P') {
+            return true
+        }
+        return r1 === 'M' && (r2 !== 'ML' && r2 !== 'MH')
     }
-    return r1 === 'M' && (r2 !== 'ML' && r2 !== 'MH')
+    else if (mode === 'classic') {
+        //開頭非S,G視為非液化條件
+        return r1 !== 'S' && r1 !== 'G'
+    }
+    else {
+        throw new Error(`invalid mode[${mode}]`)
+    }
 }
 
 
@@ -822,6 +832,7 @@ function sptSettlement(N160, N172, CSR, FS) {
  *
  * @memberOf w-geo
  * @param {Object} row 輸入數據物件
+ * @param {String} [row.noLiqueMode='new'] 輸入判斷非液化之土壤分類模式字串，預設'new'
  * @param {Number} [row.waterLevelDesign=0] 輸入設計地下水位數字，單位m，預設0
  * @param {String} [row.soilClassification='SW'] 輸入USCS土壤分類字串，預設'SW'
  * @param {Number} row.depth 輸入樣本所在中點深度數字，單位m
@@ -835,7 +846,7 @@ function sptSettlement(N160, N172, CSR, FS) {
  * @returns {Object} 回傳計算後數據物件
  * @example
  */
-function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svpUsual, svpDesign, PGA, Mw }) {
+function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, depth, N60, FC, sv, svpUsual, svpDesign, PGA, Mw }) {
     //Seed et al.(1985)
     let err = []
     let MSF = ''
@@ -877,6 +888,12 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
 
         }
 
+        //check noLiqueMode
+        if (noLiqueMode !== 'new' && noLiqueMode !== 'classic') {
+            err.push(`noLiqueMode${brk(noLiqueMode)}非'new'或'classic'，強制預設為'new'`)
+            noLiqueMode = 'new'
+        }
+
         //check waterLevelUsual, 不使用故不需檢查
 
         //check waterLevelDesign
@@ -905,7 +922,7 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
         //soilClassification = cstr(soilClassification)
 
         //非液化: 地下水位以上, 統一土壤分類屬黏土
-        if (depth < waterLevelDesign || isNoLique(soilClassification)) {
+        if (depth < waterLevelDesign || isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
             noLique = true
         }
 
@@ -1314,6 +1331,7 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
  * @memberOf w-geo
  * @param {Object} row 輸入數據物件
  * @param {String} [row.ver='2012'] 輸入版本字串，預設'2012'
+ * @param {String} [row.noLiqueMode='new'] 輸入判斷非液化之土壤分類模式字串，預設'new'
  * @param {Number} [row.waterLevelDesign=0] 輸入設計地下水位數字，單位m，預設0
  * @param {String} [row.soilClassification='SW'] 輸入USCS土壤分類字串，預設'SW'
  * @param {Number} row.depth 輸入樣本所在中點深度數字，單位m
@@ -1328,7 +1346,7 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
  * @returns {Object} 回傳計算後數據物件
  * @example
  */
-function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60, FC, PI, sv, svpUsual, svpDesign, PGA, Mw }) {
+function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClassification, depth, N60, FC, PI, sv, svpUsual, svpDesign, PGA, Mw }) {
     //HBF(ver=2012,2017)
     let err = []
     let MSF = ''
@@ -1377,6 +1395,12 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
 
         }
 
+        //check noLiqueMode
+        if (noLiqueMode !== 'new' && noLiqueMode !== 'classic') {
+            err.push(`noLiqueMode${brk(noLiqueMode)}非'new'或'classic'，強制預設為'new'`)
+            noLiqueMode = 'new'
+        }
+
         //check waterLevelUsual, 不使用故不需檢查
 
         //check waterLevelDesign
@@ -1405,7 +1429,7 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         //soilClassification = cstr(soilClassification)
 
         //非液化: 地下水位以上, 統一土壤分類屬黏土, (N160cs>=39, 於後面檢查)
-        if (depth < waterLevelDesign || isNoLique(soilClassification)) {
+        if (depth < waterLevelDesign || isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
             noLique = true
         }
 
@@ -1653,6 +1677,7 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
  *
  * @memberOf w-geo
  * @param {Object} row 輸入數據物件
+ * @param {String} [row.noLiqueMode='new'] 輸入判斷非液化之土壤分類模式字串，預設'new'
  * @param {Number} [row.waterLevelDesign=0] 輸入設計地下水位數字，單位m，預設0
  * @param {String} [row.soilClassification='SW'] 輸入USCS土壤分類字串，預設'SW'
  * @param {Number} row.depth 輸入樣本所在中點深度數字，單位m
@@ -1667,7 +1692,7 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
  * @returns {Object} 回傳計算後數據物件
  * @example
  */
-function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svpUsual, svpDesign, PGA, Mw }) {
+function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, depth, N60, FC, sv, svpUsual, svpDesign, PGA, Mw }) {
     //NCEER(1997)
     let err = []
     let MSF = ''
@@ -1711,6 +1736,12 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
 
         }
 
+        //check noLiqueMode
+        if (noLiqueMode !== 'new' && noLiqueMode !== 'classic') {
+            err.push(`noLiqueMode${brk(noLiqueMode)}非'new'或'classic'，強制預設為'new'`)
+            noLiqueMode = 'new'
+        }
+
         //check waterLevelUsual, 不使用故不需檢查
 
         //check waterLevelDesign
@@ -1739,7 +1770,7 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
         //soilClassification = cstr(soilClassification)
 
         //非液化: 地下水位以上, 統一土壤分類屬黏土, (N160cs>=30, 於後面處理)
-        if (depth < waterLevelDesign || isNoLique(soilClassification)) {
+        if (depth < waterLevelDesign || isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
             noLique = true
         }
 
@@ -1979,6 +2010,7 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
  * @memberOf w-geo
  * @param {Object} row 輸入數據物件
  * @param {String} [row.ver='1996'] 輸入版本字串，預設'1996'
+ * @param {String} [row.noLiqueMode='new'] 輸入判斷非液化之土壤分類模式字串，預設'new'
  * @param {Number} [row.waterLevelDesign=0] 輸入設計地下水位數字，單位m，預設0
  * @param {String} [row.soilClassification='SW'] 輸入USCS土壤分類字串，預設'SW'
  * @param {Number} [row.vibrationType=1] 輸入震動形式數字，1為第一型震動[板塊邊界地震(遠震)]，2為第二型震動[內陸直下型地震(近震)]，預設1
@@ -1995,7 +2027,7 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
  * @returns {Object} 回傳計算後數據物件
  * @example
  */
-function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibrationType, depth, N60, FC, PI, D50, D10, sv, svpUsual, svpDesign, PGA }) {
+function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClassification, vibrationType, depth, N60, FC, PI, D50, D10, sv, svpUsual, svpDesign, PGA }) {
     //NJRA(ver=1996,2017)
     let err = []
     let rd = ''
@@ -2048,6 +2080,12 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
 
         }
 
+        //check noLiqueMode
+        if (noLiqueMode !== 'new' && noLiqueMode !== 'classic') {
+            err.push(`noLiqueMode${brk(noLiqueMode)}非'new'或'classic'，強制預設為'new'`)
+            noLiqueMode = 'new'
+        }
+
         //check waterLevelUsual, 不使用故不需檢查
 
         //check waterLevelDesign
@@ -2076,7 +2114,7 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         //soilClassification = cstr(soilClassification)
 
         //非液化: 非砂或礫質土, 強制視為非液化, 暫時用統一土壤分類區分 2021/05/07
-        if (isNoLique(soilClassification)) {
+        if (isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
             noLique = true
         }
 
@@ -2472,6 +2510,7 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
  * @memberOf w-geo
  * @param {Object} row 輸入數據物件
  * @param {String} [row.ver='1996'] 輸入版本字串，預設'1996'
+ * @param {String} [row.noLiqueMode='new'] 輸入判斷非液化之土壤分類模式字串，預設'new'
  * @param {Number} [row.waterLevelDesign=0] 輸入設計地下水位數字，單位m，預設0
  * @param {String} [row.soilClassification='SW'] 輸入USCS土壤分類字串，預設'SW'
  * @param {Number} [row.vibrationType=1] 輸入震動形式數字，1為第一型震動[板塊邊界地震(遠震)]，2為第二型震動[內陸直下型地震(近震)]，預設1
@@ -2490,7 +2529,7 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
  * @returns {Object} 回傳計算後數據物件
  * @example
  */
-function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60, FC, sv, svpUsual, svpDesign, PGA, Mw }) {
+function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60, FC, sv, svpUsual, svpDesign, PGA, Mw }) {
     //TY(1983), N值的鑽桿能量修正原本為80%, 現統一為72% (2021/03/11)
     let err = []
     let rd = ''
@@ -2533,6 +2572,12 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
 
         }
 
+        //check noLiqueMode
+        if (noLiqueMode !== 'new' && noLiqueMode !== 'classic') {
+            err.push(`noLiqueMode${brk(noLiqueMode)}非'new'或'classic'，強制預設為'new'`)
+            noLiqueMode = 'new'
+        }
+
         //check waterLevelUsual, 不使用故不需檢查
 
         //check waterLevelDesign
@@ -2562,7 +2607,7 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
 
         //尚無資料, 比照Seed法提供
         //非液化: 地下水位以上, 統一土壤分類屬黏土
-        if (depth < waterLevelDesign || isNoLique(soilClassification)) {
+        if (depth < waterLevelDesign || isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
             noLique = true
         }
 
