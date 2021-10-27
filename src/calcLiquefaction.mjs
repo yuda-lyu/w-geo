@@ -856,12 +856,13 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
 
     //check
     let noLique = false
+    let delayErr = false
     while (true) {
 
         //check depth
         if (!isnum(depth)) {
             err.push(`depth${brk(depth)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -871,7 +872,7 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
             //check
             if (depth < 0) {
                 err.push(`depth${brk(depth)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -906,25 +907,17 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
         //非液化: 地下水位以上, 統一土壤分類屬黏土
         if (depth < waterLevelDesign || isNoLique(soilClassification)) {
             noLique = true
-            // CRR = '-'
-            // CSR = '-'
-            // FS = 10
-            // return ret()
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
             noLique = true
-            // CRR = '-'
-            // CSR = '-'
-            // FS = 10
-            // return ret()
         }
 
         //check N60
         if (!isnum(N60)) {
             err.push(`N60${brk(N60)}非數字`)
-            // return ret()
+            delayErr = true
         }
         else {
 
@@ -934,16 +927,12 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
             //check
             if (N60 < 0) {
                 err.push(`N60${brk(N60)}<0`)
-                // return ret()
+                delayErr = true
             }
 
             //非液化: N值>=50
             if (N60 >= 50) {
                 noLique = true
-                // CRR = '-'
-                // CSR = '-'
-                // FS = 10
-                // return ret()
             }
 
         }
@@ -951,7 +940,7 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
         //check FC
         if (!isnum(FC)) {
             err.push(`FC${brk(FC)}非數字`)
-            // return ret()
+            delayErr = true
         }
         else {
 
@@ -961,7 +950,7 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
             //check
             if (FC < 0) {
                 err.push(`FC${brk(FC)}<0`)
-                // return ret()
+                delayErr = true
             }
 
         }
@@ -969,7 +958,7 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
         //check svpUsual
         if (!isnum(svpUsual)) {
             err.push(`svpUsual${brk(svpUsual)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -979,7 +968,7 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
             //check
             if (svpUsual < 0) {
                 err.push(`svpUsual${brk(svpUsual)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -987,7 +976,7 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
         //check svpDesign
         if (!isnum(svpDesign)) {
             err.push(`svpDesign${brk(svpDesign)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -997,7 +986,7 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
             //check
             if (svpDesign < 0) {
                 err.push(`svpDesign${brk(svpDesign)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -1005,7 +994,7 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
         //check sv
         if (!isnum(sv)) {
             err.push(`sv${brk(sv)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -1015,7 +1004,7 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
             //check
             if (sv < 0) {
                 err.push(`sv${brk(sv)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -1023,7 +1012,7 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
         //check PGA
         if (!isnum(PGA)) {
             err.push(`PGA${brk(PGA)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -1033,7 +1022,7 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
             //check
             if (PGA < 0) {
                 err.push(`PGA${brk(PGA)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -1041,7 +1030,7 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
         //check Mw
         if (!isnum(Mw)) {
             err.push(`Mw${brk(Mw)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -1051,7 +1040,7 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
             //check
             if (Mw < 0) {
                 err.push(`Mw${brk(Mw)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -1066,6 +1055,11 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
         CSR = '-'
         FS = 10
         return ret() //無錯誤並結束
+    }
+
+    //check delayErr
+    if (delayErr === true) {
+        return ret() //觸發延遲報錯並結束
     }
 
     MSF = (Mw / 7.5) ** (-1.11) //投影片資料
@@ -1258,14 +1252,14 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
             else {
                 err.push(`非預期外插情形，請洽開發者修復問題`)
                 CRR75 = ''
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
         else {
             err.push(CRR75.err)
             CRR75 = ''
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
 
     }
@@ -1273,7 +1267,7 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
     //check
     if (!isNumber(CRR75)) {
         err.push(`CRR75${brk(CRR75)}非數字`)
-        return ret() //報錯並結束
+        return ret() //重大錯誤直接報錯結束
     }
     if (CRR75 > 0.6) {
         err.push(`CRR75${brk(CRR75)}大於0.6超過原研究範疇，強制改為0.6`)
@@ -1294,7 +1288,7 @@ function sptSeed({ waterLevelDesign, soilClassification, depth, N60, FC, sv, svp
         err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+        err.push(`CSR${brk(CSR)}<=0`)
     }
     if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
@@ -1356,18 +1350,19 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
 
     //check
     let noLique = false
+    let delayErr = false
     while (true) {
 
         //check ver
         if (ver !== '2012' && ver !== '2017') {
             err.push(`ver${brk(ver)} 非2012或2017`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
 
         //check depth
         if (!isnum(depth)) {
             err.push(`depth${brk(depth)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -1377,7 +1372,7 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
             //check
             if (depth < 0) {
                 err.push(`depth${brk(depth)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -1412,19 +1407,11 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         //非液化: 地下水位以上, 統一土壤分類屬黏土, (N160cs>=39, 於後面檢查)
         if (depth < waterLevelDesign || isNoLique(soilClassification)) {
             noLique = true
-            // CRR = '-'
-            // CSR = '-'
-            // FS = 10
-            // return ret()
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
             noLique = true
-            // CRR = '-'
-            // CSR = '-'
-            // FS = 10
-            // return ret()
         }
 
         //check PI為NP, 不需阿太堡時，預設樣品PI、LL位於塑性圖Aline以下，並隸屬於ML(LL<50)，此時使用PI=0、LL=40
@@ -1439,17 +1426,13 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         else {
             if (cdbl(PI) > 7) { //PI單位(%)
                 noLique = true
-                // CRR = '-'
-                // CSR = '-'
-                // FS = 10
-                // return ret()
             }
         }
 
         //check N60
         if (!isnum(N60)) {
             err.push(`N60${brk(N60)}非數字`)
-            // return ret()
+            delayErr = true
         }
         else {
 
@@ -1459,16 +1442,12 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
             //check
             if (N60 < 0) {
                 err.push(`N60${brk(N60)}<0`)
-                // return ret()
+                delayErr = true
             }
 
             //非液化: N值>=50
             if (N60 >= 50) {
                 noLique = true
-                // CRR = '-'
-                // CSR = '-'
-                // FS = 10
-                // return ret()
             }
 
         }
@@ -1476,7 +1455,7 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         //check FC
         if (!isnum(FC)) {
             err.push(`FC${brk(FC)}非數字`)
-            // return ret()
+            delayErr = true
         }
         else {
 
@@ -1486,7 +1465,7 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
             //check
             if (FC < 0) {
                 err.push(`FC${brk(FC)}<0`)
-                // return ret()
+                delayErr = true
             }
 
         }
@@ -1494,7 +1473,7 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         //check svpUsual
         if (!isnum(svpUsual)) {
             err.push(`svpUsual${brk(svpUsual)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -1504,7 +1483,7 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
             //check
             if (svpUsual < 0) {
                 err.push(`svpUsual${brk(svpUsual)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -1512,7 +1491,7 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         //check svpDesign
         if (!isnum(svpDesign)) {
             err.push(`svpDesign${brk(svpDesign)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -1522,7 +1501,7 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
             //check
             if (svpDesign < 0) {
                 err.push(`svpDesign${brk(svpDesign)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -1530,7 +1509,7 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         //check sv
         if (!isnum(sv)) {
             err.push(`sv${brk(sv)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -1540,7 +1519,7 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
             //check
             if (sv < 0) {
                 err.push(`sv${brk(sv)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -1548,7 +1527,7 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         //check PGA
         if (!isnum(PGA)) {
             err.push(`PGA${brk(PGA)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -1558,7 +1537,7 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
             //check
             if (PGA < 0) {
                 err.push(`PGA${brk(PGA)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -1566,7 +1545,7 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         //check Mw
         if (!isnum(Mw)) {
             err.push(`Mw${brk(Mw)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -1576,7 +1555,7 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
             //check
             if (Mw < 0) {
                 err.push(`Mw${brk(Mw)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -1591,6 +1570,11 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         CSR = '-'
         FS = 10
         return ret() //無錯誤並結束
+    }
+
+    //check delayErr
+    if (delayErr === true) {
+        return ret() //觸發延遲報錯並結束
     }
 
     //MSFPow, 原莊長賢excel內MSFPow=-1.11
@@ -1644,7 +1628,7 @@ function sptHBF({ ver = '2012', waterLevelDesign, soilClassification, depth, N60
         err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+        err.push(`CSR${brk(CSR)}<=0`)
     }
     if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
@@ -1706,12 +1690,13 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
 
     //check
     let noLique = false
+    let delayErr = false
     while (true) {
 
         //check depth
         if (!isnum(depth)) {
             err.push(`depth${brk(depth)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -1721,7 +1706,7 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
             //check
             if (depth < 0) {
                 err.push(`depth${brk(depth)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -1756,25 +1741,17 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
         //非液化: 地下水位以上, 統一土壤分類屬黏土, (N160cs>=30, 於後面處理)
         if (depth < waterLevelDesign || isNoLique(soilClassification)) {
             noLique = true
-            // CRR = '-'
-            // CSR = '-'
-            // FS = 10
-            // return ret()
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
             noLique = true
-            // CRR = '-'
-            // CSR = '-'
-            // FS = 10
-            // return ret()
         }
 
         //check N60
         if (!isnum(N60)) {
             err.push(`N60${brk(N60)}非數字`)
-            // return ret()
+            delayErr = true
         }
         else {
 
@@ -1784,16 +1761,12 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
             //check
             if (N60 < 0) {
                 err.push(`N60${brk(N60)}<0`)
-                // return ret()
+                delayErr = true
             }
 
             //非液化: N值>=50
             if (N60 >= 50) {
                 noLique = true
-                // CRR = '-'
-                // CSR = '-'
-                // FS = 10
-                // return ret()
             }
 
         }
@@ -1801,7 +1774,7 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
         //check FC
         if (!isnum(FC)) {
             err.push(`FC${brk(FC)}非數字`)
-            // return ret()
+            delayErr = true
         }
         else {
 
@@ -1811,7 +1784,7 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
             //check
             if (FC < 0) {
                 err.push(`FC${brk(FC)}<0`)
-                // return ret()
+                delayErr = true
             }
 
         }
@@ -1819,7 +1792,7 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
         //check svpUsual
         if (!isnum(svpUsual)) {
             err.push(`svpUsual${brk(svpUsual)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -1829,7 +1802,7 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
             //check
             if (svpUsual < 0) {
                 err.push(`svpUsual${brk(svpUsual)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -1837,7 +1810,7 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
         //check svpDesign
         if (!isnum(svpDesign)) {
             err.push(`svpDesign${brk(svpDesign)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -1847,7 +1820,7 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
             //check
             if (svpDesign < 0) {
                 err.push(`svpDesign${brk(svpDesign)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -1855,7 +1828,7 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
         //check sv
         if (!isnum(sv)) {
             err.push(`sv${brk(sv)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -1865,7 +1838,7 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
             //check
             if (sv < 0) {
                 err.push(`sv${brk(sv)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -1873,7 +1846,7 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
         //check PGA
         if (!isnum(PGA)) {
             err.push(`PGA${brk(PGA)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -1883,7 +1856,7 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
             //check
             if (PGA < 0) {
                 err.push(`PGA${brk(PGA)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -1891,7 +1864,7 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
         //check Mw
         if (!isnum(Mw)) {
             err.push(`Mw${brk(Mw)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -1901,7 +1874,7 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
             //check
             if (Mw < 0) {
                 err.push(`Mw${brk(Mw)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -1916,6 +1889,11 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
         CSR = '-'
         FS = 10
         return ret() //無錯誤並結束
+    }
+
+    //check delayErr
+    if (delayErr === true) {
+        return ret() //觸發延遲報錯並結束
     }
 
     MSF = (Mw / 7.5) ** (-2.56)
@@ -1975,7 +1953,7 @@ function sptNCEER({ waterLevelDesign, soilClassification, depth, N60, FC, sv, sv
         err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+        err.push(`CSR${brk(CSR)}<=0`)
     }
     if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
@@ -2043,18 +2021,19 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
 
     //check
     let noLique = false
+    let delayErr = false
     while (true) {
 
         //check ver
         if (ver !== '1996' && ver !== '2017') {
             err.push(`ver${brk(ver)} 非1996或2017`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
 
         //check depth
         if (!isnum(depth)) {
             err.push(`depth${brk(depth)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -2064,7 +2043,7 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
             //check
             if (depth < 0) {
                 err.push(`depth${brk(depth)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -2099,25 +2078,17 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         //非液化: 非砂或礫質土, 強制視為非液化, 暫時用統一土壤分類區分 2021/05/07
         if (isNoLique(soilClassification)) {
             noLique = true
-            // CRR = '-'
-            // CSR = '-'
-            // FS = 10
-            // return ret()
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
             noLique = true
-            // CRR = '-'
-            // CSR = '-'
-            // FS = 10
-            // return ret()
         }
 
         //check N60
         if (!isnum(N60)) {
             err.push(`N60${brk(N60)}非數字`)
-            // return ret()
+            delayErr = true
         }
         else {
 
@@ -2127,16 +2098,12 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
             //check
             if (N60 < 0) {
                 err.push(`N60${brk(N60)}<0`)
-                // return ret()
+                delayErr = true
             }
 
             //非液化: N值>=50
             if (N60 >= 50) {
                 noLique = true
-                // CRR = '-'
-                // CSR = '-'
-                // FS = 10
-                // return ret()
             }
 
         }
@@ -2156,16 +2123,12 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         //非液化: 地下水位以上, 地下水低於地表下10m以下, 細料含量>35%且PI值>=15, D50>10mm或D10>1mm
         if (depth < waterLevelDesign || waterLevelDesign > 10) {
             noLique = true
-            // CRR = '-'
-            // CSR = '-'
-            // FS = 10
-            // return ret()
         }
 
         //check FC
         if (!isnum(FC)) {
             err.push(`FC${brk(FC)}非數字`)
-            // return ret()
+            delayErr = true
         }
         else {
 
@@ -2175,7 +2138,7 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
             //check
             if (FC < 0) {
                 err.push(`FC${brk(FC)}<0`)
-                // return ret()
+                delayErr = true
             }
             else if (FC <= 35) { //可能液化
             }
@@ -2202,11 +2165,8 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
                     }
                     else {
                         noLique = true
-                        // CRR = '-'
-                        // CSR = '-'
-                        // FS = 10
-                        // return ret()
                     }
+
                 }
 
             }
@@ -2233,26 +2193,19 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
             //check
             if (D50 > 10) {
                 noLique = true
-                // CRR = '-'
-                // CSR = '-'
-                // FS = 10
-                // return ret()
             }
 
             //check
             if (D10 > 1) {
                 noLique = true
-                // CRR = '-'
-                // CSR = '-'
-                // FS = 10
-                // return ret()
             }
 
         }
 
         //check vibrationType
         if (!isnum(vibrationType)) {
-            err.push(`vibrationType${brk(vibrationType)}非數字`)
+            err.push(`vibrationType${brk(vibrationType)}非數字，更改為預設值1`)
+            vibrationType = 1
         }
         else {
 
@@ -2261,7 +2214,7 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
 
             //check
             if (vibrationType !== 1 && vibrationType !== 2) {
-                err.push(`vibrationType${brk(vibrationType)} 不等於 1 或 2，更改為預設值1`)
+                err.push(`vibrationType${brk(vibrationType)}不等於1或2，更改為預設值1`)
                 vibrationType = 1
             }
 
@@ -2270,7 +2223,7 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         //check svpUsual
         if (!isnum(svpUsual)) {
             err.push(`svpUsual${brk(svpUsual)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -2280,7 +2233,7 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
             //check
             if (svpUsual < 0) {
                 err.push(`svpUsual${brk(svpUsual)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -2288,7 +2241,7 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         //check svpDesign
         if (!isnum(svpDesign)) {
             err.push(`svpDesign${brk(svpDesign)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -2298,7 +2251,7 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
             //check
             if (svpDesign < 0) {
                 err.push(`svpDesign${brk(svpDesign)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -2306,7 +2259,7 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         //check sv
         if (!isnum(sv)) {
             err.push(`sv${brk(sv)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -2316,7 +2269,7 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
             //check
             if (sv < 0) {
                 err.push(`sv${brk(sv)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -2324,7 +2277,7 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         //check PGA
         if (!isnum(PGA)) {
             err.push(`PGA${brk(PGA)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -2334,7 +2287,7 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
             //check
             if (PGA < 0) {
                 err.push(`PGA${brk(PGA)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -2349,6 +2302,11 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         CSR = '-'
         FS = 10
         return ret() //無錯誤並結束
+    }
+
+    //check delayErr
+    if (delayErr === true) {
+        return ret() //觸發延遲報錯並結束
     }
 
     rd = 1 - 0.015 * depth
@@ -2488,7 +2446,7 @@ function sptNJRA({ ver = '1996', waterLevelDesign, soilClassification, vibration
         err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+        err.push(`CSR${brk(CSR)}<=0`)
     }
     if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
@@ -2554,12 +2512,13 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
 
     //check
     let noLique = false
+    let delayErr = false
     while (true) {
 
         //check depth
         if (!isnum(depth)) {
             err.push(`depth${brk(depth)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -2569,7 +2528,7 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
             //check
             if (depth < 0) {
                 err.push(`depth${brk(depth)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -2605,25 +2564,17 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
         //非液化: 地下水位以上, 統一土壤分類屬黏土
         if (depth < waterLevelDesign || isNoLique(soilClassification)) {
             noLique = true
-            // CRR = '-'
-            // CSR = '-'
-            // FS = 10
-            // return ret()
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
             noLique = true
-            // CRR = '-'
-            // CSR = '-'
-            // FS = 10
-            // return ret()
         }
 
         //check N60
         if (!isnum(N60)) {
             err.push(`N60${brk(N60)}非數字`)
-            // return ret()
+            delayErr = true
         }
         else {
 
@@ -2633,16 +2584,12 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
             //check
             if (N60 < 0) {
                 err.push(`N60${brk(N60)}<0`)
-                // return ret()
+                delayErr = true
             }
 
             //非液化: N值>=50
             if (N60 >= 50) {
                 noLique = true
-                // CRR = '-'
-                // CSR = '-'
-                // FS = 10
-                // return ret()
             }
 
         }
@@ -2650,7 +2597,7 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
         //check FC
         if (!isnum(FC)) {
             err.push(`FC${brk(FC)}非數字`)
-            // return ret()
+            delayErr = true
         }
         else {
 
@@ -2660,7 +2607,7 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
             //check
             if (FC < 0) {
                 err.push(`FC${brk(FC)}<0`)
-                // return ret()
+                delayErr = true
             }
 
         }
@@ -2668,7 +2615,7 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
         //check svpUsual
         if (!isnum(svpUsual)) {
             err.push(`svpUsual${brk(svpUsual)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -2678,7 +2625,7 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
             //check
             if (svpUsual < 0) {
                 err.push(`svpUsual${brk(svpUsual)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -2686,7 +2633,7 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
         //check svpDesign
         if (!isnum(svpDesign)) {
             err.push(`svpDesign${brk(svpDesign)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -2696,7 +2643,7 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
             //check
             if (svpDesign < 0) {
                 err.push(`svpDesign${brk(svpDesign)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -2704,7 +2651,7 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
         //check sv
         if (!isnum(sv)) {
             err.push(`sv${brk(sv)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -2714,7 +2661,7 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
             //check
             if (sv < 0) {
                 err.push(`sv${brk(sv)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -2722,7 +2669,7 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
         //check PGA
         if (!isnum(PGA)) {
             err.push(`PGA${brk(PGA)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -2732,7 +2679,7 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
             //check
             if (PGA < 0) {
                 err.push(`PGA${brk(PGA)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -2740,7 +2687,7 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
         //check Mw
         if (!isnum(Mw)) {
             err.push(`Mw${brk(Mw)}非數字`)
-            return ret() //報錯並結束
+            return ret() //重大錯誤直接報錯結束
         }
         else {
 
@@ -2750,7 +2697,7 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
             //check
             if (Mw < 0) {
                 err.push(`Mw${brk(Mw)}<0`)
-                return ret() //報錯並結束
+                return ret() //重大錯誤直接報錯結束
             }
 
         }
@@ -2767,28 +2714,30 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
         return ret() //無錯誤並結束
     }
 
-    // let st = {
-    //     a: 0.45,
-    //     n: 14,
-    //     Cr: 0.57,
-    //     Cs: 85,
-    // }
+    //check delayErr
+    if (delayErr === true) {
+        return ret() //觸發延遲報錯並結束
+    }
 
+    //a
     if (!isnum(a)) {
         a = 0.45
     }
     a = cdbl(a)
 
+    //n
     if (!isnum(n)) {
         n = 14
     }
     n = cdbl(n)
 
+    //Cr
     if (!isnum(Cr)) {
         Cr = 0.57
     }
     Cr = cdbl(Cr)
 
+    //Cs
     if (!isnum(Cs)) {
         Cs = 85
     }
@@ -2824,7 +2773,7 @@ function sptTY({ waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60,
         err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+        err.push(`CSR${brk(CSR)}<=0`)
     }
     if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
@@ -2968,7 +2917,7 @@ function cptJuang({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+        err.push(`CSR${brk(CSR)}<=0`)
     }
     if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
@@ -3108,7 +3057,7 @@ function cptHBF({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+        err.push(`CSR${brk(CSR)}<=0`)
     }
     if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
@@ -3237,7 +3186,7 @@ function cptOlsen({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+        err.push(`CSR${brk(CSR)}<=0`)
     }
     if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
@@ -3383,7 +3332,7 @@ function cptShibata({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw, D
         err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+        err.push(`CSR${brk(CSR)}<=0`)
     }
     if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
@@ -3557,7 +3506,7 @@ function cptNCEER({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
         err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+        err.push(`CSR${brk(CSR)}<=0`)
     }
     if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
@@ -3702,7 +3651,7 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+        err.push(`CSR${brk(CSR)}<=0`)
     }
     if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
@@ -3844,7 +3793,7 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+        err.push(`CSR${brk(CSR)}<=0`)
     }
     if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
@@ -3986,7 +3935,7 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         err.push(`CRR${brk(CRR)}<0`)
     }
     if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)} <= 0`)
+        err.push(`CSR${brk(CSR)}<=0`)
     }
     if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
