@@ -5,6 +5,7 @@ import cdbl from 'wsemi/src/cdbl.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
 import isearr from 'wsemi/src/isearr.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
+import { judge } from './dm.mjs'
 
 
 /**
@@ -152,7 +153,8 @@ function checkDepthStartEnd(rows, opt = {}) {
         de1 = cdbl(de1)
 
         //比較起始深度是否大於結束深度
-        if (ds1 > de1) {
+        //if (ds1 > de1) {
+        if (judge(ds1, '>', de1)) {
             errs.push(`第 ${k} 個樣本起始深度${keyDepthStart}[${ds1}]大於結束深度${keyDepthEnd}[${de1}]`)
         }
 
@@ -170,7 +172,8 @@ function checkDepthStartEnd(rows, opt = {}) {
         de0 = cdbl(de0)
 
         //比較「上層結束深度」與「下層起始深度」是否相同
-        if (de0 !== ds1) {
+        //if (de0 !== ds1) {
+        if (judge(de0, '!==', ds1)) {
             errs.push(`第 ${k} 樣本結束深度${keyDepthEnd}[${de0}]不等於第 ${k + 1} 個樣本起始深度${keyDepthStart}[${ds1}]`)
         }
 

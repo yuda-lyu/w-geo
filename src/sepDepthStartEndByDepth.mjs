@@ -10,6 +10,7 @@ import cdbl from 'wsemi/src/cdbl.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
 import isearr from 'wsemi/src/isearr.mjs'
 import arrInsert from 'wsemi/src/arrInsert.mjs'
+import { judge } from './dm.mjs'
 import checkDepthStartEnd from './checkDepthStartEnd.mjs'
 import checkDepth from './checkDepth.mjs'
 
@@ -223,7 +224,8 @@ function sepDepthStartEndByDepth(rows, points, opt = {}) {
             de = cdbl(de)
 
             //check
-            if (di > ds && di < de) { //需位於土層內, 故判斷中為不等於起訖深度
+            //if (di > ds && di < de) {
+            if (judge(di, '>', ds) && judge(di, '<', de)) { //需位於土層內, 故判斷中為不等於起訖深度
 
                 //rowNew1, rowNew2
                 let rowNew1 = cloneDeep(v)

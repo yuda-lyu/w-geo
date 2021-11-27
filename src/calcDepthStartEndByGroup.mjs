@@ -11,6 +11,7 @@ import cdbl from 'wsemi/src/cdbl.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
 import isearr from 'wsemi/src/isearr.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
+import { judge } from './dm.mjs'
 import calcDepthStartEndFromCenter from './calcDepthStartEndFromCenter.mjs'
 
 
@@ -403,7 +404,8 @@ function calcDepthStartEndByGroup(rows, opt = {}) {
         dc1 = cdbl(dc1)
 
         //check
-        if (dc0 >= dc1) {
+        //if (dc0 >= dc1) {
+        if (judge(dc0, '>=', dc1)) {
             errs.push(`第 ${k - 1} 樣本之中點深度${keyDepth}[${dc0}]大於等於第 ${k} 樣本之中點深度${keyDepth}[${dc1}]`)
         }
 
@@ -481,11 +483,13 @@ function calcDepthStartEndByGroup(rows, opt = {}) {
         let rrows = [] //本群(輪)所屬的ts樣本
         each(ts, (t, kt) => {
             let rdc = t[keyDepth]
-            if (rdc >= ds && rdc <= de) {
+            //if (rdc >= ds && rdc <= de) {
+            if (judge(rdc, '>=', ds) && judge(rdc, '<=', de)) {
                 rdels.push(kt)
                 rrows.push(t)
             }
-            if (rdc > de) {
+            //if (rdc > de) {
+            if (judge(rdc, '>', de)) {
                 return false //break
             }
         })

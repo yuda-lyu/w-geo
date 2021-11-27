@@ -9,6 +9,7 @@ import cdbl from 'wsemi/src/cdbl.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
 import isearr from 'wsemi/src/isearr.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
+import { judge } from './dm.mjs'
 
 
 /**
@@ -213,7 +214,8 @@ function calcDepthStartEndByConnect(rows, opt = {}) {
         ds1 = cdbl(ds1)
 
         //check
-        if (de0 > ds1) {
+        //if (de0 > ds1) {
+        if (judge(de0, '>', ds1)) {
             errs.push(`第 ${k - 1} 樣本之結束深度${keyDepthEnd}[${de0}]大於第 ${k} 樣本之起點深度${keyDepthStart}[${ds1}]`)
         }
 
@@ -237,7 +239,8 @@ function calcDepthStartEndByConnect(rows, opt = {}) {
         ds1 = cdbl(ds1)
 
         //check
-        if (de0 < ds1) {
+        // if (de0 < ds1) {
+        if (judge(de0, '<', ds1)) {
             let dc = (de0 + ds1) / 2
             rows[k - 1][keyDepthEnd] = dc
             rows[k + 0][keyDepthStart] = dc
@@ -250,7 +253,8 @@ function calcDepthStartEndByConnect(rows, opt = {}) {
         let up = size(rows) - 1
         let rowsEnd = rows[up]
         let de = rowsEnd[keyDepthEnd]
-        if (de < depthEndMax) { //若最後樣本結束深度小於depthEndMax, 則自動改為depthEndMax
+        //if (de < depthEndMax) {
+        if (judge(de, '<', depthEndMax)) {
             rows[up][keyDepthEnd] = depthEndMax
         }
     }
