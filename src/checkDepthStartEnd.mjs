@@ -120,7 +120,7 @@ function checkDepthStartEnd(rows, opt = {}) {
         keyDepthEnd = 'depthEnd'
     }
 
-    //判斷各樣本起始深度需為有效數字
+    //判斷各樣本起訖深度需為有效數字
     each(rows, (v, k) => {
 
         //ds, de
