@@ -1,8 +1,8 @@
 import assert from 'assert'
-import calcDepthStartEndByExtent from '../src/calcDepthStartEndByExtent.mjs'
+import calcDepthStartEndByConnect from '../src/calcDepthStartEndByConnect.mjs'
 
 
-describe(`calcDepthStartEndByExtent`, function() {
+describe(`calcDepthStartEndByConnect`, function() {
 
     let f1 = () => {
         let rows = [{
@@ -24,8 +24,8 @@ describe(`calcDepthStartEndByExtent`, function() {
             { depthStart: 10.5, depthEnd: 15 }
         ]
 
-        it(`should return ${JSON.stringify(rowsNew)} when calcDepthStartEndByExtent(${JSON.stringify(rows)})`, function() {
-            let r = calcDepthStartEndByExtent(rows)
+        it(`should return ${JSON.stringify(rowsNew)} when calcDepthStartEndByConnect(${JSON.stringify(rows)})`, function() {
+            let r = calcDepthStartEndByConnect(rows)
             let rr = rowsNew
             assert.strict.deepStrictEqual(r, rr)
         })
@@ -46,10 +46,10 @@ describe(`calcDepthStartEndByExtent`, function() {
         ]
         let rowsNew = `Error: 第 0 樣本之結束深度depthEnd[5]大於第 1 樣本之起點深度depthStart[4]`
 
-        it(`should return ${JSON.stringify(rowsNew)} when calcDepthStartEndByExtent(${JSON.stringify(rows)})`, function() {
+        it(`should return ${JSON.stringify(rowsNew)} when calcDepthStartEndByConnect(${JSON.stringify(rows)})`, function() {
             let r = null
             try {
-                calcDepthStartEndByExtent(rows)
+                calcDepthStartEndByConnect(rows)
             }
             catch (err) {
                 r = err.toString()
@@ -77,8 +77,8 @@ describe(`calcDepthStartEndByExtent`, function() {
             { depthStart: 5, depthEnd: '10' },
         ]
 
-        it(`should return ${JSON.stringify(rowsNew)} when calcDepthStartEndByExtent(${JSON.stringify(rows)})`, function() {
-            let r = calcDepthStartEndByExtent(rows)
+        it(`should return ${JSON.stringify(rowsNew)} when calcDepthStartEndByConnect(${JSON.stringify(rows)})`, function() {
+            let r = calcDepthStartEndByConnect(rows)
             let rr = rowsNew
             assert.strict.deepStrictEqual(r, rr)
         })
@@ -99,10 +99,10 @@ describe(`calcDepthStartEndByExtent`, function() {
         ]
         let rowsNew = `Error: 第 0 樣本結束深度depthEnd[abc]非有效數字, 第 1 樣本起始深度depthStart[abc]非有效數字`
 
-        it(`should return ${JSON.stringify(rowsNew)} when calcDepthStartEndByExtent(${JSON.stringify(rows)})`, function() {
+        it(`should return ${JSON.stringify(rowsNew)} when calcDepthStartEndByConnect(${JSON.stringify(rows)})`, function() {
             let r = null
             try {
-                calcDepthStartEndByExtent(rows)
+                calcDepthStartEndByConnect(rows)
             }
             catch (err) {
                 r = err.toString()
@@ -130,8 +130,8 @@ describe(`calcDepthStartEndByExtent`, function() {
             { top_depth: 5, bottom_depth: 10 }
         ]
 
-        it(`should return ${JSON.stringify(rowsNew)} when calcDepthStartEndByExtent(${JSON.stringify(rows)}, { keyDepthStart: 'top_depth', keyDepthEnd: 'bottom_depth' })`, function() {
-            let r = calcDepthStartEndByExtent(rows, { keyDepthStart: 'top_depth', keyDepthEnd: 'bottom_depth' })
+        it(`should return ${JSON.stringify(rowsNew)} when calcDepthStartEndByConnect(${JSON.stringify(rows)}, { keyDepthStart: 'top_depth', keyDepthEnd: 'bottom_depth' })`, function() {
+            let r = calcDepthStartEndByConnect(rows, { keyDepthStart: 'top_depth', keyDepthEnd: 'bottom_depth' })
             let rr = rowsNew
             assert.strict.deepStrictEqual(r, rr)
         })
@@ -160,8 +160,8 @@ describe(`calcDepthStartEndByExtent`, function() {
             { depthStart: 10.5, depthEnd: 20 }
         ]
 
-        it(`should return ${JSON.stringify(rowsNew)} when calcDepthStartEndByExtent(${JSON.stringify(rows)}, { depthEndMax: 20 })`, function() {
-            let r = calcDepthStartEndByExtent(rows, { depthEndMax: 20 })
+        it(`should return ${JSON.stringify(rowsNew)} when calcDepthStartEndByConnect(${JSON.stringify(rows)}, { depthEndMax: 20 })`, function() {
+            let r = calcDepthStartEndByConnect(rows, { depthEndMax: 20 })
             let rr = rowsNew
             assert.strict.deepStrictEqual(r, rr)
         })

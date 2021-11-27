@@ -1,48 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    
-    <meta charset="utf-8">
-    <title>calcDepthStartEndByExtent.mjs - Documentation</title>
-    
-    
-    <script src="scripts/prettify/prettify.js"></script>
-    <script src="scripts/prettify/lang-css.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
-    <script src="scripts/nav.js" defer></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-
-<input type="checkbox" id="nav-trigger" class="nav-trigger" />
-<label for="nav-trigger" class="navicon-button x">
-  <div class="navicon"></div>
-</label>
-
-<label for="nav-trigger" class="overlay"></label>
-
-<nav >
-    
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByExtent">calcDepthStartEndByExtent</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByGroup">calcDepthStartEndByGroup</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndFromCenter">calcDepthStartEndFromCenter</a></li><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepth">checkDepth</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.groupByDepthStartEnd">groupByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPorousParams">relaPorousParams</a></li><li data-type='method'><a href="w-geo.html#.sepDepthStartEndByDepth">sepDepthStartEndByDepth</a></li><li data-type='method'><a href="w-geo.html#.sptHBF">sptHBF</a></li><li data-type='method'><a href="w-geo.html#.sptNCEER">sptNCEER</a></li><li data-type='method'><a href="w-geo.html#.sptNJRA">sptNJRA</a></li><li data-type='method'><a href="w-geo.html#.sptSeed">sptSeed</a></li><li data-type='method'><a href="w-geo.html#.sptTY">sptTY</a></li></ul></li></ul>
-</nav>
-
-<div id="main">
-    
-    <h1 class="page-title">calcDepthStartEndByExtent.mjs</h1>
-    
-
-    
-
-
-
-    
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>import each from 'lodash/each'
+import each from 'lodash/each'
 import get from 'lodash/get'
 import size from 'lodash/size'
 import join from 'lodash/join'
@@ -58,7 +14,7 @@ import isnum from 'wsemi/src/isnum.mjs'
 /**
  * 調整各樣本起訖深度成為各層互相接續狀態
  *
- * Unit Test: {@link https://github.com/yuda-lyu/w-geo/blob/master/test/calcDepthStartEndByExtent.test.js Github}
+ * Unit Test: {@link https://github.com/yuda-lyu/w-geo/blob/master/test/calcDepthStartEndByConnect.test.js Github}
  * @memberOf w-geo
  * @param {Array} rows 輸入數據陣列，各數據為物件，至少需包含起始深度(depthStart)與結束深度(depthEnd)，深度單位為m
  * @param {Object} [opt={}] 輸入設定物件，預設{}
@@ -85,7 +41,7 @@ import isnum from 'wsemi/src/isnum.mjs'
  *         depthEnd: 15,
  *     },
  * ]
- * rs = calcDepthStartEndByExtent(rows)
+ * rs = calcDepthStartEndByConnect(rows)
  * console.log(rs)
  * // => [
  * //   { depthStart: 0, depthEnd: 5 },
@@ -104,7 +60,7 @@ import isnum from 'wsemi/src/isnum.mjs'
  *     },
  * ]
  * try {
- *     rs = calcDepthStartEndByExtent(rows)
+ *     rs = calcDepthStartEndByConnect(rows)
  * }
  * catch (err) {
  *     rs = err.toString()
@@ -122,7 +78,7 @@ import isnum from 'wsemi/src/isnum.mjs'
  *         depthEnd: '10',
  *     },
  * ]
- * rs = calcDepthStartEndByExtent(rows)
+ * rs = calcDepthStartEndByConnect(rows)
  * console.log(rs)
  * // => [ { depthStart: '0', depthEnd: 5 }, { depthStart: 5, depthEnd: '10' } ]
  *
@@ -137,7 +93,7 @@ import isnum from 'wsemi/src/isnum.mjs'
  *     },
  * ]
  * try {
- *     rs = calcDepthStartEndByExtent(rows)
+ *     rs = calcDepthStartEndByConnect(rows)
  * }
  * catch (err) {
  *     rs = err.toString()
@@ -155,7 +111,7 @@ import isnum from 'wsemi/src/isnum.mjs'
  *         bottom_depth: 10,
  *     },
  * ]
- * rs = calcDepthStartEndByExtent(rows, { keyDepthStart: 'top_depth', keyDepthEnd: 'bottom_depth' })
+ * rs = calcDepthStartEndByConnect(rows, { keyDepthStart: 'top_depth', keyDepthEnd: 'bottom_depth' })
  * console.log(rs)
  * // => [
  * //   { top_depth: 0, bottom_depth: 5 },
@@ -176,7 +132,7 @@ import isnum from 'wsemi/src/isnum.mjs'
  *         depthEnd: 15,
  *     },
  * ]
- * rs = calcDepthStartEndByExtent(rows, { depthEndMax: 20 })
+ * rs = calcDepthStartEndByConnect(rows, { depthEndMax: 20 })
  * console.log(rs)
  * // => [
  * //   { depthStart: 0, depthEnd: 5 },
@@ -185,7 +141,7 @@ import isnum from 'wsemi/src/isnum.mjs'
  * // ]
  *
  */
-function calcDepthStartEndByExtent(rows, opt = {}) {
+function calcDepthStartEndByConnect(rows, opt = {}) {
     let errs = []
 
     //check
@@ -281,7 +237,7 @@ function calcDepthStartEndByExtent(rows, opt = {}) {
         ds1 = cdbl(ds1)
 
         //check
-        if (de0 &lt; ds1) {
+        if (de0 < ds1) {
             let dc = (de0 + ds1) / 2
             rows[k - 1][keyDepthEnd] = dc
             rows[k + 0][keyDepthStart] = dc
@@ -294,7 +250,7 @@ function calcDepthStartEndByExtent(rows, opt = {}) {
         let up = size(rows) - 1
         let rowsEnd = rows[up]
         let de = rowsEnd[keyDepthEnd]
-        if (de &lt; depthEndMax) { //若最後樣本結束深度小於depthEndMax, 則自動改為depthEndMax
+        if (de < depthEndMax) { //若最後樣本結束深度小於depthEndMax, 則自動改為depthEndMax
             rows[up][keyDepthEnd] = depthEndMax
         }
     }
@@ -303,29 +259,4 @@ function calcDepthStartEndByExtent(rows, opt = {}) {
 }
 
 
-export default calcDepthStartEndByExtent
-</code></pre>
-        </article>
-    </section>
-
-
-
-
-    
-    
-</div>
-
-<br class="clear">
-
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Sat Nov 27 2021 15:46:15 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
-</footer>
-
-<script>prettyPrint();</script>
-<script src="scripts/polyfill.js"></script>
-<script src="scripts/linenumber.js"></script>
-
-
-
-</body>
-</html>
+export default calcDepthStartEndByConnect

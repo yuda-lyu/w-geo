@@ -1,4 +1,4 @@
-import calcDepthStartEndByExtent from './src/calcDepthStartEndByExtent.mjs'
+import calcDepthStartEndByConnect from './src/calcDepthStartEndByConnect.mjs'
 
 
 let rows
@@ -18,7 +18,7 @@ rows = [
         depthEnd: 15,
     },
 ]
-rs = calcDepthStartEndByExtent(rows)
+rs = calcDepthStartEndByConnect(rows)
 console.log(rs)
 // => [
 //   { depthStart: 0, depthEnd: 5 },
@@ -37,7 +37,7 @@ rows = [
     },
 ]
 try {
-    rs = calcDepthStartEndByExtent(rows)
+    rs = calcDepthStartEndByConnect(rows)
 }
 catch (err) {
     rs = err.toString()
@@ -55,7 +55,7 @@ rows = [
         depthEnd: '10',
     },
 ]
-rs = calcDepthStartEndByExtent(rows)
+rs = calcDepthStartEndByConnect(rows)
 console.log(rs)
 // => [ { depthStart: '0', depthEnd: 5 }, { depthStart: 5, depthEnd: '10' } ]
 
@@ -70,7 +70,7 @@ rows = [
     },
 ]
 try {
-    rs = calcDepthStartEndByExtent(rows)
+    rs = calcDepthStartEndByConnect(rows)
 }
 catch (err) {
     rs = err.toString()
@@ -88,7 +88,7 @@ rows = [
         bottom_depth: 10,
     },
 ]
-rs = calcDepthStartEndByExtent(rows, { keyDepthStart: 'top_depth', keyDepthEnd: 'bottom_depth' })
+rs = calcDepthStartEndByConnect(rows, { keyDepthStart: 'top_depth', keyDepthEnd: 'bottom_depth' })
 console.log(rs)
 // => [
 //   { top_depth: 0, bottom_depth: 5 },
@@ -109,7 +109,7 @@ rows = [
         depthEnd: 15,
     },
 ]
-rs = calcDepthStartEndByExtent(rows, { depthEndMax: 20 })
+rs = calcDepthStartEndByConnect(rows, { depthEndMax: 20 })
 console.log(rs)
 // => [
 //   { depthStart: 0, depthEnd: 5 },
