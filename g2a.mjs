@@ -38,6 +38,20 @@ console.log(errs)
 
 rows = [
     {
+        depthStart: 0,
+        depthEnd: 5,
+    },
+    {
+        depthStart: 10,
+        depthEnd: 20,
+    },
+]
+errs = checkDepthStartEnd(rows, { stateConn: 'overlap' })
+console.log(errs)
+// => []
+
+rows = [
+    {
         depthStart: '0',
         depthEnd: '5',
     },
@@ -81,5 +95,5 @@ errs = checkDepthStartEnd(rows, { keyDepthStart: 'top_depth', keyDepthEnd: 'bott
 console.log(errs)
 // => []
 
-//node --experimental-modules --es-module-specifier-resolution=node g3.mjs
+//node --experimental-modules --es-module-specifier-resolution=node g2a.mjs
 

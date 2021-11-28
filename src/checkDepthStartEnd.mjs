@@ -121,6 +121,12 @@ function checkDepthStartEnd(rows, opt = {}) {
         keyDepthEnd = 'depthEnd'
     }
 
+    //stateConn
+    let stateConn = get(opt, 'stateConn')
+    if (stateConn !== 'conn' && stateConn !== 'overlap') {
+        stateConn = 'conn'
+    }
+
     //判斷各樣本起訖深度需為有效數字
     each(rows, (v, k) => {
 
@@ -171,10 +177,18 @@ function checkDepthStartEnd(rows, opt = {}) {
         // ds0 = cdbl(ds0)
         de0 = cdbl(de0)
 
-        //比較「上層結束深度」與「下層起始深度」是否相同
-        //if (de0 !== ds1) {
-        if (judge(de0, '!==', ds1)) {
-            errs.push(`第 ${k} 樣本結束深度${keyDepthEnd}[${de0}]不等於第 ${k + 1} 個樣本起始深度${keyDepthStart}[${ds1}]`)
+        if (stateConn === 'conn') {
+            //比較「上層結束深度」與「下層起始深度」是否相同
+            //if (de0 !== ds1) {
+            if (judge(de0, '!==', ds1)) {
+                errs.push(`第 ${k} 樣本結束深度${keyDepthEnd}[${de0}]不等於第 ${k + 1} 個樣本起始深度${keyDepthStart}[${ds1}]`)
+            }
+        }
+        else if (stateConn === 'overlap') {
+            //比較「上層結束深度」是否超過「下層起始深度」
+            if (judge(de0, '>', ds1)) {
+                errs.push(`第 ${k} 樣本結束深度${keyDepthEnd}[${de0}]不等於第 ${k + 1} 個樣本起始深度${keyDepthStart}[${ds1}]`)
+            }
         }
 
     })
