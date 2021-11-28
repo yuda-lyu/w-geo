@@ -5,7 +5,7 @@ import cdbl from 'wsemi/src/cdbl.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
 import isearr from 'wsemi/src/isearr.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
-import { judge } from './dm.mjs'
+import judge from './judge.mjs'
 
 
 /**
@@ -54,6 +54,20 @@ import { judge } from './dm.mjs'
  * errs = checkDepthStartEnd(rows)
  * console.log(errs)
  * // => [ '第 1 樣本結束深度depthEnd[5]不等於第 2 個樣本起始深度depthStart[10]' ]
+ *
+ * rows = [
+ *     {
+ *         depthStart: 0,
+ *         depthEnd: 5,
+ *     },
+ *     {
+ *         depthStart: 10,
+ *         depthEnd: 20,
+ *     },
+ * ]
+ * errs = checkDepthStartEnd(rows, { stateConn: 'overlap' })
+ * console.log(errs)
+ * // => []
  *
  * rows = [
  *     {
@@ -187,7 +201,7 @@ function checkDepthStartEnd(rows, opt = {}) {
         else if (stateConn === 'overlap') {
             //比較「上層結束深度」是否超過「下層起始深度」
             if (judge(de0, '>', ds1)) {
-                errs.push(`第 ${k} 樣本結束深度${keyDepthEnd}[${de0}]不等於第 ${k + 1} 個樣本起始深度${keyDepthStart}[${ds1}]`)
+                errs.push(`第 ${k} 樣本結束深度${keyDepthEnd}[${de0}]大於第 ${k + 1} 個樣本起始深度${keyDepthStart}[${ds1}]`)
             }
         }
 

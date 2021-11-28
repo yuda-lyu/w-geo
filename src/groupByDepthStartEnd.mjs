@@ -11,7 +11,7 @@ import isestr from 'wsemi/src/isestr.mjs'
 import isearr from 'wsemi/src/isearr.mjs'
 import iseobj from 'wsemi/src/iseobj.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
-import { judge } from './dm.mjs'
+import judge from './judge.mjs'
 import checkDepth from './checkDepth.mjs'
 
 

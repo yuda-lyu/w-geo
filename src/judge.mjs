@@ -57,12 +57,5 @@ function judge(x1, op, x2) {
     }
 }
 
-export {
-    gte,
-    gt,
-    lte,
-    lt,
-    eq,
-    neq,
-    judge
-}
+
+export default judge

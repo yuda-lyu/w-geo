@@ -10,7 +10,7 @@ import cdbl from 'wsemi/src/cdbl.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
 import isearr from 'wsemi/src/isearr.mjs'
 import arrInsert from 'wsemi/src/arrInsert.mjs'
-import { judge } from './dm.mjs'
+import judge from './judge.mjs'
 import checkDepthStartEnd from './checkDepthStartEnd.mjs'
 import checkDepth from './checkDepth.mjs'
 
