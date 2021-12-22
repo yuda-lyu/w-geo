@@ -1083,7 +1083,7 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
     //rd公式出自土壤液化條文修訂
     rd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
 
-    let Pa = 101.39616 //正常空氣壓力 1033.6(g/cm2) = 1033.6/1000*9.81/1000*10000 = 101.39616 kN/m2
+    let Pa = 101.39616 //正常空氣壓力 1033.6(g/cm2) = 1033.6/1000*9.81 = 10.139616(N/cm2) = 10.139616/1000*10000 = 101.39616(kN/m2)
     CN = Math.min(Math.sqrt(Pa / svpUsual), 1.7)
     N160 = CN * N60 //N60通過有效覆土應力修正為N160
 
@@ -1259,10 +1259,12 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
             // console.log('Seed: FCMin', FCMin)
             if (FC > FCMax) {
                 CRR75 = interExtraPolate(ps[size(ps) - 2], ps[size(ps) - 1], FC)
+                // console.log('FC > FCMax: interExtraPolate','ps[size(ps) - 2]',ps[size(ps) - 2], 'ps[size(ps) - 1]',ps[size(ps) - 1], 'FC',FC,'CRR75',CRR75)
                 err.push(`出現外插情形 FC=${FC} > FCMax=${FCMax}，依據最近2點外插CRR75=${CRR75}`)
             }
             else if (FC < FCMin) {
                 CRR75 = interExtraPolate(ps[0], ps[1], FC)
+                // console.log('FC < FCMin: interExtraPolate','ps[0]',ps[0], 'ps[1]',ps[1], 'FC',FC,'CRR75',CRR75)
                 CRR75 = Math.max(CRR75, 0) //若FC往小方向外插有可能出現負CRR75, 故需取最小值0
                 err.push(`出現外插情形 FC=${FC} < FCMin=${FCMin}，依據最近2點外插CRR75=${CRR75}`)
             }
@@ -1616,11 +1618,12 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
     else {
         rd = 1.2 - 0.03 * depth
     }
+
     if (FC <= 10) {
         ks = 1.0
     }
     else {
-        //ks = -0.00009 * FC ** 2 + 0.0168 * FC + 0.841
+        //ks = -0.00009 * FC ** 2 + 0.0168 * FC + 0.841 //HBF早期版
         ks = 1 + 0.07 * Math.sqrt(FC - 10) //投影片公式
     }
     let Pa = 101.39616 //正常空氣壓力 1033.6(g/cm2) = 1033.6/1000*9.81/1000*10000 = 101.39616 kN/m2
@@ -1947,6 +1950,7 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
     else {
         beta = 1.2
     }
+
     let Pa = 101.39616 //正常空氣壓力 1033.6(g/cm2) = 1033.6/1000*9.81/1000*10000 = 101.39616 kN/m2
     CN = Math.min(Math.sqrt(Pa / svpUsual), 1.7)
     N160 = CN * N60 //N60通過有效覆土應力修正為N160
