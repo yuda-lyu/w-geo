@@ -47,7 +47,7 @@ function core(rows, waterLevel) {
 
             //rT, 使用單位重(kN/m3)
             let rT = null
-            if (ds < waterLevel && de > waterLevel) {
+            if (ds < waterLevel && de > waterLevel) { //樣本半乾半飽和
                 let rsat = get(v, 'rsat', null)
                 if (!isnum(rsat)) {
                     throw new Error(`第 ${k} 樣本飽和單位重(rsat)非數值: ${rsat}`)

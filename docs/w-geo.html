@@ -27,7 +27,7 @@
 
 <nav >
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByConnect">calcDepthStartEndByConnect</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByGroup">calcDepthStartEndByGroup</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndFromCenter">calcDepthStartEndFromCenter</a></li><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepth">checkDepth</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.groupByDepthStartEnd">groupByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPorousParams">relaPorousParams</a></li><li data-type='method'><a href="w-geo.html#.sepDepthStartEndByDepth">sepDepthStartEndByDepth</a></li><li data-type='method'><a href="w-geo.html#.sptHBF">sptHBF</a></li><li data-type='method'><a href="w-geo.html#.sptNCEER">sptNCEER</a></li><li data-type='method'><a href="w-geo.html#.sptNJRA">sptNJRA</a></li><li data-type='method'><a href="w-geo.html#.sptSeed">sptSeed</a></li><li data-type='method'><a href="w-geo.html#.sptTY">sptTY</a></li></ul></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByConnect">calcDepthStartEndByConnect</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByGroup">calcDepthStartEndByGroup</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndFromCenter">calcDepthStartEndFromCenter</a></li><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepth">checkDepth</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.complementDepthData">complementDepthData</a></li><li data-type='method'><a href="w-geo.html#.groupByDepthStartEnd">groupByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPorousParams">relaPorousParams</a></li><li data-type='method'><a href="w-geo.html#.sepDepthStartEndByDepth">sepDepthStartEndByDepth</a></li><li data-type='method'><a href="w-geo.html#.sptHBF">sptHBF</a></li><li data-type='method'><a href="w-geo.html#.sptNCEER">sptNCEER</a></li><li data-type='method'><a href="w-geo.html#.sptNJRA">sptNJRA</a></li><li data-type='method'><a href="w-geo.html#.sptSeed">sptSeed</a></li><li data-type='method'><a href="w-geo.html#.sptTY">sptTY</a></li></ul></li></ul>
 </nav>
 
 <div id="main">
@@ -169,7 +169,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line4443">line 4443</a>
+        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line4447">line 4447</a>
     </li></ul></dd>
     
 
@@ -2393,6 +2393,516 @@
 
     
 
+    <h4 class="name" id=".complementDepthData"><span class="type-signature">(static) </span>complementDepthData<span class="signature">(rows, keyDepth, keyValue, keysValueCmp, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="complementDepthData.mjs.html">complementDepthData.mjs</a>, <a href="complementDepthData.mjs.html#line366">line 366</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>數據急墜段偵測與處理</p>
+<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/complementDepthData.test.js">Github</a></p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>let rows = [    {        'depth(m)': 0,        'qc(MPa)': 0,        'fs(MPa)': 0,        'u2(MPa)': 0,    },    {        'depth(m)': 0.1,        'qc(MPa)': 0.12,        'fs(MPa)': 0.02,        'u2(MPa)': 0.05,    },]let keyDepth = 'depth(m)'let keyValue = 'qc(MPa)'let keysValueCmp = ['qc(MPa)', 'fs(MPa)', 'u2(MPa)']let rsFill = complementDepthData(rows, keyDepth, keyValue, keysValueCmp, { cmpMode: 'linear-fill' })let rsCut = complementDepthData(rows, keyDepth, keyValue, keysValueCmp, { cmpMode: 'cut' })</code></pre>
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>rows</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入數據陣列，各數據為物件，至少需包含深度(depth，單位m)與任意數值</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>keyDepth</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入深度欄位字串</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>keyValue</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入偵測數值欄位字串</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>keysValueCmp</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入偵測數值與連帶處理欄位陣列</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>opt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>{}</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入設定物件，預設{}</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>searchLen</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>0.5</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入偵測有效深度範圍數字，單位m，預設0.5</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>beforeSearchMode</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'no'</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入偵測急墜段時之往上提取起始點方式字串，可選'all'、'no'、'peak'、'half-closed-value'、'double-closed-value'、'closed-value'，預設'no'</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>afterSearchMode</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'all'</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入偵測急墜段時之往下提取結束點方式字串，可選'all'、'no'、'peak'、'half-closed-value'、'double-closed-value'、'closed-value'，預設'all'</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>cmpMode</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'linear-fill'</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入偵測急墜段並標註起訖點時之處理方式字串，可選'linear-fill'、'cut'，預設'linear-fill'</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>回傳計算後數據陣列</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
     <h4 class="name" id=".groupByDepthStartEnd"><span class="type-signature">(static) </span>groupByDepthStartEnd<span class="signature">(rows, depthStartAndEnds, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
 
     
@@ -3515,7 +4025,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line1349">line 1349</a>
+        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line1351">line 1351</a>
     </li></ul></dd>
     
 
@@ -4179,7 +4689,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line1695">line 1695</a>
+        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line1698">line 1698</a>
     </li></ul></dd>
     
 
@@ -4804,7 +5314,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line2030">line 2030</a>
+        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line2034">line 2034</a>
     </li></ul></dd>
     
 
@@ -6132,7 +6642,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line2532">line 2532</a>
+        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line2536">line 2536</a>
     </li></ul></dd>
     
 
@@ -6959,7 +7469,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Dec 16 2021 13:34:56 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Mar 10 2022 22:30:07 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

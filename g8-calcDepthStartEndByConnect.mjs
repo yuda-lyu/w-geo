@@ -117,5 +117,5 @@ console.log(rs)
 //   { depthStart: 10.5, depthEnd: 20 }
 // ]
 
-//node --experimental-modules --es-module-specifier-resolution=node g8.mjs
+//node --experimental-modules --es-module-specifier-resolution=node g8-calcDepthStartEndByConnect.mjs
 

@@ -127,5 +127,5 @@ console.log(r)
 //  { top_depth: 5.5, bottom_depth: 10, data: 'def' }
 //]
 
-//node --experimental-modules --es-module-specifier-resolution=node g7.mjs
+//node --experimental-modules --es-module-specifier-resolution=node g7-sepDepthStartEndByDepth.mjs
 

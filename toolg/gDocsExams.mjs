@@ -11,41 +11,38 @@ let fdTar = './docs/examples/'
 function main() {
     //把example裡面cdn更換, 再複製到docs的example內, 作為日後發佈為靜態網站
 
-    // //pks
-    // let pks = getPks()
+    //pks
+    let pks = getPks()
 
-    // //url
-    // let url = `https://cdn.jsdelivr.net/npm/w-geo@${pks.version}/dist/w-geo.umd.js`
-    // let urlww = `https://cdn.jsdelivr.net/npm/w-geo@${pks.version}/dist/w-geo.wk.umd.js`
+    //url
+    let url = `https://cdn.jsdelivr.net/npm/w-geo@${pks.version}/dist/w-geo.umd.js`
 
-    // //mkdirSync
-    // if (!fs.existsSync(fdTar)) {
-    //     fs.mkdirSync(fdTar)
-    // }
+    //mkdirSync
+    if (!fs.existsSync(fdTar)) {
+        fs.mkdirSync(fdTar)
+    }
 
-    // //getFiles
-    // let ltfs = getFiles(fdSrc)
+    //getFiles
+    let ltfs = getFiles(fdSrc)
 
-    // _.each(ltfs, function(v) {
+    _.each(ltfs, function(v) {
 
-    //     //fn
-    //     let fn = fdSrc + v
+        //fn
+        let fn = fdSrc + v
 
-    //     //c
-    //     let c = fs.readFileSync(fn, 'utf8')
+        //c
+        let c = fs.readFileSync(fn, 'utf8')
 
-    //     //replace
-    //     let r
-    //     r = `../dist/w-geo.umd.js`
-    //     c = c.replace(r, url)
-    //     r = `../dist/w-geo.wk.umd.js`
-    //     c = c.replace(r, urlww)
+        //replace
+        let r
+        r = `../dist/w-geo.umd.js`
+        c = c.replace(r, url)
 
-    //     //write
-    //     //console.log(c)
-    //     fs.writeFileSync(fdTar + v, c, 'utf8')
+        //write
+        //console.log(c)
+        fs.writeFileSync(fdTar + v, c, 'utf8')
 
-    // })
+    })
 
 }
 main()
