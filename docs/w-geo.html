@@ -27,7 +27,7 @@
 
 <nav >
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByConnect">calcDepthStartEndByConnect</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByGroup">calcDepthStartEndByGroup</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndFromCenter">calcDepthStartEndFromCenter</a></li><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepth">checkDepth</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.complementDepthData">complementDepthData</a></li><li data-type='method'><a href="w-geo.html#.convertCoordinate">convertCoordinate</a></li><li data-type='method'><a href="w-geo.html#.groupByDepthStartEnd">groupByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPorousParams">relaPorousParams</a></li><li data-type='method'><a href="w-geo.html#.sepDepthStartEndByDepth">sepDepthStartEndByDepth</a></li><li data-type='method'><a href="w-geo.html#.sptHBF">sptHBF</a></li><li data-type='method'><a href="w-geo.html#.sptNCEER">sptNCEER</a></li><li data-type='method'><a href="w-geo.html#.sptNJRA">sptNJRA</a></li><li data-type='method'><a href="w-geo.html#.sptSeed">sptSeed</a></li><li data-type='method'><a href="w-geo.html#.sptTY">sptTY</a></li></ul></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByConnect">calcDepthStartEndByConnect</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByGroup">calcDepthStartEndByGroup</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndFromCenter">calcDepthStartEndFromCenter</a></li><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepth">checkDepth</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.complementDepthData">complementDepthData</a></li><li data-type='method'><a href="w-geo.html#.groupByDepthStartEnd">groupByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPorousParams">relaPorousParams</a></li><li data-type='method'><a href="w-geo.html#.sepDepthStartEndByDepth">sepDepthStartEndByDepth</a></li><li data-type='method'><a href="w-geo.html#.sptHBF">sptHBF</a></li><li data-type='method'><a href="w-geo.html#.sptNCEER">sptNCEER</a></li><li data-type='method'><a href="w-geo.html#.sptNJRA">sptNJRA</a></li><li data-type='method'><a href="w-geo.html#.sptSeed">sptSeed</a></li><li data-type='method'><a href="w-geo.html#.sptTY">sptTY</a></li></ul></li></ul>
 </nav>
 
 <div id="main">
@@ -2878,216 +2878,6 @@
         
 <div class="param-desc">
     <p>回傳計算後數據陣列</p>
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Array</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".convertCoordinate"><span class="type-signature">(static) </span>convertCoordinate<span class="signature">(cdFrom, cdTo, ps)</span><span class="type-signature"> &rarr; {Array}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="convertCoordinate.mjs.html">convertCoordinate.mjs</a>, <a href="convertCoordinate.mjs.html#line113">line 113</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description usertext">
-    <p>座標轉換</p>
-<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/convertCoordinate.test.js">Github</a></p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
-    
-    <pre class="prettyprint"><code>let pslet rps = [121, 24]r = convertCoordinate('WGS84', 'TWD97TM2', ps)console.log('WGS84', 'to', 'TWD97TM2', r)// => WGS84 to TWD97TM2 [ 250000, 2655023.124957118 ]ps = [121, 24]r = convertCoordinate('WGS84', 'TWD67TM2', ps)console.log('WGS84', 'to', 'TWD67TM2', r)// => WGS84 to TWD67TM2 [ 249171.1063953548, 2655228.969012536 ]ps = [250000, 2655023]r = convertCoordinate('TWD97TM2', 'TWD67TM2', ps)console.log('TWD97TM2', 'to', 'TWD67TM2', r)// => TWD97TM2 to TWD67TM2 [ 249171.10639535502, 2655228.8440549527 ]</code></pre>
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>cdFrom</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>輸入來源座標系統字串</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>cdTo</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>輸入轉出座標系統字串</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>ps</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>輸入座標(x,y)陣列</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>回傳轉出座標陣列</p>
 </div>
 
 
@@ -7679,7 +7469,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.10</a> on Thu May 12 2022 15:39:28 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.10</a> on Thu May 12 2022 15:59:25 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
