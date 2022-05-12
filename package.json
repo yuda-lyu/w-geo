@@ -1,12 +1,12 @@
 {
   "name": "w-geo",
-  "version": "1.0.43",
-  "description": "A tool for geotech analysis.",
+  "version": "1.0.44",
   "main": "dist/w-geo.umd.js",
   "dependencies": {
     "decimal.js": "^10.3.1",
     "lodash": "^4.17.21",
-    "wsemi": "^1.6.54"
+    "proj4": "^2.8.0",
+    "wsemi": "^1.6.62"
   },
   "devDependencies": {
     "w-package-tools": "^1.0.65"
@@ -27,9 +27,5 @@
     "browser"
   ],
   "author": "yuda-lyu(semisphere)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/yuda-lyu/w-geo/issues"
-  },
-  "homepage": "https://github.com/yuda-lyu/w-geo#readme"
+  "license": "MIT"
 }
