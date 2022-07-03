@@ -104,6 +104,8 @@ function get_GS_from_rsat_e(rsat, e) {
  * @param {Number} [rsat=null] 輸入飽和單位重數字，單位kN/m3，預設null
  * @param {Number} [GS=null] 輸入比重數字，無單位，預設null
  * @param {Number} [e=null] 輸入孔隙比數字，無單位，預設null
+ * @param {Object} [opt={}] 輸入設定物件，預設{}
+ * @param {Boolean} [opt.returnFuncs=false] 輸入是否回傳函數布林值，預設false
  * @returns {Object} 回傳物件，含鍵值rd、rsat、GS、e
  * @example
  *
