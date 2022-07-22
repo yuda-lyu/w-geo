@@ -842,7 +842,7 @@ function sptSettlement(N160, N172, CSR, FS) {
  * @param {Number} row.svpUsual 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
  * @param {Number} row.svpDesign 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
  * @param {Number} row.PGA 輸入設計地表最大水平加速度數字，單位(g)
- * @param {Number} row.Mw 輸入設計地震規模數字
+ * @param {Number} row.Mw 輸入設計地震矩規模數字
  * @returns {Object} 回傳計算後數據物件
  * @example
  */
@@ -1344,7 +1344,7 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
  * @param {Number} row.svpUsual 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
  * @param {Number} row.svpDesign 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
  * @param {Number} row.PGA 輸入設計地表最大水平加速度數字，單位(g)
- * @param {Number} row.Mw 輸入設計地震規模數字
+ * @param {Number} row.Mw 輸入設計地震矩規模數字
  * @returns {Object} 回傳計算後數據物件
  * @example
  */
@@ -1691,7 +1691,7 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
  * @param {Number} row.svpUsual 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
  * @param {Number} row.svpDesign 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
  * @param {Number} row.PGA 輸入設計地表最大水平加速度數字，單位(g)
- * @param {Number} row.Mw 輸入設計地震規模數字
+ * @param {Number} row.Mw 輸入設計地震矩規模數字
  * @returns {Object} 回傳計算後數據物件
  * @example
  */
@@ -2529,7 +2529,7 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
  * @param {Number} row.svpUsual 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
  * @param {Number} row.svpDesign 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
  * @param {Number} row.PGA 輸入設計地表最大水平加速度數字，單位(g)
- * @param {Number} row.Mw 輸入設計地震規模數字
+ * @param {Number} row.Mw 輸入設計地震矩規模數字
  * @returns {Object} 回傳計算後數據物件
  * @example
  */
