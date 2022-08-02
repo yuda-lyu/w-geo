@@ -36,7 +36,7 @@ describe(`calcVerticalStress`, function() {
                 sv: 45,
                 svpUsual: 20.474999999999998,
                 svpDesign: 20.474999999999998,
-                zsv: 2.5
+                depth: 2.5
             },
             {
                 depthStart: 5,
@@ -47,7 +47,7 @@ describe(`calcVerticalStress`, function() {
                 sv: 135,
                 svpUsual: 61.425,
                 svpDesign: 61.425,
-                zsv: 7.5
+                depth: 7.5
             },
             {
                 depthStart: 10,
@@ -58,7 +58,7 @@ describe(`calcVerticalStress`, function() {
                 sv: 270,
                 svpUsual: 122.85,
                 svpDesign: 122.85,
-                zsv: 15
+                depth: 15
             }
         ]
 
@@ -103,7 +103,7 @@ describe(`calcVerticalStress`, function() {
                 sv: 45,
                 svpUsual: 20.474999999999998,
                 svpDesign: 20.474999999999998,
-                zsv: 2.5
+                depth: 2.5
             },
             {
                 depthStart: 5,
@@ -114,7 +114,7 @@ describe(`calcVerticalStress`, function() {
                 sv: 137.5,
                 svpUsual: 63.925,
                 svpDesign: 63.925,
-                zsv: 7.5
+                depth: 7.5
             },
             {
                 depthStart: 10,
@@ -125,7 +125,7 @@ describe(`calcVerticalStress`, function() {
                 sv: 285,
                 svpUsual: 137.85,
                 svpDesign: 137.85,
-                zsv: 15
+                depth: 15
             }
         ]
 
@@ -170,7 +170,7 @@ describe(`calcVerticalStress`, function() {
                 sv: 45,
                 svpUsual: 45,
                 svpDesign: 45,
-                zsv: 2.5
+                depth: 2.5
             },
             {
                 depthStart: 5,
@@ -181,7 +181,7 @@ describe(`calcVerticalStress`, function() {
                 sv: 135,
                 svpUsual: 135,
                 svpDesign: 135,
-                zsv: 7.5
+                depth: 7.5
             },
             {
                 depthStart: 10,
@@ -192,7 +192,7 @@ describe(`calcVerticalStress`, function() {
                 sv: 270,
                 svpUsual: 270,
                 svpDesign: 270,
-                zsv: 15
+                depth: 15
             }
         ]
 
@@ -232,7 +232,7 @@ describe(`calcVerticalStress`, function() {
                 sv: 27,
                 svpUsual: 27,
                 svpDesign: 27,
-                zsv: 1.5
+                depth: 1.5
             },
             {
                 depthStart: 3,
@@ -243,7 +243,7 @@ describe(`calcVerticalStress`, function() {
                 sv: 134,
                 svpUsual: 94.75999999999999,
                 svpDesign: 94.75999999999999,
-                zsv: 7
+                depth: 7
             }
         ]
 
@@ -289,7 +289,7 @@ describe(`calcVerticalStress`, function() {
                 sv: 9,
                 svpUsual: 9,
                 svpDesign: 9,
-                zsv: 0.5
+                depth: 0.5
             },
             {
                 depthStart: 1,
@@ -301,7 +301,7 @@ describe(`calcVerticalStress`, function() {
                 sv: 56,
                 svpUsual: 56,
                 svpDesign: 56,
-                zsv: 3
+                depth: 3
             },
             {
                 depthStart: 5,
@@ -312,7 +312,7 @@ describe(`calcVerticalStress`, function() {
                 sv: 134,
                 svpUsual: 94.75999999999999,
                 svpDesign: 94.75999999999999,
-                zsv: 7
+                depth: 7
             }
         ]
 
@@ -360,7 +360,7 @@ describe(`calcVerticalStress`, function() {
                 sv: 9,
                 svpUsual: 9,
                 svpDesign: 5.095,
-                zsv: 0.5
+                depth: 0.5
             },
             {
                 depthStart: 1,
@@ -372,7 +372,7 @@ describe(`calcVerticalStress`, function() {
                 sv: 56,
                 svpUsual: 56,
                 svpDesign: 30.57,
-                zsv: 3
+                depth: 3
             },
             {
                 depthStart: 5,
@@ -383,7 +383,7 @@ describe(`calcVerticalStress`, function() {
                 sv: 134,
                 svpUsual: 94.75999999999999,
                 svpDesign: 71.33,
-                zsv: 7
+                depth: 7
             }
         ]
 

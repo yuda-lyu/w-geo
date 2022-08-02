@@ -42,8 +42,8 @@ function core(rows, waterLevel) {
             ds = cdbl(ds)
             de = cdbl(de)
 
-            //zsv, 土層中點深度(m)
-            v.zsv = (de + ds) / 2
+            //depth, 土層中點深度(m)
+            v.depth = (de + ds) / 2
 
             //rT, 使用單位重(kN/m3)
             let rT = null
@@ -172,7 +172,7 @@ function core(rows, waterLevel) {
  * //     sv: 45,
  * //     svpUsual: 20.474999999999998,
  * //     svpDesign: 20.474999999999998,
- * //     zsv: 2.5
+ * //     depth: 2.5
  * //   },
  * //   {
  * //     depthStart: 5,
@@ -183,7 +183,7 @@ function core(rows, waterLevel) {
  * //     sv: 135,
  * //     svpUsual: 61.425,
  * //     svpDesign: 61.425,
- * //     zsv: 7.5
+ * //     depth: 7.5
  * //   },
  * //   {
  * //     depthStart: 10,
@@ -194,7 +194,7 @@ function core(rows, waterLevel) {
  * //     sv: 270,
  * //     svpUsual: 122.85,
  * //     svpDesign: 122.85,
- * //     zsv: 15
+ * //     depth: 15
  * //   }
  * // ] 122.85
  *
@@ -229,7 +229,7 @@ function core(rows, waterLevel) {
  * //     sv: 45,
  * //     svpUsual: 20.474999999999998,
  * //     svpDesign: 20.474999999999998,
- * //     zsv: 2.5
+ * //     depth: 2.5
  * //   },
  * //   {
  * //     depthStart: 5,
@@ -240,7 +240,7 @@ function core(rows, waterLevel) {
  * //     sv: 137.5,
  * //     svpUsual: 63.925,
  * //     svpDesign: 63.925,
- * //     zsv: 7.5
+ * //     depth: 7.5
  * //   },
  * //   {
  * //     depthStart: 10,
@@ -251,7 +251,7 @@ function core(rows, waterLevel) {
  * //     sv: 285,
  * //     svpUsual: 137.85,
  * //     svpDesign: 137.85,
- * //     zsv: 15
+ * //     depth: 15
  * //   }
  * // ] 137.85
  *
@@ -286,7 +286,7 @@ function core(rows, waterLevel) {
  * //     sv: 45,
  * //     svpUsual: 45,
  * //     svpDesign: 45,
- * //     zsv: 2.5
+ * //     depth: 2.5
  * //   },
  * //   {
  * //     depthStart: 5,
@@ -297,7 +297,7 @@ function core(rows, waterLevel) {
  * //     sv: 135,
  * //     svpUsual: 135,
  * //     svpDesign: 135,
- * //     zsv: 7.5
+ * //     depth: 7.5
  * //   },
  * //   {
  * //     depthStart: 10,
@@ -308,7 +308,7 @@ function core(rows, waterLevel) {
  * //     sv: 270,
  * //     svpUsual: 270,
  * //     svpDesign: 270,
- * //     zsv: 15
+ * //     depth: 15
  * //   }
  * // ] 270
  *
@@ -338,7 +338,7 @@ function core(rows, waterLevel) {
  * //     sv: 27,
  * //     svpUsual: 27,
  * //     svpDesign: 27,
- * //     zsv: 1.5
+ * //     depth: 1.5
  * //   },
  * //   {
  * //     depthStart: 3,
@@ -349,7 +349,7 @@ function core(rows, waterLevel) {
  * //     sv: 134,
  * //     svpUsual: 94.75999999999999,
  * //     svpDesign: 94.75999999999999,
- * //     zsv: 7
+ * //     depth: 7
  * //   }
  * // ] 94.75999999999999
  *
@@ -385,7 +385,7 @@ function core(rows, waterLevel) {
  * //     sv: 9,
  * //     svpUsual: 9,
  * //     svpDesign: 9,
- * //     zsv: 0.5
+ * //     depth: 0.5
  * //   },
  * //   {
  * //     depthStart: 1,
@@ -397,7 +397,7 @@ function core(rows, waterLevel) {
  * //     sv: 56,
  * //     svpUsual: 56,
  * //     svpDesign: 56,
- * //     zsv: 3
+ * //     depth: 3
  * //   },
  * //   {
  * //     depthStart: 5,
@@ -408,7 +408,7 @@ function core(rows, waterLevel) {
  * //     sv: 134,
  * //     svpUsual: 94.75999999999999,
  * //     svpDesign: 94.75999999999999,
- * //     zsv: 7
+ * //     depth: 7
  * //   }
  * // ] 94.75999999999999
  *
@@ -446,7 +446,7 @@ function core(rows, waterLevel) {
  * //     sv: 9,
  * //     svpUsual: 9,
  * //     svpDesign: 5.095,
- * //     zsv: 0.5
+ * //     depth: 0.5
  * //   },
  * //   {
  * //     depthStart: 1,
@@ -458,7 +458,7 @@ function core(rows, waterLevel) {
  * //     sv: 56,
  * //     svpUsual: 56,
  * //     svpDesign: 30.57,
- * //     zsv: 3
+ * //     depth: 3
  * //   },
  * //   {
  * //     depthStart: 5,
@@ -469,7 +469,7 @@ function core(rows, waterLevel) {
  * //     sv: 134,
  * //     svpUsual: 94.75999999999999,
  * //     svpDesign: 71.33,
- * //     zsv: 7
+ * //     depth: 7
  * //   }
  * // ] 94.75999999999999 71.33
  *
@@ -525,7 +525,7 @@ function calcVerticalStress(rows, opt = {}) {
         v.sv = vUsual.sv //地下水位差異僅影響垂直有效應力, 故垂直總應力使用常時資料
         v.svpUsual = vUsual.svp //主要是給液化分析時CN與CRR使用, 其需使用鑽探時地下水位所計算得垂直有效應力
         v.svpDesign = vDesign.svp
-        v.zsv = vUsual.zsv
+        v.depth = vUsual.depth
 
         return v
     })
