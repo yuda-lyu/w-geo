@@ -1,12 +1,12 @@
 import fs from 'fs'
 import w from 'wsemi'
-// import relaPorousParams from './src/relaPorousParams.mjs'
-// import checkDepthStartEnd from './src/checkDepthStartEnd.mjs'
-// import calcVerticalStress from './src/calcVerticalStress.mjs'
 import calcLiquefaction from './src/calcLiquefaction.mjs'
+import calcCptUnitWeight from './src/calcCptUnitWeight.mjs'
 
 
 function getRows(k) {
+
+    //rowsIn1
     let rowsIn1 = [
         { 'coe_a': '0.85', 'depthStart': '0.575', 'depthEnd': '0.625', 'waterLevelUsual': '0.7', 'waterLevelDesign': '0.7', 'qc': '0.1', 'fs': '0.000981', 'u2': '-0.000981', 'sv': '7.261517433', 'svp': '7.261517433', 'PGA': '0.32', 'Mw': '7.3' },
         { 'coe_a': '0.85', 'depthStart': '0.625', 'depthEnd': '0.675', 'waterLevelUsual': '0.7', 'waterLevelDesign': '0.7', 'qc': '0.1', 'fs': '0.002943', 'u2': '-0.001962', 'sv': '8.687714518', 'svp': '8.687714518', 'PGA': '0.32', 'Mw': '7.3' },
@@ -398,9 +398,31 @@ function getRows(k) {
         { 'coe_a': '0.85', 'depthStart': '19.925', 'depthEnd': '19.975', 'waterLevelUsual': '0.7', 'waterLevelDesign': '0.7', 'qc': '2.02086', 'fs': '0.065727', 'u2': '0.570942', 'sv': '361.2623941', 'svp': '172.4198941', 'PGA': '0.32', 'Mw': '7.3' },
         { 'coe_a': '0.85', 'depthStart': '19.975', 'depthEnd': '20.025', 'waterLevelUsual': '0.7', 'waterLevelDesign': '0.7', 'qc': '1.99143', 'fs': '0.063765', 'u2': '0.489519', 'sv': '361.3174766', 'svp': '171.9844766', 'PGA': '0.32', 'Mw': '7.3' }
     ]
+
+    //rowsIn2
+    let rowsIn2 = rowsIn1
+    if (true) {
+
+        //rsatIni
+        let rsatIni = 19.5
+
+        //calcCptUnitWeight
+        rowsIn2 = calcCptUnitWeight(rowsIn2, rsatIni)
+        // console.log('calcCptUnitWeight', rowsIn2[0])
+
+        //回傳qc,fs,u0,u2,sv,svp單位為MPa, 液化輸入sv,svp單位為kPa
+        for (let i = 0; i < rowsIn2.length; i++) {
+            rowsIn2[i].sv *= 1000
+            rowsIn2[i].svp *= 1000
+        }
+        // console.log('cv-unit', rowsIn2[0])
+
+    }
+
+
     let kp = {
         1: rowsIn1,
-        // 2: rowsIn2,
+        2: rowsIn2,
     }
     let rowsIn = kp[k]
     return rowsIn
@@ -422,5 +444,6 @@ function calc(k) {
 }
 
 calc(1)
+calc(2)
 
 //node --experimental-modules --es-module-specifier-resolution=node g3-calcLiquefaction-cpt.mjs

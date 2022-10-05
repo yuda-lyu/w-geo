@@ -428,7 +428,7 @@ function calcCptCore(dt, coe_a, opt = {}) {
 
 
 function calcCpt(ltdt, opt = {}) {
-    // [
+    // ltdt: [
     //   {
     //     depth,
     //     qc,
@@ -437,8 +437,17 @@ function calcCpt(ltdt, opt = {}) {
     //   },
     //   ...
     // ]
-    // opt.intrpSvSvp(depth, k, v, ltdt)
-    // opt.intrpU0(depth, k, v, ltdt)
+    // opt.coe_a: 0.85,
+    // opt.methodSmooth: 'none',
+    // opt.intrpSvSvp: (depth, k, v, ltdt) => {
+    //     // console.log('intrpSvSvp', depth, k, v)
+    //     let sv = v.sv //sv(kPa)
+    //     return {
+    //         sv,
+    //     }
+    // },
+    // opt.intrpU0: (depth, k, v, ltdt) => {
+    // },
 
     //coe_a
     let coe_a = get(opt, 'coe_a')

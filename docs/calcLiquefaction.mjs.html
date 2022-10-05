@@ -1361,12 +1361,23 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
         CRR75 = 0.6
     }
 
+    //CRR
     CRR = CRR75 * MSF
-    CSR = 0.65 * (sv / svpDesign) * PGA * rrd
-    if (CSR > 0) {
+
+    //CSR
+    CSR = null
+    if (svpDesign > 0) {
+        CSR = 0.65 * (sv / svpDesign) * PGA * rrd
+    }
+    else {
+        CSR = 1e20
+    }
+
+    //FS
+    if (isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (FS > 10) {
+    if (isNumber(FS) &amp;&amp; FS > 10) {
         FS = 10
     }
 
@@ -1719,13 +1730,26 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
         return ret() //已於while區塊外, 無錯誤並結束
     }
 
+    //CRR75
     CRR75 = 0.08 + 0.0035 * N160cs / (1 - N160cs / 39)
+
+    //CRR
     CRR = CRR75 * MSF
-    CSR = 0.65 * (sv / svpDesign) * PGA * rrd
-    if (CSR > 0) {
+
+    //CSR
+    CSR = null
+    if (svpDesign > 0) {
+        CSR = 0.65 * (sv / svpDesign) * PGA * rrd
+    }
+    else {
+        CSR = 1e20
+    }
+
+    //FS
+    if (isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (FS > 10) {
+    if (isNumber(FS) &amp;&amp; FS > 10) {
         FS = 10
     }
 
@@ -2055,6 +2079,7 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
         return ret() //已於while區塊外, 無錯誤並結束
     }
 
+    //CRR75
     let a = 4.844e-2
     let b = -1.248e-1
     let c = -4.721e-3
@@ -2064,12 +2089,24 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
     let g = -1.673e-5
     let h = 3.714e-6
     CRR75 = (a + c * N160cs + e * N160cs ** 2 + g * N160cs ** 3) / (1 + b * N160cs + d * N160cs ** 2 + f * N160cs ** 3 + h * N160cs ** 4)
+
+    //CRR
     CRR = CRR75 * MSF
-    CSR = 0.65 * (sv / svpDesign) * PGA * rrd
-    if (CSR > 0) {
+
+    //CSR
+    CSR = null
+    if (svpDesign > 0) {
+        CSR = 0.65 * (sv / svpDesign) * PGA * rrd
+    }
+    else {
+        CSR = 1e20
+    }
+
+    //FS
+    if (isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (FS > 10) {
+    if (isNumber(FS) &amp;&amp; FS > 10) {
         FS = 10
     }
 
@@ -2457,6 +2494,8 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
     // CN = 170 / (svp * r + 70) //svp需由kg/cm2轉kPa
     CN = 170 / (svpUsual + 70) //svp為kPa故不用轉
     N172 = CN * N72
+
+    //getNaForSand1996
     let getNaForSand1996 = () => {
         let _Na = 0
         if (FC &lt; 10) {
@@ -2477,6 +2516,8 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
         _Na = c1 * N172 + c2
         return _Na
     }
+
+    //getNaForSand2017
     let getNaForSand2017 = () => {
         let _Na = 0
         if (FC &lt; 10) {
@@ -2491,6 +2532,8 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
         _Na = cFC * (N172 + 2.47) - 2.47
         return _Na
     }
+
+    //getNa
     let getNa = () => {
         let _Na = 0
         let cty = ''
@@ -2545,7 +2588,11 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
 
         return _Na
     }
+
+    //Na
     Na = getNa()
+
+    //RL
     if (Na &lt; 14) {
         if (ver === '1996') {
             RL = 0.0882 * Math.sqrt(Na / 1.7)
@@ -2557,6 +2604,8 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
     else {
         RL = 0.0882 * Math.sqrt(Na / 1.7) + 1.6 * 1e-6 * (Na - 14) ** 4.5
     }
+
+    //cw
     //等級2(レベル2)才會考慮第一、二型震動
     if (vibrationType === 2) { //第二型震動, 內陸直下型地震(近震)
         if (RL &lt;= 0.1) {
@@ -2572,13 +2621,27 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
     else { //預設第一型震動, 板塊邊界地震(遠震)
         cw = 1
     }
+
+    //CRR
     CRR = cw * RL
+
+    //khc
     let khc = PGA //暫時依照國震建議khc=PGA (2021/02/03)
-    CSR = rrd * khc * sv / svpDesign
-    if (CSR > 0) {
+
+    //CSR
+    CSR = null
+    if (svpDesign > 0) {
+        CSR = rrd * khc * sv / svpDesign
+    }
+    else {
+        CSR = 1e20
+    }
+
+    //FS
+    if (isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (FS > 10) {
+    if (isNumber(FS) &amp;&amp; FS > 10) {
         FS = 10
     }
 
@@ -2916,12 +2979,24 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
         dNf = 0.1 * FC + 4
     }
     Na = N172 + dNf
+
+    //CRR
     CRR = a * Cr * (16 * Math.sqrt(Na) / 100 + (16 * Math.sqrt(Na) / Cs) ** n)
-    CSR = 0.1 * (Mw - 1) * PGA * (sv / svpDesign) * rrd
-    if (CSR > 0) {
+
+    //CSR
+    CSR = null
+    if (svpDesign > 0) {
+        CSR = 0.1 * (Mw - 1) * PGA * (sv / svpDesign) * rrd
+    }
+    else {
+        CSR = 1e20
+    }
+
+    //FS
+    if (isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (FS > 10) {
+    if (isNumber(FS) &amp;&amp; FS > 10) {
         FS = 10
     }
 
@@ -3322,7 +3397,13 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
     // qc1N = 170 / (svpUsual + 70) * qc //kN/m2
 
     //Rf, 摩擦比(fs與qc同單位故無單位)
-    Rf = fs / qc * 100
+    Rf = null
+    if (qc > 0) {
+        Rf = fs / qc * 100
+    }
+    else {
+        Rf = 1e20
+    }
 
     //Kc, 管壁摩擦量對錐尖阻抗qc值之影響係數
     if (Rf &lt;= 0.1) {
@@ -3344,13 +3425,26 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
         return ret() //已於while區塊外, 無錯誤並結束
     }
 
-    CRR75 = 0.09 + (0.00028 * qc1Ncs) / (1 - qc1Ncs / 180) //基於kg/cm2
+    //CRR75
+    CRR75 = 0.09 + (0.00028 * qc1Ncs) / (1 - qc1Ncs / 180) //基於kg/cm2 //前面檢查qc1Ncs>=180故不會除0
+
+    //CRR
     CRR = CRR75 * MSF
-    CSR = 0.65 * PGA * (sv / svpDesign) * rrd
-    if (CSR > 0) {
+
+    //CSR
+    CSR = null
+    if (svpDesign > 0) {
+        CSR = 0.65 * PGA * (sv / svpDesign) * rrd
+    }
+    else {
+        CSR = 1e20
+    }
+
+    //FS
+    if (isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (FS > 10) {
+    if (isNumber(FS) &amp;&amp; FS > 10) {
         FS = 10
     }
 
@@ -3651,7 +3745,13 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpU
     rrd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
 
     //Q(none)
-    let Q = (qc - sv) / svpUsual
+    let Q = null
+    if (svpUsual > 0) {
+        Q = (qc - sv) / svpUsual
+    }
+    else {
+        Q = 1e20
+    }
 
     //F(%)
     let F = (fs / (qc - sv)) * 100
@@ -3661,13 +3761,23 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpU
     if (Ict &lt;= 2.6) {
         let Pa = cnst.Pa * 1000 //大氣壓(kPa), MPa -> kPa
         Pa = Pa * cvru //kPa -> kg/cm2
-        Qt1n = (qc / Pa) * (Pa / svpUsual) ** 0.5
+        if (svpUsual > 0) {
+            Qt1n = (qc / Pa) * (Pa / svpUsual) ** 0.5
+        }
+        else {
+            Qt1n = 1e20
+        }
         let _Ict = Math.sqrt((3.47 - Math.log10(Qt1n)) ** 2 + (Math.log10(F) + 1.22) ** 2)
         if (_Ict &lt;= 2.6) {
             Ic = _Ict
         }
         else {
-            Qt1n = (qc / Pa) * (Pa / svpUsual) ** 0.75
+            if (svpUsual > 0) {
+                Qt1n = (qc / Pa) * (Pa / svpUsual) ** 0.75
+            }
+            else {
+                Qt1n = 1e20
+            }
             Ic = Math.sqrt((3.47 - Math.log10(Qt1n)) ** 2 + (Math.log10(F) + 1.22) ** 2)
         }
     }
@@ -3708,6 +3818,7 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpU
         return ret() //已於while區塊外, 無錯誤並結束
     }
 
+    //CRR75
     CRR75 = null
     if (Qt1ncs &lt; 50) {
         CRR75 = 0.833 * (Qt1ncs / 1000) + 0.05
@@ -3715,12 +3826,24 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpU
     else { //50&lt;=Qt1ncs&lt;160
         CRR75 = 93 * (Qt1ncs / 1000) ** 3 + 0.08
     }
+
+    //CRR
     CRR = CRR75 * MSF
-    CSR = 0.65 * PGA * (sv / svpDesign) * rrd
-    if (CSR > 0) {
+
+    //CSR
+    CSR = null
+    if (svpDesign > 0) {
+        CSR = 0.65 * PGA * (sv / svpDesign) * rrd
+    }
+    else {
+        CSR = 1e20
+    }
+
+    //FS
+    if (isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (FS > 10) {
+    if (isNumber(FS) &amp;&amp; FS > 10) {
         FS = 10
     }
 
@@ -4184,12 +4307,23 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
 
     }
 
+    //CRR
     CRR = CRR75 * MSF
-    CSR = 0.65 * PGA * (sv / svpDesign) * rrd
-    if (CSR > 0) {
+
+    //CSR
+    CSR = null
+    if (svpDesign > 0) {
+        CSR = 0.65 * PGA * (sv / svpDesign) * rrd
+    }
+    else {
+        CSR = 1e20
+    }
+
+    //FS
+    if (isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (FS > 10) {
+    if (isNumber(FS) &amp;&amp; FS > 10) {
         FS = 10
     }
 
@@ -4486,27 +4620,64 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, qc, fs, u2, svp, svpU
     rrd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
 
     //F
-    let F = (fs / (qc - sv)) * 100 //基於kg/cm2
+    let F = null
+    if ((qc - sv) > 0) {
+        F = (fs / (qc - sv)) * 100 //基於kg/cm2
+    }
+    // else {
+    //     F = 1e20 //除0就不要硬算
+    // }
 
     //qc1N(kg/cm2)
-    qc1N = qc / Math.sqrt(svpUsual) //基於kg/cm2
+    qc1N = null
+    if (svpUsual > 0) {
+        qc1N = qc / Math.sqrt(svpUsual) //基於kg/cm2
+    }
+    // else {
+    //     qc1N = 1e20 //除0就不要硬算
+    // }
 
     //Ic
-    Ic = Math.sqrt((3.47 - Math.log10(qc1N)) ** 2 + (Math.log10(F) + 1.22) ** 2)
+    Ic = null
+    if (isNumber(qc1N) &amp;&amp; isNumber(F)) {
+        Ic = Math.sqrt((3.47 - Math.log10(qc1N)) ** 2 + (Math.log10(F) + 1.22) ** 2)
+    }
 
     //qc1Ncs(kg/cm2)
-    qc1Ncs = qc1N * (2.429 * Ic ** 4 - 16.943 * Ic ** 3 + 44.551 * Ic ** 2 - 51.497 * Ic + 22.802)
+    qc1Ncs = null
+    if (isNumber(qc1N) &amp;&amp; isNumber(Ic)) {
+        qc1Ncs = qc1N * (2.429 * Ic ** 4 - 16.943 * Ic ** 3 + 44.551 * Ic ** 2 - 51.497 * Ic + 22.802)
+    }
 
     //Calpha
     let Calpha = -0.016 * (svpUsual / 100) ** 3 + 0.178 * (svpUsual / 100) ** 2 - 0.063 * (svpUsual / 100) + 0.903
 
-    CRR75 = Calpha * Math.exp(-2.957 + 1.264 * (qc1Ncs / 100) ** 1.25)
-    CRR = CRR75 * MSF
-    CSR = 0.65 * PGA * (sv / svpDesign) * rrd
-    if (CSR > 0) {
+    //CRR75
+    CRR75 = null
+    if (isNumber(Calpha) &amp;&amp; isNumber(qc1Ncs)) {
+        CRR75 = Calpha * Math.exp(-2.957 + 1.264 * (qc1Ncs / 100) ** 1.25)
+    }
+
+    //CRR
+    CRR = null
+    if (isNumber(CRR75) &amp;&amp; isNumber(MSF)) {
+        CRR = CRR75 * MSF
+    }
+
+    //CSR
+    CSR = null
+    if (svpDesign > 0) {
+        CSR = 0.65 * PGA * (sv / svpDesign) * rrd
+    }
+    else {
+        CSR = 1e20
+    }
+
+    //FS
+    if (isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (FS > 10) {
+    if (isNumber(FS) &amp;&amp; FS > 10) {
         FS = 10
     }
 
@@ -4916,11 +5087,20 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
     //CRR
     CRR = CRR75 * MSF * Ksigma
 
-    CSR = 0.65 * PGA * (sv / svpDesign) * rrd
-    if (CSR > 0) {
+    //CSR
+    CSR = null
+    if (svpDesign > 0) {
+        CSR = 0.65 * PGA * (sv / svpDesign) * rrd
+    }
+    else {
+        CSR = 1e20
+    }
+
+    //FS
+    if (isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (FS > 10) {
+    if (isNumber(FS) &amp;&amp; FS > 10) {
         FS = 10
     }
 
@@ -5213,18 +5393,42 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpU
     rrd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
 
     //qc1(kg/cm2)
-    qc1 = qc / svpUsual ** 0.7 //基於kg/cm2
+    if (svpUsual > 0) {
+        qc1 = qc / svpUsual ** 0.7 //基於kg/cm2
+    }
+    else {
+        qc1 = 1e20
+    }
 
     //Rf, 摩擦比(fs與qc同單位故無單位)
-    Rf = fs / qc * 100
+    Rf = null
+    if (qc > 0) {
+        Rf = fs / qc * 100
+    }
+    else {
+        Rf = 1e20
+    }
 
+    //CRR75
     CRR75 = 0.00128 * qc1 - 0.025 + 0.17 * Rf - 0.028 * Rf ** 2 + 0.0016 * Rf ** 3
+
+    //CRR
     CRR = CRR75 * MSF
-    CSR = 0.65 * PGA * (sv / svpDesign) * rrd
-    if (CSR > 0) {
+
+    //CSR
+    CSR = null
+    if (svpDesign > 0) {
+        CSR = 0.65 * PGA * (sv / svpDesign) * rrd
+    }
+    else {
+        CSR = 1e20
+    }
+
+    //FS
+    if (isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (FS > 10) {
+    if (isNumber(FS) &amp;&amp; FS > 10) {
         FS = 10
     }
 
@@ -5550,8 +5754,20 @@ function cptShibata({ ver = '1988', waterLevelDesign, depth, qc, fs, u2, svp, sv
     }
 
     //C3
-    let TempL = 0.1 * (MSF - 1) * PGA * (sv / svpDesign) * rrd //svp是用於CSR得要用svpDesign, Mw使用規模修正因子MSF
-    let C3 = (TempL - 0.1) / (TempL + 0.1)
+    let TempL = null
+    if (svpDesign > 0) {
+        TempL = 0.1 * (MSF - 1) * PGA * (sv / svpDesign) * rrd //svp是用於CSR得要用svpDesign, Mw使用規模修正因子MSF
+    }
+    else {
+        TempL = 1e20
+    }
+    let C3 = null
+    if (TempL !== -0.1) {
+        C3 = (TempL - 0.1) / (TempL + 0.1)
+    }
+    else {
+        C3 = 1e20
+    }
 
     //qc1cr(kg/cm2), 臨界正規化錐頭貫入阻抗
     qc1cr = C2 * (50 + 200 * C3)
@@ -5559,10 +5775,10 @@ function cptShibata({ ver = '1988', waterLevelDesign, depth, qc, fs, u2, svp, sv
 
     CRR = qc1
     CSR = qc1cr
-    if (CSR > 0) {
+    if (isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (FS > 10) {
+    if (isNumber(FS) &amp;&amp; FS > 10) {
         FS = 10
     }
 
@@ -5698,6 +5914,8 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     }
     let Vs100cs = Kv * (Vs1 - 100)
     Vs100cs = Math.min(Vs100cs, 135 - 0.5)
+
+    //CRR75
     CRR75 = null
     if (Vs1 &lt;= 100) {
         CRR75 = 0.09
@@ -5705,12 +5923,24 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     else {
         CRR75 = 0.09 + 0.00022 * Vs100cs / (1 - Vs100cs / 135)
     }
+
+    //CRR
     CRR = CRR75 * MSF
-    CSR = 0.65 * PGA * (sv / svpDesign) * rrd
-    if (CSR > 0) {
+
+    //CSR
+    CSR = null
+    if (svpDesign > 0) {
+        CSR = 0.65 * PGA * (sv / svpDesign) * rrd
+    }
+    else {
+        CSR = 1e20
+    }
+
+    //FS
+    if (isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (FS > 10) {
+    if (isNumber(FS) &amp;&amp; FS > 10) {
         FS = 10
     }
 
@@ -5853,16 +6083,30 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     else {
         Vs1Star = 200
     }
+
+    //CRR75
     let a = 0.022
     let b = 2.8
     CRR75 = a * (Vs1 / 100) ** 2 + b * (1 / (Vs1Star - Vs1) - 1 / Vs1Star)
     CRR75 = max(CRR75, 0.1) // CRR75 會出現負值
+
+    //CRR
     CRR = CRR75 * MSF
-    CSR = 0.65 * PGA * (sv / svpDesign) * rrd
-    if (CSR > 0) {
+
+    //CSR
+    CSR = null
+    if (svpDesign > 0) {
+        CSR = 0.65 * PGA * (sv / svpDesign) * rrd
+    }
+    else {
+        CSR = 1e20
+    }
+
+    //FS
+    if (isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (FS > 10) {
+    if (isNumber(FS) &amp;&amp; FS > 10) {
         FS = 10
     }
 
@@ -6005,16 +6249,30 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     else {
         Vs1c = 200
     }
+
+    //CRR75
     let a = 0.03
     let b = 0.9
     CRR75 = a * (Vs1 / 100) ** 2 + b * (1 / (Vs1c - Vs1) - 1 / Vs1c)
     CRR75 = max(CRR75, 0.1) // CRR75 會出現負值
+
+    //CRR
     CRR = CRR75 * MSF
-    CSR = 0.65 * PGA * (sv / svpDesign) * rrd
-    if (CSR > 0) {
+
+    //CSR
+    CSR = null
+    if (svpDesign > 0) {
+        CSR = 0.65 * PGA * (sv / svpDesign) * rrd
+    }
+    else {
+        CSR = 1e20
+    }
+
+    //FS
+    if (isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (FS > 10) {
+    if (isNumber(FS) &amp;&amp; FS > 10) {
         FS = 10
     }
 
@@ -6575,6 +6833,19 @@ function liquefaction(kind = 'auto', rows) {
         return r
     })
 
+    //清除非有效值
+    if (true) {
+        each(rows, (r, ir) => {
+            each(r, (v, k) => {
+                if (!isestr(v) &amp;&amp; !isnum(v)) {
+                    // console.log(ir, k, v)
+                    rows[ir][k] = ''
+                }
+            })
+        })
+    }
+    // console.log('rows', rows[0])
+
     return rows
 }
 
@@ -6623,7 +6894,7 @@ export default calcLiquefaction
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.10</a> on Wed Oct 05 2022 19:17:24 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.10</a> on Wed Oct 05 2022 22:00:20 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

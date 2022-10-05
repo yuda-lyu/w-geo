@@ -3,6 +3,7 @@ import get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
 import isnum from 'wsemi/src/isnum.mjs'
 import isint from 'wsemi/src/isint.mjs'
+import isestr from 'wsemi/src/isestr.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
 import cint from 'wsemi/src/cint.mjs'
 import dig from 'wsemi/src/dig.mjs'
@@ -84,10 +85,24 @@ function stress(ltdt, opt = {}) {
     })
 
     //calcVerticalStress
-    ltdt = calcVerticalStress(ltdt, { waterLevelUsual, waterLevelDesign })
-    //  depthStart: 0,
-    //  depthEnd: 5,
-    //  rsat: 18, //kN/m3
+    ltdt = calcVerticalStress(ltdt, { ...opt, waterLevelUsual, waterLevelDesign })
+    // console.log('calcVerticalStress', ltdt[0])
+    // calcVerticalStress {
+    //   depth: 0.005,
+    //   qc: 0,
+    //   fs: 0,
+    //   u2: 0,
+    //   depthStart: 0,
+    //   depthEnd: 0.01,
+    //   rsat: 19.5, //kN/m3
+    //   u0: 0,
+    //   rd: 16.5, //kN/m3
+    //   waterLevelUsual: 0,
+    //   waterLevelDesign: 0,
+    //   sv: 0.0975,
+    //   svpUsual: 0.04845,
+    //   svpDesign: 0.04845
+    // }
 
     //轉出svp
     ltdt = map(ltdt, (v) => {
@@ -116,10 +131,17 @@ function stress(ltdt, opt = {}) {
 
 function estUnitWeightCore(ltdt, coe_a, opt = {}) {
 
+    //rdiff
+    let rdiff = get(opt, 'rdiff')
+    if (!isnum(rdiff)) {
+        rdiff = 3 //預設rd小rsat為3(kN/m3)
+    }
+    rdiff = cdbl(rdiff)
+
     //ratio
     let ratio = get(opt, 'ratio')
     if (!isnum(ratio)) {
-        ratio = 0.5
+        ratio = 0.8
     }
     ratio = cdbl(ratio)
     if (ratio <= 0) {
@@ -127,6 +149,13 @@ function estUnitWeightCore(ltdt, coe_a, opt = {}) {
     }
     else if (ratio > 1) {
         throw new Error(`ratio[${ratio}]>1`)
+    }
+
+    //fv
+    let fv = (v) => {
+        let vi = dig(v, 2)
+        let vd = cdbl(vi)
+        return { vi, vd }
     }
 
     //r0, r1
@@ -187,16 +216,28 @@ function estUnitWeightCore(ltdt, coe_a, opt = {}) {
         //rsat_ori, rsat_new
         let rsat_ori = cdbl(v.rsat)
         let rsat_new = rsat
-        let rsat_ori_dig = dig(rsat_ori, 2)
-        let rsat_new_dig = dig(rsat_new, 2)
+        let vo = fv(rsat_ori)
+        let vn = fv(rsat_new)
+        let rsat_ori_dig = vo.vi
+        let rsat_new_dig = vn.vi
+        rsat_ori = vo.vd
+        rsat_new = vn.vd
 
         //update
         if (rsat_ori_dig !== rsat_new_dig) {
             bUpdate = true
-            let t = (rsat_ori * r0 + rsat_new * r1)
-            v.rsat = t
-            // console.log(`rsat ${rsat_ori} -> ${t}`)
+
+            //rsat
+            let rsatTemp = (rsat_ori * r0 + rsat_new * r1)
+            v.rsat = fv(rsatTemp).vd
+            // console.log(`rsat ${rsat_ori} -> ${rsatTemp}`)
+
+            //rd
+            let rdTemp = rsatTemp - rdiff
+            v.rd = fv(rdTemp).vd
+
         }
+
 
         return v
     })
@@ -254,6 +295,24 @@ function calcCptUnitWeight(ltdt, rsatIni, opt = {}) {
         throw new Error(`rsatIni[${rsatIni}]<=0`)
     }
 
+    //keyDepth
+    let keyDepth = get(opt, 'keyDepth')
+    if (!isestr(keyDepth)) {
+        keyDepth = 'depth'
+    }
+
+    //keyDepthStart
+    let keyDepthStart = get(opt, 'keyDepthStart')
+    if (!isestr(keyDepthStart)) {
+        keyDepthStart = 'depthStart'
+    }
+
+    //keyDepthEnd
+    let keyDepthEnd = get(opt, 'keyDepthEnd')
+    if (!isestr(keyDepthEnd)) {
+        keyDepthEnd = 'depthEnd'
+    }
+
     //coe_a
     let coe_a = get(opt, 'coe_a')
     if (!isnum(coe_a)) {
@@ -268,8 +327,31 @@ function calcCptUnitWeight(ltdt, rsatIni, opt = {}) {
     ltdt = basic(ltdt, opt)
     // console.log('basic', ltdt)
 
-    //calcDepthStartEndFromCenter
-    ltdt = calcDepthStartEndFromCenter(ltdt)
+    //計算keyDepth, keyDepthStart, keyDepthEnd
+    let dc0 = get(ltdt, `0.${keyDepth}`)
+    let ds0 = get(ltdt, `0.${keyDepthStart}`)
+    let de0 = get(ltdt, `0.${keyDepthEnd}`)
+    if (isnum(dc0) && !isnum(ds0) && !isnum(de0)) {
+        ltdt = calcDepthStartEndFromCenter(ltdt, opt)
+    }
+    else if (!isnum(dc0) && isnum(ds0) && isnum(de0)) {
+        ltdt = map(ltdt, (v, k) => {
+            let ds = get(v, keyDepthStart)
+            let de = get(v, keyDepthEnd)
+            if (isnum(ds) && isnum(de)) {
+                ds = cdbl(ds)
+                de = cdbl(de)
+                let dc = (ds + de) / 2
+                v[keyDepth] = dc
+            }
+            else {
+                console.log(k, v)
+                throw new Error(`第 ${k} 樣本無起始深度(${keyDepthStart})或結束深度(${keyDepthEnd})數據`)
+            }
+            return v
+        })
+
+    }
 
     //add rsat
     ltdt = map(ltdt, (v) => {
@@ -294,7 +376,7 @@ function calcCptUnitWeight(ltdt, rsatIni, opt = {}) {
     ltdt = estUnitWeight(ltdt, coe_a, opt)
     // console.log('estUnitWeight', ltdt)
 
-    return ltdt
+    return ltdt //回傳qc,fs,u0,u2,sv,svp單位為MPa
 }
 
 

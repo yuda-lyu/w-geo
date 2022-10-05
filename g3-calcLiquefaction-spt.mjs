@@ -1,8 +1,5 @@
 import fs from 'fs'
 import w from 'wsemi'
-// import relaPorousParams from './src/relaPorousParams.mjs'
-// import checkDepthStartEnd from './src/checkDepthStartEnd.mjs'
-// import calcVerticalStress from './src/calcVerticalStress.mjs'
 import calcLiquefaction from './src/calcLiquefaction.mjs'
 
 
