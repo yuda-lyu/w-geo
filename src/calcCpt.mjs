@@ -57,7 +57,7 @@ function basic(ltdt, opt = {}) {
 
         //push
         rs.push({
-            // ...v,
+            ...v, //須保留原始數據其他欄位
             depth,
             qc,
             fs,
@@ -83,7 +83,7 @@ function smooth(ltdt, opt = {}) {
     //methodSmooth
     let methodSmooth = get(opt, 'methodSmooth')
     if (methodSmooth !== 'none' && methodSmooth !== 'average' && methodSmooth !== 'averageIn95') {
-        throw new Error(`invalid methodSmooth[${methodSmooth}]`)
+        methodSmooth = 'none'
     }
 
     //smoothDepthByKey
@@ -113,21 +113,24 @@ function stress(ltdt, opt = {}) {
 
     //rs
     let rs = []
-    each(ltdt, (v) => {
+    each(ltdt, (v, k) => {
 
         //depth(m)
         let depth = pickData(v, 'depth')
 
         //sv(MPa), 總覆土應力(根據海床水平計算)
-        let svsvp = intrpSvSvp(depth)
+        let svsvp = intrpSvSvp(depth, k, v, ltdt)
         let sv = svsvp.sv / 1000 //kPa -> MPa, 只取內插的垂直總應力(垂直有效應力是扣靜止水壓), 後續扣掉CPT的超額孔隙水壓u2與靜止水壓u0才能得到垂直有效應力
+        // console.log('sv', sv)
 
         //u0(MPa), 現地孔隙壓力(根據海床水平計算)
-        let u0 = intrpU0(depth)
+        let u0 = intrpU0(depth, k, v, ltdt)
         u0 = u0 / 1000 //kPa -> MPa
+        // console.log('u0', u0)
 
         //u2(MPa), 錐體和摩擦袖管間孔隙水壓, 原數據已扣掉初始值(假設為靜水壓), 故視為基於海床水平的孔隙水壓
         let u2 = pickData(v, 'u2')
+        // console.log('u2', u2)
 
         //check
         if (u2 !== null) {
@@ -142,10 +145,11 @@ function stress(ltdt, opt = {}) {
             svp = sv - u0 //svp是基於sv與u0計算而不是基於u2
             svp = Math.max(svp, 0)
         }
+        // console.log('svp', svp)
 
         //push
         rs.push({
-            ...v,
+            ...v, //須保留原始數據其他欄位
             sv,
             svp,
             u0,
@@ -386,7 +390,7 @@ function calcCptCore(dt, coe_a, opt = {}) {
     //r
     let r = {
 
-        ...dt, //原本數據可能有提供其他參數例如rd,rsat得要保留
+        ...dt, //須保留原始數據其他欄位
 
         sv,
         svp,
@@ -424,6 +428,17 @@ function calcCptCore(dt, coe_a, opt = {}) {
 
 
 function calcCpt(ltdt, opt = {}) {
+    // [
+    //   {
+    //     depth,
+    //     qc,
+    //     fs,
+    //     u2,
+    //   },
+    //   ...
+    // ]
+    // opt.intrpSvSvp(depth, k, v, ltdt)
+    // opt.intrpU0(depth, k, v, ltdt)
 
     //coe_a
     let coe_a = get(opt, 'coe_a')
