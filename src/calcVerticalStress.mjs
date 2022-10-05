@@ -48,11 +48,11 @@ function core(rows, waterLevel) {
             //rT, 使用單位重(kN/m3)
             let rT = null
             if (ds < waterLevel && de > waterLevel) { //樣本半乾半飽和
-                let rsat = get(v, 'rsat', null)
+                let rsat = get(v, 'rsat', null) //飽和單位重(kN/m3)
                 if (!isnum(rsat)) {
                     throw new Error(`第 ${k} 樣本飽和單位重(rsat)非數值: ${rsat}`)
                 }
-                let rd = get(v, 'rd', null)
+                let rd = get(v, 'rd', null) //乾單位重(kN/m3)
                 if (!isnum(rd)) {
                     throw new Error(`第 ${k} 樣本乾單位重(rd)非數值: ${rd}`)
                 }
@@ -62,7 +62,7 @@ function core(rows, waterLevel) {
                 rT = (u * rd + d * rsat) / (u + d) //平均單位重
             }
             else if (de <= waterLevel) { //樣本結束深度小於等於地下水位, 代表整個樣本都在水上, 全乾
-                let rd = get(v, 'rd', null)
+                let rd = get(v, 'rd', null) //乾單位重(kN/m3)
                 if (!isnum(rd)) {
                     throw new Error(`第 ${k} 樣本乾單位重(rd)非數值: ${rd}`)
                 }
@@ -525,7 +525,7 @@ function calcVerticalStress(rows, opt = {}) {
         v.sv = vUsual.sv //地下水位差異僅影響垂直有效應力, 故垂直總應力使用常時資料
         v.svpUsual = vUsual.svp //主要是給液化分析時CN與CRR使用, 其需使用鑽探時地下水位所計算得垂直有效應力
         v.svpDesign = vDesign.svp
-        v.depth = vUsual.depth
+        v.depth = vUsual.depth //重算中點深度
 
         return v
     })

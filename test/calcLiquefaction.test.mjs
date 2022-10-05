@@ -1,9 +1,9 @@
 import assert from 'assert'
 import calcLiquefaction from '../src/calcLiquefaction.mjs'
-import rowsIn1 from './calcLiquefaction-rowsIn1.json'
-import rowsOut1 from './calcLiquefaction-rowsOut1.json'
-import rowsIn2 from './calcLiquefaction-rowsIn2.json'
-import rowsOut2 from './calcLiquefaction-rowsOut2.json'
+import rowsIn1 from './calcLiquefaction-spt-rowsIn1.json'
+import rowsOut1 from './calcLiquefaction-spt-rowsOut1.json'
+import rowsIn2 from './calcLiquefaction-spt-rowsIn2.json'
+import rowsOut2 from './calcLiquefaction-spt-rowsOut2.json'
 
 
 describe(`calcLiquefaction`, function() {

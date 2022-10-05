@@ -19,12 +19,22 @@ import isnum from 'wsemi/src/isnum.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
 import cstr from 'wsemi/src/cstr.mjs'
 import interp1 from 'wsemi/src/interp1.mjs'
+import cnst from './cnst.mjs'
+import { intrpDefPp } from './intrpDefParam.mjs'
 import checkDepthStartEnd from './checkDepthStartEnd.mjs'
 import relaPorousParams from './relaPorousParams.mjs'
 import calcVerticalStress from './calcVerticalStress.mjs'
+import { calcCptCore } from './calcCpt.mjs'
 
 
-//單位
+//g, 重力加速度(m/s2)
+let g = cnst.g
+
+//cvru, kN/m2 -> kg/cm2
+let cvru = 1 / g * 1000 / 10000
+
+
+//參數單位
 // waterLevelDesign(m)
 // soilClassification(none)
 // vibrationType(none)
@@ -32,12 +42,17 @@ import calcVerticalStress from './calcVerticalStress.mjs'
 // N60(none)
 // FC(%)
 // PI(%)
-// D50(m)
-// D10(m)
+// D50(mm)
+// D10(mm)
 // svp(kN/m2)
+// svpUsual(kN/m2)
+// svpDesign(kN/m2)
 // sv(kN/m2)
 // PGA(none)
 // Mw(none)
+// qc(MPa)
+// fs(MPa)
+// u2(MPa)
 
 
 function brk(c) {
@@ -850,11 +865,12 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
     //Seed et al.(1985)
     let err = []
     let MSF = ''
-    let rd = ''
+    let rrd = ''
     // let dN160 = ''
     let CN = ''
     let N160 = ''
     let N172 = ''
+    let CRR75 = ''
     let CRR = ''
     let CSR = ''
     let FS = ''
@@ -862,7 +878,13 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
     let vstrIY = ''
 
     function ret() {
-        return { rd, CN, N160, N172, CSR, CRR, FS, vstrTS, vstrIY, err: join(err, '; ') }
+        let r = { rrd, CN, N160, N172, CRR75, CRR, CSR, FS, vstrTS, vstrIY, err: join(err, '; ') }
+        each(r, (v, k) => {
+            if (!isestr(v) && !isnum(v)) {
+                r[k] = ''
+            }
+        })
+        return r
     }
 
     //check
@@ -1079,11 +1101,13 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
         return ret() //觸發延遲報錯並結束
     }
 
+    //MSF, 規模修正因子
     MSF = (Mw / 7.5) ** (-1.11) //投影片資料
-    //rd公式出自土壤液化條文修訂
-    rd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
 
-    let Pa = 101.39616 //正常空氣壓力 1033.6(g/cm2) = 1033.6/1000*9.81 = 10.139616(N/cm2) = 10.139616/1000*10000 = 101.39616(kN/m2)
+    //rrd, 應力折減係數, 公式出自土壤液化條文修訂
+    rrd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
+
+    let Pa = cnst.Pa * 1000 //大氣壓(kPa), MPa -> kPa
     CN = Math.min(Math.sqrt(Pa / svpUsual), 1.7)
     N160 = CN * N60 //N60通過有效覆土應力修正為N160
 
@@ -1110,7 +1134,7 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
 
     // let sN160 = N160 + dN160
     // sN160 = Math.min(sN160, 30) //由修正(含FC)可算得CRR75, 曲線待改重新回歸
-    // let CRR75 = coe(1) * sN160 ** 6 + coe(2) * sN160 ** 5 + coe(3) * sN160 ** 4 + coe(4) * sN160 ** 3 + coe(5) * sN160 ** 2 + coe(6) * sN160 + coe(7)
+    // CRR75 = coe(1) * sN160 ** 6 + coe(2) * sN160 ** 5 + coe(3) * sN160 ** 4 + coe(4) * sN160 ** 3 + coe(5) * sN160 ** 2 + coe(6) * sN160 + coe(7)
 
     //ps
     let ps = [
@@ -1241,7 +1265,7 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
     })
 
     //CRR75
-    let CRR75 = interp(FCs, CRR75s, FC)
+    CRR75 = interp(FCs, CRR75s, FC)
 
     //check
     if (get(CRR75, 'err')) {
@@ -1294,7 +1318,7 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
     }
 
     CRR = CRR75 * MSF
-    CSR = 0.65 * (sv / svpDesign) * PGA * rd
+    CSR = 0.65 * (sv / svpDesign) * PGA * rrd
     if (CSR > 0) {
         FS = CRR / CSR
     }
@@ -1352,12 +1376,13 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
     //HBF(ver=2012,2017)
     let err = []
     let MSF = ''
-    let rd = ''
+    let rrd = ''
     let ks = ''
     let CN = ''
     let N160 = ''
     let N160cs = ''
     let N172 = ''
+    let CRR75 = ''
     let CRR = ''
     let CSR = ''
     let FS = ''
@@ -1365,7 +1390,13 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
     let vstrIY = ''
 
     function ret() {
-        return { rd, ks, CN, N160, N160cs, N172, CSR, CRR, FS, vstrTS, vstrIY, err: join(err, '; ') }
+        let r = { rrd, ks, CN, N160, N160cs, N172, CRR75, CRR, CSR, FS, vstrTS, vstrIY, err: join(err, '; ') }
+        each(r, (v, k) => {
+            if (!isestr(v) && !isnum(v)) {
+                r[k] = ''
+            }
+        })
+        return r
     }
 
     //check
@@ -1375,7 +1406,7 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
 
         //check ver
         if (ver !== '2012' && ver !== '2017') {
-            err.push(`ver${brk(ver)} 非2012或2017`)
+            err.push(`ver${brk(ver)}非2012或2017`)
             return ret() //重大錯誤直接報錯結束
         }
 
@@ -1611,12 +1642,16 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
     else if (ver === '2017') {
         MSFPow = -1.8 //-1.8為「依據2016土壤液化評估方法研討會結論後修正」, 依照「楊智堯_臺中市中級土壤液化潛勢地圖製作與系統說明.pdf」標注此為2017版
     }
+
+    //MSF, 規模修正因子
     MSF = (Mw / 7.5) ** (MSFPow)
+
+    //rrd, 應力折減係數
     if (depth <= 10) {
-        rd = 1 - 0.01 * depth
+        rrd = 1 - 0.01 * depth
     }
     else {
-        rd = 1.2 - 0.03 * depth
+        rrd = 1.2 - 0.03 * depth
     }
 
     if (FC <= 10) {
@@ -1626,23 +1661,23 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
         //ks = -0.00009 * FC ** 2 + 0.0168 * FC + 0.841 //HBF早期版
         ks = 1 + 0.07 * Math.sqrt(FC - 10) //投影片公式
     }
-    let Pa = 101.39616 //正常空氣壓力 1033.6(g/cm2) = 1033.6/1000*9.81/1000*10000 = 101.39616 kN/m2
+    let Pa = cnst.Pa * 1000 //大氣壓(kPa), MPa -> kPa
     CN = Math.min(Math.sqrt(Pa / svpUsual), 1.7)
     N160 = CN * N60 //N60通過有效覆土應力修正為N160
     N160cs = ks * N160
 
     //非液化: (地下水位以上, 統一土壤分類屬黏土, 已於前面檢查), N160cs>=39
     if (N160cs >= 39) {
-        err = [] //清除錯誤
+        // err = [] //第二階段不清除錯誤
         CRR = '-'
         CSR = '-'
         FS = 10
         return ret() //已於while區塊外, 無錯誤並結束
     }
 
-    let CRR75 = 0.08 + 0.0035 * N160cs / (1 - N160cs / 39)
+    CRR75 = 0.08 + 0.0035 * N160cs / (1 - N160cs / 39)
     CRR = CRR75 * MSF
-    CSR = 0.65 * (sv / svpDesign) * PGA * rd
+    CSR = 0.65 * (sv / svpDesign) * PGA * rrd
     if (CSR > 0) {
         FS = CRR / CSR
     }
@@ -1699,13 +1734,14 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
     //NCEER(1997)
     let err = []
     let MSF = ''
-    let rd = ''
+    let rrd = ''
     let alpha = ''
     let beta = ''
     let CN = ''
     let N160 = ''
     let N160cs = ''
     let N172 = ''
+    let CRR75 = ''
     let CRR = ''
     let CSR = ''
     let FS = ''
@@ -1713,7 +1749,13 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
     let vstrIY = ''
 
     function ret() {
-        return { rd, alpha, beta, CN, N160, N160cs, N172, CSR, CRR, FS, vstrTS, vstrIY, err: join(err, '; ') }
+        let r = { rrd, alpha, beta, CN, N160, N160cs, N172, CRR75, CRR, CSR, FS, vstrTS, vstrIY, err: join(err, '; ') }
+        each(r, (v, k) => {
+            if (!isestr(v) && !isnum(v)) {
+                r[k] = ''
+            }
+        })
+        return r
     }
 
     //check
@@ -1930,8 +1972,12 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
         return ret() //觸發延遲報錯並結束
     }
 
+    //MSF, 規模修正因子
     MSF = (Mw / 7.5) ** (-2.56)
-    rd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
+
+    //rrd, 應力折減係數
+    rrd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
+
     if (FC <= 5) {
         alpha = 0
     }
@@ -1951,14 +1997,14 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
         beta = 1.2
     }
 
-    let Pa = 101.39616 //正常空氣壓力 1033.6(g/cm2) = 1033.6/1000*9.81/1000*10000 = 101.39616 kN/m2
+    let Pa = cnst.Pa * 1000 //大氣壓(kPa), MPa -> kPa
     CN = Math.min(Math.sqrt(Pa / svpUsual), 1.7)
     N160 = CN * N60 //N60通過有效覆土應力修正為N160
     N160cs = alpha + beta * N160
 
     //非液化: (地下水位以上, 統一土壤分類屬黏土, 已於前面處理), N160cs>=30
     if (N160cs >= 30) {
-        err = [] //清除錯誤
+        // err = [] //第二階段不清除錯誤
         CRR = '-'
         CSR = '-'
         FS = 10
@@ -1973,9 +2019,9 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
     let f = -3.285e-4
     let g = -1.673e-5
     let h = 3.714e-6
-    let CRR75 = (a + c * N160cs + e * N160cs ** 2 + g * N160cs ** 3) / (1 + b * N160cs + d * N160cs ** 2 + f * N160cs ** 3 + h * N160cs ** 4)
+    CRR75 = (a + c * N160cs + e * N160cs ** 2 + g * N160cs ** 3) / (1 + b * N160cs + d * N160cs ** 2 + f * N160cs ** 3 + h * N160cs ** 4)
     CRR = CRR75 * MSF
-    CSR = 0.65 * (sv / svpDesign) * PGA * rd
+    CSR = 0.65 * (sv / svpDesign) * PGA * rrd
     if (CSR > 0) {
         FS = CRR / CSR
     }
@@ -2034,7 +2080,7 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
 function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClassification, vibrationType, depth, N60, FC, PI, D50, D10, sv, svpUsual, svpDesign, PGA }) {
     //NJRA(ver=1996,2017)
     let err = []
-    let rd = ''
+    let rrd = ''
     let N72 = ''
     let N172 = ''
     let c1 = ''
@@ -2045,6 +2091,7 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
     let cw = ''
     let CN = ''
     let N160 = ''
+    let CRR75 = ''
     let CRR = ''
     let CSR = ''
     let FS = ''
@@ -2052,7 +2099,13 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
     let vstrIY = ''
 
     function ret() {
-        return { rd, N160, N172, c1, c2, cFC, Na, RL, cw, CN, CSR, CRR, FS, vstrTS, vstrIY, err: join(err, '; ') }
+        let r = { rrd, N160, N172, c1, c2, cFC, Na, RL, cw, CN, CRR75, CRR, CSR, FS, vstrTS, vstrIY, err: join(err, '; ') }
+        each(r, (v, k) => {
+            if (!isestr(v) && !isnum(v)) {
+                r[k] = ''
+            }
+        })
+        return r
     }
 
     //check
@@ -2351,7 +2404,9 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
         return ret() //觸發延遲報錯並結束
     }
 
-    rd = 1 - 0.015 * depth
+    //rrd, 應力折減係數
+    rrd = 1 - 0.015 * depth
+
     N72 = N60 / (72 / 60) //修正鑽桿能量(打擊能量比ER)至72%
     //let N172 = N72 * 1.7 / (svp + 0.7) //原莊長賢excel使用, 其g值使用10而非9.81
     // let r = 98.134256 //1 kg/cm2 to kPa = 98.134256
@@ -2475,7 +2530,7 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
     }
     CRR = cw * RL
     let khc = PGA //暫時依照國震建議khc=PGA (2021/02/03)
-    CSR = rd * khc * sv / svpDesign
+    CSR = rrd * khc * sv / svpDesign
     if (CSR > 0) {
         FS = CRR / CSR
     }
@@ -2536,13 +2591,14 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
 function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60, FC, sv, svpUsual, svpDesign, PGA, Mw }) {
     //TY(1983), N值的鑽桿能量修正原本為80%, 現統一為72% (2021/03/11)
     let err = []
-    let rd = ''
+    let rrd = ''
     let N72 = ''
     let N172 = ''
     let dNf = ''
     let Na = ''
     let CN = ''
     let N160 = ''
+    let CRR75 = ''
     let CRR = ''
     let CSR = ''
     let FS = ''
@@ -2550,7 +2606,13 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
     let vstrIY = ''
 
     function ret() {
-        return { rd, N160, N172, dNf, Na, CN, CSR, CRR, FS, vstrTS, vstrIY, err: join(err, '; ') }
+        let r = { rrd, N160, N172, dNf, Na, CN, CRR75, CRR, CSR, FS, vstrTS, vstrIY, err: join(err, '; ') }
+        each(r, (v, k) => {
+            if (!isestr(v) && !isnum(v)) {
+                r[k] = ''
+            }
+        })
+        return r
     }
 
     //check
@@ -2792,7 +2854,9 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
     }
     Cs = cdbl(Cs)
 
-    rd = 1 - 0.015 * depth
+    //rrd, 應力折減係數
+    rrd = 1 - 0.015 * depth
+
     N72 = N60 / (72 / 60) //修正鑽桿能量(打擊能量比ER)至72%
     // let r = 98.134256 //1 kg/cm2 to kPa = 98.134256
     // CN = 170 / (svp * r + 70) //svp需由kg/cm2轉kPa
@@ -2809,7 +2873,7 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
     }
     Na = N172 + dNf
     CRR = a * Cr * (16 * Math.sqrt(Na) / 100 + (16 * Math.sqrt(Na) / Cs) ** n)
-    CSR = 0.1 * (Mw - 1) * PGA * (sv / svpDesign) * rd
+    CSR = 0.1 * (Mw - 1) * PGA * (sv / svpDesign) * rrd
     if (CSR > 0) {
         FS = CRR / CSR
     }
@@ -2842,263 +2906,408 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
 }
 
 
-function cptJuang({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
+function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw }) {
+    //HBF(ver=2012,2017,2021)
     let err = []
+    let MSF = ''
+    let rrd = ''
+    let Ic = ''
+    let Icn = ''
+    let qc1N = ''
+    let Rf = ''
+    let Kc = ''
+    let qc1Ncs = ''
+    let CRR75 = ''
     let CRR = ''
     let CSR = ''
     let FS = ''
+    // let vstrTS = ''
+    // let vstrIY = ''
 
     function ret() {
-        return { CSR, CRR, FS, err: join(err, '; ') }
+        if (isnum(qc1N)) {
+            qc1N = qc1N / cvru
+        }
+        if (isnum(qc1Ncs)) {
+            qc1Ncs = qc1Ncs / cvru
+        }
+        let r = { rrd, Ic, Icn, qc1N, Rf, Kc, qc1Ncs, CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        each(r, (v, k) => {
+            if (!isestr(v) && !isnum(v)) {
+                r[k] = ''
+            }
+        })
+        return r
     }
 
     //check
-    if (!isnum(waterLevelDesign)) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
-        waterLevelDesign = 0
-    }
-    waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
-        waterLevelDesign = 0
+    let noLique = false
+    let delayErr = false
+    while (true) {
+
+        //check ver
+        if (ver !== '2012' && ver !== '2017' && ver !== '2021') {
+            err.push(`ver${brk(ver)}非2012或2017或2021`)
+            return ret() //重大錯誤直接報錯結束
+        }
+
+        //check depth
+        if (!isnum(depth)) {
+            err.push(`depth${brk(depth)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            depth = cdbl(depth)
+
+            //check
+            if (depth < 0) {
+                err.push(`depth${brk(depth)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check coe_a, ver=2021須要計算cpt分類故需要coe_a
+        if (ver === '2021') {
+            if (!isnum(coe_a)) {
+                err.push(`coe_a${brk(coe_a)}非數字，強制預設為0.8`)
+                coe_a = 0.8
+            }
+            else {
+
+                //cdbl
+                coe_a = cdbl(coe_a)
+
+                //check
+                if (coe_a < 0) {
+                    err.push(`coe_a${brk(coe_a)}<0，強制預設為0.8`)
+                    coe_a = 0.8
+                }
+
+            }
+        }
+
+        //check waterLevelUsual, 不使用故不需檢查
+
+        //check waterLevelDesign
+        if (!isnum(waterLevelDesign)) {
+            err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
+            waterLevelDesign = 0
+        }
+        else {
+
+            //cdbl
+            waterLevelDesign = cdbl(waterLevelDesign)
+
+            //check
+            if (waterLevelDesign < 0) {
+                err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
+                waterLevelDesign = 0
+            }
+
+        }
+
+        //非液化: 地下水位以上
+        if (depth < waterLevelDesign) {
+            noLique = true
+        }
+
+        //非液化: 深度大於20m
+        if (depth > 20) {
+            noLique = true
+        }
+
+        //check qc
+        if (!isnum(qc)) {
+            err.push(`qc${brk(qc)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            qc = cdbl(qc)
+
+            //check
+            if (qc < 0) {
+                err.push(`qc${brk(qc)}<0`)
+                delayErr = true
+            }
+
+        }
+
+        //check fs
+        if (!isnum(fs)) {
+            err.push(`fs${brk(fs)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            fs = cdbl(fs)
+
+            //check
+            if (fs < 0) {
+                err.push(`fs${brk(fs)}<0`)
+                delayErr = true
+            }
+
+        }
+
+        //check u2
+        if (!isnum(u2)) {
+            err.push(`u2${brk(u2)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            u2 = cdbl(u2)
+
+            // //check, 須允許水壓負值
+            // if (u2 < 0) {
+            //     err.push(`u2${brk(u2)}<0`)
+            //     delayErr = true
+            // }
+
+        }
+
+        //check svp, 若有svp則直接複寫svpUsual與svpDesign
+        if (isnum(svp)) {
+
+            //cdbl
+            svp = cdbl(svp)
+
+            //save
+            svpUsual = svp
+            svpDesign = svp
+
+        }
+
+        //check svpUsual
+        if (!isnum(svpUsual)) {
+            err.push(`svpUsual${brk(svpUsual)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            svpUsual = cdbl(svpUsual)
+
+            //check
+            if (svpUsual < 0) {
+                err.push(`svpUsual${brk(svpUsual)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check svpDesign
+        if (!isnum(svpDesign)) {
+            err.push(`svpDesign${brk(svpDesign)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            svpDesign = cdbl(svpDesign)
+
+            //check
+            if (svpDesign < 0) {
+                err.push(`svpDesign${brk(svpDesign)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check sv
+        if (!isnum(sv)) {
+            err.push(`sv${brk(sv)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            sv = cdbl(sv)
+
+            //check
+            if (sv < 0) {
+                err.push(`sv${brk(sv)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check PGA
+        if (!isnum(PGA)) {
+            err.push(`PGA${brk(PGA)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            PGA = cdbl(PGA)
+
+            //check
+            if (PGA < 0) {
+                err.push(`PGA${brk(PGA)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check Mw
+        if (!isnum(Mw)) {
+            err.push(`Mw${brk(Mw)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            Mw = cdbl(Mw)
+
+            //check
+            if (Mw < 0) {
+                err.push(`Mw${brk(Mw)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        break
     }
 
-    if (!isnum(depth)) {
-        err.push(`depth${brk(depth)}非數字`)
-        return ret()
-    }
-    depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)}<0`)
-        return ret()
-    }
-
-    if (!isnum(qc)) {
-        err.push(`qc${brk(qc)}非數字`)
-        return ret()
-    }
-    qc = cdbl(qc)
-    if (qc < 0) {
-        err.push(`qc${brk(qc)}<0`)
-        return ret()
-    }
-
-    if (!isnum(fs)) {
-        err.push(`fs${brk(fs)}非數字`)
-        return ret()
-    }
-    fs = cdbl(fs)
-    if (fs < 0) {
-        err.push(`fs${brk(fs)}<0`)
-        return ret()
-    }
-
-    if (!isnum(svpDesign)) {
-        err.push(`svpDesign${brk(svpDesign)}非數字`)
-        return ret()
-    }
-    svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)}<0`)
-        return ret()
-    }
-
-    if (!isnum(sv)) {
-        err.push(`sv${brk(sv)}非數字`)
-        return ret()
-    }
-    sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)}<0`)
-        return ret()
-    }
-
-    if (!isnum(PGA)) {
-        err.push(`PGA${brk(PGA)}非數字`)
-        return ret()
-    }
-    PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)}<0`)
-        return ret()
-    }
-
-    if (!isnum(Mw)) {
-        err.push(`Mw${brk(Mw)}非數字`)
-        return ret()
-    }
-    Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)}<0`)
-        return ret()
-    }
-
-    let MSF = (Mw / 7.5) ** (-2.56)
-    let rd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
-    let F = (fs / (qc - sv)) * 100
-    console.log('待確認fs,qc,sv單位皆需為kg/cm2')
-    let qc1N = qc / Math.sqrt(svpDesign)
-    console.log('待確認qc,svpDesign單位皆需為kg/cm2')
-    let Ic = Math.sqrt((3.47 - Math.log10(qc1N)) ** 2 + (Math.log10(F) + 1.22) ** 2)
-    let Calpha = -0.016 * (svpDesign / 100) ** 3 + 0.178 * (svpDesign / 100) ** 2 - 0.063 * (svpDesign / 100) + 0.903
-    console.log('待確認公式內svpDesign單位是否為kg/cm2')
-    let qc1Ncs = qc1N * (2.429 * Ic ** 4 - 16.943 * Ic ** 3 + 44.551 * Ic ** 2 - 51.497 * Ic + 22.802)
-    let CRR75 = Calpha * Math.exp(-2.957 + 1.264 * (qc1Ncs / 100) ** 1.25)
-    CRR = CRR75 * MSF
-    CSR = 0.65 * PGA * (sv / svpDesign) * rd
-    if (CSR > 0) {
-        FS = CRR / CSR
-    }
-    if (FS > 10) {
-        FS = 10
-    }
-
-    //非液化: 深度大於20m
-    if (depth > 20) {
+    //check noLique
+    if (noLique === true) {
+        err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
         FS = 10
-        return ret()
+        return ret() //無錯誤並結束
     }
 
-    //check
-    if (CRR < 0) {
-        err.push(`CRR${brk(CRR)}<0`)
-    }
-    if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)}<=0`)
-    }
-    if (FS < 0) {
-        err.push(`FS${brk(FS)}<0，強制改為0`)
-        FS = 0
+    //check delayErr
+    if (delayErr === true) {
+        return ret() //觸發延遲報錯並結束
     }
 
-    return ret()
-}
+    //u0(MPa), 現地孔隙壓力
+    let u0 = intrpDefPp(depth) //u0(kPa)
+    u0 = u0 / 1000 //kPa -> MPa
 
+    //2021版使用Icn檢查砂黏性土
+    if (ver === '2021') {
 
-function cptHBF({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
-    let err = []
-    let CRR = ''
-    let CSR = ''
-    let FS = ''
+        //轉換單位成為MPa
+        let _sv = sv / 1000 //kPa -> MPa
+        let _svpUsual = svpUsual / 1000 //kPa -> MPa
+        // let _svpDesign = svpDesign / 1000 //kPa -> MPa
+        let _qc = qc //MPa
+        let _fs = fs //MPa
+        let _u2 = u2 //MPa
+        let _u0 = u0 //MPa
 
-    function ret() {
-        return { CSR, CRR, FS, err: join(err, '; ') }
-    }
+        //dt
+        let dt = {
+            sv: _sv,
+            svp: _svpUsual, //使用常時垂直有效應力
+            qc: _qc,
+            fs: _fs,
+            u0: _u0,
+            u2: _u2,
+        }
 
-    //check
-    if (!isnum(waterLevelDesign)) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
-        waterLevelDesign = 0
-    }
-    waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
-        waterLevelDesign = 0
-    }
+        //calcCptCore
+        let rc = calcCptCore(dt, coe_a, { useCnLeq: true }) //HBF法有限制Cn要小於等於1.7, 故得使用useCnLeq=true
+        Ic = get(rc, 'Ic', null)
+        Icn = get(rc, 'Icn', null)
 
-    if (!isnum(depth)) {
-        err.push(`depth${brk(depth)}非數字`)
-        return ret()
-    }
-    depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)}<0`)
-        return ret()
-    }
+        //useIc
+        let useIc = null
+        if (useIc === null && isNumber(Icn)) {
+            useIc = Icn
+        }
+        if (useIc === null && isNumber(Ic)) {
+            err.push(`無法計算Icn，強制降轉使用Ic`)
+            useIc = Ic
+        }
 
-    if (!isnum(qc)) {
-        err.push(`qc${brk(qc)}非數字`)
-        return ret()
-    }
-    qc = cdbl(qc)
-    if (qc < 0) {
-        err.push(`qc${brk(qc)}<0`)
-        return ret()
-    }
+        //非液化: 若是useIc大於2.6則判定為非液化, 國震簡訊120期(2021)
+        if (useIc > 2.6) {
+            // err = [] //第二階段不清除錯誤
+            CRR = '-'
+            CSR = '-'
+            FS = 10
+            return ret() //已於while區塊外, 無錯誤並結束
+        }
 
-    if (!isnum(fs)) {
-        err.push(`fs${brk(fs)}非數字`)
-        return ret()
-    }
-    fs = cdbl(fs)
-    if (fs < 0) {
-        err.push(`fs${brk(fs)}<0`)
-        return ret()
     }
 
-    if (!isnum(svpDesign)) {
-        err.push(`svpDesign${brk(svpDesign)}非數字`)
-        return ret()
+    //轉換單位成為kg/cm2
+    sv = sv * cvru //kPa -> kg/cm2
+    svpUsual = svpUsual * cvru //kPa -> kg/cm2
+    svpDesign = svpDesign * cvru //kPa -> kg/cm2
+    qc = qc * 1000 * cvru //MPa -> kg/cm2
+    fs = fs * 1000 * cvru //MPa -> kg/cm2
+    u2 = u2 * 1000 * cvru //MPa -> kg/cm2
+    u0 = u0 * 1000 * cvru //MPa -> kg/cm2
+
+    //MSFPow, 原莊長賢excel內MSFPow=-1.11
+    let MSFPow = null
+    if (ver === '2012') {
+        MSFPow = -3.3
     }
-    svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)}<0`)
-        return ret()
+    else if (ver === '2017' || ver === '2021') {
+        MSFPow = -1.8 //-1.8為「依據2016土壤液化評估方法研討會結論後修正」, 依照「楊智堯_臺中市中級土壤液化潛勢地圖製作與系統說明.pdf」標注此為2017版
     }
 
-    if (!isnum(sv)) {
-        err.push(`sv${brk(sv)}非數字`)
-        return ret()
+    //MSF, 規模修正因子
+    MSF = (Mw / 7.5) ** (MSFPow)
+
+    //rrd, 應力折減係數
+    if (depth <= 10) {
+        rrd = 1 - 0.01 * depth
     }
-    sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)}<0`)
-        return ret()
+    else {
+        rrd = 1.2 - 0.03 * depth
     }
 
-    if (!isnum(PGA)) {
-        err.push(`PGA${brk(PGA)}非數字`)
-        return ret()
-    }
-    PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)}<0`)
-        return ret()
-    }
+    //qc1N(kg/cm2)
+    qc1N = 1.7 / (svpUsual + 0.7) * qc //kg/cm2
+    // qc1N = 170 / (svpUsual + 70) * qc //kN/m2
 
-    if (!isnum(Mw)) {
-        err.push(`Mw${brk(Mw)}非數字`)
-        return ret()
-    }
-    Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)}<0`)
-        return ret()
-    }
+    //Rf, 摩擦比(fs與qc同單位故無單位)
+    Rf = fs / qc * 100
 
-    //let MSF = (Mw / 7.5) ** (-1.11) //原莊長賢excel使用
-    let MSF = (Mw / 7.5) ** (-3.3)
-    let rd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
-    let qc1N = 1.7 / (svpDesign + 0.7) * qc
-    console.log('需確認公式內svpDesign是否為kg/cm2, 否則需要轉kPa, 不過170=>1.7與70=>0.7就代表除r = 98.134256')
-    let Rf = fs / qc * 100
-    let Kc
+    //Kc, 管壁摩擦量對錐尖阻抗qc值之影響係數
     if (Rf <= 0.1) {
         Kc = 1.0
     }
     else {
         Kc = 0.4 * Rf ** 2 - 0.08 * Rf + 1.004
     }
-    let qc1Ncs = Kc * qc1N
-    qc1Ncs = Math.min(qc1Ncs, 180 - 0.5)
-    let CRR75 = 0.09 + (0.00028 * qc1Ncs) / (1 - qc1Ncs / 180)
+
+    //qc1Ncs(kg/cm2)
+    qc1Ncs = Kc * qc1N
+
+    //非液化: 若是qc1Ncs大於180則直接判定為非液化
+    if (qc1Ncs >= 180) {
+        // err = [] //第二階段不清除錯誤
+        CRR = '-'
+        CSR = '-'
+        FS = 10
+        return ret() //已於while區塊外, 無錯誤並結束
+    }
+
+    CRR75 = 0.09 + (0.00028 * qc1Ncs) / (1 - qc1Ncs / 180) //基於kg/cm2
     CRR = CRR75 * MSF
-    CSR = 0.65 * PGA * (sv / svpDesign) * rd
+    CSR = 0.65 * PGA * (sv / svpDesign) * rrd
     if (CSR > 0) {
         FS = CRR / CSR
     }
     if (FS > 10) {
         FS = 10
-    }
-
-    //非液化: 深度大於20m
-    if (depth > 20) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
     }
 
     //check
@@ -3117,117 +3326,358 @@ function cptHBF({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
 }
 
 
-function cptOlsen({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
+function cptNCEER({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw }) {
+    //NCEER液化研討會(1996)中Robertson利用Robertson(1990)所建立之CPT試驗土壤分類圖表，直接以錐尖阻抗qc及袖管摩擦比Rf為參數，
+    //建立土壤行為類型指數Ic(Soil Behavior Type Index)，取代以往以平均粒徑D50來表示細粒料對土壤抗液化能力的影響，
+    //建立全CPT法之土壤臨界液化強度曲線，即NCEER(1997)所選用之方法。詳細流程圖可見Robertson and Wride(1998)。
     let err = []
+    let MSF = ''
+    let rrd = ''
+    let Qt1n = ''
+    let Ic = ''
+    let Kc = ''
+    let Qt1ncs = ''
+    let CRR75 = ''
     let CRR = ''
     let CSR = ''
     let FS = ''
+    // let vstrTS = ''
+    // let vstrIY = ''
 
     function ret() {
-        return { CSR, CRR, FS, err: join(err, '; ') }
+        if (isnum(Qt1n)) {
+            Qt1n = Qt1n / cvru
+        }
+        if (isnum(Qt1ncs)) {
+            Qt1ncs = Qt1ncs / cvru
+        }
+        let r = { rrd, Qt1n, Ic, Kc, Qt1ncs, CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        each(r, (v, k) => {
+            if (!isestr(v) && !isnum(v)) {
+                r[k] = ''
+            }
+        })
+        return r
     }
 
     //check
-    if (!isnum(waterLevelDesign)) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
-        waterLevelDesign = 0
-    }
-    waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
-        waterLevelDesign = 0
+    let noLique = false
+    let delayErr = false
+    while (true) {
+
+        //check ver
+        if (ver !== '1997') {
+            err.push(`ver${brk(ver)}非1997`)
+            return ret() //重大錯誤直接報錯結束
+        }
+
+        //check depth
+        if (!isnum(depth)) {
+            err.push(`depth${brk(depth)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            depth = cdbl(depth)
+
+            //check
+            if (depth < 0) {
+                err.push(`depth${brk(depth)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check waterLevelUsual, 不使用故不需檢查
+
+        //check waterLevelDesign
+        if (!isnum(waterLevelDesign)) {
+            err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
+            waterLevelDesign = 0
+        }
+        else {
+
+            //cdbl
+            waterLevelDesign = cdbl(waterLevelDesign)
+
+            //check
+            if (waterLevelDesign < 0) {
+                err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
+                waterLevelDesign = 0
+            }
+
+        }
+
+        //非液化: 地下水位以上
+        if (depth < waterLevelDesign) {
+            noLique = true
+        }
+
+        //非液化: 深度大於20m
+        if (depth > 20) {
+            noLique = true
+        }
+
+        //check qc
+        if (!isnum(qc)) {
+            err.push(`qc${brk(qc)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            qc = cdbl(qc)
+
+            //check
+            if (qc < 0) {
+                err.push(`qc${brk(qc)}<0`)
+                delayErr = true
+            }
+
+        }
+
+        //check fs
+        if (!isnum(fs)) {
+            err.push(`fs${brk(fs)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            fs = cdbl(fs)
+
+            //check
+            if (fs < 0) {
+                err.push(`fs${brk(fs)}<0`)
+                delayErr = true
+            }
+
+        }
+
+        //check u2
+        if (!isnum(u2)) {
+            err.push(`u2${brk(u2)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            u2 = cdbl(u2)
+
+            // //check, 須允許水壓負值
+            // if (u2 < 0) {
+            //     err.push(`u2${brk(u2)}<0`)
+            //     delayErr = true
+            // }
+
+        }
+
+        //check svp, 若有svp則直接複寫svpUsual與svpDesign
+        if (isnum(svp)) {
+
+            //cdbl
+            svp = cdbl(svp)
+
+            //save
+            svpUsual = svp
+            svpDesign = svp
+
+        }
+
+        //check svpUsual
+        if (!isnum(svpUsual)) {
+            err.push(`svpUsual${brk(svpUsual)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            svpUsual = cdbl(svpUsual)
+
+            //check
+            if (svpUsual < 0) {
+                err.push(`svpUsual${brk(svpUsual)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check svpDesign
+        if (!isnum(svpDesign)) {
+            err.push(`svpDesign${brk(svpDesign)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            svpDesign = cdbl(svpDesign)
+
+            //check
+            if (svpDesign < 0) {
+                err.push(`svpDesign${brk(svpDesign)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check sv
+        if (!isnum(sv)) {
+            err.push(`sv${brk(sv)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            sv = cdbl(sv)
+
+            //check
+            if (sv < 0) {
+                err.push(`sv${brk(sv)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check PGA
+        if (!isnum(PGA)) {
+            err.push(`PGA${brk(PGA)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            PGA = cdbl(PGA)
+
+            //check
+            if (PGA < 0) {
+                err.push(`PGA${brk(PGA)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check Mw
+        if (!isnum(Mw)) {
+            err.push(`Mw${brk(Mw)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            Mw = cdbl(Mw)
+
+            //check
+            if (Mw < 0) {
+                err.push(`Mw${brk(Mw)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        break
     }
 
-    if (!isnum(depth)) {
-        err.push(`depth${brk(depth)}非數字`)
-        return ret()
-    }
-    depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)}<0`)
-        return ret()
-    }
-
-    if (!isnum(qc)) {
-        err.push(`qc${brk(qc)}非數字`)
-        return ret()
-    }
-    qc = cdbl(qc)
-    if (qc < 0) {
-        err.push(`qc${brk(qc)}<0`)
-        return ret()
+    //check noLique
+    if (noLique === true) {
+        err = [] //清除錯誤
+        CRR = '-'
+        CSR = '-'
+        FS = 10
+        return ret() //無錯誤並結束
     }
 
-    if (!isnum(fs)) {
-        err.push(`fs${brk(fs)}非數字`)
-        return ret()
-    }
-    fs = cdbl(fs)
-    if (fs < 0) {
-        err.push(`fs${brk(fs)}<0`)
-        return ret()
+    //check delayErr
+    if (delayErr === true) {
+        return ret() //觸發延遲報錯並結束
     }
 
-    if (!isnum(svpDesign)) {
-        err.push(`svpDesign${brk(svpDesign)}非數字`)
-        return ret()
+    //轉換單位成為kg/cm2
+    sv = sv * cvru //kPa -> kg/cm2
+    svpUsual = svpUsual * cvru //kPa -> kg/cm2
+    svpDesign = svpDesign * cvru //kPa -> kg/cm2
+    qc = qc * 1000 * cvru //MPa -> kg/cm2
+    fs = fs * 1000 * cvru //MPa -> kg/cm2
+    u2 = u2 * 1000 * cvru //MPa -> kg/cm2
+
+    //MSF, 規模修正因子
+    MSF = (Mw / 7.5) ** (-2.56)
+
+    //rrd, 應力折減係數
+    rrd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
+
+    //Q(none)
+    let Q = (qc - sv) / svpUsual
+
+    //F(%)
+    let F = (fs / (qc - sv)) * 100
+
+    //Qt1n(none), Ic
+    let Ict = Math.sqrt((3.47 - Math.log10(Q)) ** 2 + (Math.log10(F) + 1.22) ** 2)
+    if (Ict <= 2.6) {
+        let Pa = cnst.Pa * 1000 //大氣壓(kPa), MPa -> kPa
+        Pa = Pa * cvru //kPa -> kg/cm2
+        Qt1n = (qc / Pa) * (Pa / svpUsual) ** 0.5
+        let _Ict = Math.sqrt((3.47 - Math.log10(Qt1n)) ** 2 + (Math.log10(F) + 1.22) ** 2)
+        if (_Ict <= 2.6) {
+            Ic = _Ict
+        }
+        else {
+            Qt1n = (qc / Pa) * (Pa / svpUsual) ** 0.75
+            Ic = Math.sqrt((3.47 - Math.log10(Qt1n)) ** 2 + (Math.log10(F) + 1.22) ** 2)
+        }
     }
-    svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)}<0`)
-        return ret()
+    else {
+        Qt1n = Q
+        Ic = Ict
     }
 
-    if (!isnum(sv)) {
-        err.push(`sv${brk(sv)}非數字`)
-        return ret()
-    }
-    sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)}<0`)
-        return ret()
-    }
-
-    if (!isnum(PGA)) {
-        err.push(`PGA${brk(PGA)}非數字`)
-        return ret()
-    }
-    PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)}<0`)
-        return ret()
+    //非液化: 若是Ic大於等於2.6則須使用其他判斷準則, 或判定為非液化
+    if (Ic >= 2.6) {
+        // err = [] //第二階段不清除錯誤
+        CRR = '-'
+        CSR = '-'
+        FS = 10
+        return ret() //已於while區塊外, 無錯誤並結束
     }
 
-    if (!isnum(Mw)) {
-        err.push(`Mw${brk(Mw)}非數字`)
-        return ret()
+    //Kc
+    if (Ic <= 1.64) {
+        Kc = 1.0
     }
-    Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)}<0`)
-        return ret()
+    else { //1.64<Ic<2.6
+        Kc = -0.403 * Ic ** 4 + 5.581 * Ic ** 3 - 21.63 * Ic ** 2 + 33.75 * Ic - 17.88
+        if (Ic < 2.36 && F < 0.5) {
+            Kc = 1.0
+        }
     }
 
-    let MSF = (Mw / 7.5) ** (-2.56)
-    let rd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
-    let qc1 = qc / svpDesign ** 0.7
-    let Rf = fs / qc * 100
-    let CRR75 = 0.00128 * qc1 - 0.025 + 0.17 * Rf - 0.028 * Rf ** 2 + 0.0016 * Rf ** 3
+    //Qt1ncs(none)
+    Qt1ncs = Kc * Qt1n
+
+    //非液化: 若Qt1ncs大於160(none)則直接判定為非液化
+    if (Qt1ncs >= 160) {
+        // err = [] //第二階段不清除錯誤
+        CRR = '-'
+        CSR = '-'
+        FS = 10
+        return ret() //已於while區塊外, 無錯誤並結束
+    }
+
+    CRR75 = null
+    if (Qt1ncs < 50) {
+        CRR75 = 0.833 * (Qt1ncs / 1000) + 0.05
+    }
+    else { //50<=Qt1ncs<160
+        CRR75 = 93 * (Qt1ncs / 1000) ** 3 + 0.08
+    }
     CRR = CRR75 * MSF
-    CSR = 0.65 * PGA * (sv / svpDesign) * rd
+    CSR = 0.65 * PGA * (sv / svpDesign) * rrd
     if (CSR > 0) {
         FS = CRR / CSR
     }
     if (FS > 10) {
         FS = 10
-    }
-
-    //非液化: 深度大於20m
-    if (depth > 20) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
     }
 
     //check
@@ -3246,109 +3696,1807 @@ function cptOlsen({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
 }
 
 
-function cptShibata({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw, D50 }) {
+function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2, svp, svpUsual, svpDesign, sv, tou_s, su, PGA, Mw }) {
     let err = []
+    let MSF = ''
+    let rrd = ''
+    let Kc = ''
+    let Kalpha = ''
+    let Fr = ''
+    let Ic = ''
+    let Icn = ''
+    let Qt = ''
+    let Qtn = ''
+    let Qtncs = ''
+    let CRR75 = ''
     let CRR = ''
     let CSR = ''
     let FS = ''
+    // let vstrTS = ''
+    // let vstrIY = ''
 
     function ret() {
-        return { CSR, CRR, FS, err: join(err, '; ') }
+        let r = { rrd, Kc, Kalpha, Fr, Ic, Icn, Qt, Qtn, Qtncs, CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        each(r, (v, k) => {
+            if (!isestr(v) && !isnum(v)) {
+                r[k] = ''
+            }
+        })
+        return r
     }
 
     //check
-    if (!isnum(waterLevelDesign)) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
-        waterLevelDesign = 0
-    }
-    waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
-        waterLevelDesign = 0
+    let noLique = false
+    let delayErr = false
+    while (true) {
+
+        //check ver
+        if (ver !== '2009') {
+            err.push(`ver${brk(ver)}非2009`)
+            return ret() //重大錯誤直接報錯結束
+        }
+
+        //check depth
+        if (!isnum(depth)) {
+            err.push(`depth${brk(depth)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            depth = cdbl(depth)
+
+            //check
+            if (depth < 0) {
+                err.push(`depth${brk(depth)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check coe_a
+        if (!isnum(coe_a)) {
+            err.push(`coe_a${brk(coe_a)}非數字，強制預設為0.8`)
+            coe_a = 0.8
+        }
+        else {
+
+            //cdbl
+            coe_a = cdbl(coe_a)
+
+            //check
+            if (coe_a < 0) {
+                err.push(`coe_a${brk(coe_a)}<0，強制預設為0.8`)
+                coe_a = 0.8
+            }
+
+        }
+
+        //check waterLevelUsual, 不使用故不需檢查
+
+        //check waterLevelDesign
+        if (!isnum(waterLevelDesign)) {
+            err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
+            waterLevelDesign = 0
+        }
+        else {
+
+            //cdbl
+            waterLevelDesign = cdbl(waterLevelDesign)
+
+            //check
+            if (waterLevelDesign < 0) {
+                err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
+                waterLevelDesign = 0
+            }
+
+        }
+
+        //非液化: 地下水位以上
+        if (depth < waterLevelDesign) {
+            noLique = true
+        }
+
+        //非液化: 深度大於20m
+        if (depth > 20) {
+            noLique = true
+        }
+
+        //check qc
+        if (!isnum(qc)) {
+            err.push(`qc${brk(qc)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            qc = cdbl(qc)
+
+            //check
+            if (qc < 0) {
+                err.push(`qc${brk(qc)}<0`)
+                delayErr = true
+            }
+
+        }
+
+        //check fs
+        if (!isnum(fs)) {
+            err.push(`fs${brk(fs)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            fs = cdbl(fs)
+
+            //check
+            if (fs < 0) {
+                err.push(`fs${brk(fs)}<0`)
+                delayErr = true
+            }
+
+        }
+
+        //check u2
+        if (!isnum(u2)) {
+            err.push(`u2${brk(u2)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            u2 = cdbl(u2)
+
+            // //check, 須允許水壓負值
+            // if (u2 < 0) {
+            //     err.push(`u2${brk(u2)}<0`)
+            //     delayErr = true
+            // }
+
+        }
+
+        //check svp, 若有svp則直接複寫svpUsual與svpDesign
+        if (isnum(svp)) {
+
+            //cdbl
+            svp = cdbl(svp)
+
+            //save
+            svpUsual = svp
+            svpDesign = svp
+
+        }
+
+        //check svpUsual
+        if (!isnum(svpUsual)) {
+            err.push(`svpUsual${brk(svpUsual)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            svpUsual = cdbl(svpUsual)
+
+            //check
+            if (svpUsual < 0) {
+                err.push(`svpUsual${brk(svpUsual)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check svpDesign
+        if (!isnum(svpDesign)) {
+            err.push(`svpDesign${brk(svpDesign)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            svpDesign = cdbl(svpDesign)
+
+            //check
+            if (svpDesign < 0) {
+                err.push(`svpDesign${brk(svpDesign)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check sv
+        if (!isnum(sv)) {
+            err.push(`sv${brk(sv)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            sv = cdbl(sv)
+
+            //check
+            if (sv < 0) {
+                err.push(`sv${brk(sv)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check tou_s
+        if (!isnum(tou_s)) {
+            err.push(`tou_s${brk(tou_s)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            tou_s = cdbl(tou_s)
+
+            //check
+            if (tou_s < 0) {
+                err.push(`tou_s${brk(tou_s)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check su
+        if (!isnum(su)) {
+            err.push(`su${brk(su)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            su = cdbl(su)
+
+            //check
+            if (su < 0) {
+                err.push(`su${brk(su)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check PGA
+        if (!isnum(PGA)) {
+            err.push(`PGA${brk(PGA)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            PGA = cdbl(PGA)
+
+            //check
+            if (PGA < 0) {
+                err.push(`PGA${brk(PGA)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check Mw
+        if (!isnum(Mw)) {
+            err.push(`Mw${brk(Mw)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            Mw = cdbl(Mw)
+
+            //check
+            if (Mw < 0) {
+                err.push(`Mw${brk(Mw)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        break
     }
 
-    if (!isnum(depth)) {
-        err.push(`depth${brk(depth)}非數字`)
-        return ret()
-    }
-    depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)}<0`)
-        return ret()
-    }
-
-    if (!isnum(qc)) {
-        err.push(`qc${brk(qc)}非數字`)
-        return ret()
-    }
-    qc = cdbl(qc)
-    if (qc < 0) {
-        err.push(`qc${brk(qc)}<0`)
-        return ret()
+    //check noLique
+    if (noLique === true) {
+        err = [] //清除錯誤
+        CRR = '-'
+        CSR = '-'
+        FS = 10
+        return ret() //無錯誤並結束
     }
 
-    if (!isnum(fs)) {
-        err.push(`fs${brk(fs)}非數字`)
-        return ret()
-    }
-    fs = cdbl(fs)
-    if (fs < 0) {
-        err.push(`fs${brk(fs)}<0`)
-        return ret()
+    //check delayErr
+    if (delayErr === true) {
+        return ret() //觸發延遲報錯並結束
     }
 
-    if (!isnum(svpDesign)) {
-        err.push(`svpDesign${brk(svpDesign)}非數字`)
-        return ret()
-    }
-    svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)}<0`)
-        return ret()
+    //u0(MPa), 現地孔隙壓力
+    let u0 = intrpDefPp(depth) //u0(kPa)
+    u0 = u0 / 1000 //kPa -> MPa
+
+    //轉換單位成為MPa
+    let _sv = sv / 1000 //kPa -> MPa
+    let _svpUsual = svpUsual / 1000 //kPa -> MPa
+    // let _svpDesign = svpDesign / 1000 //kPa -> MPa
+    let _qc = qc //MPa
+    let _fs = fs //MPa
+    let _u2 = u2 //MPa
+    let _u0 = u0 //MPa
+
+    //dt
+    let dt = {
+        sv: _sv,
+        svp: _svpUsual, //使用常時垂直有效應力
+        qc: _qc,
+        fs: _fs,
+        u0: _u0,
+        u2: _u2,
     }
 
-    if (!isnum(sv)) {
-        err.push(`sv${brk(sv)}非數字`)
-        return ret()
+    //calcCptCore
+    let rc = calcCptCore(dt, coe_a, { useCnLeq: false }) //Robertson法是沒有限制Cn要小於等於1.7, 故得使用useCnLeq=false
+    Fr = get(rc, 'Fr', null)
+    Ic = get(rc, 'Ic', null)
+    Icn = get(rc, 'Icn', null)
+    Qt = get(rc, 'Qt', null)
+    Qtn = get(rc, 'Qtn', null)
+
+    //useIc
+    let useIc = null
+    if (useIc === null && isNumber(Icn)) {
+        useIc = Icn
     }
-    sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)}<0`)
-        return ret()
+    if (useIc === null && isNumber(Ic)) {
+        err.push(`無法計算Icn，強制降轉使用Ic`)
+        useIc = Ic
     }
 
-    if (!isnum(PGA)) {
-        err.push(`PGA${brk(PGA)}非數字`)
-        return ret()
+    //useQt
+    let useQt = null
+    if (useQt === null && isNumber(Qtn)) {
+        useQt = Qtn
     }
-    PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)}<0`)
-        return ret()
-    }
-
-    if (!isnum(Mw)) {
-        err.push(`Mw${brk(Mw)}非數字`)
-        return ret()
-    }
-    Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)}<0`)
-        return ret()
-    }
-    if (!isnum(D50)) {
-        err.push(`D50${brk(D50)}非數字`)
-        return ret()
-    }
-    D50 = cdbl(D50)
-    if (D50 < 0) {
-        err.push(`D50${brk(D50)}<0`)
-        return ret()
+    if (useQt === null && isNumber(Qt)) {
+        err.push(`無法計算Qtn，強制降轉使用Qt`)
+        useQt = Qt
     }
 
-    let qc1 = 1.7 / (svpDesign + 0.7) * qc
-    let rd = 1 - 0.015 * depth
-    let TempL = 0.1 * (Mw - 1) * PGA * (sv / svpDesign) * rd
+    //轉換單位成為kg/cm2
+    sv = sv * cvru //kPa -> kg/cm2
+    svpUsual = svpUsual * cvru //kPa -> kg/cm2
+    svpDesign = svpDesign * cvru //kPa -> kg/cm2
+    qc = qc * 1000 * cvru //MPa -> kg/cm2
+    fs = fs * 1000 * cvru //MPa -> kg/cm2
+    u2 = u2 * 1000 * cvru //MPa -> kg/cm2
+
+    //MSF, 規模修正因子
+    MSF = (Mw / 7.5) ** (-2.56)
+
+    //rrd, 應力折減係數
+    rrd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
+
+    //Qtncs, CRR75
+    Qtncs = null
+    CRR75 = null
+    if (useIc <= 2.5) {
+
+        //Kc
+        if (useIc <= 1.64) {
+            Kc = 1.0
+        }
+        else { //1.64<Ic<2.5
+            Kc = -0.403 * useIc ** 4 + 5.581 * useIc ** 3 - 21.63 * useIc ** 2 + 33.75 * useIc - 17.88
+            if (useIc < 2.36 && Fr < 0.5) {
+                Kc = 1.0
+            }
+        }
+
+        //Qtncs(none)
+        Qtncs = Kc * useQt
+
+        //CRR75
+        if (Qtncs < 50) {
+            CRR75 = 0.833 * (Qtncs / 1000) + 0.05
+        }
+        else { //50<=Qtncs<160
+            CRR75 = 93 * (Qtncs / 1000) ** 3 + 0.08
+        }
+
+    }
+    else if (useIc < 2.7) { //2.5<Ic<2.7
+        //關於2.5<Ic<2.7過度區:
+        //古志生(0-A1050829-CPT液化評估法, pp.21)提及是基於Robertson迭代法
+        //但其學生張佩雯(2012)(莊氏CPTu, pp.45)是寫基於Ic(RW)計算
+        //此處使用古志生投影片資料進行計算
+
+        //Kc
+        Kc = 6 * (1e-7) * useIc ** 16.76
+
+        //Qtncs(none)
+        Qtncs = Kc * useQt
+
+        //CRR75
+        if (Qtncs < 50) {
+            CRR75 = 0.833 * (Qtncs / 1000) + 0.05
+        }
+        else { //50<=Qtncs<160
+            CRR75 = 93 * (Qtncs / 1000) ** 3 + 0.08
+        }
+
+    }
+    else { //Ic>=2.7
+        //tou_s: horizontal static shear stress
+        //su: undrained shear strength
+
+        //Kalpha
+        Kalpha = 1.344 - (0.344 / (1 - tou_s / su) ** 0.638)
+
+        //Qtncs
+        Qtncs = Kalpha * useQt
+
+        //CRR75
+        CRR75 = 0.053 * Qtncs
+
+    }
+
+    CRR = CRR75 * MSF
+    CSR = 0.65 * PGA * (sv / svpDesign) * rrd
+    if (CSR > 0) {
+        FS = CRR / CSR
+    }
+    if (FS > 10) {
+        FS = 10
+    }
+
+    //check
+    if (CRR < 0) {
+        err.push(`CRR${brk(CRR)}<0`)
+    }
+    if (CSR <= 0) {
+        err.push(`CSR${brk(CSR)}<=0`)
+    }
+    if (FS < 0) {
+        err.push(`FS${brk(FS)}<0，強制改為0`)
+        FS = 0
+    }
+
+    return ret()
+}
+
+
+function cptJuang({ ver = '2002', waterLevelDesign, depth, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw }) {
+    let err = []
+    let MSF = ''
+    let rrd = ''
+    let qc1N = ''
+    let Ic = ''
+    let qc1Ncs = ''
+    let CRR75 = ''
+    let CRR = ''
+    let CSR = ''
+    let FS = ''
+    // let vstrTS = ''
+    // let vstrIY = ''
+
+    function ret() {
+        if (isnum(qc1N)) {
+            qc1N = qc1N / cvru
+        }
+        if (isnum(qc1Ncs)) {
+            qc1Ncs = qc1Ncs / cvru
+        }
+        let r = { rrd, qc1N, Ic, qc1Ncs, CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        each(r, (v, k) => {
+            if (!isestr(v) && !isnum(v)) {
+                r[k] = ''
+            }
+        })
+        return r
+    }
+
+    //check
+    let noLique = false
+    let delayErr = false
+    while (true) {
+
+        //check ver
+        if (ver !== '2002') {
+            err.push(`ver${brk(ver)}非2002`)
+            return ret() //重大錯誤直接報錯結束
+        }
+
+        //check depth
+        if (!isnum(depth)) {
+            err.push(`depth${brk(depth)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            depth = cdbl(depth)
+
+            //check
+            if (depth < 0) {
+                err.push(`depth${brk(depth)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check waterLevelUsual, 不使用故不需檢查
+
+        //check waterLevelDesign
+        if (!isnum(waterLevelDesign)) {
+            err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
+            waterLevelDesign = 0
+        }
+        else {
+
+            //cdbl
+            waterLevelDesign = cdbl(waterLevelDesign)
+
+            //check
+            if (waterLevelDesign < 0) {
+                err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
+                waterLevelDesign = 0
+            }
+
+        }
+
+        //非液化: 地下水位以上
+        if (depth < waterLevelDesign) {
+            noLique = true
+        }
+
+        //非液化: 深度大於20m
+        if (depth > 20) {
+            noLique = true
+        }
+
+        //check qc
+        if (!isnum(qc)) {
+            err.push(`qc${brk(qc)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            qc = cdbl(qc)
+
+            //check
+            if (qc < 0) {
+                err.push(`qc${brk(qc)}<0`)
+                delayErr = true
+            }
+
+        }
+
+        //check fs
+        if (!isnum(fs)) {
+            err.push(`fs${brk(fs)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            fs = cdbl(fs)
+
+            //check
+            if (fs < 0) {
+                err.push(`fs${brk(fs)}<0`)
+                delayErr = true
+            }
+
+        }
+
+        //check u2
+        if (!isnum(u2)) {
+            err.push(`u2${brk(u2)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            u2 = cdbl(u2)
+
+            // //check, 須允許水壓負值
+            // if (u2 < 0) {
+            //     err.push(`u2${brk(u2)}<0`)
+            //     delayErr = true
+            // }
+
+        }
+
+        //check svp, 若有svp則直接複寫svpUsual與svpDesign
+        if (isnum(svp)) {
+
+            //cdbl
+            svp = cdbl(svp)
+
+            //save
+            svpUsual = svp
+            svpDesign = svp
+
+        }
+
+        //check svpUsual
+        if (!isnum(svpUsual)) {
+            err.push(`svpUsual${brk(svpUsual)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            svpUsual = cdbl(svpUsual)
+
+            //check
+            if (svpUsual < 0) {
+                err.push(`svpUsual${brk(svpUsual)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check svpDesign
+        if (!isnum(svpDesign)) {
+            err.push(`svpDesign${brk(svpDesign)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            svpDesign = cdbl(svpDesign)
+
+            //check
+            if (svpDesign < 0) {
+                err.push(`svpDesign${brk(svpDesign)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check sv
+        if (!isnum(sv)) {
+            err.push(`sv${brk(sv)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            sv = cdbl(sv)
+
+            //check
+            if (sv < 0) {
+                err.push(`sv${brk(sv)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check PGA
+        if (!isnum(PGA)) {
+            err.push(`PGA${brk(PGA)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            PGA = cdbl(PGA)
+
+            //check
+            if (PGA < 0) {
+                err.push(`PGA${brk(PGA)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check Mw
+        if (!isnum(Mw)) {
+            err.push(`Mw${brk(Mw)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            Mw = cdbl(Mw)
+
+            //check
+            if (Mw < 0) {
+                err.push(`Mw${brk(Mw)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        break
+    }
+
+    //check noLique
+    if (noLique === true) {
+        err = [] //清除錯誤
+        CRR = '-'
+        CSR = '-'
+        FS = 10
+        return ret() //無錯誤並結束
+    }
+
+    //check delayErr
+    if (delayErr === true) {
+        return ret() //觸發延遲報錯並結束
+    }
+
+    //轉換單位成為kg/cm2
+    sv = sv * cvru //kPa -> kg/cm2
+    svpUsual = svpUsual * cvru //kPa -> kg/cm2
+    svpDesign = svpDesign * cvru //kPa -> kg/cm2
+    qc = qc * 1000 * cvru //MPa -> kg/cm2
+    fs = fs * 1000 * cvru //MPa -> kg/cm2
+    u2 = u2 * 1000 * cvru //MPa -> kg/cm2
+
+    //MSF, 規模修正因子
+    MSF = (Mw / 7.5) ** (-2.56)
+
+    //rrd, 應力折減係數
+    rrd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
+
+    //F
+    let F = (fs / (qc - sv)) * 100 //基於kg/cm2
+
+    //qc1N(kg/cm2)
+    qc1N = qc / Math.sqrt(svpUsual) //基於kg/cm2
+
+    //Ic
+    Ic = Math.sqrt((3.47 - Math.log10(qc1N)) ** 2 + (Math.log10(F) + 1.22) ** 2)
+
+    //qc1Ncs(kg/cm2)
+    qc1Ncs = qc1N * (2.429 * Ic ** 4 - 16.943 * Ic ** 3 + 44.551 * Ic ** 2 - 51.497 * Ic + 22.802)
+
+    //Calpha
+    let Calpha = -0.016 * (svpUsual / 100) ** 3 + 0.178 * (svpUsual / 100) ** 2 - 0.063 * (svpUsual / 100) + 0.903
+
+    CRR75 = Calpha * Math.exp(-2.957 + 1.264 * (qc1Ncs / 100) ** 1.25)
+    CRR = CRR75 * MSF
+    CSR = 0.65 * PGA * (sv / svpDesign) * rrd
+    if (CSR > 0) {
+        FS = CRR / CSR
+    }
+    if (FS > 10) {
+        FS = 10
+    }
+
+    //check
+    if (CRR < 0) {
+        err.push(`CRR${brk(CRR)}<0`)
+    }
+    if (CSR <= 0) {
+        err.push(`CSR${brk(CSR)}<=0`)
+    }
+    if (FS < 0) {
+        err.push(`FS${brk(FS)}<0，強制改為0`)
+        FS = 0
+    }
+
+    return ret()
+}
+
+
+function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw }) {
+    let err = []
+    let MSF = ''
+    let rrd = ''
+    let Fr = ''
+    let Bq = ''
+    let Ic = ''
+    let Icn = ''
+    let Qt = ''
+    let Qtn = ''
+    let Icbj = ''
+    let Csigma = ''
+    let Ksigma = ''
+    let CRR75 = ''
+    let CRR = ''
+    let CSR = ''
+    let FS = ''
+    // let vstrTS = ''
+    // let vstrIY = ''
+
+    function ret() {
+        let r = { rrd, Fr, Bq, Ic, Icn, Qt, Qtn, Icbj, Csigma, Ksigma, CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        each(r, (v, k) => {
+            if (!isestr(v) && !isnum(v)) {
+                r[k] = ''
+            }
+        })
+        return r
+    }
+
+    //check
+    let noLique = false
+    let delayErr = false
+    while (true) {
+
+        //check ver
+        if (ver !== '2012') {
+            err.push(`ver${brk(ver)}非2012`)
+            return ret() //重大錯誤直接報錯結束
+        }
+
+        //check depth
+        if (!isnum(depth)) {
+            err.push(`depth${brk(depth)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            depth = cdbl(depth)
+
+            //check
+            if (depth < 0) {
+                err.push(`depth${brk(depth)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check coe_a
+        if (!isnum(coe_a)) {
+            err.push(`coe_a${brk(coe_a)}非數字，強制預設為0.8`)
+            coe_a = 0.8
+        }
+        else {
+
+            //cdbl
+            coe_a = cdbl(coe_a)
+
+            //check
+            if (coe_a < 0) {
+                err.push(`coe_a${brk(coe_a)}<0，強制預設為0.8`)
+                coe_a = 0.8
+            }
+
+        }
+
+        //check waterLevelUsual, 不使用故不需檢查
+
+        //check waterLevelDesign
+        if (!isnum(waterLevelDesign)) {
+            err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
+            waterLevelDesign = 0
+        }
+        else {
+
+            //cdbl
+            waterLevelDesign = cdbl(waterLevelDesign)
+
+            //check
+            if (waterLevelDesign < 0) {
+                err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
+                waterLevelDesign = 0
+            }
+
+        }
+
+        //非液化: 地下水位以上
+        if (depth < waterLevelDesign) {
+            noLique = true
+        }
+
+        //非液化: 深度大於20m
+        if (depth > 20) {
+            noLique = true
+        }
+
+        //check qc
+        if (!isnum(qc)) {
+            err.push(`qc${brk(qc)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            qc = cdbl(qc)
+
+            //check
+            if (qc < 0) {
+                err.push(`qc${brk(qc)}<0`)
+                delayErr = true
+            }
+
+        }
+
+        //check fs
+        if (!isnum(fs)) {
+            err.push(`fs${brk(fs)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            fs = cdbl(fs)
+
+            //check
+            if (fs < 0) {
+                err.push(`fs${brk(fs)}<0`)
+                delayErr = true
+            }
+
+        }
+
+        //check u2
+        if (!isnum(u2)) {
+            err.push(`u2${brk(u2)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            u2 = cdbl(u2)
+
+            // //check, 須允許水壓負值
+            // if (u2 < 0) {
+            //     err.push(`u2${brk(u2)}<0`)
+            //     delayErr = true
+            // }
+
+        }
+
+        //check svp, 若有svp則直接複寫svpUsual與svpDesign
+        if (isnum(svp)) {
+
+            //cdbl
+            svp = cdbl(svp)
+
+            //save
+            svpUsual = svp
+            svpDesign = svp
+
+        }
+
+        //check svpUsual
+        if (!isnum(svpUsual)) {
+            err.push(`svpUsual${brk(svpUsual)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            svpUsual = cdbl(svpUsual)
+
+            //check
+            if (svpUsual < 0) {
+                err.push(`svpUsual${brk(svpUsual)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check svpDesign
+        if (!isnum(svpDesign)) {
+            err.push(`svpDesign${brk(svpDesign)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            svpDesign = cdbl(svpDesign)
+
+            //check
+            if (svpDesign < 0) {
+                err.push(`svpDesign${brk(svpDesign)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check sv
+        if (!isnum(sv)) {
+            err.push(`sv${brk(sv)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            sv = cdbl(sv)
+
+            //check
+            if (sv < 0) {
+                err.push(`sv${brk(sv)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check PGA
+        if (!isnum(PGA)) {
+            err.push(`PGA${brk(PGA)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            PGA = cdbl(PGA)
+
+            //check
+            if (PGA < 0) {
+                err.push(`PGA${brk(PGA)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check Mw
+        if (!isnum(Mw)) {
+            err.push(`Mw${brk(Mw)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            Mw = cdbl(Mw)
+
+            //check
+            if (Mw < 0) {
+                err.push(`Mw${brk(Mw)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        break
+    }
+
+    //check noLique
+    if (noLique === true) {
+        err = [] //清除錯誤
+        CRR = '-'
+        CSR = '-'
+        FS = 10
+        return ret() //無錯誤並結束
+    }
+
+    //check delayErr
+    if (delayErr === true) {
+        return ret() //觸發延遲報錯並結束
+    }
+
+    //u0(MPa), 現地孔隙壓力
+    let u0 = intrpDefPp(depth) //u0(kPa)
+    u0 = u0 / 1000 //kPa -> MPa
+
+    //轉換單位成為MPa
+    let _sv = sv / 1000 //kPa -> MPa
+    let _svpUsual = svpUsual / 1000 //kPa -> MPa
+    // let _svpDesign = svpDesign / 1000 //kPa -> MPa
+    let _qc = qc //MPa
+    let _fs = fs //MPa
+    let _u2 = u2 //MPa
+    let _u0 = u0 //MPa
+
+    //dt
+    let dt = {
+        sv: _sv,
+        svp: _svpUsual, //使用常時垂直有效應力
+        qc: _qc,
+        fs: _fs,
+        u0: _u0,
+        u2: _u2,
+    }
+
+    //calcCptCore
+    let rc = calcCptCore(dt, coe_a, { useCnLeq: true }) //基於Idriss and Boulanger(2006)故有限制Cn要小於等於1.7, 得使用useCnLeq=true
+    Fr = get(rc, 'Fr', null)
+    Bq = get(rc, 'Bq', null)
+    Ic = get(rc, 'Ic', null)
+    Icn = get(rc, 'Icn', null)
+    Qt = get(rc, 'Qt', null)
+    Qtn = get(rc, 'Qtn', null) //通過迭代算得, 基於Idriss and Boulanger(2006)中的qc(1N), 等同Ku and Juang (2012)中的qt(1N)
+
+    //useIc
+    let useIc = null
+    if (useIc === null && isNumber(Icn)) {
+        useIc = Icn
+    }
+    if (useIc === null && isNumber(Ic)) {
+        err.push(`無法計算Icn，強制降轉使用Ic`)
+        useIc = Ic
+    }
+
+    //useQt
+    let useQt = null
+    if (useQt === null && isNumber(Qtn)) {
+        useQt = Qtn
+    }
+    if (useQt === null && isNumber(Qt)) {
+        err.push(`無法計算Qtn，強制降轉使用Qt`)
+        useQt = Qt
+    }
+
+    //轉換單位成為kg/cm2
+    sv = sv * cvru //kPa -> kg/cm2
+    svpUsual = svpUsual * cvru //kPa -> kg/cm2
+    svpDesign = svpDesign * cvru //kPa -> kg/cm2
+    qc = qc * 1000 * cvru //MPa -> kg/cm2
+    fs = fs * 1000 * cvru //MPa -> kg/cm2
+    u2 = u2 * 1000 * cvru //MPa -> kg/cm2
+
+    //MSF, 規模修正因子, Idriss and Boulanger(2006) for sand
+    MSF = 6.9 * Math.exp(-Mw / 4) - 0.058
+    MSF = Math.min(MSF, 1.8)
+
+    //rrd, 應力折減係數, Idriss and Boulanger(2006)
+    let rd_alpha = -1.012 - 1.126 * Math.sin(depth / 11.73 + 5.133)
+    let rd_beta = 0.106 + 0.118 * Math.sin(depth / 11.28 + 5.142)
+    rrd = Math.exp(rd_alpha + rd_beta * Mw)
+    rrd = Math.min(rrd, 1)
+
+    //Icbj
+    Icbj = null
+    if (isNumber(Qt) && isNumber(Bq) && isNumber(Fr)) {
+        Icbj = Math.sqrt((3 - Math.log10(Qt * (1 - Bq) + 1)) ** 2 + (Math.log10(Fr) + 1.22) ** 2)
+    }
+    else {
+        err.push(`無法計算Ic(BJ)`)
+        return ret() //重大錯誤直接報錯結束
+    }
+
+    //CRR75
+    let A = Icbj * (useQt / 100) - 14.7
+    let B = 0.909 * Icbj ** 3 - 7.47 * Icbj + 19.28
+    let C = 0.059 + 0.015 * Icbj ** 2
+    CRR75 = 0.05 + Math.exp(A + B * (useQt / 100) ** C)
+
+    //Csigma
+    Csigma = null
+    if (Qtn <= 37) {
+        Csigma = 0.063
+    }
+    else if (Qtn < 211) { //37<Qtn<211
+        Csigma = 1 / (37.3 - 8.27 * (Qtn) ** 0.264)
+    }
+    else { //Qtn>=211
+        Csigma = 0.3
+    }
+    Csigma = Math.min(Csigma, 0.3)
+
+    //Pa
+    let Pa = cnst.Pa * 1000 //大氣壓(kPa), MPa -> kPa
+    Pa = Pa * cvru //kPa -> kg/cm2
+
+    //Ksigma
+    Ksigma = 1 - Csigma * Math.log(svpUsual / Pa) //使用常時垂直有效應力
+    Ksigma = Math.min(Ksigma, 1)
+
+    //CRR
+    CRR = CRR75 * MSF * Ksigma
+
+    CSR = 0.65 * PGA * (sv / svpDesign) * rrd
+    if (CSR > 0) {
+        FS = CRR / CSR
+    }
+    if (FS > 10) {
+        FS = 10
+    }
+
+    //check
+    if (CRR < 0) {
+        err.push(`CRR${brk(CRR)}<0`)
+    }
+    if (CSR <= 0) {
+        err.push(`CSR${brk(CSR)}<=0`)
+    }
+    if (FS < 0) {
+        err.push(`FS${brk(FS)}<0，強制改為0`)
+        FS = 0
+    }
+
+    return ret()
+}
+
+
+function cptOlsen({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw }) {
+    let err = []
+    let MSF = ''
+    let rrd = ''
+    let qc1 = ''
+    let Rf = ''
+    let CRR75 = ''
+    let CRR = ''
+    let CSR = ''
+    let FS = ''
+    // let vstrTS = ''
+    // let vstrIY = ''
+
+    function ret() {
+        if (isnum(qc1)) {
+            qc1 = qc1 / cvru
+        }
+        let r = { rrd, qc1, Rf, CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        each(r, (v, k) => {
+            if (!isestr(v) && !isnum(v)) {
+                r[k] = ''
+            }
+        })
+        return r
+    }
+
+    //check
+    let noLique = false
+    let delayErr = false
+    while (true) {
+
+        //check ver
+        if (ver !== '1997') {
+            err.push(`ver${brk(ver)}非1997`)
+            return ret() //重大錯誤直接報錯結束
+        }
+
+        //check depth
+        if (!isnum(depth)) {
+            err.push(`depth${brk(depth)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            depth = cdbl(depth)
+
+            //check
+            if (depth < 0) {
+                err.push(`depth${brk(depth)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check waterLevelUsual, 不使用故不需檢查
+
+        //check waterLevelDesign
+        if (!isnum(waterLevelDesign)) {
+            err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
+            waterLevelDesign = 0
+        }
+        else {
+
+            //cdbl
+            waterLevelDesign = cdbl(waterLevelDesign)
+
+            //check
+            if (waterLevelDesign < 0) {
+                err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
+                waterLevelDesign = 0
+            }
+
+        }
+
+        //非液化: 地下水位以上
+        if (depth < waterLevelDesign) {
+            noLique = true
+        }
+
+        //非液化: 深度大於20m
+        if (depth > 20) {
+            noLique = true
+        }
+
+        //check qc
+        if (!isnum(qc)) {
+            err.push(`qc${brk(qc)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            qc = cdbl(qc)
+
+            //check
+            if (qc < 0) {
+                err.push(`qc${brk(qc)}<0`)
+                delayErr = true
+            }
+
+        }
+
+        //check fs
+        if (!isnum(fs)) {
+            err.push(`fs${brk(fs)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            fs = cdbl(fs)
+
+            //check
+            if (fs < 0) {
+                err.push(`fs${brk(fs)}<0`)
+                delayErr = true
+            }
+
+        }
+
+        //check u2
+        if (!isnum(u2)) {
+            err.push(`u2${brk(u2)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            u2 = cdbl(u2)
+
+            // //check, 須允許水壓負值
+            // if (u2 < 0) {
+            //     err.push(`u2${brk(u2)}<0`)
+            //     delayErr = true
+            // }
+
+        }
+
+        //check svp, 若有svp則直接複寫svpUsual與svpDesign
+        if (isnum(svp)) {
+
+            //cdbl
+            svp = cdbl(svp)
+
+            //save
+            svpUsual = svp
+            svpDesign = svp
+
+        }
+
+        //check svpUsual
+        if (!isnum(svpUsual)) {
+            err.push(`svpUsual${brk(svpUsual)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            svpUsual = cdbl(svpUsual)
+
+            //check
+            if (svpUsual < 0) {
+                err.push(`svpUsual${brk(svpUsual)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check svpDesign
+        if (!isnum(svpDesign)) {
+            err.push(`svpDesign${brk(svpDesign)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            svpDesign = cdbl(svpDesign)
+
+            //check
+            if (svpDesign < 0) {
+                err.push(`svpDesign${brk(svpDesign)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check sv
+        if (!isnum(sv)) {
+            err.push(`sv${brk(sv)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            sv = cdbl(sv)
+
+            //check
+            if (sv < 0) {
+                err.push(`sv${brk(sv)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check PGA
+        if (!isnum(PGA)) {
+            err.push(`PGA${brk(PGA)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            PGA = cdbl(PGA)
+
+            //check
+            if (PGA < 0) {
+                err.push(`PGA${brk(PGA)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check Mw
+        if (!isnum(Mw)) {
+            err.push(`Mw${brk(Mw)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            Mw = cdbl(Mw)
+
+            //check
+            if (Mw < 0) {
+                err.push(`Mw${brk(Mw)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        break
+    }
+
+    //check noLique
+    if (noLique === true) {
+        err = [] //清除錯誤
+        CRR = '-'
+        CSR = '-'
+        FS = 10
+        return ret() //無錯誤並結束
+    }
+
+    //check delayErr
+    if (delayErr === true) {
+        return ret() //觸發延遲報錯並結束
+    }
+
+    //轉換單位成為kg/cm2
+    sv = sv * cvru //kPa -> kg/cm2
+    svpUsual = svpUsual * cvru //kPa -> kg/cm2
+    svpDesign = svpDesign * cvru //kPa -> kg/cm2
+    qc = qc * 1000 * cvru //MPa -> kg/cm2
+    fs = fs * 1000 * cvru //MPa -> kg/cm2
+    u2 = u2 * 1000 * cvru //MPa -> kg/cm2
+
+    //MSF, 規模修正因子
+    MSF = (Mw / 7.5) ** (-2.56)
+
+    //rrd, 應力折減係數
+    rrd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
+
+    //qc1(kg/cm2)
+    qc1 = qc / svpUsual ** 0.7 //基於kg/cm2
+
+    //Rf, 摩擦比(fs與qc同單位故無單位)
+    Rf = fs / qc * 100
+
+    CRR75 = 0.00128 * qc1 - 0.025 + 0.17 * Rf - 0.028 * Rf ** 2 + 0.0016 * Rf ** 3
+    CRR = CRR75 * MSF
+    CSR = 0.65 * PGA * (sv / svpDesign) * rrd
+    if (CSR > 0) {
+        FS = CRR / CSR
+    }
+    if (FS > 10) {
+        FS = 10
+    }
+
+    //check
+    if (CRR < 0) {
+        err.push(`CRR${brk(CRR)}<0`)
+    }
+    if (CSR <= 0) {
+        err.push(`CSR${brk(CSR)}<=0`)
+    }
+    if (FS < 0) {
+        err.push(`FS${brk(FS)}<0，強制改為0`)
+        FS = 0
+    }
+
+    return ret()
+}
+
+
+function cptShibata({ ver = '1988', waterLevelDesign, depth, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw, D50 }) {
+    let err = []
+    let MSF = ''
+    let rrd = ''
+    let qc1 = ''
+    let qc1cr = ''
+    let CRR75 = ''
+    let CRR = ''
+    let CSR = ''
+    let FS = ''
+    // let vstrTS = ''
+    // let vstrIY = ''
+
+    function ret() {
+        if (isnum(qc1)) {
+            qc1 = qc1 / cvru
+        }
+        if (isnum(qc1cr)) {
+            qc1cr = qc1cr / cvru
+        }
+        let r = { rrd, qc1, qc1cr, CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        each(r, (v, k) => {
+            if (!isestr(v) && !isnum(v)) {
+                r[k] = ''
+            }
+        })
+        return r
+    }
+
+    //check
+    let noLique = false
+    let delayErr = false
+    while (true) {
+
+        //check ver
+        if (ver !== '1988') {
+            err.push(`ver${brk(ver)}非1988`)
+            return ret() //重大錯誤直接報錯結束
+        }
+
+        //check depth
+        if (!isnum(depth)) {
+            err.push(`depth${brk(depth)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            depth = cdbl(depth)
+
+            //check
+            if (depth < 0) {
+                err.push(`depth${brk(depth)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check waterLevelUsual, 不使用故不需檢查
+
+        //check waterLevelDesign
+        if (!isnum(waterLevelDesign)) {
+            err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
+            waterLevelDesign = 0
+        }
+        else {
+
+            //cdbl
+            waterLevelDesign = cdbl(waterLevelDesign)
+
+            //check
+            if (waterLevelDesign < 0) {
+                err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
+                waterLevelDesign = 0
+            }
+
+        }
+
+        //非液化: 地下水位以上
+        if (depth < waterLevelDesign) {
+            noLique = true
+        }
+
+        //非液化: 深度大於20m
+        if (depth > 20) {
+            noLique = true
+        }
+
+        //check qc
+        if (!isnum(qc)) {
+            err.push(`qc${brk(qc)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            qc = cdbl(qc)
+
+            //check
+            if (qc < 0) {
+                err.push(`qc${brk(qc)}<0`)
+                delayErr = true
+            }
+
+        }
+
+        //check fs
+        if (!isnum(fs)) {
+            err.push(`fs${brk(fs)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            fs = cdbl(fs)
+
+            //check
+            if (fs < 0) {
+                err.push(`fs${brk(fs)}<0`)
+                delayErr = true
+            }
+
+        }
+
+        //check u2
+        if (!isnum(u2)) {
+            err.push(`u2${brk(u2)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            u2 = cdbl(u2)
+
+            // //check, 須允許水壓負值
+            // if (u2 < 0) {
+            //     err.push(`u2${brk(u2)}<0`)
+            //     delayErr = true
+            // }
+
+        }
+
+        //check D50
+        if (!isnum(D50)) {
+            err.push(`D50${brk(D50)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            D50 = cdbl(D50)
+
+            //check
+            if (D50 < 0) {
+                err.push(`D50${brk(D50)}<0`)
+                delayErr = true
+            }
+
+        }
+
+        //check svp, 若有svp則直接複寫svpUsual與svpDesign
+        if (isnum(svp)) {
+
+            //cdbl
+            svp = cdbl(svp)
+
+            //save
+            svpUsual = svp
+            svpDesign = svp
+
+        }
+
+        //check svpUsual
+        if (!isnum(svpUsual)) {
+            err.push(`svpUsual${brk(svpUsual)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            svpUsual = cdbl(svpUsual)
+
+            //check
+            if (svpUsual < 0) {
+                err.push(`svpUsual${brk(svpUsual)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check svpDesign
+        if (!isnum(svpDesign)) {
+            err.push(`svpDesign${brk(svpDesign)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            svpDesign = cdbl(svpDesign)
+
+            //check
+            if (svpDesign < 0) {
+                err.push(`svpDesign${brk(svpDesign)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check sv
+        if (!isnum(sv)) {
+            err.push(`sv${brk(sv)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            sv = cdbl(sv)
+
+            //check
+            if (sv < 0) {
+                err.push(`sv${brk(sv)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check PGA
+        if (!isnum(PGA)) {
+            err.push(`PGA${brk(PGA)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            PGA = cdbl(PGA)
+
+            //check
+            if (PGA < 0) {
+                err.push(`PGA${brk(PGA)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check Mw
+        if (!isnum(Mw)) {
+            err.push(`Mw${brk(Mw)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            Mw = cdbl(Mw)
+
+            //check
+            if (Mw < 0) {
+                err.push(`Mw${brk(Mw)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        break
+    }
+
+    //check noLique
+    if (noLique === true) {
+        err = [] //清除錯誤
+        CRR = '-'
+        CSR = '-'
+        FS = 10
+        return ret() //無錯誤並結束
+    }
+
+    //check delayErr
+    if (delayErr === true) {
+        return ret() //觸發延遲報錯並結束
+    }
+
+    //轉換單位成為kg/cm2
+    sv = sv * cvru //kPa -> kg/cm2
+    svpUsual = svpUsual * cvru //kPa -> kg/cm2
+    svpDesign = svpDesign * cvru //kPa -> kg/cm2
+    qc = qc * 1000 * cvru //MPa -> kg/cm2
+    fs = fs * 1000 * cvru //MPa -> kg/cm2
+    u2 = u2 * 1000 * cvru //MPa -> kg/cm2
+
+    //MSF, 規模修正因子
+    MSF = (Mw / 7.5) ** (-2.56)
+
+    //rrd, 應力折減係數
+    rrd = 1 - 0.015 * depth
+
+    //qc1(kg/cm2)
+    qc1 = 1.7 / (svpUsual + 0.7) * qc
+
+    //C2
     let C2
     if (D50 >= 0.25) { //D50單位(mm)
         C2 = 1
@@ -3356,9 +5504,15 @@ function cptShibata({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw, D
     else {
         C2 = D50 / 0.25 //D50單位(mm)
     }
+
+    //C3
+    let TempL = 0.1 * (MSF - 1) * PGA * (sv / svpDesign) * rrd //svp是用於CSR得要用svpDesign, Mw使用規模修正因子MSF
     let C3 = (TempL - 0.1) / (TempL + 0.1)
-    let qc1cr = C2 * (50 + 200 * C3)
-    qc1cr = max(qc1cr, 0.1) // 作弊，因 CSR75 可出現負值
+
+    //qc1cr(kg/cm2), 臨界正規化錐頭貫入阻抗
+    qc1cr = C2 * (50 + 200 * C3)
+    qc1cr = max(qc1cr, 0.1) //取最小值0.1，因 CSR75 可出現負值
+
     CRR = qc1
     CSR = qc1cr
     if (CSR > 0) {
@@ -3366,188 +5520,6 @@ function cptShibata({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw, D
     }
     if (FS > 10) {
         FS = 10
-    }
-
-    //非液化: 深度大於20m
-    if (depth > 20) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
-    }
-
-    //check
-    if (CRR < 0) {
-        err.push(`CRR${brk(CRR)}<0`)
-    }
-    if (CSR <= 0) {
-        err.push(`CSR${brk(CSR)}<=0`)
-    }
-    if (FS < 0) {
-        err.push(`FS${brk(FS)}<0，強制改為0`)
-        FS = 0
-    }
-
-    return ret()
-}
-
-
-function cptNCEER({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
-    let err = []
-    let CRR = ''
-    let CSR = ''
-    let FS = ''
-
-    function ret() {
-        return { CSR, CRR, FS, err: join(err, '; ') }
-    }
-
-    //check
-    if (!isnum(waterLevelDesign)) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
-        waterLevelDesign = 0
-    }
-    waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
-        waterLevelDesign = 0
-    }
-
-    if (!isnum(depth)) {
-        err.push(`depth${brk(depth)}非數字`)
-        return ret()
-    }
-    depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)}<0`)
-        return ret()
-    }
-
-    if (!isnum(qc)) {
-        err.push(`qc${brk(qc)}非數字`)
-        return ret()
-    }
-    qc = cdbl(qc)
-    if (qc < 0) {
-        err.push(`qc${brk(qc)}<0`)
-        return ret()
-    }
-
-    if (!isnum(fs)) {
-        err.push(`fs${brk(fs)}非數字`)
-        return ret()
-    }
-    fs = cdbl(fs)
-    if (fs < 0) {
-        err.push(`fs${brk(fs)}<0`)
-        return ret()
-    }
-
-    if (!isnum(svpDesign)) {
-        err.push(`svpDesign${brk(svpDesign)}非數字`)
-        return ret()
-    }
-    svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)}<0`)
-        return ret()
-    }
-
-    if (!isnum(sv)) {
-        err.push(`sv${brk(sv)}非數字`)
-        return ret()
-    }
-    sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)}<0`)
-        return ret()
-    }
-
-    if (!isnum(PGA)) {
-        err.push(`PGA${brk(PGA)}非數字`)
-        return ret()
-    }
-    PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)}<0`)
-        return ret()
-    }
-
-    if (!isnum(Mw)) {
-        err.push(`Mw${brk(Mw)}非數字`)
-        return ret()
-    }
-    Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)}<0`)
-        return ret()
-    }
-
-    let MSF = (Mw / 7.5) ** (-2.56)
-    let rd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
-    let Q = (qc - sv) / svpDesign
-    console.log('待確認qc,sv,svpDesign單位皆需為kg/cm2')
-    let F = (fs / (qc - sv)) * 100
-    console.log('待確認fs,qc,sv單位皆需為kg/cm2')
-    let qc1N
-    let Ic1 = Math.sqrt((3.47 - Math.log10(Q)) ** 2 + (Math.log10(F) + 1.22) ** 2)
-    let Ic3
-    if (Ic1 <= 2.6) {
-        let Pa = 100 // kPa
-        Pa = Pa * 1e3 / 9.81 / 10000 // kg/cm2
-        let Pa2 = 0.1 // MPa
-        Pa2 = Pa2 * 1e6 / 9.81 / 10000 // kg/cm2
-        qc1N = (qc / Pa2) * (Pa / svpDesign) ** 0.5
-        console.log('待確認qc,Pa,Pa2,svpDesign的單位')
-        let Ic2 = Math.sqrt((3.47 - Math.log10(qc1N)) ** 2 + (Math.log10(F) + 1.22) ** 2)
-        if (Ic2 <= 2.6) {
-            Ic3 = Ic2
-        }
-        else {
-            qc1N = (qc / Pa2) * (Pa / svpDesign) ** 0.75
-            console.log('待確認qc,Pa,Pa2,svpDesign的單位')
-            Ic3 = Math.sqrt((3.47 - Math.log10(qc1N)) ** 2 + (Math.log10(F) + 1.22) ** 2)
-        }
-    }
-    else {
-        qc1N = Q
-        Ic3 = Ic1
-    }
-    let Kc
-    if (Ic3 <= 1.64) {
-        Kc = 1.0
-    }
-    else {
-        Kc = -0.403 * Ic3 ** 4 + 5.581 * Ic3 ** 3 - 21.63 * Ic3 ** 2 + 33.75 * Ic3 - 17.88
-        if (Ic3 < 2.36 && F < 0.5) {
-            Kc = 1.0
-        }
-    }
-
-    let qc1Ncs = Kc * qc1N
-    qc1Ncs = Math.min(qc1Ncs, 160)
-    let CRR75
-    if (qc1Ncs < 50) {
-        CRR75 = 0.833 * (qc1Ncs / 1000) + 0.05
-    }
-    else {
-        CRR75 = 93 * (qc1Ncs / 1000) ** 3 + 0.08
-    }
-    CRR = CRR75 * MSF
-    CSR = 0.65 * PGA * (sv / svpDesign) * rd
-    if (CSR > 0) {
-        FS = CRR / CSR
-    }
-    if (FS > 10) {
-        FS = 10
-    }
-
-    //非液化: 深度大於20m
-    if (depth > 20) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
     }
 
     //check
@@ -3568,12 +5540,20 @@ function cptNCEER({ waterLevelDesign, depth, qc, fs, svpDesign, sv, PGA, Mw }) {
 
 function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     let err = []
+    let MSF = ''
+    let CRR75 = ''
     let CRR = ''
     let CSR = ''
     let FS = ''
 
     function ret() {
-        return { CSR, CRR, FS, err: join(err, '; ') }
+        let r = { CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        each(r, (v, k) => {
+            if (!isestr(v) && !isnum(v)) {
+                r[k] = ''
+            }
+        })
+        return r
     }
 
     //check
@@ -3657,9 +5637,12 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
 
+    //MSF, 規模修正因子
     //let MSF = (Mw / 7.5) ** (-1.11) //原莊長賢excel使用
-    let MSF = (Mw / 7.5) ** (-3.3)
-    let rd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
+    MSF = (Mw / 7.5) ** (-3.3)
+
+    //rrd, 應力折減係數
+    let rrd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
     let Vs1 = 1 / Math.sqrt(svpDesign) * Vs
     console.log('待確認此處svpDesign,Vs的單位')
     let Kv
@@ -3671,7 +5654,7 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     }
     let Vs100cs = Kv * (Vs1 - 100)
     Vs100cs = Math.min(Vs100cs, 135 - 0.5)
-    let CRR75
+    CRR75 = null
     if (Vs1 <= 100) {
         CRR75 = 0.09
     }
@@ -3679,7 +5662,7 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         CRR75 = 0.09 + 0.00022 * Vs100cs / (1 - Vs100cs / 135)
     }
     CRR = CRR75 * MSF
-    CSR = 0.65 * PGA * (sv / svpDesign) * rd
+    CSR = 0.65 * PGA * (sv / svpDesign) * rrd
     if (CSR > 0) {
         FS = CRR / CSR
     }
@@ -3713,12 +5696,19 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
 
 function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     let err = []
+    let CRR75 = ''
     let CRR = ''
     let CSR = ''
     let FS = ''
 
     function ret() {
-        return { CSR, CRR, FS, err: join(err, '; ') }
+        let r = { CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        each(r, (v, k) => {
+            if (!isestr(v) && !isnum(v)) {
+                r[k] = ''
+            }
+        })
+        return r
     }
 
     //check
@@ -3802,8 +5792,11 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
 
+    //MSF, 規模修正因子
     let MSF = (Mw / 7.5) ** (-3.3)
-    let rd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
+
+    //rrd, 應力折減係數
+    let rrd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
     let Vs1 = 1 / Math.sqrt(svpDesign) * Vs
     console.log('待確認此處svpDesign,Vs的單位')
     let Vs1Star
@@ -3818,10 +5811,10 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     }
     let a = 0.022
     let b = 2.8
-    let CRR75 = a * (Vs1 / 100) ** 2 + b * (1 / (Vs1Star - Vs1) - 1 / Vs1Star)
+    CRR75 = a * (Vs1 / 100) ** 2 + b * (1 / (Vs1Star - Vs1) - 1 / Vs1Star)
     CRR75 = max(CRR75, 0.1) // CRR75 會出現負值
     CRR = CRR75 * MSF
-    CSR = 0.65 * PGA * (sv / svpDesign) * rd
+    CSR = 0.65 * PGA * (sv / svpDesign) * rrd
     if (CSR > 0) {
         FS = CRR / CSR
     }
@@ -3855,12 +5848,19 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
 
 function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     let err = []
+    let CRR75 = ''
     let CRR = ''
     let CSR = ''
     let FS = ''
 
     function ret() {
-        return { CSR, CRR, FS, err: join(err, '; ') }
+        let r = { CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        each(r, (v, k) => {
+            if (!isestr(v) && !isnum(v)) {
+                r[k] = ''
+            }
+        })
+        return r
     }
 
     //check
@@ -3944,8 +5944,11 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         return ret()
     }
 
+    //MSF, 規模修正因子
     let MSF = (Mw / 7.5) ** (-3.3)
-    let rd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
+
+    //rrd, 應力折減係數
+    let rrd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
     let Vs1 = 1 / Math.sqrt(svpDesign) * Vs
     console.log('待確認此處svpDesign的單位')
     let Vs1c
@@ -3960,10 +5963,10 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     }
     let a = 0.03
     let b = 0.9
-    let CRR75 = a * (Vs1 / 100) ** 2 + b * (1 / (Vs1c - Vs1) - 1 / Vs1c)
+    CRR75 = a * (Vs1 / 100) ** 2 + b * (1 / (Vs1c - Vs1) - 1 / Vs1c)
     CRR75 = max(CRR75, 0.1) // CRR75 會出現負值
     CRR = CRR75 * MSF
-    CSR = 0.65 * PGA * (sv / svpDesign) * rd
+    CSR = 0.65 * PGA * (sv / svpDesign) * rrd
     if (CSR > 0) {
         FS = CRR / CSR
     }
@@ -4019,12 +6022,50 @@ let methodLiques = {
         },
         sptTY,
     },
-    CPT: { //待修正
-        cptJuang,
-        cptHBF,
-        cptOlsen,
-        cptShibata,
-        cptNCEER,
+    CPT: {
+        // cptHBF,
+        cptHBF2012: (row) => {
+            row = { ...row, ver: '2012' }
+            return cptHBF(row)
+        },
+        cptHBF2017: (row) => {
+            row = { ...row, ver: '2017' }
+            return cptHBF(row)
+        },
+        cptHBF2021: (row) => {
+            row = { ...row, ver: '2021' }
+            return cptHBF(row)
+        },
+        // cptNCEER,
+        cptNCEER1997: (row) => {
+            row = { ...row, ver: '1997' }
+            return cptNCEER(row)
+        },
+        // cptRobertson,
+        cptRobertson2009: (row) => {
+            row = { ...row, ver: '2009' }
+            return cptRobertson(row)
+        },
+        // cptJuang,
+        cptJuang2002: (row) => {
+            row = { ...row, ver: '2002' }
+            return cptJuang(row)
+        },
+        // cptKuAndJuang,
+        cptKuAndJuang2012: (row) => {
+            row = { ...row, ver: '2012' }
+            return cptKuAndJuang(row)
+        },
+        // cptOlsen,
+        cptOlsen1997: (row) => {
+            row = { ...row, ver: '1997' }
+            return cptOlsen(row)
+        },
+        // cptShibata,
+        cptShibata1988: (row) => {
+            row = { ...row, ver: '1988' }
+            return cptShibata(row)
+        },
     },
     VS: {
         vsHBF,
@@ -4057,37 +6098,37 @@ function liquefaction(kind = 'auto', rows) {
         return ks
     }
 
-    function getLiqueKindFromKey(c) {
-        if (strleft(c, 3) === 'spt') {
-            return 'SPT'
-        }
-        else if (strleft(c, 3) === 'cpt') {
-            return 'CPT'
-        }
-        else if (strleft(c, 2) === 'vs') {
-            return 'VS'
-        }
-        throw new Error(`無法判斷分析種類: ${c}`)
-    }
+    // function getLiqueKindFromKey(c) {
+    //     if (strleft(c, 3) === 'spt') {
+    //         return 'SPT'
+    //     }
+    //     else if (strleft(c, 3) === 'cpt') {
+    //         return 'CPT'
+    //     }
+    //     else if (strleft(c, 2) === 'vs') {
+    //         return 'VS'
+    //     }
+    //     throw new Error(`無法判斷分析種類: ${c}`)
+    // }
 
-    function getLiqueKindFromRow(rows) {
+    // function getLiqueKindFromRow(rows) {
 
-        //getKeysFromRows
-        let ks = getKeysFromRows(rows)
+    //     //getKeysFromRows
+    //     let ks = getKeysFromRows(rows)
 
-        //kind
-        let kind = ''
-        each(ks, (key) => {
-            if (key.indexOf('-FS') >= 0) {
-                kind = getLiqueKindFromKey(key)
-                return false
-            }
-        })
+    //     //kind
+    //     let kind = ''
+    //     each(ks, (key) => {
+    //         if (key.indexOf('-FS') >= 0) {
+    //             kind = getLiqueKindFromKey(key)
+    //             return false
+    //         }
+    //     })
 
-        return kind
-    }
+    //     return kind
+    // }
 
-    function addDepthAndPorousParams(rows, waterLevelUsual, waterLevelDesign) {
+    function addDepthAndPorousParams(rows, kind, waterLevelUsual, waterLevelDesign) {
 
         //waterLevelUsual, waterLevelDesign
         waterLevelUsual = cdbl(waterLevelUsual)
@@ -4103,7 +6144,7 @@ function liquefaction(kind = 'auto', rows) {
             v.waterLevelUsual = waterLevelUsual
             v.waterLevelDesign = waterLevelDesign
 
-            //ds, de
+            //depth
             let ds = get(v, 'depthStart', null)
             let de = get(v, 'depthEnd', null)
             let bDepth = isnum(ds) && isnum(de)
@@ -4120,7 +6161,7 @@ function liquefaction(kind = 'auto', rows) {
                 v.depth = ''
             }
 
-            //relaPorousParams
+            //relaPorousParams, SPT,CPT,VS都需要飽和與乾單位重計算垂直應力與垂直有效應力
             let e = get(v, 'e', null)
             let GS = get(v, 'GS', null)
             let rd = get(v, 'rd', null) //乾單位重rd(kN/m3)
@@ -4163,6 +6204,16 @@ function liquefaction(kind = 'auto', rows) {
                 v.e = ''
             }
 
+            // if (kind === 'SPT') {
+
+            // }
+            // else if (kind === 'CPT') {
+
+            // }
+            // else if (kind === 'VS') {
+
+            // }
+
             return v
         })
 
@@ -4176,20 +6227,73 @@ function liquefaction(kind = 'auto', rows) {
         waterLevelDesign = cdbl(waterLevelDesign)
 
         //addDepthAndPorousParams
-        rows = addDepthAndPorousParams(rows, waterLevelUsual, waterLevelDesign)
+        rows = addDepthAndPorousParams(rows, kind, waterLevelUsual, waterLevelDesign)
 
-        if (kind === 'SPT') {
+        //hasVerticalStress, check sv,svp
+        let hasVerticalStress = true
+        each(rows, (v) => {
+            let b1 = isnum(v.sv)
+            let b2a = isnum(v.svp)
+            let b2b = isnum(v.svpUsual) && isnum(v.svpDesign)
+            let b2 = b2a || b2b
+            let b = b1 && b2
+            if (!b) {
+                hasVerticalStress = false
+                return false //跳出
+            }
+        })
 
-            //calcVerticalStress, sv:土層中點深度之垂直總應力(kN/m2), svpUsual與svpDesign:土層中點深度之常時與設計垂直有效應力(kN/m2)
+        //check
+        if (!hasVerticalStress) {
+            //數據無垂直應力與垂直有效應力
+
+            //calcVerticalStress, 計算sv:土層中點深度之垂直總應力(kN/m2), svpUsual與svpDesign:土層中點深度之常時與設計垂直有效應力(kN/m2)
             rows = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })
+            // console.log('calcVerticalStress rows', rows[0])
 
         }
-        else if (kind === 'CPT') {
-            console.log('尚未建構CPT自動計算參數')
+        else {
+            //數據有垂直應力與垂直有效應力
+
+            //提取calcVerticalStress部份功能, 儲存地下水位以及重算中點深度
+            rows = map(rows, (v, k) => {
+
+                //save waterLevelUsual,waterLevelDesign
+                v.waterLevelUsual = waterLevelUsual
+                v.waterLevelDesign = waterLevelDesign
+
+                //ds, de
+                let ds = get(v, 'depthStart', null)
+                let de = get(v, 'depthEnd', null)
+
+                //check
+                if (!isnum(ds)) {
+                    throw new Error(`第 ${k} 樣本起始深度(depthStart)非數值: ${ds}`)
+                }
+                if (!isnum(de)) {
+                    throw new Error(`第 ${k} 樣本結束深度(depthEnd)非數值: ${de}`)
+                }
+                ds = cdbl(ds)
+                de = cdbl(de)
+
+                //depth, 土層中點深度(m)
+                v.depth = (de + ds) / 2
+
+                return v
+            })
+            // console.log('提取calcVerticalStress部份功能 rows', rows[0])
+
         }
-        else if (kind === 'VS') {
-            console.log('尚未建構VS自動計算參數')
-        }
+
+        // if (kind === 'SPT') {
+
+        // }
+        // else if (kind === 'CPT') {
+
+        // }
+        // else if (kind === 'VS') {
+
+        // }
 
         return rows
     }
@@ -4204,9 +6308,11 @@ function liquefaction(kind = 'auto', rows) {
 
             //func
             let r = func(row)
+            // console.log('func r', r)
 
             //CSR,CRR,FS,err
             each(r, (vv, kk) => {
+                // console.log(kk, 'vv', vv)
                 row[`${method}-${kk}`] = vv
             })
 
@@ -4334,8 +6440,8 @@ function liquefaction(kind = 'auto', rows) {
     if (!isestr(kind)) {
         throw new Error('kind(分析種類)非字串')
     }
-    if (kind !== 'SPT' && kind !== 'CPT' && kind !== 'VS' && kind !== 'auto') {
-        throw new Error(`kind(分析種類)${brk(kind)}非有效值: SPT, CPT, VS, auto`)
+    if (kind !== 'SPT' && kind !== 'CPT' && kind !== 'VS') { //auto
+        throw new Error(`kind(分析種類)${brk(kind)}非有效值: SPT, CPT, VS`)
     }
 
     //check
@@ -4351,6 +6457,7 @@ function liquefaction(kind = 'auto', rows) {
 
     //cloneDeep
     rows = cloneDeep(rows)
+    // console.log('cloneDeep rows', rows[0])
 
     //waterLevelUsual, 常時地下水位
     let waterLevelUsual = get(rows, '0.waterLevelUsual', 0)
@@ -4358,27 +6465,32 @@ function liquefaction(kind = 'auto', rows) {
     //waterLevelDesign, 設計地下水位
     let waterLevelDesign = get(rows, '0.waterLevelDesign', 0)
 
-    //kind
-    if (kind === 'auto') {
+    // //kind
+    // if (kind === 'auto') {
 
-        //getLiqueKindFromRow, rows需已進行液化分析, 故可由第1列第1個出現[-FS]欄位判斷此數據所進行的液化分析種類kind
-        kind = getLiqueKindFromRow(rows)
+    //     //getLiqueKindFromRow, rows需已進行液化分析, 故可由第1列第1個出現[-FS]欄位判斷此數據所進行的液化分析種類kind
+    //     kind = getLiqueKindFromRow(rows)
 
-    }
+    // }
 
     //liqParams, 自動計算參數
     rows = liqParams(kind, waterLevelUsual, waterLevelDesign, rows)
+    // console.log('liqParams rows', rows[0])
 
     //liqFS, 各樣本計算安全係數與沉陷
     rows = map(rows, (row, k) => {
         return liqFS(kind, row)
     })
 
-    //liqPL, 各樣本計算各種液化潛勢PL
-    rows = liqPL(rows)
+    //liqPL, 目前僅SPT法可使用liqPL計算液化潛勢PL, 不適用於CPT
+    if (kind === 'SPT') {
+        rows = liqPL(rows)
+    }
 
-    //liqSett, 各樣本計算各種液化沉陷
-    rows = liqSett(rows)
+    //liqSett, 目前僅SPT法有支援計算沉陷
+    if (kind === 'SPT') {
+        rows = liqSett(rows)
+    }
 
     //排序欄位
     rows = map(rows, (row) => {
@@ -4430,7 +6542,7 @@ function liquefaction(kind = 'auto', rows) {
  * @memberOf w-geo
  * @example
  *
- * let rowsIn = `[{"depthStart":"0","depthEnd":"2.025","depth":"1.0125","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"ML","N60":"9.6","gravel":"","sand":"","silt":"","clay":"","FC":"83","w":"","Gs":"","e":"","rd":"","rsat":"19.52","sv":"","svp":"","LL":"","PI":"5","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"2.025","depthEnd":"3.525","depth":"2.775","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"CL","N60":"10.8","gravel":"","sand":"","silt":"","clay":"","FC":"91","w":"","Gs":"","e":"","rd":"","rsat":"18.64","sv":"","svp":"","LL":"","PI":"20","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"3.525","depthEnd":"5.025","depth":"4.275","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"SM","N60":"24","gravel":"","sand":"","silt":"","clay":"","FC":"14","w":"","Gs":"","e":"","rd":"","rsat":"19.03","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"5.025","depthEnd":"6.525","depth":"5.775","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"SM","N60":"27.6","gravel":"","sand":"","silt":"","clay":"","FC":"12","w":"","Gs":"","e":"","rd":"","rsat":"18.54","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"6.525","depthEnd":"8.025","depth":"7.275","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"SM","N60":"19.2","gravel":"","sand":"","silt":"","clay":"","FC":"15","w":"","Gs":"","e":"","rd":"","rsat":"19.18","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"8.025","depthEnd":"9.525","depth":"8.775","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"SM","N60":"18","gravel":"","sand":"","silt":"","clay":"","FC":"13","w":"","Gs":"","e":"","rd":"","rsat":"18.84","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"9.525","depthEnd":"11.025","depth":"10.275","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"ML","N60":"8.4","gravel":"","sand":"","silt":"","clay":"","FC":"52","w":"","Gs":"","e":"","rd":"","rsat":"18.39","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"11.025","depthEnd":"12.525","depth":"11.775","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"ML","N60":"9.6","gravel":"","sand":"","silt":"","clay":"","FC":"54","w":"","Gs":"","e":"","rd":"","rsat":"19.28","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"12.525","depthEnd":"14.025","depth":"13.275","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"ML","N60":"10.8","gravel":"","sand":"","silt":"","clay":"","FC":"57","w":"","Gs":"","e":"","rd":"","rsat":"17.85","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"14.025","depthEnd":"15.525","depth":"14.775","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"SM","N60":"9.6","gravel":"","sand":"","silt":"","clay":"","FC":"45","w":"","Gs":"","e":"","rd":"","rsat":"19.42","sv":"","svp":"","LL":"","PI":"","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"15.525","depthEnd":"17.025","depth":"16.275","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"CL","N60":"7.2","gravel":"","sand":"","silt":"","clay":"","FC":"97","w":"","Gs":"","e":"","rd":"","rsat":"18.64","sv":"","svp":"","LL":"","PI":"11","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"17.025","depthEnd":"18.525","depth":"17.775","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"CL","N60":"7.2","gravel":"","sand":"","silt":"","clay":"","FC":"95","w":"","Gs":"","e":"","rd":"","rsat":"19.03","sv":"","svp":"","LL":"","PI":"15","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""},{"depthStart":"18.525","depthEnd":"20","depth":"19.2625","longitude":"","latitude":"","legendCode":"","description":"","waterLevel":"","soilClassification":"CL","N60":"8.4","gravel":"","sand":"","silt":"","clay":"","FC":"94","w":"","Gs":"","e":"","rd":"","rsat":"18.34","sv":"","svp":"","LL":"","PI":"13","D50":"","D10":"","PGA":"0.32","Mw":"7.5","vibrationType":""}]`
+ * let rowsIn = `[{"sampleId":"S-1","depthStart":"0","depthEnd":"3.5","depth":"1.75","N60":"8","w":"20.8","GS":"2.7","e":"0.86","LL":"32.5","PI":"11.4","soilClassification":"CL","D50":"","D10":"","FC":"76.09999847","rd":"14.21150662","PGA":"0.612","Mw":"7.6","waterLevelUsual":"0","waterLevelDesign":"0"},...]`
  * rowsIn = JSON.parse(rowsIn)
  * // console.log('rowsIn',rowsIn)
  *
