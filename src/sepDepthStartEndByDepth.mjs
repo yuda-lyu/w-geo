@@ -3,6 +3,7 @@ import map from 'lodash/map'
 import get from 'lodash/get'
 import size from 'lodash/size'
 import join from 'lodash/join'
+import sortBy from 'lodash/sortBy'
 import pullAt from 'lodash/pullAt'
 import uniq from 'lodash/uniq'
 import cloneDeep from 'lodash/cloneDeep'
@@ -159,7 +160,7 @@ function sepDepthStartEndByDepth(rows, points, opt = {}) {
 
     //check
     if (!isearr(rows)) {
-        throw new Error('無有效資料')
+        throw new Error(`無有效數據`)
     }
 
     //check
@@ -193,6 +194,11 @@ function sepDepthStartEndByDepth(rows, points, opt = {}) {
     if (size(ckds) > 0) {
         throw new Error(join(ckds, ', '))
     }
+
+    //sortBy
+    rows = sortBy(rows, (v) => {
+        return cdbl(v[keyDepthStart])
+    })
 
     //checkDepth
     let ckd = checkDepth(points, { keyDepth })

@@ -27,7 +27,7 @@
 
 <nav >
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByConnect">calcDepthStartEndByConnect</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByGroup">calcDepthStartEndByGroup</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndFromCenter">calcDepthStartEndFromCenter</a></li><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepth">checkDepth</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.complementDepthData">complementDepthData</a></li><li data-type='method'><a href="w-geo.html#.groupByDepthStartEnd">groupByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPlasticityParams">relaPlasticityParams</a></li><li data-type='method'><a href="w-geo.html#.relaPorousParams">relaPorousParams</a></li><li data-type='method'><a href="w-geo.html#.sepDepthStartEndByDepth">sepDepthStartEndByDepth</a></li><li data-type='method'><a href="w-geo.html#.smoothDepthByKey">smoothDepthByKey</a></li><li data-type='method'><a href="w-geo.html#.sptHBF">sptHBF</a></li><li data-type='method'><a href="w-geo.html#.sptNCEER">sptNCEER</a></li><li data-type='method'><a href="w-geo.html#.sptNJRA">sptNJRA</a></li><li data-type='method'><a href="w-geo.html#.sptSeed">sptSeed</a></li><li data-type='method'><a href="w-geo.html#.sptTY">sptTY</a></li></ul></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByConnect">calcDepthStartEndByConnect</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByGroup">calcDepthStartEndByGroup</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndFromCenter">calcDepthStartEndFromCenter</a></li><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepth">checkDepth</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.complementDepthData">complementDepthData</a></li><li data-type='method'><a href="w-geo.html#.groupByDepthStartEnd">groupByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.mergeByDepthStartEnd">mergeByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPlasticityParams">relaPlasticityParams</a></li><li data-type='method'><a href="w-geo.html#.relaPorousParams">relaPorousParams</a></li><li data-type='method'><a href="w-geo.html#.sepDepthStartEndByDepth">sepDepthStartEndByDepth</a></li><li data-type='method'><a href="w-geo.html#.smoothDepthByKey">smoothDepthByKey</a></li><li data-type='method'><a href="w-geo.html#.sptHBF">sptHBF</a></li><li data-type='method'><a href="w-geo.html#.sptNCEER">sptNCEER</a></li><li data-type='method'><a href="w-geo.html#.sptNJRA">sptNJRA</a></li><li data-type='method'><a href="w-geo.html#.sptSeed">sptSeed</a></li><li data-type='method'><a href="w-geo.html#.sptTY">sptTY</a></li></ul></li></ul>
 </nav>
 
 <div id="main">
@@ -169,7 +169,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line6830">line 6830</a>
+        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line6837">line 6837</a>
     </li></ul></dd>
     
 
@@ -1463,7 +1463,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="calcVerticalStress.mjs.html">calcVerticalStress.mjs</a>, <a href="calcVerticalStress.mjs.html#line505">line 505</a>
+        <a href="calcVerticalStress.mjs.html">calcVerticalStress.mjs</a>, <a href="calcVerticalStress.mjs.html#line506">line 506</a>
     </li></ul></dd>
     
 
@@ -3072,7 +3072,7 @@
 
 
 <div class="description usertext">
-    <p>由指定起訖深度陣列並基於各樣本之中點深度，提取各所屬的樣本群組</p>
+    <p>由指定起訖深度陣列，針對各樣本之中點深度群組化，各群儲存所屬的樣本陣列</p>
 <p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/groupByDepthStartEnd.test.js">Github</a></p>
 </div>
 
@@ -3438,6 +3438,372 @@
         
 <div class="param-desc">
     <p>回傳群組化後添加起訖深度與所屬原數據的陣列</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".mergeByDepthStartEnd"><span class="type-signature">(static) </span>mergeByDepthStartEnd<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="mergeByDepthStartEnd.mjs.html">mergeByDepthStartEnd.mjs</a>, <a href="mergeByDepthStartEnd.mjs.html#line325">line 325</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>基於各樣本之起訖深度與指定欄位值進行合併</p>
+<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/mergeByDepthStartEnd.test.js">Github</a></p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>let rowslet rsrows = [    {        depthStart: 0,        depthEnd: 5,        value: 'a',        ext: 12.3,    },    {        depthStart: 5,        depthEnd: 7,        value: 'b',        ext: 12.4,    },    {        depthStart: 7,        depthEnd: 11,        value: 'b',        ext: 2.5,    },    {        depthStart: 11,        depthEnd: 15,        value: 'a',        ext: 2.3,    },]rs = mergeByDepthStartEnd(rows)console.log(JSON.stringify(rs, null, 2))// => [//   {//     "depthStart": 0,//     "depthEnd": 5,//     "value": "a",//     "ext": 12.3//   },//   {//     "depthStart": 5,//     "depthEnd": 11,//     "value": "b",//     "ext": 2.5//   },//   {//     "depthStart": 11,//     "depthEnd": 15,//     "value": "a",//     "ext": 2.3//   }// ]rows = [    {        ds: 0,        de: 5,        value: 'a',        ext: 12.3,    },    {        ds: 5,        de: 7,        value: 'b',        ext: 12.4,    },    {        ds: 7,        de: 11,        value: 'b',        ext: 2.5,    },    {        ds: 11,        de: 15,        value: 'a',        ext: 2.3,    },]rs = mergeByDepthStartEnd(rows, { keyDepthStart: 'ds', keyDepthEnd: 'de' })console.log(JSON.stringify(rs, null, 2))// => [//   {//     "ds": 0,//     "de": 5,//     "value": "a",//     "ext": 12.3//   },//   {//     "ds": 5,//     "de": 11,//     "value": "b",//     "ext": 2.5//   },//   {//     "ds": 11,//     "de": 15,//     "value": "a",//     "ext": 2.3//   }// ]rows = [    {        depthStart: 0,        depthEnd: 5,        data: 'a',        ext: 12.3,    },    {        depthStart: 5,        depthEnd: 7,        data: 'b',        ext: 12.4,    },    {        depthStart: 7,        depthEnd: 11,        data: 'b',        ext: 2.5,    },    {        depthStart: 11,        depthEnd: 15,        data: 'a',        ext: 2.3,    },]rs = mergeByDepthStartEnd(rows, { keyValue: 'data' })console.log(JSON.stringify(rs, null, 2))// => [//   {//     "depthStart": 0,//     "depthEnd": 5,//     "data": "a",//     "ext": 12.3//   },//   {//     "depthStart": 5,//     "depthEnd": 11,//     "data": "b",//     "ext": 2.5//   },//   {//     "depthStart": 11,//     "depthEnd": 15,//     "data": "a",//     "ext": 2.3//   }// ]rows = [    {        depthStart: 0,        depthEnd: 5,        value: 'a',        ext: 12.3,    },    {        depthStart: 5,        depthEnd: 7,        value: 'b',        ext: 12.4,    },    {        depthStart: 7,        depthEnd: 11,        value: 'b',        ext: 2.5,    },    {        depthStart: 11,        depthEnd: 15,        value: 'b',        ext: 2.3,    },    {        depthStart: 15,        depthEnd: 18,        value: 'a',        ext: 7.9,    },]rs = mergeByDepthStartEnd(rows, {    funMerge: (v0, v1) => {        return {            // depthStart: null,            // depthEnd: null,            value: v1.value,            ext: v1.ext,            _v0: v0,            _v1: v1,        }    }})console.log(JSON.stringify(rs, null, 2))// => [//   {//     "depthStart": 0,//     "depthEnd": 5,//     "value": "a",//     "ext": 12.3//   },//   {//     "value": "b",//     "ext": 2.3,//     "_v0": {//       "value": "b",//       "ext": 2.5,//       "_v0": {//         "depthStart": 5,//         "depthEnd": 7,//         "value": "b",//         "ext": 12.4//       },//       "_v1": {//         "depthStart": 7,//         "depthEnd": 11,//         "value": "b",//         "ext": 2.5//       },//       "depthStart": 5,//       "depthEnd": 11//     },//     "_v1": {//       "depthStart": 11,//       "depthEnd": 15,//       "value": "b",//       "ext": 2.3//     },//     "depthStart": 5,//     "depthEnd": 15//   },//   {//     "depthStart": 15,//     "depthEnd": 18,//     "value": "a",//     "ext": 7.9//   }// ]rows = [    {        depthStart: 0,        depthEnd: 5,        value: 'a',        ext: 12.3,    },    {        depthStart: 5,        depthEnd: 7,        value: 'b',        ext: 12.4,    },    {        depthStart: 7,        depthEnd: 11,        value: 'b',        ext: 2.5,    },    {        depthStart: 11,        depthEnd: 15,        value: 'b',        ext: 2.3,    },    {        depthStart: 15,        depthEnd: 18,        value: 'a',        ext: 7.9,    },]rs = mergeByDepthStartEnd(rows, { typeMerge: 'up' })console.log(JSON.stringify(rs, null, 2))// => [//   {//     "depthStart": 0,//     "depthEnd": 5,//     "value": "a",//     "ext": 12.3//   },//   {//     "depthStart": 5,//     "depthEnd": 15,//     "value": "b",//     "ext": 12.4//   },//   {//     "depthStart": 15,//     "depthEnd": 18,//     "value": "a",//     "ext": 7.9//   }// ]</code></pre>
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>rows</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入數據陣列，各數據為物件，至少需包含起始深度(depthStart)與結束深度(depthEnd)，深度單位為m</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>opt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>{}</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入設定物件，預設{}</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>keyDepthStart</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'depthStart'</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入欲儲存之起始深度欄位鍵值字串，預設'depthStart'</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>keyDepthEnd</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'depthEnd'</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入欲儲存之結束深度欄位鍵值字串，預設'depthEnd'</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>keyValue</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'value'</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入指定偵測欄位鍵值字串，預設'value'</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>回傳合併後的數據陣列</p>
 </div>
 
 
@@ -4146,7 +4512,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="sepDepthStartEndByDepth.mjs.html">sepDepthStartEndByDepth.mjs</a>, <a href="sepDepthStartEndByDepth.mjs.html#line158">line 158</a>
+        <a href="sepDepthStartEndByDepth.mjs.html">sepDepthStartEndByDepth.mjs</a>, <a href="sepDepthStartEndByDepth.mjs.html#line159">line 159</a>
     </li></ul></dd>
     
 
@@ -5021,7 +5387,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line1386">line 1386</a>
+        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line1388">line 1388</a>
     </li></ul></dd>
     
 
@@ -5685,7 +6051,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line1757">line 1757</a>
+        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line1759">line 1759</a>
     </li></ul></dd>
     
 
@@ -6310,7 +6676,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line2117">line 2117</a>
+        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line2119">line 2119</a>
     </li></ul></dd>
     
 
@@ -7048,7 +7414,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line864">line 864</a>
+        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line866">line 866</a>
     </li></ul></dd>
     
 
@@ -7638,7 +8004,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line2654">line 2654</a>
+        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line2656">line 2656</a>
     </li></ul></dd>
     
 
@@ -8465,7 +8831,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.10</a> on Wed Oct 05 2022 22:00:20 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.10</a> on Thu Oct 13 2022 10:13:58 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

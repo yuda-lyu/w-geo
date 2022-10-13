@@ -16,7 +16,7 @@ import checkDepth from './checkDepth.mjs'
 
 
 /**
- * 由指定起訖深度陣列並基於各樣本之中點深度，提取各所屬的樣本群組
+ * 由指定起訖深度陣列，針對各樣本之中點深度群組化，各群儲存所屬的樣本陣列
  *
  * Unit Test: {@link https://github.com/yuda-lyu/w-geo/blob/master/test/groupByDepthStartEnd.test.js Github}
  * @memberOf w-geo

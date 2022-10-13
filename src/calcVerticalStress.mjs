@@ -1,5 +1,6 @@
 import map from 'lodash/map'
 import get from 'lodash/get'
+import sortBy from 'lodash/sortBy'
 import cloneDeep from 'lodash/cloneDeep'
 import size from 'lodash/size'
 import join from 'lodash/join'
@@ -504,12 +505,9 @@ function core(rows, waterLevel, opt = {}) {
  */
 function calcVerticalStress(rows, opt = {}) {
 
-    //cloneDeep
-    rows = cloneDeep(rows)
-
     //check
     if (!isearr(rows)) {
-        throw new Error(`樣本數據(rows)非有效陣列`)
+        throw new Error(`無有效數據`)
     }
 
     //keyDepth
@@ -530,11 +528,19 @@ function calcVerticalStress(rows, opt = {}) {
         keyDepthEnd = 'depthEnd'
     }
 
+    //cloneDeep
+    rows = cloneDeep(rows)
+
     //checkDepthStartEnd
     let ckds = checkDepthStartEnd(rows, opt)
     if (size(ckds) > 0) {
         throw new Error(join(ckds, '; '))
     }
+
+    //sortBy
+    rows = sortBy(rows, (v) => {
+        return cdbl(v[keyDepthStart])
+    })
 
     //waterLevelUsual
     let waterLevelUsual = get(opt, 'waterLevelUsual')

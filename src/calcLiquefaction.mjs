@@ -5,6 +5,7 @@ import max from 'lodash/max'
 import size from 'lodash/size'
 import join from 'lodash/join'
 import trim from 'lodash/trim'
+import sortBy from 'lodash/sortBy'
 import toLower from 'lodash/toLower'
 import isNumber from 'lodash/isNumber'
 import get from 'lodash/get'
@@ -17,6 +18,7 @@ import strleft from 'wsemi/src/strleft.mjs'
 import strright from 'wsemi/src/strright.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
+import isearr from 'wsemi/src/isearr.mjs'
 import cstr from 'wsemi/src/cstr.mjs'
 import interp1 from 'wsemi/src/interp1.mjs'
 import cnst from './cnst.mjs'
@@ -6695,6 +6697,11 @@ function liquefaction(kind = 'auto', rows) {
     }
 
     //check
+    if (!isearr(rows)) {
+        throw new Error(`無有效數據`)
+    }
+
+    //check
     if (!isestr(kind)) {
         throw new Error('kind(分析種類)非字串')
     }
@@ -6702,10 +6709,9 @@ function liquefaction(kind = 'auto', rows) {
         throw new Error(`kind(分析種類)${brk(kind)}非有效值: SPT, CPT, VS`)
     }
 
-    //check
-    if (size(rows) === 0) {
-        throw new Error('無有效數據')
-    }
+    //cloneDeep
+    rows = cloneDeep(rows)
+    // console.log('cloneDeep rows', rows[0])
 
     //checkDepthStartEnd
     let ckds = checkDepthStartEnd(rows)
@@ -6713,9 +6719,10 @@ function liquefaction(kind = 'auto', rows) {
         throw new Error(join(ckds, ', '))
     }
 
-    //cloneDeep
-    rows = cloneDeep(rows)
-    // console.log('cloneDeep rows', rows[0])
+    //sortBy
+    rows = sortBy(rows, (v) => {
+        return cdbl(v.depthStart)
+    })
 
     //waterLevelUsual, 常時地下水位
     let waterLevelUsual = get(rows, '0.waterLevelUsual', 0)
