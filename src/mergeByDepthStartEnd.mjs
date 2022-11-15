@@ -323,7 +323,6 @@ import checkDepthStartEnd from './checkDepthStartEnd.mjs'
  *
  */
 function mergeByDepthStartEnd(rows, opt = {}) {
-    // let errs = []
 
     //check
     if (!isearr(rows)) {

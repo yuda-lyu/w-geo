@@ -6480,9 +6480,17 @@ function liquefaction(kind = 'auto', rows) {
         return rows
     }
 
-    function liqParams(kind, waterLevelUsual, waterLevelDesign, rows) {
+    function liqParams(kind, waterLevelUsual, waterLevelDesign, Mw, PGA, vibrationType, rows) {
 
-        //waterLevelUsual,waterLevelDesign
+        //複寫各層Mw, PGA, vibrationType, 且此處不檢核交由各列檢核
+        rows = map(rows, (v, k) => {
+            v.Mw = Mw
+            v.PGA = PGA
+            v.vibrationType = vibrationType
+            return v
+        })
+
+        //waterLevelUsual, waterLevelDesign
         waterLevelUsual = cdbl(waterLevelUsual)
         waterLevelDesign = cdbl(waterLevelDesign)
 
@@ -6724,11 +6732,20 @@ function liquefaction(kind = 'auto', rows) {
         return cdbl(v.depthStart)
     })
 
-    //waterLevelUsual, 常時地下水位
+    //waterLevelUsual, 常時地下水位, 直接使用最上層數據
     let waterLevelUsual = get(rows, '0.waterLevelUsual', 0)
 
-    //waterLevelDesign, 設計地下水位
+    //waterLevelDesign, 設計地下水位, 直接使用最上層數據
     let waterLevelDesign = get(rows, '0.waterLevelDesign', 0)
+
+    //Mw, 地震矩規模, 直接使用最上層數據, 此處不檢核交由各列檢核
+    let Mw = get(rows, '0.Mw', '')
+
+    //PGA, 最大地表加速度(g), 直接使用最上層數據, 此處不檢核交由各列檢核
+    let PGA = get(rows, '0.PGA', '')
+
+    //vibrationType, 振動形式, 直接使用最上層數據, 此處不檢核交由各列檢核
+    let vibrationType = get(rows, '0.vibrationType', '')
 
     // //kind
     // if (kind === 'auto') {
@@ -6739,7 +6756,7 @@ function liquefaction(kind = 'auto', rows) {
     // }
 
     //liqParams, 自動計算參數
-    rows = liqParams(kind, waterLevelUsual, waterLevelDesign, rows)
+    rows = liqParams(kind, waterLevelUsual, waterLevelDesign, Mw, PGA, vibrationType, rows)
     // console.log('liqParams rows', rows[0])
 
     //liqFS, 各樣本計算安全係數與沉陷
