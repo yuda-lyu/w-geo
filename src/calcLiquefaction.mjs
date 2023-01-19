@@ -1650,7 +1650,7 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
     //MSFPow, 原莊長賢excel內MSFPow=-1.11
     let MSFPow = null
     if (ver === '2012') {
-        MSFPow = -3.3
+        MSFPow = -3.3 //國震提供投影片HBF(2012)為-3.3
     }
     else if (ver === '2017') {
         MSFPow = -1.8 //-1.8為「依據2016土壤液化評估方法研討會結論後修正」, 依照「楊智堯_臺中市中級土壤液化潛勢地圖製作與系統說明.pdf」標注此為2017版
