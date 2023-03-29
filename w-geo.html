@@ -14,6 +14,7 @@
     <link type="text/css" rel="stylesheet" href="styles/prettify.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
     <script src="scripts/nav.js" defer></script>
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
@@ -27,7 +28,9 @@
 
 <nav >
     
+    
     <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByConnect">calcDepthStartEndByConnect</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByGroup">calcDepthStartEndByGroup</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndFromCenter">calcDepthStartEndFromCenter</a></li><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepth">checkDepth</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.complementDepthData">complementDepthData</a></li><li data-type='method'><a href="w-geo.html#.groupByDepthStartEnd">groupByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.mergeByDepthStartEnd">mergeByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPlasticityParams">relaPlasticityParams</a></li><li data-type='method'><a href="w-geo.html#.relaPorousParams">relaPorousParams</a></li><li data-type='method'><a href="w-geo.html#.sepDepthStartEndByDepth">sepDepthStartEndByDepth</a></li><li data-type='method'><a href="w-geo.html#.smoothDepthByKey">smoothDepthByKey</a></li><li data-type='method'><a href="w-geo.html#.sptHBF">sptHBF</a></li><li data-type='method'><a href="w-geo.html#.sptNCEER">sptNCEER</a></li><li data-type='method'><a href="w-geo.html#.sptNJRA">sptNJRA</a></li><li data-type='method'><a href="w-geo.html#.sptSeed">sptSeed</a></li><li data-type='method'><a href="w-geo.html#.sptTY">sptTY</a></li></ul></li></ul>
+    
 </nav>
 
 <div id="main">
@@ -45,7 +48,9 @@
 <header>
     
         <h2>
-        w-geo
+        
+            w-geo
+        
         </h2>
         
     
@@ -67,6 +72,7 @@
 
 
 <dl class="details">
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -135,8 +141,6 @@
 
 
 
-
-
         
         </div>
     
@@ -158,13 +162,18 @@
 
         
             
-<h4 class="name" id=".calcLiquefaction"><span class="type-signature">(static) </span>calcLiquefaction<span class="type-signature"></span></h4>
+<h4 class="name" id=".calcLiquefaction"><span class="type-signature type-signature-static">(static) </span>calcLiquefaction<span class="type-signature"></span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>液化分析</p>
+<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/calcLiquefaction.test.js">Github</a></p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -219,7 +228,7 @@
 
 
 
-    <h5>Example</h5>
+    <h5 class="h5-examples">Example</h5>
     
     <pre class="prettyprint"><code>let rowsIn = `[{"sampleId":"S-1","depthStart":"0","depthEnd":"3.5","depth":"1.75","N60":"8","w":"20.8","GS":"2.7","e":"0.86","LL":"32.5","PI":"11.4","soilClassification":"CL","D50":"","D10":"","FC":"76.09999847","rd":"14.21150662","PGA":"0.612","Mw":"7.6","waterLevelUsual":"0","waterLevelDesign":"0"},...]`rowsIn = JSON.parse(rowsIn)// console.log('rowsIn',rowsIn)let rowsOut = calcLiquefaction.calc('SPT', rowsIn)// console.log('rowsOut',rowsOut)fs.writeFileSync('./rowsIn.json', JSON.stringify(rowsIn), 'utf8')fs.writeFileSync('./rowsOut.json', JSON.stringify(rowsOut), 'utf8')// let mat = w.ltdtkeysheads2mat(rowsOut)// w.downloadExcelFileFromData('./mat.xlsx', 'mat', mat)</code></pre>
 
@@ -236,7 +245,7 @@
 
     
 
-    <h4 class="name" id=".calcDepthStartEndByConnect"><span class="type-signature">(static) </span>calcDepthStartEndByConnect<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id=".calcDepthStartEndByConnect"><span class="type-signature type-signature-static">(static) </span>calcDepthStartEndByConnect<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
 
     
 
@@ -244,6 +253,11 @@
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>調整各樣本起訖深度成為各層互相接續狀態</p>
+<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/calcDepthStartEndByConnect.test.js">Github</a></p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -287,27 +301,20 @@
 
 
 
-<div class="description usertext">
-    <p>調整各樣本起訖深度成為各層互相接續狀態</p>
-<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/calcDepthStartEndByConnect.test.js">Github</a></p>
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Example</h5>
+    <h5 class="h5-examples">Example</h5>
     
     <pre class="prettyprint"><code>let rowslet rsrows = [    {        depthStart: 0,        depthEnd: 4,    },    {        depthStart: 6,        depthEnd: 10,    },    {        depthStart: 11,        depthEnd: 15,    },]rs = calcDepthStartEndByConnect(rows)console.log(rs)// => [//   { depthStart: 0, depthEnd: 5 },//   { depthStart: 5, depthEnd: 10.5 },//   { depthStart: 10.5, depthEnd: 15 }// ]rows = [    {        depthStart: 0,        depthEnd: 5,    },    {        depthStart: 4,        depthEnd: 15,    },]try {    rs = calcDepthStartEndByConnect(rows)}catch (err) {    rs = err.toString()}console.log(rs)// => Error: 第 0 樣本之結束深度depthEnd[5]大於第 1 樣本之起點深度depthStart[4]rows = [    {        depthStart: '0',        depthEnd: '4',    },    {        depthStart: '6',        depthEnd: '10',    },]rs = calcDepthStartEndByConnect(rows)console.log(rs)// => [ { depthStart: '0', depthEnd: 5 }, { depthStart: 5, depthEnd: '10' } ]rows = [    {        depthStart: '0',        depthEnd: 'abc',    },    {        depthStart: 'abc',        depthEnd: '10',    },]try {    rs = calcDepthStartEndByConnect(rows)}catch (err) {    rs = err.toString()}console.log(rs)// => Error: 第 0 樣本結束深度depthEnd[abc]非有效數字, 第 1 樣本起始深度depthStart[abc]非有效數字rows = [    {        top_depth: 0,        bottom_depth: 4,    },    {        top_depth: 6,        bottom_depth: 10,    },]rs = calcDepthStartEndByConnect(rows, { keyDepthStart: 'top_depth', keyDepthEnd: 'bottom_depth' })console.log(rs)// => [//   { top_depth: 0, bottom_depth: 5 },//   { top_depth: 5, bottom_depth: 10 }// ]rows = [    {        depthStart: 0,        depthEnd: 4,    },    {        depthStart: 6,        depthEnd: 10,    },    {        depthStart: 11,        depthEnd: 15,    },]rs = calcDepthStartEndByConnect(rows, { depthEndMax: 20 })console.log(rs)// => [//   { depthStart: 0, depthEnd: 5 },//   { depthStart: 5, depthEnd: 10.5 },//   { depthStart: 10.5, depthEnd: 20 }// ]</code></pre>
 
 
 
 
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -345,6 +352,7 @@
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -378,6 +386,7 @@
             
                 
 <span class="param-type">Object</span>
+
 
 
             
@@ -442,6 +451,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -481,6 +491,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -518,6 +529,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -572,7 +584,7 @@
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -590,6 +602,7 @@
 <span class="param-type">Array</span>
 
 
+
     </dd>
 </dl>
 
@@ -602,7 +615,7 @@
 
     
 
-    <h4 class="name" id=".calcDepthStartEndByGroup"><span class="type-signature">(static) </span>calcDepthStartEndByGroup<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id=".calcDepthStartEndByGroup"><span class="type-signature type-signature-static">(static) </span>calcDepthStartEndByGroup<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
 
     
 
@@ -610,6 +623,11 @@
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>由樣本指定鍵值作為群組代號，並依照樣本中點深度提取各群組之起訖深度</p>
+<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/calcDepthStartEndByGroup.test.js">Github</a></p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -653,27 +671,20 @@
 
 
 
-<div class="description usertext">
-    <p>由樣本指定鍵值作為群組代號，並依照樣本中點深度提取各群組之起訖深度</p>
-<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/calcDepthStartEndByGroup.test.js">Github</a></p>
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Example</h5>
+    <h5 class="h5-examples">Example</h5>
     
     <pre class="prettyprint"><code>let rowslet rsrows = [    {        depth: 0,        group: 'a',    },    {        depth: 6,        group: 'b',    },    {        depth: 20,        group: 'c',    },]rs = calcDepthStartEndByGroup(rows)console.log(JSON.stringify(rs, null, 2))// => [//   {//     "group": "a",//     "depthStart": 0,//     "depthEnd": 3,//     "rows": [//       {//         "depth": 0,//         "group": "a",//         "depthStart": 0,//         "depthEnd": 3//       }//     ]//   },//   {//     "group": "b",//     "depthStart": 3,//     "depthEnd": 13,//     "rows": [//       {//         "depth": 6,//         "group": "b",//         "depthStart": 3,//         "depthEnd": 13//       }//     ]//   },//   {//     "group": "c",//     "depthStart": 13,//     "depthEnd": 20,//     "rows": [//       {//         "depth": 20,//         "group": "c",//         "depthStart": 13,//         "depthEnd": 20//       }//     ]//   }// ]rows = [    {        depth: 2,        group: 'a',    },    {        depth: 6,        group: 'b',    },    {        depth: 20,        group: 'c',    },]rs = calcDepthStartEndByGroup(rows, { depthEndMax: 25 })console.log(JSON.stringify(rs, null, 2))// => [//   {//     "group": "a",//     "depthStart": 0,//     "depthEnd": 4,//     "rows": [//       {//         "depth": 2,//         "group": "a",//         "depthStart": 0,//         "depthEnd": 4//       }//     ]//   },//   {//     "group": "b",//     "depthStart": 4,//     "depthEnd": 13,//     "rows": [//       {//         "depth": 6,//         "group": "b",//         "depthStart": 4,//         "depthEnd": 13//       }//     ]//   },//   {//     "group": "c",//     "depthStart": 13,//     "depthEnd": 25,//     "rows": [//       {//         "depth": 20,//         "group": "c",//         "depthStart": 13,//         "depthEnd": 25//       }//     ]//   }// ]rows = [    {        depth: 0,        group: 'a',    },    {        depth: 2,        group: 'a',    },    {        depth: 4,        group: 'b',    },    {        depth: 6,        group: 'b',    },    {        depth: 8,        group: 'b',    },    {        depth: 10,        group: 'c',    },    {        depth: 12,        group: 'b',    },    {        depth: 14,        group: 'c',    },    {        depth: 16,        group: 'b',    },    {        depth: 18,        group: 'b',    },    {        depth: 30,        group: 'd',    },]rs = calcDepthStartEndByGroup(rows)console.log(JSON.stringify(rs, null, 2))// => [//   {//     "group": "a",//     "depthStart": 0,//     "depthEnd": 3,//     "rows": [//       {//         "depth": 0,//         "group": "a",//         "depthStart": 0,//         "depthEnd": 1//       },//       {//         "depth": 2,//         "group": "a",//         "depthStart": 1,//         "depthEnd": 3//       }//     ]//   },//   {//     "group": "b",//     "depthStart": 3,//     "depthEnd": 9,//     "rows": [//       {//         "depth": 4,//         "group": "b",//         "depthStart": 3,//         "depthEnd": 5//       },//       {//         "depth": 6,//         "group": "b",//         "depthStart": 5,//         "depthEnd": 7//       },//       {//         "depth": 8,//         "group": "b",//         "depthStart": 7,//         "depthEnd": 9//       }//     ]//   },//   {//     "group": "c",//     "depthStart": 9,//     "depthEnd": 11,//     "rows": [//       {//         "depth": 10,//         "group": "c",//         "depthStart": 9,//         "depthEnd": 11//       }//     ]//   },//   {//     "group": "b",//     "depthStart": 11,//     "depthEnd": 13,//     "rows": [//       {//         "depth": 12,//         "group": "b",//         "depthStart": 11,//         "depthEnd": 13//       }//     ]//   },//   {//     "group": "c",//     "depthStart": 13,//     "depthEnd": 15,//     "rows": [//       {//         "depth": 14,//         "group": "c",//         "depthStart": 13,//         "depthEnd": 15//       }//     ]//   },//   {//     "group": "b",//     "depthStart": 15,//     "depthEnd": 24,//     "rows": [//       {//         "depth": 16,//         "group": "b",//         "depthStart": 15,//         "depthEnd": 17//       },//       {//         "depth": 18,//         "group": "b",//         "depthStart": 17,//         "depthEnd": 24//       }//     ]//   },//   {//     "group": "d",//     "depthStart": 24,//     "depthEnd": 30,//     "rows": [//       {//         "depth": 30,//         "group": "d",//         "depthStart": 24,//         "depthEnd": 30//       }//     ]//   }// ]</code></pre>
 
 
 
 
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -711,6 +722,7 @@
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -744,6 +756,7 @@
             
                 
 <span class="param-type">Object</span>
+
 
 
             
@@ -808,6 +821,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -845,6 +859,7 @@
             
                 
 <span class="param-type">String</span>
+
 
 
             
@@ -886,6 +901,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -925,6 +941,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -962,6 +979,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -1016,7 +1034,7 @@
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -1034,6 +1052,7 @@
 <span class="param-type">Array</span>
 
 
+
     </dd>
 </dl>
 
@@ -1046,7 +1065,7 @@
 
     
 
-    <h4 class="name" id=".calcDepthStartEndFromCenter"><span class="type-signature">(static) </span>calcDepthStartEndFromCenter<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id=".calcDepthStartEndFromCenter"><span class="type-signature type-signature-static">(static) </span>calcDepthStartEndFromCenter<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
 
     
 
@@ -1054,6 +1073,11 @@
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>由樣本中點深度反算各樣本起訖深度，注意樣本添加起訖深度可能因最淺樣本起始深度最大為0，以及最深樣本可被修改為depthEndMax，故各樣本中點深度不一定是起訖深度之平均值</p>
+<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/calcDepthStartEndFromCenter.test.js">Github</a></p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -1097,27 +1121,20 @@
 
 
 
-<div class="description usertext">
-    <p>由樣本中點深度反算各樣本起訖深度，注意樣本添加起訖深度可能因最淺樣本起始深度最大為0，以及最深樣本可被修改為depthEndMax，故各樣本中點深度不一定是起訖深度之平均值</p>
-<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/calcDepthStartEndFromCenter.test.js">Github</a></p>
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Example</h5>
+    <h5 class="h5-examples">Example</h5>
     
     <pre class="prettyprint"><code>let rowslet rsrows = [    {        depth: 0,    },    {        depth: 6,    },    {        depth: 20,    },]rs = calcDepthStartEndFromCenter(rows)console.log(rs)// => [//   { depth: 0, depthStart: 0, depthEnd: 3 },//   { depth: 6, depthStart: 3, depthEnd: 13 },//   { depth: 20, depthStart: 13, depthEnd: 20 }// ]rows = [    {        depth: 4,    },    {        depth: 6,    },    {        depth: 20,    },]rs = calcDepthStartEndFromCenter(rows)console.log(rs)// => [//   { depth: 4, depthStart: 0, depthEnd: 5 },//   { depth: 6, depthStart: 5, depthEnd: 13 },//   { depth: 20, depthStart: 13, depthEnd: 20 }// ]rows = [    {        depth: 4,    },    {        depth: 6,    },    {        depth: 20,    },]rs = calcDepthStartEndFromCenter(rows, { depthEndMax: 25 })console.log(rs)// => [//   { depth: 4, depthStart: 0, depthEnd: 5 },//   { depth: 6, depthStart: 5, depthEnd: 13 },//   { depth: 20, depthStart: 13, depthEnd: 25 }// ]rows = [    {        depth: 4,    },    {        depth: 6,    },    {        depth: 20,    },]rs = calcDepthStartEndFromCenter(rows, { depthEndMax: 15 })console.log(rs)// => [//   { depth: 4, depthStart: 0, depthEnd: 5 },//   { depth: 6, depthStart: 5, depthEnd: 13 },//   { depth: 20, depthStart: 13, depthEnd: 20 }// ]rows = [    {        dc: 4,    },    {        dc: 6,    },    {        dc: 20,    },]rs = calcDepthStartEndFromCenter(rows, { keyDepth: 'dc', keyDepthStart: 'ds', keyDepthEnd: 'de' })console.log(rs)// => [//   { dc: 4, ds: 0, de: 5 },//   { dc: 6, ds: 5, de: 13 },//   { dc: 20, ds: 13, de: 20 }// ]</code></pre>
 
 
 
 
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -1155,6 +1172,7 @@
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -1188,6 +1206,7 @@
             
                 
 <span class="param-type">Object</span>
+
 
 
             
@@ -1252,6 +1271,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -1289,6 +1309,7 @@
             
                 
 <span class="param-type">String</span>
+
 
 
             
@@ -1330,6 +1351,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -1367,6 +1389,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -1421,7 +1444,7 @@
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -1439,6 +1462,7 @@
 <span class="param-type">Array</span>
 
 
+
     </dd>
 </dl>
 
@@ -1451,7 +1475,7 @@
 
     
 
-    <h4 class="name" id=".calcVerticalStress"><span class="type-signature">(static) </span>calcVerticalStress<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id=".calcVerticalStress"><span class="type-signature type-signature-static">(static) </span>calcVerticalStress<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
 
     
 
@@ -1459,6 +1483,11 @@
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>計算樣本數據垂直總應力與有效應力</p>
+<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/checkDepthStartEnd.test.js">Github</a></p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -1502,27 +1531,20 @@
 
 
 
-<div class="description usertext">
-    <p>計算樣本數據垂直總應力與有效應力</p>
-<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/checkDepthStartEnd.test.js">Github</a></p>
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Example</h5>
+    <h5 class="h5-examples">Example</h5>
     
     <pre class="prettyprint"><code>let waterLevelUsuallet waterLevelDesignlet rowslet rowsNewwaterLevelUsual = 0waterLevelDesign = 0rows = [    {        depthStart: 0,        depthEnd: 5,        rsat: 18, //kN/m3    },    {        depthStart: 5,        depthEnd: 10,        rsat: 18, //kN/m3    },    {        depthStart: 10,        depthEnd: 20,        rsat: 18, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })console.log(rowsNew, (18 - 9.81) * 15) //地下 15(m) 處之垂直有效應力為 122.85(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 5,//     rsat: 18,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 45,//     svpUsual: 20.474999999999998,//     svpDesign: 20.474999999999998,//     depth: 2.5//   },//   {//     depthStart: 5,//     depthEnd: 10,//     rsat: 18,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 135,//     svpUsual: 61.425,//     svpDesign: 61.425,//     depth: 7.5//   },//   {//     depthStart: 10,//     depthEnd: 20,//     rsat: 18,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 270,//     svpUsual: 122.85,//     svpDesign: 122.85,//     depth: 15//   }// ] 122.85waterLevelUsual = 0waterLevelDesign = 0rows = [    {        depthStart: 0,        depthEnd: 5,        rsat: 18, //kN/m3    },    {        depthStart: 5,        depthEnd: 10,        rsat: 19, //kN/m3    },    {        depthStart: 10,        depthEnd: 20,        rsat: 20, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })console.log(rowsNew, (19 - 9.81) * 15) //地下 15(m) 處之垂直有效應力為 137.85(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 5,//     rsat: 18,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 45,//     svpUsual: 20.474999999999998,//     svpDesign: 20.474999999999998,//     depth: 2.5//   },//   {//     depthStart: 5,//     depthEnd: 10,//     rsat: 19,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 137.5,//     svpUsual: 63.925,//     svpDesign: 63.925,//     depth: 7.5//   },//   {//     depthStart: 10,//     depthEnd: 20,//     rsat: 20,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 285,//     svpUsual: 137.85,//     svpDesign: 137.85,//     depth: 15//   }// ] 137.85waterLevelUsual = 20waterLevelDesign = 20rows = [    {        depthStart: 0,        depthEnd: 5,        rd: 18, //kN/m3    },    {        depthStart: 5,        depthEnd: 10,        rd: 18, //kN/m3    },    {        depthStart: 10,        depthEnd: 20,        rd: 18, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })console.log(rowsNew, (18) * 15) //地下 15(m) 處之垂直總應力與垂直有效應力為 270(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 5,//     rd: 18,//     waterLevelUsual: 20,//     waterLevelDesign: 20,//     sv: 45,//     svpUsual: 45,//     svpDesign: 45,//     depth: 2.5//   },//   {//     depthStart: 5,//     depthEnd: 10,//     rd: 18,//     waterLevelUsual: 20,//     waterLevelDesign: 20,//     sv: 135,//     svpUsual: 135,//     svpDesign: 135,//     depth: 7.5//   },//   {//     depthStart: 10,//     depthEnd: 20,//     rd: 18,//     waterLevelUsual: 20,//     waterLevelDesign: 20,//     sv: 270,//     svpUsual: 270,//     svpDesign: 270,//     depth: 15//   }// ] 270waterLevelUsual = 3waterLevelDesign = 3rows = [    {        depthStart: 0,        depthEnd: 3,        rd: 18, //kN/m3    },    {        depthStart: 3,        depthEnd: 11,        rsat: 20, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })console.log(rowsNew, 18 * 3 + (20 * 4 - 9.81 * 4)) //地下 7(m) 處之垂直有效應力為 94.76(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 3,//     rd: 18,//     waterLevelUsual: 3,//     waterLevelDesign: 3,//     sv: 27,//     svpUsual: 27,//     svpDesign: 27,//     depth: 1.5//   },//   {//     depthStart: 3,//     depthEnd: 11,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 3,//     sv: 134,//     svpUsual: 94.75999999999999,//     svpDesign: 94.75999999999999,//     depth: 7//   }// ] 94.75999999999999waterLevelUsual = 3waterLevelDesign = 3rows = [    {        depthStart: 0,        depthEnd: 1,        rd: 18, //kN/m3    },    {        depthStart: 1,        depthEnd: 5,        rd: 18, //kN/m3        rsat: 20, //kN/m3    },    {        depthStart: 5,        depthEnd: 9,        rsat: 20, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })console.log(rowsNew, 18 * 3 + (20 * 4 - 9.81 * 4)) //地下 7(m) 處之垂直有效應力為 94.76(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 1,//     rd: 18,//     waterLevelUsual: 3,//     waterLevelDesign: 3,//     sv: 9,//     svpUsual: 9,//     svpDesign: 9,//     depth: 0.5//   },//   {//     depthStart: 1,//     depthEnd: 5,//     rd: 18,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 3,//     sv: 56,//     svpUsual: 56,//     svpDesign: 56,//     depth: 3//   },//   {//     depthStart: 5,//     depthEnd: 9,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 3,//     sv: 134,//     svpUsual: 94.75999999999999,//     svpDesign: 94.75999999999999,//     depth: 7//   }// ] 94.75999999999999waterLevelUsual = 3waterLevelDesign = 0rows = [    {        depthStart: 0,        depthEnd: 1,        rd: 18, //kN/m3        rsat: 20, //kN/m3    },    {        depthStart: 1,        depthEnd: 5,        rd: 18, //kN/m3        rsat: 20, //kN/m3    },    {        depthStart: 5,        depthEnd: 9,        rsat: 20, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })console.log(rowsNew, 18 * 3 + (20 * 4 - 9.81 * 4), (20 - 9.81) * 7) //地下 7(m) 處之常時垂直有效應力為 94.76(kN/m2), 設計垂直有效應力為 71.33(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 1,//     rd: 18,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 0,//     sv: 9,//     svpUsual: 9,//     svpDesign: 5.095,//     depth: 0.5//   },//   {//     depthStart: 1,//     depthEnd: 5,//     rd: 18,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 0,//     sv: 56,//     svpUsual: 56,//     svpDesign: 30.57,//     depth: 3//   },//   {//     depthStart: 5,//     depthEnd: 9,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 0,//     sv: 134,//     svpUsual: 94.75999999999999,//     svpDesign: 71.33,//     depth: 7//   }// ] 94.75999999999999 71.33</code></pre>
 
 
 
 
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -1560,6 +1582,7 @@
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -1593,6 +1616,7 @@
             
                 
 <span class="param-type">Object</span>
+
 
 
             
@@ -1657,6 +1681,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -1694,6 +1719,7 @@
             
                 
 <span class="param-type">String</span>
+
 
 
             
@@ -1735,6 +1761,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -1774,6 +1801,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -1811,6 +1839,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -1865,7 +1894,7 @@
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -1883,6 +1912,7 @@
 <span class="param-type">Array</span>
 
 
+
     </dd>
 </dl>
 
@@ -1895,7 +1925,7 @@
 
     
 
-    <h4 class="name" id=".checkDepth"><span class="type-signature">(static) </span>checkDepth<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id=".checkDepth"><span class="type-signature type-signature-static">(static) </span>checkDepth<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
 
     
 
@@ -1903,6 +1933,11 @@
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>檢核樣本數據內深度是否有效與連續</p>
+<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/checkDepth.test.js">Github</a></p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -1946,27 +1981,20 @@
 
 
 
-<div class="description usertext">
-    <p>檢核樣本數據內深度是否有效與連續</p>
-<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/checkDepth.test.js">Github</a></p>
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Example</h5>
+    <h5 class="h5-examples">Example</h5>
     
     <pre class="prettyprint"><code>let rowslet errsrows = [    {        depth: 0,    },    {        depth: 5,    },    {        depth: 10,    },]errs = checkDepth(rows)console.log(errs)// => []rows = [    {        depth: 0,    },    {        depth: 10,    },]errs = checkDepth(rows)console.log(errs)// => []rows = [    {        depth: '0',    },    {        depth: '5',    },]errs = checkDepth(rows)console.log(errs)// => []rows = [    {        depth: '0',    },    {        depth: 'abc',    },]errs = checkDepth(rows)console.log(errs)// => [ '第 1 樣本中點深度depth[abc]非有效數字' ]rows = [    {        center_depth: 0,    },    {        center_depth: 5,    },]errs = checkDepth(rows, { keyDepth: 'center_depth' })console.log(errs)// => []</code></pre>
 
 
 
 
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -2004,6 +2032,7 @@
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -2037,6 +2066,7 @@
             
                 
 <span class="param-type">Object</span>
+
 
 
             
@@ -2101,6 +2131,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -2153,7 +2184,7 @@
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -2171,6 +2202,7 @@
 <span class="param-type">Array</span>
 
 
+
     </dd>
 </dl>
 
@@ -2183,7 +2215,7 @@
 
     
 
-    <h4 class="name" id=".checkDepthStartEnd"><span class="type-signature">(static) </span>checkDepthStartEnd<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id=".checkDepthStartEnd"><span class="type-signature type-signature-static">(static) </span>checkDepthStartEnd<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
 
     
 
@@ -2191,6 +2223,11 @@
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>檢核樣本數據內起訖深度是否有效與連續</p>
+<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/checkDepthStartEnd.test.js">Github</a></p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -2234,27 +2271,20 @@
 
 
 
-<div class="description usertext">
-    <p>檢核樣本數據內起訖深度是否有效與連續</p>
-<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/checkDepthStartEnd.test.js">Github</a></p>
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Example</h5>
+    <h5 class="h5-examples">Example</h5>
     
     <pre class="prettyprint"><code>let rowslet errsrows = [    {        depthStart: 0,        depthEnd: 5,    },    {        depthStart: 5,        depthEnd: 10,    },    {        depthStart: 10,        depthEnd: 20,    },]errs = checkDepthStartEnd(rows)console.log(errs)// => []rows = [    {        depthStart: 0,        depthEnd: 5,    },    {        depthStart: 10,        depthEnd: 20,    },]errs = checkDepthStartEnd(rows)console.log(errs)// => [ '第 1 樣本結束深度depthEnd[5]不等於第 2 個樣本起始深度depthStart[10]' ]rows = [    {        depthStart: 0,        depthEnd: 5,    },    {        depthStart: 10,        depthEnd: 20,    },]errs = checkDepthStartEnd(rows, { stateConn: 'overlap' })console.log(errs)// => []rows = [    {        depthStart: '0',        depthEnd: '5',    },    {        depthStart: '5',        depthEnd: '10',    },]errs = checkDepthStartEnd(rows)console.log(errs)// => []rows = [    {        depthStart: '0',        depthEnd: 'abc',    },    {        depthStart: 'abc',        depthEnd: '10',    },]errs = checkDepthStartEnd(rows)console.log(errs)// => [//     '第 0 樣本起始非有效數字: depthStart[0], depthEnd[abc]',//     '第 1 樣本起始非有效數字: depthStart[abc], depthEnd[10]'// ]rows = [    {        top_depth: 0,        bottom_depth: 5,    },    {        top_depth: 5,        bottom_depth: 10,    },]errs = checkDepthStartEnd(rows, { keyDepthStart: 'top_depth', keyDepthEnd: 'bottom_depth' })console.log(errs)// => []</code></pre>
 
 
 
 
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -2292,6 +2322,7 @@
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -2325,6 +2356,7 @@
             
                 
 <span class="param-type">Object</span>
+
 
 
             
@@ -2389,6 +2421,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -2426,6 +2459,7 @@
             
                 
 <span class="param-type">String</span>
+
 
 
             
@@ -2480,7 +2514,7 @@
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -2498,6 +2532,7 @@
 <span class="param-type">Array</span>
 
 
+
     </dd>
 </dl>
 
@@ -2510,7 +2545,7 @@
 
     
 
-    <h4 class="name" id=".complementDepthData"><span class="type-signature">(static) </span>complementDepthData<span class="signature">(rows, keyDepth, keyValue, keysValueCmp, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id=".complementDepthData"><span class="type-signature type-signature-static">(static) </span>complementDepthData<span class="signature">(rows, keyDepth, keyValue, keysValueCmp, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
 
     
 
@@ -2518,6 +2553,11 @@
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>數據急墜段偵測與處理</p>
+<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/complementDepthData.test.js">Github</a></p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -2561,27 +2601,20 @@
 
 
 
-<div class="description usertext">
-    <p>數據急墜段偵測與處理</p>
-<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/complementDepthData.test.js">Github</a></p>
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Example</h5>
+    <h5 class="h5-examples">Example</h5>
     
     <pre class="prettyprint"><code>let rows = [    {        'depth(m)': 0,        'qc(MPa)': 0,        'fs(MPa)': 0,        'u2(MPa)': 0,    },    {        'depth(m)': 0.1,        'qc(MPa)': 0.12,        'fs(MPa)': 0.02,        'u2(MPa)': 0.05,    },]let keyDepth = 'depth(m)'let keyValue = 'qc(MPa)'let keysValueCmp = ['qc(MPa)', 'fs(MPa)', 'u2(MPa)']let rsFill = complementDepthData(rows, keyDepth, keyValue, keysValueCmp, { cmpMode: 'linear-fill' })let rsCut = complementDepthData(rows, keyDepth, keyValue, keysValueCmp, { cmpMode: 'cut' })</code></pre>
 
 
 
 
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -2619,6 +2652,7 @@
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -2652,6 +2686,7 @@
             
                 
 <span class="param-type">String</span>
+
 
 
             
@@ -2689,6 +2724,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -2724,6 +2760,7 @@
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -2757,6 +2794,7 @@
             
                 
 <span class="param-type">Object</span>
+
 
 
             
@@ -2821,6 +2859,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -2858,6 +2897,7 @@
             
                 
 <span class="param-type">String</span>
+
 
 
             
@@ -2899,6 +2939,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -2936,6 +2977,7 @@
             
                 
 <span class="param-type">String</span>
+
 
 
             
@@ -2990,7 +3032,7 @@
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -3008,6 +3050,7 @@
 <span class="param-type">Array</span>
 
 
+
     </dd>
 </dl>
 
@@ -3020,7 +3063,7 @@
 
     
 
-    <h4 class="name" id=".groupByDepthStartEnd"><span class="type-signature">(static) </span>groupByDepthStartEnd<span class="signature">(rows, depthStartAndEnds, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id=".groupByDepthStartEnd"><span class="type-signature type-signature-static">(static) </span>groupByDepthStartEnd<span class="signature">(rows, depthStartAndEnds, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
 
     
 
@@ -3028,6 +3071,11 @@
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>由指定起訖深度陣列，針對各樣本之中點深度群組化，各群儲存所屬的樣本陣列</p>
+<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/groupByDepthStartEnd.test.js">Github</a></p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -3071,27 +3119,20 @@
 
 
 
-<div class="description usertext">
-    <p>由指定起訖深度陣列，針對各樣本之中點深度群組化，各群儲存所屬的樣本陣列</p>
-<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/groupByDepthStartEnd.test.js">Github</a></p>
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Example</h5>
+    <h5 class="h5-examples">Example</h5>
     
     <pre class="prettyprint"><code>let rowslet rangeslet rsrows = [    {        depth: 0,    },    {        depth: 1,    },    {        depth: 3,    },    {        depth: 10,    },]ranges = [    {        depthStart: 0,        depthEnd: 1,    },    {        depthStart: 1,        depthEnd: 4,    },]rs = groupByDepthStartEnd(rows, ranges)console.log(JSON.stringify(rs, null, 2))// => [//   {//     "depthStart": 0,//     "depthEnd": 1,//     "rows": [//       {//         "depth": 0//       },//       {//         "depth": 1//       }//     ]//   },//   {//     "depthStart": 1,//     "depthEnd": 4,//     "rows": [//       {//         "depth": 3//       }//     ]//   }// ]rows = [    {        depth: 0,    },    {        depth: 1,    },    {        depth: 3,    },    {        depth: 10,    },]ranges = [    {        depthStart: 0,        depthEnd: 3,    },    {        depthStart: 1,        depthEnd: 5,    },]try {    rs = groupByDepthStartEnd(rows, ranges)}catch (err) {    rs = err.toString()}console.log(rs)// => Error: 第 1 樣本結束深度depthEnd[3]大於第 2 個樣本起始深度depthStart[1]rows = [    {        depth: 0,    },    {        depth: 1,    },    {        depth: 3,    },    {        depth: 10,    },]ranges = [    {        depthStart: 0,        depthEnd: 2,    },    {        depthStart: 5,        depthEnd: 10,    },]rs = groupByDepthStartEnd(rows, ranges)console.log(JSON.stringify(rs, null, 2))// => [//   {//     "depthStart": 0,//     "depthEnd": 2,//     "rows": [//       {//         "depth": 0//       },//       {//         "depth": 1//       }//     ]//   },//   {//     "depthStart": 5,//     "depthEnd": 10,//     "rows": [//       {//         "depth": 10//       }//     ]//   }// ]rows = [    {        depth: 0,    },    {        depth: 1,    },    {        depth: 3,    },    {        depth: 10,    },]ranges = [    {        depthStart: 0,        depthEnd: 10,    },]rs = groupByDepthStartEnd(rows, ranges)console.log(JSON.stringify(rs, null, 2))// => [//   {//     "depthStart": 0,//     "depthEnd": 10,//     "rows": [//       {//         "depth": 0//       },//       {//         "depth": 1//       },//       {//         "depth": 3//       },//       {//         "depth": 10//       }//     ]//   }// ]rows = [    {        dc: 0,    },    {        dc: 1,    },    {        dc: 3,    },    {        dc: 10,    },]ranges = [    {        ds: 0,        de: 1,    },    {        ds: 1,        de: 4,    },]rs = groupByDepthStartEnd(rows, ranges, { keyDepth: 'dc', keyDepthStart: 'ds', keyDepthEnd: 'de' })console.log(JSON.stringify(rs, null, 2))// => [//   {//     "ds": 0,//     "de": 1,//     "rows": [//       {//         "dc": 0//       },//       {//         "dc": 1//       }//     ]//   },//   {//     "ds": 1,//     "de": 4,//     "rows": [//       {//         "dc": 3//       }//     ]//   }// ]</code></pre>
 
 
 
 
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -3127,6 +3168,7 @@
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -3167,6 +3209,7 @@
 <span class="param-type">Object</span>
 
 
+
             
             </td>
 
@@ -3200,6 +3243,7 @@
             
                 
 <span class="param-type">Object</span>
+
 
 
             
@@ -3264,6 +3308,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -3301,6 +3346,7 @@
             
                 
 <span class="param-type">String</span>
+
 
 
             
@@ -3342,6 +3388,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -3379,6 +3426,7 @@
             
                 
 <span class="param-type">String</span>
+
 
 
             
@@ -3433,7 +3481,7 @@
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -3451,6 +3499,7 @@
 <span class="param-type">Array</span>
 
 
+
     </dd>
 </dl>
 
@@ -3463,7 +3512,7 @@
 
     
 
-    <h4 class="name" id=".mergeByDepthStartEnd"><span class="type-signature">(static) </span>mergeByDepthStartEnd<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id=".mergeByDepthStartEnd"><span class="type-signature type-signature-static">(static) </span>mergeByDepthStartEnd<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
 
     
 
@@ -3471,6 +3520,11 @@
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>基於各樣本之起訖深度與指定欄位值進行合併</p>
+<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/mergeByDepthStartEnd.test.js">Github</a></p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -3514,27 +3568,20 @@
 
 
 
-<div class="description usertext">
-    <p>基於各樣本之起訖深度與指定欄位值進行合併</p>
-<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/mergeByDepthStartEnd.test.js">Github</a></p>
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Example</h5>
+    <h5 class="h5-examples">Example</h5>
     
     <pre class="prettyprint"><code>let rowslet rsrows = [    {        depthStart: 0,        depthEnd: 5,        value: 'a',        ext: 12.3,    },    {        depthStart: 5,        depthEnd: 7,        value: 'b',        ext: 12.4,    },    {        depthStart: 7,        depthEnd: 11,        value: 'b',        ext: 2.5,    },    {        depthStart: 11,        depthEnd: 15,        value: 'a',        ext: 2.3,    },]rs = mergeByDepthStartEnd(rows)console.log(JSON.stringify(rs, null, 2))// => [//   {//     "depthStart": 0,//     "depthEnd": 5,//     "value": "a",//     "ext": 12.3//   },//   {//     "depthStart": 5,//     "depthEnd": 11,//     "value": "b",//     "ext": 2.5//   },//   {//     "depthStart": 11,//     "depthEnd": 15,//     "value": "a",//     "ext": 2.3//   }// ]rows = [    {        ds: 0,        de: 5,        value: 'a',        ext: 12.3,    },    {        ds: 5,        de: 7,        value: 'b',        ext: 12.4,    },    {        ds: 7,        de: 11,        value: 'b',        ext: 2.5,    },    {        ds: 11,        de: 15,        value: 'a',        ext: 2.3,    },]rs = mergeByDepthStartEnd(rows, { keyDepthStart: 'ds', keyDepthEnd: 'de' })console.log(JSON.stringify(rs, null, 2))// => [//   {//     "ds": 0,//     "de": 5,//     "value": "a",//     "ext": 12.3//   },//   {//     "ds": 5,//     "de": 11,//     "value": "b",//     "ext": 2.5//   },//   {//     "ds": 11,//     "de": 15,//     "value": "a",//     "ext": 2.3//   }// ]rows = [    {        depthStart: 0,        depthEnd: 5,        data: 'a',        ext: 12.3,    },    {        depthStart: 5,        depthEnd: 7,        data: 'b',        ext: 12.4,    },    {        depthStart: 7,        depthEnd: 11,        data: 'b',        ext: 2.5,    },    {        depthStart: 11,        depthEnd: 15,        data: 'a',        ext: 2.3,    },]rs = mergeByDepthStartEnd(rows, { keyValue: 'data' })console.log(JSON.stringify(rs, null, 2))// => [//   {//     "depthStart": 0,//     "depthEnd": 5,//     "data": "a",//     "ext": 12.3//   },//   {//     "depthStart": 5,//     "depthEnd": 11,//     "data": "b",//     "ext": 2.5//   },//   {//     "depthStart": 11,//     "depthEnd": 15,//     "data": "a",//     "ext": 2.3//   }// ]rows = [    {        depthStart: 0,        depthEnd: 5,        value: 'a',        ext: 12.3,    },    {        depthStart: 5,        depthEnd: 7,        value: 'b',        ext: 12.4,    },    {        depthStart: 7,        depthEnd: 11,        value: 'b',        ext: 2.5,    },    {        depthStart: 11,        depthEnd: 15,        value: 'b',        ext: 2.3,    },    {        depthStart: 15,        depthEnd: 18,        value: 'a',        ext: 7.9,    },]rs = mergeByDepthStartEnd(rows, {    funMerge: (v0, v1) => {        return {            // depthStart: null,            // depthEnd: null,            value: v1.value,            ext: v1.ext,            _v0: v0,            _v1: v1,        }    }})console.log(JSON.stringify(rs, null, 2))// => [//   {//     "depthStart": 0,//     "depthEnd": 5,//     "value": "a",//     "ext": 12.3//   },//   {//     "value": "b",//     "ext": 2.3,//     "_v0": {//       "value": "b",//       "ext": 2.5,//       "_v0": {//         "depthStart": 5,//         "depthEnd": 7,//         "value": "b",//         "ext": 12.4//       },//       "_v1": {//         "depthStart": 7,//         "depthEnd": 11,//         "value": "b",//         "ext": 2.5//       },//       "depthStart": 5,//       "depthEnd": 11//     },//     "_v1": {//       "depthStart": 11,//       "depthEnd": 15,//       "value": "b",//       "ext": 2.3//     },//     "depthStart": 5,//     "depthEnd": 15//   },//   {//     "depthStart": 15,//     "depthEnd": 18,//     "value": "a",//     "ext": 7.9//   }// ]rows = [    {        depthStart: 0,        depthEnd: 5,        value: 'a',        ext: 12.3,    },    {        depthStart: 5,        depthEnd: 7,        value: 'b',        ext: 12.4,    },    {        depthStart: 7,        depthEnd: 11,        value: 'b',        ext: 2.5,    },    {        depthStart: 11,        depthEnd: 15,        value: 'b',        ext: 2.3,    },    {        depthStart: 15,        depthEnd: 18,        value: 'a',        ext: 7.9,    },]rs = mergeByDepthStartEnd(rows, { typeMerge: 'up' })console.log(JSON.stringify(rs, null, 2))// => [//   {//     "depthStart": 0,//     "depthEnd": 5,//     "value": "a",//     "ext": 12.3//   },//   {//     "depthStart": 5,//     "depthEnd": 15,//     "value": "b",//     "ext": 12.4//   },//   {//     "depthStart": 15,//     "depthEnd": 18,//     "value": "a",//     "ext": 7.9//   }// ]</code></pre>
 
 
 
 
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -3572,6 +3619,7 @@
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -3605,6 +3653,7 @@
             
                 
 <span class="param-type">Object</span>
+
 
 
             
@@ -3669,6 +3718,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -3708,6 +3758,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -3745,6 +3796,7 @@
             
                 
 <span class="param-type">String</span>
+
 
 
             
@@ -3799,7 +3851,7 @@
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -3817,6 +3869,7 @@
 <span class="param-type">Array</span>
 
 
+
     </dd>
 </dl>
 
@@ -3829,7 +3882,7 @@
 
     
 
-    <h4 class="name" id=".relaPlasticityParams"><span class="type-signature">(static) </span>relaPlasticityParams<span class="signature">(LL<span class="signature-attributes">opt</span>, PI<span class="signature-attributes">opt</span>, PL<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".relaPlasticityParams"><span class="type-signature type-signature-static">(static) </span>relaPlasticityParams<span class="signature">(LL<span class="signature-attributes">opt</span>, PI<span class="signature-attributes">opt</span>, PL<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -3837,6 +3890,11 @@
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>計算土壤塑性參數：液限LL、塑限PL、塑性指數PI之間互相轉換，至少3給2才能反推全部</p>
+<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/relaPlasticityParams.test.js">Github</a></p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -3880,27 +3938,20 @@
 
 
 
-<div class="description usertext">
-    <p>計算土壤塑性參數：液限LL、塑限PL、塑性指數PI之間互相轉換，至少3給2才能反推全部</p>
-<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/relaPlasticityParams.test.js">Github</a></p>
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Example</h5>
+    <h5 class="h5-examples">Example</h5>
     
     <pre class="prettyprint"><code>let LL = 24 //%let PI = 14 //%let PL = 10 //%let rtry {    r = relaPlasticityParams(LL, null, null)}catch (e) {    r = e.toString()}console.log('LL', r)// => LL { LL: 24, PL: null, PI: null }try {    r = relaPlasticityParams(null, PI, null)    console.log('PI', r)}catch (e) {    r = e.toString()}// => PI { LL: null, PL: null, PI: 14 }try {    r = relaPlasticityParams(null, null, PL)}catch (e) {    r = e.toString()}console.log('PL', r)// => PL { LL: null, PL: 10, PI: null }try {    r = relaPlasticityParams(LL, PI, null)}catch (e) {    r = e.toString()}console.log('LL,PI', r)// => LL,PI { LL: 24, PL: 10, PI: 14 }try {    r = relaPlasticityParams(LL, null, PL)}catch (e) {    r = e.toString()}console.log('LL,PL', r)// => LL,PL { LL: 24, PL: 10, PI: 14 }try {    r = relaPlasticityParams(null, PI, PL)}catch (e) {    r = e.toString()}console.log('PI,PL', r)// => PI,PL { LL: 24, PL: 10, PI: 14 }try {    r = relaPlasticityParams(LL, PI, PL)}catch (e) {    r = e.toString()}console.log('LL,PI,PL', r)// => LL,PI,PL { LL: 24, PL: 10, PI: 14 }try {    r = relaPlasticityParams(2, PI, PL)}catch (e) {    r = e.toString()}console.log('2,PI,PL', r)// => 2,PI,PL {//   LL: 2,//   PL: 10,//   PI: 14,//   err: '液限[2]&lt;=塑限[10], 反算出塑限[-12]&lt;=0, 反算出塑性指數[-8]&lt;=0, 輸入液限[2]與反算出液限[24]差距過大'// }try {    r = relaPlasticityParams(32, PI, PL)}catch (e) {    r = e.toString()}console.log('32,PI,PL', r)// => 32,PI,PL {//   LL: 32,//   PL: 10,//   PI: 14,//   err: '輸入塑限[10]與反算出塑限[18]差距過大, 輸入塑性指數[14]與反算出塑性指數[22]差距過大, 輸入液限[32]與反算出液限[24]差距過大'// }</code></pre>
 
 
 
 
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -3936,6 +3987,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -3977,6 +4029,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -4014,6 +4067,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -4061,7 +4115,7 @@
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -4079,6 +4133,7 @@
 <span class="param-type">Object</span>
 
 
+
     </dd>
 </dl>
 
@@ -4091,7 +4146,7 @@
 
     
 
-    <h4 class="name" id=".relaPorousParams"><span class="type-signature">(static) </span>relaPorousParams<span class="signature">(rd<span class="signature-attributes">opt</span>, rsat<span class="signature-attributes">opt</span>, GS<span class="signature-attributes">opt</span>, e<span class="signature-attributes">opt</span>, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".relaPorousParams"><span class="type-signature type-signature-static">(static) </span>relaPorousParams<span class="signature">(rd<span class="signature-attributes">opt</span>, rsat<span class="signature-attributes">opt</span>, GS<span class="signature-attributes">opt</span>, e<span class="signature-attributes">opt</span>, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -4099,6 +4154,11 @@
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>計算岩土孔隙參數：乾單位重rd、飽和單位重rsat、比重GS、孔隙比e之間互相轉換，至少4給2才能反推全部</p>
+<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/relaPorousParams.test.js">Github</a></p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -4142,27 +4202,20 @@
 
 
 
-<div class="description usertext">
-    <p>計算岩土孔隙參數：乾單位重rd、飽和單位重rsat、比重GS、孔隙比e之間互相轉換，至少4給2才能反推全部</p>
-<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/relaPorousParams.test.js">Github</a></p>
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Example</h5>
+    <h5 class="h5-examples">Example</h5>
     
     <pre class="prettyprint"><code>let GS = 2.7let e = 0.86let rd = 14.240322580645163 //kN/m3let rsat = 18.776129032258066 //kN/m3let rlet coreFuncs = relaPorousParams(null, null, null, null, { returnFuncs: true }).coreFuncsconsole.log('rd get_rd_from_GS_e', coreFuncs.get_rd_from_GS_e(GS, e))// => rd get_rd_from_GS_e 14.240322580645163console.log('rd get_rd_from_rsat_e', coreFuncs.get_rd_from_rsat_e(rsat, e))// => rd get_rd_from_rsat_e 14.240322580645163console.log('rd get_rd_from_rsat_GS', coreFuncs.get_rd_from_rsat_GS(rsat, GS))// => rd get_rd_from_rsat_GS 14.240322580645161console.log('rsat get_rsat_from_GS_e', coreFuncs.get_rsat_from_GS_e(GS, e))// => rsat get_rsat_from_GS_e 18.776129032258066console.log('rsat get_rsat_from_rd_e', coreFuncs.get_rsat_from_rd_e(rd, e))// => rsat get_rsat_from_rd_e 18.776129032258066console.log('rsat get_rsat_from_rd_GS', coreFuncs.get_rsat_from_rd_GS(rd, GS))// => rsat get_rsat_from_rd_GS 18.77612903225807console.log('e get_e_from_GS_rd', coreFuncs.get_e_from_GS_rd(GS, rd))// => e get_e_from_GS_rd 0.8599999999999999console.log('e get_e_from_rd_rsat', coreFuncs.get_e_from_rd_rsat(rd, rsat))// => e get_e_from_rd_rsat 0.8599999999999998console.log('e get_e_from_GS_rsat', coreFuncs.get_e_from_GS_rsat(GS, rsat))// => e get_e_from_GS_rsat 0.86console.log('GS get_GS_from_rd_e', coreFuncs.get_GS_from_rd_e(rd, e))// => GS get_GS_from_rd_e 2.7console.log('GS get_GS_from_rd_rsat', coreFuncs.get_GS_from_rd_rsat(rd, rsat))// => GS get_GS_from_rd_rsat 2.6999999999999997console.log('GS get_GS_from_rsat_e', coreFuncs.get_GS_from_rsat_e(rsat, e))// => GS get_GS_from_rsat_e 2.7r = relaPorousParams(rd, rsat, null, null)console.log('rd,rsat', r)// => rd,rsat {//     rd: 14.240322580645163,//     rsat: 18.776129032258066,//     GS: 2.7,//     e: 0.8599999999999998// }r = relaPorousParams(rd, null, GS, null)console.log('rd,GS', r)// => rd,GS {//     rd: 14.240322580645163,//     rsat: 18.77612903225807,//     GS: 2.7,//     e: 0.8599999999999999// }r = relaPorousParams(rd, null, null, e)console.log('rd,e', r)// => rd,e {//     rd: 14.240322580645163,//     rsat: 18.776129032258066,//     GS: 2.7,//     e: 0.86// }r = relaPorousParams(null, rsat, GS, null)console.log('rsat,GS', r)// => rsat,GS {//     rd: 14.240322580645161,//     rsat: 18.776129032258066,//     GS: 2.7,//     e: 0.8600000000000001// }r = relaPorousParams(null, rsat, null, e)console.log('rsat,e', r)// => rsat,e {//     rd: 14.240322580645163,//     rsat: 18.776129032258066,//     GS: 2.7,//     e: 0.86// }r = relaPorousParams(null, null, GS, e)console.log('GS,e', r)// => GS,e {//     rd: 14.240322580645163,//     rsat: 18.776129032258066,//     GS: 2.7,//     e: 0.86// }r = relaPorousParams(rd, rsat, GS, null)console.log('rd,rsat,GS', r)// => rd,rsat,GS {//     rd: 14.240322580645163,//     rsat: 18.776129032258066,//     GS: 2.7,//     e: 0.8599999999999999// }r = relaPorousParams(rd, rsat, null, e)console.log('rd,rsat,e', r)// => rd,rsat,e {//     rd: 14.240322580645163,//     rsat: 18.776129032258066,//     GS: 2.7,//     e: 0.86// }r = relaPorousParams(rd, null, GS, e)console.log('rd,GS,e', r)// => rd,GS,e {//     rd: 14.240322580645163,//     rsat: 18.776129032258066,//     GS: 2.7,//     e: 0.86// }r = relaPorousParams(null, rsat, GS, e)console.log('rsat,GS,e', r)// => rsat,GS,e {//     rd: 14.240322580645163,//     rsat: 18.776129032258066,//     GS: 2.7,//     e: 0.86// }try {    r = relaPorousParams(13.9, null, GS, e)}catch (e) {    r = e.toString()}console.log('GS,e', r)// => GS,e {//   rd: 13.9,//   rsat: 18.776129032258066,//   GS: 2.7,//   e: 0.86,//   err: '輸入孔隙比[0.86]與反算出孔隙比[0.9055395683453238]差距過大'// }</code></pre>
 
 
 
 
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -4198,6 +4251,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -4239,6 +4293,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -4276,6 +4331,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -4317,6 +4373,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -4354,6 +4411,7 @@
             
                 
 <span class="param-type">Object</span>
+
 
 
             
@@ -4418,6 +4476,7 @@
 <span class="param-type">Boolean</span>
 
 
+
             
             </td>
 
@@ -4470,7 +4529,7 @@
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -4488,6 +4547,7 @@
 <span class="param-type">Object</span>
 
 
+
     </dd>
 </dl>
 
@@ -4500,7 +4560,7 @@
 
     
 
-    <h4 class="name" id=".sepDepthStartEndByDepth"><span class="type-signature">(static) </span>sepDepthStartEndByDepth<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id=".sepDepthStartEndByDepth"><span class="type-signature type-signature-static">(static) </span>sepDepthStartEndByDepth<span class="signature">(rows, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
 
     
 
@@ -4508,6 +4568,11 @@
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>通過指定樣本(例如中點)深度對各樣本起訖深度進行分切</p>
+<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/sepDepthStartEndByDepth.test.js">Github</a></p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -4551,27 +4616,20 @@
 
 
 
-<div class="description usertext">
-    <p>通過指定樣本(例如中點)深度對各樣本起訖深度進行分切</p>
-<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/sepDepthStartEndByDepth.test.js">Github</a></p>
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Example</h5>
+    <h5 class="h5-examples">Example</h5>
     
     <pre class="prettyprint"><code>let rowslet pointslet rrows = [    {        depthStart: 0,        depthEnd: 5,        data: 'abc',    },    {        depthStart: 5,        depthEnd: 10,        data: 'def',    },]points = [{ depth: 2.5 }]r = sepDepthStartEndByDepth(rows, points)console.log(r)// => [//  { depthStart: 0, depthEnd: 2.5, data: 'abc' },//  { depthStart: 2.5, depthEnd: 5, data: 'abc' },//  { depthStart: 5, depthEnd: 10, data: 'def' }//]rows = [    {        depthStart: 0,        depthEnd: 5,        data: 'abc',    },    {        depthStart: 5,        depthEnd: 10,        data: 'def',    },]points = [{ depth: 0 }]r = sepDepthStartEndByDepth(rows, points)console.log(r)// => [//  { depthStart: 0, depthEnd: 5, data: 'abc' },//  { depthStart: 5, depthEnd: 10, data: 'def' }//]rows = [    {        depthStart: 0,        depthEnd: 5,        data: 'abc',    },    {        depthStart: 5,        depthEnd: 10,        data: 'def',    },]points = [{ depth: 5 }]r = sepDepthStartEndByDepth(rows, points)console.log(r)// => [//  { depthStart: 0, depthEnd: 5, data: 'abc' },//  { depthStart: 5, depthEnd: 10, data: 'def' }//]rows = [    {        depthStart: 0,        depthEnd: 5,        data: 'abc',    },    {        depthStart: 5,        depthEnd: 10,        data: 'def',    },]points = [{ depth: -1 }]r = sepDepthStartEndByDepth(rows, points)console.log(r)// => [//  { depthStart: 0, depthEnd: 5, data: 'abc' },//  { depthStart: 5, depthEnd: 10, data: 'def' }//]rows = [    {        depthStart: 0,        depthEnd: 5,        data: 'abc',    },    {        depthStart: 5,        depthEnd: 10,        data: 'def',    },]points = [{ depth: 11 }]r = sepDepthStartEndByDepth(rows, points)console.log(r)// => [//  { depthStart: 0, depthEnd: 5, data: 'abc' },//  { depthStart: 5, depthEnd: 10, data: 'def' }//]rows = [    {        top_depth: 0,        bottom_depth: 5,        data: 'abc',    },    {        top_depth: 5,        bottom_depth: 10,        data: 'def',    },]points = [{ center_depth: 5.5 }]r = sepDepthStartEndByDepth(rows, points, { keyDepthStart: 'top_depth', keyDepthEnd: 'bottom_depth', keyDepth: 'center_depth' })console.log(r)// => [//  { top_depth: 0, bottom_depth: 5, data: 'abc' },//  { top_depth: 5, bottom_depth: 5.5, data: 'def' },//  { top_depth: 5.5, bottom_depth: 10, data: 'def' }//]</code></pre>
 
 
 
 
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -4609,6 +4667,7 @@
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -4642,6 +4701,7 @@
             
                 
 <span class="param-type">Object</span>
+
 
 
             
@@ -4706,6 +4766,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -4745,6 +4806,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -4782,6 +4844,7 @@
             
                 
 <span class="param-type">String</span>
+
 
 
             
@@ -4836,7 +4899,7 @@
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -4854,6 +4917,7 @@
 <span class="param-type">Array</span>
 
 
+
     </dd>
 </dl>
 
@@ -4866,7 +4930,7 @@
 
     
 
-    <h4 class="name" id=".smoothDepthByKey"><span class="type-signature">(static) </span>smoothDepthByKey<span class="signature">(rows, key, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id=".smoothDepthByKey"><span class="type-signature type-signature-static">(static) </span>smoothDepthByKey<span class="signature">(rows, key, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
 
     
 
@@ -4874,6 +4938,11 @@
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>平滑化含深度與指定欄位之樣本陣列</p>
+<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/calcDepthStartEndByConnect.test.js">Github</a></p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -4917,27 +4986,20 @@
 
 
 
-<div class="description usertext">
-    <p>平滑化含深度與指定欄位之樣本陣列</p>
-<p>Unit Test: <a href="https://github.com/yuda-lyu/w-geo/blob/master/test/calcDepthStartEndByConnect.test.js">Github</a></p>
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Example</h5>
+    <h5 class="h5-examples">Example</h5>
     
     <pre class="prettyprint"><code></code></pre>
 
 
 
 
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -4975,6 +5037,7 @@
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -5010,6 +5073,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -5043,6 +5107,7 @@
             
                 
 <span class="param-type">Object</span>
+
 
 
             
@@ -5107,6 +5172,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -5146,6 +5212,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -5183,6 +5250,7 @@
             
                 
 <span class="param-type">Object</span>
+
 
 
             
@@ -5247,6 +5315,7 @@
 <span class="param-type">Intger</span>
 
 
+
             
             </td>
 
@@ -5284,6 +5353,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -5345,7 +5415,7 @@
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -5363,6 +5433,7 @@
 <span class="param-type">Array</span>
 
 
+
     </dd>
 </dl>
 
@@ -5375,7 +5446,7 @@
 
     
 
-    <h4 class="name" id=".sptHBF"><span class="type-signature">(static) </span>sptHBF<span class="signature">(row)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".sptHBF"><span class="type-signature type-signature-static">(static) </span>sptHBF<span class="signature">(row)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -5383,6 +5454,10 @@
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>HBF液化分析</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -5426,26 +5501,20 @@
 
 
 
-<div class="description usertext">
-    <p>HBF液化分析</p>
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Example</h5>
+    <h5 class="h5-examples">Example</h5>
     
     <pre class="prettyprint"><code></code></pre>
 
 
 
 
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -5477,6 +5546,7 @@
             
                 
 <span class="param-type">Object</span>
+
 
 
             
@@ -5525,6 +5595,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -5562,6 +5633,7 @@
             
                 
 <span class="param-type">String</span>
+
 
 
             
@@ -5603,6 +5675,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -5640,6 +5713,7 @@
             
                 
 <span class="param-type">String</span>
+
 
 
             
@@ -5681,6 +5755,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -5714,6 +5789,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -5751,6 +5827,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -5784,6 +5861,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -5821,6 +5899,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -5854,6 +5933,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -5891,6 +5971,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -5926,6 +6007,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -5959,6 +6041,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -6009,7 +6092,7 @@
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -6027,6 +6110,7 @@
 <span class="param-type">Object</span>
 
 
+
     </dd>
 </dl>
 
@@ -6039,7 +6123,7 @@
 
     
 
-    <h4 class="name" id=".sptNCEER"><span class="type-signature">(static) </span>sptNCEER<span class="signature">(row)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".sptNCEER"><span class="type-signature type-signature-static">(static) </span>sptNCEER<span class="signature">(row)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -6047,6 +6131,10 @@
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>NCEER液化分析</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -6090,26 +6178,20 @@
 
 
 
-<div class="description usertext">
-    <p>NCEER液化分析</p>
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Example</h5>
+    <h5 class="h5-examples">Example</h5>
     
     <pre class="prettyprint"><code></code></pre>
 
 
 
 
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -6141,6 +6223,7 @@
             
                 
 <span class="param-type">Object</span>
+
 
 
             
@@ -6189,6 +6272,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -6226,6 +6310,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -6267,6 +6352,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -6306,6 +6392,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -6339,6 +6426,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -6376,6 +6464,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -6409,6 +6498,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -6446,6 +6536,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -6479,6 +6570,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -6516,6 +6608,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -6551,6 +6644,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -6584,6 +6678,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -6634,7 +6729,7 @@
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -6652,6 +6747,7 @@
 <span class="param-type">Object</span>
 
 
+
     </dd>
 </dl>
 
@@ -6664,7 +6760,7 @@
 
     
 
-    <h4 class="name" id=".sptNJRA"><span class="type-signature">(static) </span>sptNJRA<span class="signature">(row)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".sptNJRA"><span class="type-signature type-signature-static">(static) </span>sptNJRA<span class="signature">(row)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -6672,6 +6768,10 @@
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>JRA液化分析</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -6715,26 +6815,20 @@
 
 
 
-<div class="description usertext">
-    <p>JRA液化分析</p>
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Example</h5>
+    <h5 class="h5-examples">Example</h5>
     
     <pre class="prettyprint"><code></code></pre>
 
 
 
 
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -6766,6 +6860,7 @@
             
                 
 <span class="param-type">Object</span>
+
 
 
             
@@ -6814,6 +6909,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -6851,6 +6947,7 @@
             
                 
 <span class="param-type">String</span>
+
 
 
             
@@ -6892,6 +6989,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -6929,6 +7027,7 @@
             
                 
 <span class="param-type">String</span>
+
 
 
             
@@ -6970,6 +7069,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -7009,6 +7109,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -7042,6 +7143,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -7079,6 +7181,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -7112,6 +7215,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -7149,6 +7253,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -7182,6 +7287,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -7219,6 +7325,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -7252,6 +7359,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -7289,6 +7397,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -7322,6 +7431,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -7372,7 +7482,7 @@
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -7390,6 +7500,7 @@
 <span class="param-type">Object</span>
 
 
+
     </dd>
 </dl>
 
@@ -7402,7 +7513,7 @@
 
     
 
-    <h4 class="name" id=".sptSeed"><span class="type-signature">(static) </span>sptSeed<span class="signature">(row)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".sptSeed"><span class="type-signature type-signature-static">(static) </span>sptSeed<span class="signature">(row)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -7410,6 +7521,10 @@
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Seed液化分析</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -7453,26 +7568,20 @@
 
 
 
-<div class="description usertext">
-    <p>Seed液化分析</p>
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Example</h5>
+    <h5 class="h5-examples">Example</h5>
     
     <pre class="prettyprint"><code></code></pre>
 
 
 
 
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -7504,6 +7613,7 @@
             
                 
 <span class="param-type">Object</span>
+
 
 
             
@@ -7552,6 +7662,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -7589,6 +7700,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -7630,6 +7742,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -7669,6 +7782,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -7702,6 +7816,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -7739,6 +7854,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -7772,6 +7888,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -7809,6 +7926,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -7842,6 +7960,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -7879,6 +7998,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -7912,6 +8032,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -7962,7 +8083,7 @@
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -7980,6 +8101,7 @@
 <span class="param-type">Object</span>
 
 
+
     </dd>
 </dl>
 
@@ -7992,7 +8114,7 @@
 
     
 
-    <h4 class="name" id=".sptTY"><span class="type-signature">(static) </span>sptTY<span class="signature">(row)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".sptTY"><span class="type-signature type-signature-static">(static) </span>sptTY<span class="signature">(row)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -8000,6 +8122,10 @@
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>TY液化分析</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -8043,26 +8169,20 @@
 
 
 
-<div class="description usertext">
-    <p>TY液化分析</p>
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Example</h5>
+    <h5 class="h5-examples">Example</h5>
     
     <pre class="prettyprint"><code></code></pre>
 
 
 
 
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -8094,6 +8214,7 @@
             
                 
 <span class="param-type">Object</span>
+
 
 
             
@@ -8142,6 +8263,7 @@
 <span class="param-type">String</span>
 
 
+
             
             </td>
 
@@ -8179,6 +8301,7 @@
             
                 
 <span class="param-type">String</span>
+
 
 
             
@@ -8220,6 +8343,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -8257,6 +8381,7 @@
             
                 
 <span class="param-type">String</span>
+
 
 
             
@@ -8298,6 +8423,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -8337,6 +8463,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -8370,6 +8497,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -8411,6 +8539,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -8448,6 +8577,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -8489,6 +8619,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -8528,6 +8659,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -8561,6 +8693,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -8598,6 +8731,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -8631,6 +8765,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -8668,6 +8803,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -8703,6 +8839,7 @@
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -8736,6 +8873,7 @@
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -8786,7 +8924,7 @@
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -8802,6 +8940,7 @@
     <dd>
         
 <span class="param-type">Object</span>
+
 
 
     </dd>
@@ -8831,7 +8970,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.10</a> on Thu Jan 19 2023 14:36:29 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Wed Mar 29 2023 15:30:41 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
