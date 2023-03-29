@@ -1,7 +1,7 @@
 import assert from 'assert'
 import calcCptUnitWeight from '../src/calcCptUnitWeight.mjs'
-import rowsIn1 from './calcCptUnitWeight-cpt-rowsIn1.json'
-import rowsOut1 from './calcCptUnitWeight-cpt-rowsOut1.json'
+import rowsIn1 from './calcCptUnitWeight-cpt-rowsIn1.json' assert { type: "json" }
+import rowsOut1 from './calcCptUnitWeight-cpt-rowsOut1.json' assert { type: "json" }
 
 
 describe(`calcCptUnitWeight`, function() {

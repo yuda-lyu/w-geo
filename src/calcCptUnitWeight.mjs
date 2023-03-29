@@ -284,7 +284,7 @@ function estUnitWeight(ltdt, coe_a, opt = {}) {
 }
 
 
-function calcCptUnitWeight(ltdt, rsatIni, opt = {}) {
+function calcCptUnitWeight(ltdt, rsatIni = null, opt = {}) {
 
     //rsatIni
     if (!isnum(rsatIni)) {

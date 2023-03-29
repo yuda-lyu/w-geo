@@ -52,3 +52,7 @@ export {
     intrpDefPp,
     intrpDefSvSvp
 }
+export default { //整合輸出預設得要有default
+    intrpDefPp,
+    intrpDefSvSvp
+}

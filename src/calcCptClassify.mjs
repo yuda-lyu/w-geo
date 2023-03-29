@@ -4057,3 +4057,15 @@ export {
     simplifyRobertson2009,
     simplifyRamsey
 }
+export default { //整合輸出預設得要有default
+    kpCPTClassForRobBqRfqt,
+    kpCPTClassForRobBqFrQt,
+    kpCPTClassForRamQt,
+    getIcInfor,
+    cptClassifyBond,
+    cptClassify,
+    simplifyRobertson1986,
+    simplifyRobertson1990,
+    simplifyRobertson2009,
+    simplifyRamsey
+}

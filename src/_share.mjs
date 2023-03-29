@@ -23,3 +23,6 @@ function pickData(d, pickKey) {
 export {
     pickData
 }
+export default { //整合輸出預設得要有default
+    pickData
+}

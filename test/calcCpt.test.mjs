@@ -1,7 +1,7 @@
 import assert from 'assert'
 import { calcCpt } from '../src/calcCpt.mjs'
-import rowsIn1 from './calcCpt-rowsIn1.json'
-import rowsOut1 from './calcCpt-rowsOut1.json'
+import rowsIn1 from './calcCpt-rowsIn1.json' assert { type: "json" }
+import rowsOut1 from './calcCpt-rowsOut1.json' assert { type: "json" }
 
 
 describe(`calcCpt`, function() {

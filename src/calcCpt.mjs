@@ -469,11 +469,9 @@ function calcCpt(ltdt, opt = {}) {
     ltdt = stress(ltdt, opt)
 
     //calcCptCore
-    if (true) {
-        ltdt = map(ltdt, (v) => {
-            return calcCptCore(v, coe_a)
-        })
-    }
+    ltdt = map(ltdt, (v) => {
+        return calcCptCore(v, coe_a)
+    })
 
     return ltdt
 }
@@ -485,4 +483,11 @@ export {
     stress,
     calcCpt,
     calcCptCore
+}
+export default { //整合輸出預設得要有default
+    basic,
+    smooth,
+    stress,
+    calcCpt,
+    calcCptCore,
 }

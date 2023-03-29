@@ -1,8 +1,8 @@
 import assert from 'assert'
 import complementDepthData from '../src/complementDepthData.mjs'
-import rowsIn from './complementDepthData-rowsIn.json'
-import rowsOutFill from './complementDepthData-rowsOut-linearFill.json'
-import rowsOutCut from './complementDepthData-rowsOut-cut.json'
+import rowsIn from './complementDepthData-rowsIn.json' assert { type: "json" }
+import rowsOutFill from './complementDepthData-rowsOut-linearFill.json' assert { type: "json" }
+import rowsOutCut from './complementDepthData-rowsOut-cut.json' assert { type: "json" }
 
 
 describe(`complementDepthData`, function() {

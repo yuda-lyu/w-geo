@@ -1257,11 +1257,8 @@ let rowsIn = [
     { 'depth': '25', 'qc': '1.48', 'fs': '0.032', 'u2': '0.543' }
 ]
 
-//rsatIni
-let rsatIni = 19.5
-
 //calcCptUnitWeight
-let rowsOut = calcCptUnitWeight(rowsIn, rsatIni)
+let rowsOut = calcCptUnitWeight(rowsIn)
 // console.log(rowsOut[0])
 
 let k = 1
