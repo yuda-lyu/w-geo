@@ -1,16 +1,16 @@
 {
   "name": "w-geo",
-  "version": "1.0.55",
+  "version": "1.0.56",
   "main": "dist/w-geo.umd.js",
   "dependencies": {
     "decimal.js": "^10.4.3",
     "lodash": "^4.17.21",
-    "w-optimization": "^1.0.8",
-    "w-statistic": "^1.0.13",
-    "wsemi": "^1.7.1"
+    "w-optimization": "^1.0.9",
+    "w-statistic": "^1.0.14",
+    "wsemi": "^1.7.2"
   },
   "devDependencies": {
-    "w-package-tools": "^1.0.68"
+    "w-package-tools": "^1.0.69"
   },
   "scripts": {
     "test": "mocha --parallel --timeout 60000 --experimental-modules --es-module-specifier-resolution=node",
