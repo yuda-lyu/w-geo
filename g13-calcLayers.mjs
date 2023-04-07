@@ -5027,16 +5027,14 @@ let coe_a = 0.74
 if (true) {
     let rs = rowsInOri
 
-    //rsatIni
-    let rsatIni = 19.5
-
     //opt
     let opt = {
+        rsatIni: 19.5,
         coe_a,
     }
 
     //calcCptUnitWeight
-    rs = calcCptUnitWeight(rs, rsatIni, opt)
+    rs = calcCptUnitWeight(rs, opt)
     // console.log(rowsOut[0])
     // console.log('calcCpt rs', rs)
 

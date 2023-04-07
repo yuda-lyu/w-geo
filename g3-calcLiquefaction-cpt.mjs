@@ -403,11 +403,14 @@ function getRows(k) {
     let rowsIn2 = rowsIn1
     if (true) {
 
-        //rsatIni
-        let rsatIni = 19.5
+        //opt
+        let opt = {
+            rsatIni: 19.5,
+            coe_a: 0.8,
+        }
 
         //calcCptUnitWeight
-        rowsIn2 = calcCptUnitWeight(rowsIn2, rsatIni)
+        rowsIn2 = calcCptUnitWeight(rowsIn2, opt)
         // console.log('calcCptUnitWeight', rowsIn2[0])
 
         //回傳qc,fs,u0,u2,sv,svp單位為MPa, 液化輸入sv,svp單位為kPa

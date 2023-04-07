@@ -284,15 +284,26 @@ function estUnitWeight(ltdt, coe_a, opt = {}) {
 }
 
 
-function calcCptUnitWeight(ltdt, rsatIni = null, opt = {}) {
+function calcCptUnitWeight(ltdt, opt = {}) {
 
     //rsatIni
+    let rsatIni = get(opt, 'rsatIni')
     if (!isnum(rsatIni)) {
         rsatIni = defRsat
     }
     rsatIni = cdbl(rsatIni)
     if (rsatIni <= 0) {
         throw new Error(`rsatIni[${rsatIni}]<=0`)
+    }
+
+    //coe_a
+    let coe_a = get(opt, 'coe_a')
+    if (!isnum(coe_a)) {
+        coe_a = 0.8
+    }
+    coe_a = cdbl(coe_a)
+    if (coe_a <= 0) {
+        throw new Error(`coe_a[${coe_a}]<=0`)
     }
 
     //keyDepth
@@ -312,13 +323,6 @@ function calcCptUnitWeight(ltdt, rsatIni = null, opt = {}) {
     if (!isestr(keyDepthEnd)) {
         keyDepthEnd = 'depthEnd'
     }
-
-    //coe_a
-    let coe_a = get(opt, 'coe_a')
-    if (!isnum(coe_a)) {
-        coe_a = 0.8
-    }
-    coe_a = cdbl(coe_a)
 
     //cloneDeep
     ltdt = cloneDeep(ltdt)
