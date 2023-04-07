@@ -1,5 +1,6 @@
 import fs from 'fs'
 import w from 'wsemi'
+import calcCptUnitWeight from './src/calcCptUnitWeight.mjs'
 import { calcCpt } from './src/calcCpt.mjs'
 import { getKpSoilGroups } from './src/_soilGroup.mjs'
 import { getKpSoilGroupsTn, calcLayers } from './src/calcLayers.mjs'
@@ -5011,6 +5012,8 @@ let rowsIn = null
 let rowsOut = null
 
 let methods = [
+    'Robertson1986T6',
+    'Robertson1986T4',
     'Robertson1990T6',
     'Robertson1990T4',
     'Robertson2009T6',
@@ -5019,16 +5022,37 @@ let methods = [
     'RamseyT4',
 ]
 
+let coe_a = 0.74
+
+if (true) {
+    let rs = rowsInOri
+
+    //rsatIni
+    let rsatIni = 19.5
+
+    //opt
+    let opt = {
+        coe_a,
+    }
+
+    //calcCptUnitWeight
+    rs = calcCptUnitWeight(rs, rsatIni, opt)
+    // console.log(rowsOut[0])
+    // console.log('calcCpt rs', rs)
+
+    rowsInOri = rs
+}
+
 if (true) {
     let rs = rowsInOri
 
     //opt
     let opt = {
-        coe_a: 0.74,
+        coe_a,
         methodSmooth: 'none', //測試數據已使用averageIn95
         intrpSv: (depth, k, v, ltdt) => {
             // console.log('intrpSv', depth, k, v)
-            let sv = v.sv //單位為MPa
+            let sv = v.sv //基於calcCptUnitWeight所推估算得, 單位為MPa
             return {
                 sv,
             }
@@ -5058,7 +5082,7 @@ if (true) {
     let rrs = calcLayers(rs, methods, opt)
     // console.log('calcLayers rs', rs)
 
-    for (let k = 1; k <= 6; k++) {
+    for (let k = 1; k <= methods.length; k++) {
         let j = k - 1
         let rs = rrs[j].ltdt
         rs = rs.map((v) => {
@@ -5072,7 +5096,7 @@ if (true) {
 }
 // console.log('rowsOut', rowsOut)
 
-for (let k = 1; k <= 6; k++) {
+for (let k = 1; k <= methods.length; k++) {
     let j = k - 1
     if (k === 1) {
         fs.writeFileSync(`./calcLayers-rowsIn${k}.json`, JSON.stringify(rowsIn), 'utf8')

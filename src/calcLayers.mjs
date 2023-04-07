@@ -20,7 +20,7 @@ import judge from './judge.mjs'
 import { getIcInfor } from './_cpt.mjs'
 import { getSoilGroupByKV, getSoilGroupsT4, getSoilGroupsT6, getSoilGroupsT9 } from './_soilGroup.mjs'
 import calcDepthStartEndFromCenter from './calcDepthStartEndFromCenter.mjs'
-import { simplifyRobertson1990, simplifyRobertson2009, simplifyRamsey } from './calcCptClassify.mjs'
+import { simplifyRobertson1986, simplifyRobertson1990, simplifyRobertson2009, simplifyRamsey } from './calcCptClassify.mjs'
 
 
 //soilGroupsT4, soilGroupsT6, soilGroupsT9
@@ -321,6 +321,62 @@ function calcLayer(ltdt, method, opt = {}) {
         return rs
     }
 
+    //gfRobertson1986
+    let gfRobertson1986 = (T) => {
+
+        //check
+        if (T !== 'T4' && T !== 'T6') {
+            throw new Error(`T[${T}] must be T4 or T6`)
+        }
+
+        //numOfType
+        let n = T.replace('T', '')
+        let numOfType = cint(n)
+
+        //keyName
+        let keyName = ''
+        if (T === 'T4') {
+            keyName = 'nameEngineeringEng'
+        }
+        else {
+            keyName = 'nameEng'
+        }
+
+        //optGenLayer
+        let optGenLayer = {
+            ...opt,
+            getType: (dt, kdt) => {
+                // console.log(dt, kdt)
+
+                //iRobFrQt, iRobBqQt
+                let iRobFrQt = get(dt, 'iRobFrQt', '')
+                let iRobBqQt = get(dt, 'iRobBqQt', '')
+
+                //type
+                let type = ''
+                try {
+
+                    //simplifyRobertson1986
+                    let engineeringSoilGroupKey = simplifyRobertson1986(iRobFrQt, iRobBqQt, { numOfType })
+
+                    //nameEngineeringEng
+                    type = getSoilGroupByKV('key', engineeringSoilGroupKey, keyName)
+
+                }
+                catch (err) {
+                    console.log(err)
+                }
+
+                return type
+            },
+        }
+
+        //rs
+        let rs = genLayer(ltdt, optGenLayer)
+
+        return rs
+    }
+
     //gfRobertson1990
     let gfRobertson1990 = (T) => {
 
@@ -496,6 +552,12 @@ function calcLayer(ltdt, method, opt = {}) {
         },
         Icn: () => {
             return gfIc('Icn')
+        },
+        Robertson1986T6: () => {
+            return gfRobertson1986('T6')
+        },
+        Robertson1986T4: () => {
+            return gfRobertson1986('T4')
         },
         Robertson1990T6: () => {
             return gfRobertson1990('T6')

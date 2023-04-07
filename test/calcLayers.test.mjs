@@ -7,11 +7,15 @@ import rowsOut3 from './calcLayers-rowsOut3.json' assert { type: "json" }
 import rowsOut4 from './calcLayers-rowsOut4.json' assert { type: "json" }
 import rowsOut5 from './calcLayers-rowsOut5.json' assert { type: "json" }
 import rowsOut6 from './calcLayers-rowsOut6.json' assert { type: "json" }
+import rowsOut7 from './calcLayers-rowsOut7.json' assert { type: "json" }
+import rowsOut8 from './calcLayers-rowsOut8.json' assert { type: "json" }
 
 
 describe(`calcLayers`, function() {
 
     let methods = [
+        'Robertson1986T6',
+        'Robertson1986T4',
         'Robertson1990T6',
         'Robertson1990T4',
         'Robertson2009T6',
@@ -31,7 +35,7 @@ describe(`calcLayers`, function() {
     let rowsOut = calcLayers(rowsIn1, methods, opt)
     // console.log('calcLayers rowsOut1', rowsOut)
 
-    for (let k = 1; k <= 6; k++) {
+    for (let k = 1; k <= methods.length; k++) {
         let j = k - 1
         let rs = rowsOut[j].ltdt
         // rs = rs.map((v) => {
@@ -86,6 +90,18 @@ describe(`calcLayers`, function() {
     it(`should return rowsOut6 when calcLayers(rowsIn1, opt) for method[${methods[5]}]`, function() {
         let r = gv(rowsOut[5])
         let rr = gv(rowsOut6)
+        assert.strict.deepStrictEqual(r, rr)
+    })
+
+    it(`should return rowsOut7 when calcLayers(rowsIn1, opt) for method[${methods[6]}]`, function() {
+        let r = gv(rowsOut[6])
+        let rr = gv(rowsOut7)
+        assert.strict.deepStrictEqual(r, rr)
+    })
+
+    it(`should return rowsOut8 when calcLayers(rowsIn1, opt) for method[${methods[7]}]`, function() {
+        let r = gv(rowsOut[7])
+        let rr = gv(rowsOut8)
         assert.strict.deepStrictEqual(r, rr)
     })
 

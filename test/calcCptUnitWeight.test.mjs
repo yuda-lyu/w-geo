@@ -9,8 +9,13 @@ describe(`calcCptUnitWeight`, function() {
     //rsatIni
     let rsatIni = 19.5
 
-    it(`should return rowsOut1 when calcCptUnitWeight(rowsIn1, ${rsatIni})`, function() {
-        let r = calcCptUnitWeight(rowsIn1, rsatIni)
+    //opt
+    let opt = {
+        coe_a: 0.75
+    }
+
+    it(`should return rowsOut1 when calcCptUnitWeight(rowsIn1, ${rsatIni}, ${JSON.stringify(opt)})`, function() {
+        let r = calcCptUnitWeight(rowsIn1, rsatIni, opt)
         let rr = rowsOut1
         assert.strict.deepStrictEqual(r, rr)
     })
