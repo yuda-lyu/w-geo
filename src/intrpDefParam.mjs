@@ -15,6 +15,9 @@ function intrpDefPp(depth) {
 
     let r = depth * rw //kPa
 
+    //MPa
+    r /= 1000
+
     return r
 }
 
@@ -30,15 +33,24 @@ function intrpDefSvSvp(depth) {
     //sv(kPa)
     let sv = depth * cnst.assesment_rsat //飽和單位重(kN/m3)
 
+    //sv(MPa)
+    sv /= 1000
+
     //pp(kPa)
     let pp = intrpDefPp(depth)
 
-    //svp(kPa)
+    //pp(MPa)
+    pp /= 1000
+
+    //svp(MPa)
     let svp = sv - pp
     svp = Math.max(svp, 0)
 
     //svdry(kPa)
     let svdry = depth * cnst.assesment_rd //乾單位重(kN/m3)
+
+    //svdry(MPa)
+    svdry /= 1000
 
     return {
         sv,

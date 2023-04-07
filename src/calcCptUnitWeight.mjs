@@ -362,8 +362,7 @@ function calcCptUnitWeight(ltdt, rsatIni = null, opt = {}) {
     //add u0
     ltdt = map(ltdt, (v) => {
         //u0(MPa), 現地孔隙壓力
-        let u0 = intrpDefPp(v.depth) //u0(kPa)
-        u0 = u0 / 1000 //kPa -> MPa
+        let u0 = intrpDefPp(v.depth) //u0(MPa)
         v.u0 = u0
         return v
     })

@@ -5010,9 +5010,9 @@ let rowsIn = [
 let opt = {
     coe_a: 0.74,
     methodSmooth: 'none', //測試數據已使用averageIn95
-    intrpSvSvp: (depth, k, v, ltdt) => {
-        // console.log('intrpSvSvp', depth, k, v)
-        let sv = v.sv * 1000 //字串轉數字, 且單位為MPa得轉kPa(程式內會再統一成為MPa)
+    intrpSv: (depth, k, v, ltdt) => {
+        // console.log('intrpSv', depth, k, v)
+        let sv = v.sv //單位為MPa
         return {
             sv,
         }

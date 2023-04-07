@@ -3270,8 +3270,7 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
     }
 
     //u0(MPa), 現地孔隙壓力
-    let u0 = intrpDefPp(depth) //u0(kPa)
-    u0 = u0 / 1000 //kPa -> MPa
+    let u0 = intrpDefPp(depth) //u0(MPa)
 
     //2021版使用Icn檢查砂黏性土
     if (ver === '2021') {
@@ -4137,8 +4136,7 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
     }
 
     //u0(MPa), 現地孔隙壓力
-    let u0 = intrpDefPp(depth) //u0(kPa)
-    u0 = u0 / 1000 //kPa -> MPa
+    let u0 = intrpDefPp(depth) //u0(MPa)
 
     //轉換單位成為MPa
     let _sv = sv / 1000 //kPa -> MPa
@@ -4936,8 +4934,7 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
     }
 
     //u0(MPa), 現地孔隙壓力
-    let u0 = intrpDefPp(depth) //u0(kPa)
-    u0 = u0 / 1000 //kPa -> MPa
+    let u0 = intrpDefPp(depth) //u0(MPa)
 
     //轉換單位成為MPa
     let _sv = sv / 1000 //kPa -> MPa

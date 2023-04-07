@@ -99,10 +99,10 @@ function smooth(ltdt, opt = {}) {
 
 function stress(ltdt, opt = {}) {
 
-    //intrpSvSvp
-    let intrpSvSvp = get(opt, 'intrpSvSvp')
-    if (!isfun(intrpSvSvp)) {
-        intrpSvSvp = intrpDefSvSvp
+    //intrpSv
+    let intrpSv = get(opt, 'intrpSv')
+    if (!isfun(intrpSv)) {
+        intrpSv = intrpDefSvSvp
     }
 
     //intrpU0
@@ -119,13 +119,18 @@ function stress(ltdt, opt = {}) {
         let depth = pickData(v, 'depth')
 
         //sv(MPa), 總覆土應力(根據海床水平計算)
-        let svsvp = intrpSvSvp(depth, k, v, ltdt)
-        let sv = svsvp.sv / 1000 //kPa -> MPa, 只取內插的垂直總應力(垂直有效應力是扣靜止水壓), 後續扣掉CPT的超額孔隙水壓u2與靜止水壓u0才能得到垂直有效應力
+        let svsvp = intrpSv(depth, k, v, ltdt)
+        let sv = svsvp.sv //MPa, 只取內插的垂直總應力(垂直有效應力是扣靜止水壓), 後續扣掉CPT的超額孔隙水壓u2與靜止水壓u0才能得到垂直有效應力
+        if (isnum(sv)) {
+            sv = cdbl(sv)
+        }
         // console.log('sv', sv)
 
         //u0(MPa), 現地孔隙壓力(根據海床水平計算)
         let u0 = intrpU0(depth, k, v, ltdt)
-        u0 = u0 / 1000 //kPa -> MPa
+        if (isnum(u0)) {
+            u0 = cdbl(u0)
+        }
         // console.log('u0', u0)
 
         //u2(MPa), 錐體和摩擦袖管間孔隙水壓, 原數據已扣掉初始值(假設為靜水壓), 故視為基於海床水平的孔隙水壓
@@ -439,9 +444,9 @@ function calcCpt(ltdt, opt = {}) {
     // ]
     // opt.coe_a: 0.85,
     // opt.methodSmooth: 'none',
-    // opt.intrpSvSvp: (depth, k, v, ltdt) => {
-    //     // console.log('intrpSvSvp', depth, k, v)
-    //     let sv = v.sv //sv(kPa)
+    // opt.intrpSv: (depth, k, v, ltdt) => {
+    //     // console.log('intrpSv', depth, k, v)
+    //     let sv = v.sv //單位為MPa
     //     return {
     //         sv,
     //     }
