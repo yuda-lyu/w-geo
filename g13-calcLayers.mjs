@@ -1,8 +1,8 @@
 import fs from 'fs'
 import w from 'wsemi'
 import { calcCpt } from './src/calcCpt.mjs'
-// import { getKpSoilGroups } from './src/_soilGroup.mjs'
-// import { getKpSoilGroupsTn, calcLayers } from './src/calcLayers.mjs'
+import { getKpSoilGroups } from './src/_soilGroup.mjs'
+import { getKpSoilGroupsTn, calcLayers } from './src/calcLayers.mjs'
 
 
 let rowsInOri = [
