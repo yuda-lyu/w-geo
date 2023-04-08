@@ -211,7 +211,7 @@ function sortSoilGroupsByKey(items, key = 'key') {
 function getSoilGroupsT4() {
 
     //useTypes4
-    let useTypes4 = ['sand', 'silty-sand', 'silty-clay', 'clay']
+    let useTypes4 = ['sand', 'sandy-silt', 'clayey-silt', 'clay']
     useTypes4 = map(useTypes4, (v) => {
         return getSoilGroupByKV('key', v, 'nameEngineeringEng')
     })
