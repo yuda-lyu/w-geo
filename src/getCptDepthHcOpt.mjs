@@ -19,7 +19,7 @@ import getMarker from 'w-highcharts/src/getMarker.mjs'
 import getColor from 'w-highcharts/src/getColor.mjs'
 import { genHtText, genHtTextSub, genTextParentheses, getFontfamily } from './_hc.mjs'
 import { getIcInfor } from './_cpt.mjs'
-import { extractLtdtDepthAndData } from './mShare.mjs'
+import { extractLtdtDepthAndData } from './share.mjs'
 
 
 function getOption(optParam = {}) {
