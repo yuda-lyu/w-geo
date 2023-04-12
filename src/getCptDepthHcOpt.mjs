@@ -13,7 +13,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
 import cint from 'wsemi/src/cint.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
-import getConvertLocByChart from 'w-highcharts/src/getConvertLocByChart.mjs'
+import genSerie from 'w-highcharts/src/genSerie.mjs'
 import renderNoDataByChart from 'w-highcharts/src/renderNoDataByChart.mjs'
 import getMarker from 'w-highcharts/src/getMarker.mjs'
 import getColor from 'w-highcharts/src/getColor.mjs'
@@ -113,8 +113,8 @@ function getOption(optParam = {}) {
                 colorIndex = cint(v.colorIndex)
             }
 
-            //getConvertLocByChart
-            s = getConvertLocByChart(displayDataMode, v.name, v.data, colorIndex)
+            //genSerie
+            s = genSerie(displayDataMode, v.name, v.data, colorIndex)
 
             //dataPointsColor
             if (isestr(dataPointsColor)) {
@@ -156,7 +156,7 @@ function getOption(optParam = {}) {
         }
 
         // //s
-        // let s = getConvertLocByChart(displayDataMode, v.name, v.data)
+        // let s = genSerie(displayDataMode, v.name, v.data)
 
         // //noData
         // if (noData) {
