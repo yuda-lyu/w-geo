@@ -379,7 +379,7 @@ function getOption(optParam = {}) {
                 text: yLabel,
                 margin: 0,
                 // x: -10,
-                y: 15,
+                y: -5, //15
                 style: {
                     fontFamily: getFontfamily(),
                     fontSize: yLabelFontSize + 'pt',
@@ -428,7 +428,7 @@ function getOption(optParam = {}) {
                 // overflow: 'allow', //會遮蔽造成無法辨識數字
                 // distance: 50,
                 // padding: 0,
-                y: -10,
+                y: 5, //-10
                 style: {
                     fontSize: yTickLabelFontSize + 'px',
                     color: '#222',
