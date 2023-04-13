@@ -65,6 +65,7 @@ function getOption(optParam = {}) {
     let useLegend = get(optParam, 'useLegend', false)
     let useTooltip = get(optParam, 'useTooltip', true)
     let addStaticPP = get(optParam, 'addStaticPP', false)
+    let addFS1 = get(optParam, 'addFS1', false)
     let addIcRanges = get(optParam, 'addIcRanges', false)
 
     //margin
@@ -200,7 +201,7 @@ function getOption(optParam = {}) {
     if (addStaticPP) {
 
         //xmax
-        let xmax
+        let xmax = null
         if (isNumber(xLimMax)) {
             xmax = xLimMax
         }
@@ -224,6 +225,43 @@ function getOption(optParam = {}) {
         let s = {
             name: 'static pp', //預設沒開啟legend故不會顯示
             data: [[0, 0], [xmax, ppmax]],
+            lineWidth: 2,
+            color: '#f26',
+            marker: {
+                enabled: false,
+            },
+        }
+
+        //push
+        ltseries.push(s)
+
+    }
+
+    //addFS1
+    if (addFS1) {
+
+        //xmax
+        let xmax = null
+        if (isNumber(xLimMax)) {
+            xmax = xLimMax
+        }
+        // else if (isNumber(xSoftMax)) { //實際繪製FS=1線以指定xLimMax或實際數據最大值為準
+        //     xmax = xSoftMax
+        // }
+        else {
+            let psx = map(ltseries, (v) => {
+                // return map(v.data, 'x', null) //因需加速故點改為陣列
+                // return map(v.data, '1', null) //因需加速故點改為陣列
+                return map(v.data, '0', null) //因需加速故點改為陣列
+            })
+            psx = flattenDeep(psx)
+            xmax = max(psx)
+        }
+
+        //s
+        let s = {
+            name: 'FS=1', //預設沒開啟legend故不會顯示
+            data: [[0, 1], [xmax, 1]],
             lineWidth: 2,
             color: '#f26',
             marker: {
@@ -686,6 +724,34 @@ async function getCptDepthHcOpt(dataCPT, retKind = '', optParam = {}) {
     else if (retKind === 'Ram:Fr-Qt') {
         optRes = await core(dataCPT, 'iRamFrQt', { yLabel, xLabelPre, xLabelCht: 'Ramsey F<sub>r</sub>-Q<sub>t</sub>', xLabelEng: 'Zone index', xUnit: '', xLimMin: 0, xLimMax: 10, displayDataMode: 'dot point' })
     }
+    else if (retKind === 'cptHBF2021-CRR') {
+        optRes = await core(dataCPT, 'cptHBF2021-CRR', { yLabel, xLabelPre, xLabelCht: 'HBF(2021) CRR', xLabelEng: 'CRR', xUnit: '', xLimMin: 0, xLimMax: 2 })
+    }
+    else if (retKind === 'cptHBF2021-CSR') {
+        optRes = await core(dataCPT, 'cptHBF2021-CSR', { yLabel, xLabelPre, xLabelCht: 'HBF(2021) CSR', xLabelEng: 'CSR', xUnit: '' })
+    }
+    else if (retKind === 'cptHBF2021-FS') {
+        optRes = await core(dataCPT, 'cptHBF2021-FS', { yLabel, xLabelPre, xLabelCht: 'HBF(2021) FS', xLabelEng: 'FS', xUnit: '', xLimMin: 0, xLimMax: 2, addFS1: true })
+    }
+    else if (retKind === 'cptRobertson2009-CRR') {
+        optRes = await core(dataCPT, 'cptRobertson2009-CRR', { yLabel, xLabelPre, xLabelCht: 'Robertson(2009) CRR', xLabelEng: 'CRR', xUnit: '', xLimMin: 0, xLimMax: 2 })
+    }
+    else if (retKind === 'cptRobertson2009-CSR') {
+        optRes = await core(dataCPT, 'cptRobertson2009-CSR', { yLabel, xLabelPre, xLabelCht: 'Robertson(2009) CSR', xLabelEng: 'CSR', xUnit: '' })
+    }
+    else if (retKind === 'cptRobertson2009-FS') {
+        optRes = await core(dataCPT, 'cptRobertson2009-FS', { yLabel, xLabelPre, xLabelCht: 'Robertson(2009) FS', xLabelEng: 'FS', xUnit: '', xLimMin: 0, xLimMax: 2, addFS1: true })
+    }
+    else if (retKind === 'cptKuAndJuang2012-CRR') {
+        optRes = await core(dataCPT, 'cptKuAndJuang2012-CRR', { yLabel, xLabelPre, xLabelCht: 'Ku & Juang(2012) CRR', xLabelEng: 'CRR', xUnit: '', xLimMin: 0, xLimMax: 2 })
+    }
+    else if (retKind === 'cptKuAndJuang2012-CSR') {
+        optRes = await core(dataCPT, 'cptKuAndJuang2012-CSR', { yLabel, xLabelPre, xLabelCht: 'Ku & Juang(2012) CSR', xLabelEng: 'CSR', xUnit: '' })
+    }
+    else if (retKind === 'cptKuAndJuang2012-FS') {
+        optRes = await core(dataCPT, 'cptKuAndJuang2012-FS', { yLabel, xLabelPre, xLabelCht: 'Ku & Juang(2012) FS', xLabelEng: 'FS', xUnit: '', xLimMin: 0, xLimMax: 2, addFS1: true })
+    }
+
     else {
         throw new Error(`invalid retKind[${retKind}]`)
     }

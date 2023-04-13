@@ -1321,6 +1321,9 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
 
     //CRR
     CRR = CRR75 * MSF
+    if (isNumber(CRR)) {
+        CRR = Math.min(CRR, 1e20)
+    }
 
     //CSR
     CSR = null
@@ -1329,6 +1332,9 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
     }
     else {
         CSR = 1e20
+    }
+    if (isNumber(CSR)) {
+        CSR = Math.min(CSR, 1e20)
     }
 
     //FS
@@ -1693,6 +1699,9 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
 
     //CRR
     CRR = CRR75 * MSF
+    if (isNumber(CRR)) {
+        CRR = Math.min(CRR, 1e20)
+    }
 
     //CSR
     CSR = null
@@ -1701,6 +1710,9 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
     }
     else {
         CSR = 1e20
+    }
+    if (isNumber(CSR)) {
+        CSR = Math.min(CSR, 1e20)
     }
 
     //FS
@@ -2050,6 +2062,9 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
 
     //CRR
     CRR = CRR75 * MSF
+    if (isNumber(CRR)) {
+        CRR = Math.min(CRR, 1e20)
+    }
 
     //CSR
     CSR = null
@@ -2058,6 +2073,9 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
     }
     else {
         CSR = 1e20
+    }
+    if (isNumber(CSR)) {
+        CSR = Math.min(CSR, 1e20)
     }
 
     //FS
@@ -2582,6 +2600,9 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
 
     //CRR
     CRR = cw * RL
+    if (isNumber(CRR)) {
+        CRR = Math.min(CRR, 1e20)
+    }
 
     //khc
     let khc = PGA //暫時依照國震建議khc=PGA (2021/02/03)
@@ -2593,6 +2614,9 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
     }
     else {
         CSR = 1e20
+    }
+    if (isNumber(CSR)) {
+        CSR = Math.min(CSR, 1e20)
     }
 
     //FS
@@ -2940,6 +2964,9 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
 
     //CRR
     CRR = a * Cr * (16 * Math.sqrt(Na) / 100 + (16 * Math.sqrt(Na) / Cs) ** n)
+    if (isNumber(CRR)) {
+        CRR = Math.min(CRR, 1e20)
+    }
 
     //CSR
     CSR = null
@@ -2948,6 +2975,9 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
     }
     else {
         CSR = 1e20
+    }
+    if (isNumber(CSR)) {
+        CSR = Math.min(CSR, 1e20)
     }
 
     //FS
@@ -3387,6 +3417,9 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
 
     //CRR
     CRR = CRR75 * MSF
+    if (isNumber(CRR)) {
+        CRR = Math.min(CRR, 1e20)
+    }
 
     //CSR
     CSR = null
@@ -3395,6 +3428,9 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
     }
     else {
         CSR = 1e20
+    }
+    if (isNumber(CSR)) {
+        CSR = Math.min(CSR, 1e20)
     }
 
     //FS
@@ -3786,6 +3822,9 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpU
 
     //CRR
     CRR = CRR75 * MSF
+    if (isNumber(CRR)) {
+        CRR = Math.min(CRR, 1e20)
+    }
 
     //CSR
     CSR = null
@@ -3794,6 +3833,9 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpU
     }
     else {
         CSR = 1e20
+    }
+    if (isNumber(CSR)) {
+        CSR = Math.min(CSR, 1e20)
     }
 
     //FS
@@ -4265,6 +4307,9 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
 
     //CRR
     CRR = CRR75 * MSF
+    if (isNumber(CRR)) {
+        CRR = Math.min(CRR, 1e20)
+    }
 
     //CSR
     CSR = null
@@ -4273,6 +4318,9 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
     }
     else {
         CSR = 1e20
+    }
+    if (isNumber(CSR)) {
+        CSR = Math.min(CSR, 1e20)
     }
 
     //FS
@@ -4619,6 +4667,9 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, qc, fs, u2, svp, svpU
     if (isNumber(CRR75) && isNumber(MSF)) {
         CRR = CRR75 * MSF
     }
+    if (isNumber(CRR)) {
+        CRR = Math.min(CRR, 1e20)
+    }
 
     //CSR
     CSR = null
@@ -4627,6 +4678,9 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, qc, fs, u2, svp, svpU
     }
     else {
         CSR = 1e20
+    }
+    if (isNumber(CSR)) {
+        CSR = Math.min(CSR, 1e20)
     }
 
     //FS
@@ -5001,6 +5055,7 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
     let rd_beta = 0.106 + 0.118 * Math.sin(depth / 11.28 + 5.142)
     rrd = Math.exp(rd_alpha + rd_beta * Mw)
     rrd = Math.min(rrd, 1)
+    // console.log('rrd',rrd,'rd_alpha',rd_alpha,'rd_beta',rd_beta,'Mw',Mw)
 
     //Icbj
     Icbj = null
@@ -5017,6 +5072,10 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
     let B = 0.909 * Icbj ** 3 - 7.47 * Icbj + 19.28
     let C = 0.059 + 0.015 * Icbj ** 2
     CRR75 = 0.05 + Math.exp(A + B * (useQt / 100) ** C)
+    if (isNumber(CRR75)) {
+        CRR75 = Math.min(CRR75, 1e20) //CRR75可能超大Infinity, 為避免後續FS也變成Infinity故修改至1e20
+    }
+    // console.log('depth',depth,'CRR75',CRR75,'A',A,'B',B,'C',C,'Icbj',Icbj,'useQt',useQt)
 
     //Csigma
     Csigma = null
@@ -5041,6 +5100,10 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
 
     //CRR
     CRR = CRR75 * MSF * Ksigma
+    if (isNumber(CRR)) {
+        CRR = Math.min(CRR, 1e20)
+    }
+    // console.log('depth',depth,'CRR',CRR,'CRR75',CRR75,'MSF',MSF,'Ksigma',Ksigma,'Csigma',Csigma,'svpUsual',svpUsual,'Pa',Pa,'Math.log(svpUsual / Pa)',Math.log(svpUsual / Pa))
 
     //CSR
     CSR = null
@@ -5050,6 +5113,10 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
     else {
         CSR = 1e20
     }
+    if (isNumber(CSR)) {
+        CSR = Math.min(CSR, 1e20)
+    }
+    // console.log('depth',depth,'CSR',CSR,'sv',sv,'svpDesign',svpDesign,'rrd',rrd,'PGA',PGA)
 
     //FS
     if (isNumber(CSR) && CSR > 0) {
@@ -5058,6 +5125,7 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
     if (isNumber(FS) && FS > 10) {
         FS = 10
     }
+    // console.log('depth',depth,'FS',FS)
 
     //check
     if (CRR < 0) {
@@ -5369,6 +5437,9 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpU
 
     //CRR
     CRR = CRR75 * MSF
+    if (isNumber(CRR)) {
+        CRR = Math.min(CRR, 1e20)
+    }
 
     //CSR
     CSR = null
@@ -5377,6 +5448,9 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpU
     }
     else {
         CSR = 1e20
+    }
+    if (isNumber(CSR)) {
+        CSR = Math.min(CSR, 1e20)
     }
 
     //FS
@@ -5881,6 +5955,9 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
 
     //CRR
     CRR = CRR75 * MSF
+    if (isNumber(CRR)) {
+        CRR = Math.min(CRR, 1e20)
+    }
 
     //CSR
     CSR = null
@@ -5889,6 +5966,9 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     }
     else {
         CSR = 1e20
+    }
+    if (isNumber(CSR)) {
+        CSR = Math.min(CSR, 1e20)
     }
 
     //FS
@@ -6047,6 +6127,9 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
 
     //CRR
     CRR = CRR75 * MSF
+    if (isNumber(CRR)) {
+        CRR = Math.min(CRR, 1e20)
+    }
 
     //CSR
     CSR = null
@@ -6055,6 +6138,9 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     }
     else {
         CSR = 1e20
+    }
+    if (isNumber(CSR)) {
+        CSR = Math.min(CSR, 1e20)
     }
 
     //FS
@@ -6213,6 +6299,9 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
 
     //CRR
     CRR = CRR75 * MSF
+    if (isNumber(CRR)) {
+        CRR = Math.min(CRR, 1e20)
+    }
 
     //CSR
     CSR = null
@@ -6221,6 +6310,9 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     }
     else {
         CSR = 1e20
+    }
+    if (isNumber(CSR)) {
+        CSR = Math.min(CSR, 1e20)
     }
 
     //FS
