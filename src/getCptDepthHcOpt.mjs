@@ -38,24 +38,27 @@ function getOption(optParam = {}) {
 
     let yLabel = get(optParam, 'xLabel', '')
     let yLabelFontSize = get(optParam, 'xLabelFontSize', 12)
-    let yTickLabelFontSize = get(optParam, 'xTickLabelFontSize', 9)
+    let yTickLabelFontSize = get(optParam, 'xTickLabelFontSize', 12)
     // let yUnit = get(optParam, 'xUnit', '') //於調用處已併入label故不使用
     let yDig = get(optParam, 'xDig', undefined)
     let yLimMin = get(optParam, 'xLimMin', undefined)
     let yLimMax = get(optParam, 'xLimMax', undefined)
     let ySoftMin = get(optParam, 'xSoftMin', undefined)
     let ySoftMax = get(optParam, 'xSoftMax', undefined)
+    let useAutoYSoftMax = get(optParam, 'useAutoXSoftMax', true)
+    let ratioAutoYSoftMax = get(optParam, 'ratioAutoXSoftMax', 1.5)
     let yTickInterval = get(optParam, 'xTickInterval', undefined)
     let xLabel = get(optParam, 'yLabel', '')
     let xLabelFontSize = get(optParam, 'yLabelFontSize', 12)
-    let xTickLabelFontSize = get(optParam, 'yTickLabelFontSize', 9)
+    let xTickLabelFontSize = get(optParam, 'yTickLabelFontSize', 12)
     // let xUnit = get(optParam, 'yUnit', '') //於調用處已併入label故不使用
     let xDig = get(optParam, 'yDig', undefined)
     let xLimMin = get(optParam, 'yLimMin', 0) //深度最小預設為0
     let xLimMax = get(optParam, 'yLimMax', undefined)
+    let xSoftMin = get(optParam, 'ySoftMin', undefined)
     let xSoftMax = get(optParam, 'ySoftMax', undefined)
-    yTickLabelFontSize = 12
-    xTickLabelFontSize = 12
+    let useAutoXSoftMax = get(optParam, 'useAutoYSoftMax', true)
+    let ratioAutoXSoftMax = get(optParam, 'ratioAutoYSoftMax', 1.1)
 
     let condenseXLabel = get(optParam, 'condenseYLabel', false) //外部y代表深度
     let displayDataMode = get(optParam, 'displayDataMode', 'line')
@@ -170,23 +173,27 @@ function getOption(optParam = {}) {
     })
 
     //xSoftMax, 有給予xSoftMax就直接使用, 若未給予xLimMax才自動計算xSoftMax
-    if (!isNumber(xSoftMax) && !isNumber(xLimMax)) {
+    // console.log(xLabel, 'useAutoXSoftMax', useAutoXSoftMax, 'ratioAutoXSoftMax', ratioAutoXSoftMax, 'xSoftMax', xSoftMax, 'xLimMax', xLimMax)
+    if (useAutoXSoftMax && !isNumber(xSoftMax) && !isNumber(xLimMax)) {
         let psx = map(ltseries, (v) => {
             return map(v.data, 0)
         })
         psx = flattenDeep(psx)
         let psxMax = max(psx)
-        xSoftMax = psxMax * 1.5
+        xSoftMax = psxMax * ratioAutoXSoftMax
+        // console.log('calc xSoftMax', xSoftMax, 'psxMax', psxMax)
     }
 
     //ySoftMax, 有給予ySoftMax就直接使用, 若未給予yLimMax才自動計算ySoftMax
-    if (!isNumber(ySoftMax) && !isNumber(yLimMax)) {
+    // console.log(xLabel, 'useAutoYSoftMax', useAutoYSoftMax, 'ratioAutoYSoftMax', ratioAutoYSoftMax, 'ySoftMax', ySoftMax, 'yLimMax', yLimMax)
+    if (useAutoYSoftMax && !isNumber(ySoftMax) && !isNumber(yLimMax)) {
         let psy = map(ltseries, (v) => {
             return map(v.data, 1)
         })
         psy = flattenDeep(psy)
         let psyMax = max(psy)
-        ySoftMax = psyMax * 1.5
+        ySoftMax = psyMax * ratioAutoYSoftMax
+        // console.log('calc ySoftMax', ySoftMax, 'psyMax', psyMax)
     }
 
     //addStaticPP
@@ -197,9 +204,9 @@ function getOption(optParam = {}) {
         if (isNumber(xLimMax)) {
             xmax = xLimMax
         }
-        else if (isNumber(xSoftMax)) {
-            xmax = xSoftMax
-        }
+        // else if (isNumber(xSoftMax)) { //實際繪製PP線以指定xLimMax或實際數據最大值為準
+        //     xmax = xSoftMax
+        // }
         else {
             let psx = map(ltseries, (v) => {
                 // return map(v.data, 'x', null) //因需加速故點改為陣列
@@ -345,6 +352,7 @@ function getOption(optParam = {}) {
             minorTickLength: 5,
             minorTickWidth: 1,
 
+            softMin: xSoftMin,
             softMax: xSoftMax,
 
             labels: {
@@ -644,6 +652,9 @@ async function getCptDepthHcOpt(dataCPT, retKind = '', optParam = {}) {
     }
     else if (retKind === 'Bq') {
         optRes = await core(dataCPT, 'Bq', { yLabel, xLabelPre, xLabelCht: '超額孔隙水壓比 B<sub>q</sub>', xLabelEng: 'Pore pressure ratio', xUnit: '', xLimMin: -1, xLimMax: 3 })
+    }
+    else if (retKind === 'rsat') {
+        optRes = await core(dataCPT, 'rsat', { yLabel, xLabelPre, xLabelCht: '飽和單位重 γ<sub>sat</sub>', xLabelEng: 'Saturated unit weight', xUnit: 'kN/m³', xLimMin: 16, xLimMax: 22, xTickInterval: 2 })
     }
     else if (retKind === 'Ic') {
         optRes = await core(dataCPT, 'Ic', { yLabel, xLabelPre, xLabelCht: '土壤行為分類指數 I<sub>c</sub>', xLabelEng: 'Soil behaviour type index', xUnit: '', xLimMin: 1, xLimMax: 5, xTickInterval: 1, addIcRanges: true })

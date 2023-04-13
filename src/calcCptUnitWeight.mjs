@@ -134,7 +134,7 @@ function estUnitWeightCore(ltdt, coe_a, opt = {}) {
     //rdiff
     let rdiff = get(opt, 'rdiff')
     if (!isnum(rdiff)) {
-        rdiff = 3 //預設rd小rsat為3(kN/m3)
+        rdiff = 3 //預設初始rsat-rd=3(kN/m3)
     }
     rdiff = cdbl(rdiff)
 
