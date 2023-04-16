@@ -3057,6 +3057,7 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
     //HBF(ver=2012,2017,2021)
     //若有使用Robertson(1986)之後版本, qc皆視為使用qt(校正後qc)
     let err = []
+    let msg = ''
     let rc = {}
     let MSF = ''
     let rrd = ''
@@ -3082,7 +3083,7 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
         // if (isnum(qc1Ncs)) {
         //     qc1Ncs = qc1Ncs / 1000 / cvru //kg/cm2 -> MPa
         // }
-        let r = { ...rc, rrd, Ic, Icn, qc1N, Kc, qc1Ncs, CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        let r = { ...rc, rrd, Ic, Icn, qc1N, Kc, qc1Ncs, CRR75, CRR, CSR, FS, msg, err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -3154,11 +3155,13 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
 
         //非液化: 地下水位以上
         if (depth < waterLevelDesign) {
+            msg = `判定非液化: 樣本深度[${depth}]位於地下水位[${waterLevelDesign}]之上`
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
+            msg = `判定非液化: 樣本深度[${depth}]大於20m`
             noLique = true
         }
 
@@ -3374,6 +3377,7 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
         //非液化: 若是useIc大於2.6則判定為非液化, 國震簡訊120期(2021)
         if (useIc > 2.6) {
             // err = [] //第二階段不清除錯誤
+            msg = `判定非液化: 判定用Ic[${useIc}]>2.6`
             CRR = '-'
             CSR = '-'
             FS = 10
@@ -3420,6 +3424,7 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
     //非液化: 若是qc1Ncs大於180則直接判定為非液化
     if (qc1Ncs >= 180) {
         // err = [] //第二階段不清除錯誤
+        msg = `判定非液化: qc1Ncs[${qc1Ncs}]>=180`
         CRR = '-'
         CSR = '-'
         FS = 10
@@ -3465,6 +3470,9 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
     if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
+    }
+    if (FS >= 1) {
+        msg = `判定非液化: FS[${FS}]>=1`
     }
 
     return ret()
@@ -5485,41 +5493,6 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     svpUsual = svpUsual * cvru //kPa -> kg/cm2
     svpDesign = svpDesign * cvru //kPa -> kg/cm2
     qt = qt * 1000 * cvru //MPa -> kg/cm2
-
-    // //轉換單位成為kg/cm2
-    // sv = sv * cvru //kPa -> kg/cm2
-    // svpUsual = svpUsual * cvru //kPa -> kg/cm2
-    // svpDesign = svpDesign * cvru //kPa -> kg/cm2
-    // qt = qt * 1000 * cvru //MPa -> kg/cm2
-    // fs = fs * 1000 * cvru //MPa -> kg/cm2
-    // u2 = u2 * 1000 * cvru //MPa -> kg/cm2
-
-    // //CPT分析
-    // let useCnLeq = true
-    // rc = cptCommon(depth, coe_a, qc, fs, u2, sv, svpUsual, useCnLeq)
-    // Ic = get(rc, 'Ic', null)
-    // Icn = get(rc, 'Icn', null)
-    // qt = get(rc, 'qt', null)
-
-    // //check
-    // if (!isnum(qt)) {
-    //     err.push(`qt${brk(qt)}非數字`)
-    //     return ret() //重大錯誤直接報錯結束
-    // }
-
-    // //轉換單位成為kg/cm2
-    // sv = sv * cvru //kPa -> kg/cm2
-    // svpUsual = svpUsual * cvru //kPa -> kg/cm2
-    // svpDesign = svpDesign * cvru //kPa -> kg/cm2
-    // qt = qt * 1000 * cvru //MPa -> kg/cm2
-
-    // //轉換單位成為kg/cm2
-    // sv = sv * cvru //kPa -> kg/cm2
-    // svpUsual = svpUsual * cvru //kPa -> kg/cm2
-    // svpDesign = svpDesign * cvru //kPa -> kg/cm2
-    // qt = qt * 1000 * cvru //MPa -> kg/cm2
-    // fs = fs * 1000 * cvru //MPa -> kg/cm2
-    // u2 = u2 * 1000 * cvru //MPa -> kg/cm2
 
     //MSF, 規模修正因子
     MSF = (Mw / 7.5) ** (-2.56)
