@@ -178,7 +178,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line6943">line 6943</a>
+        <a href="calcLiquefaction.mjs.html">calcLiquefaction.mjs</a>, <a href="calcLiquefaction.mjs.html#line7183">line 7183</a>
     </li></ul></dd>
     
 
@@ -1492,7 +1492,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="calcVerticalStress.mjs.html">calcVerticalStress.mjs</a>, <a href="calcVerticalStress.mjs.html#line506">line 506</a>
+        <a href="calcVerticalStress.mjs.html">calcVerticalStress.mjs</a>, <a href="calcVerticalStress.mjs.html#line557">line 557</a>
     </li></ul></dd>
     
 
@@ -1539,7 +1539,7 @@
 
     <h5 class="h5-examples">Example</h5>
     
-    <pre class="prettyprint"><code>let waterLevelUsuallet waterLevelDesignlet rowslet rowsNewwaterLevelUsual = 0waterLevelDesign = 0rows = [    {        depthStart: 0,        depthEnd: 5,        rsat: 18, //kN/m3    },    {        depthStart: 5,        depthEnd: 10,        rsat: 18, //kN/m3    },    {        depthStart: 10,        depthEnd: 20,        rsat: 18, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })console.log(rowsNew, (18 - 9.81) * 15) //地下 15(m) 處之垂直有效應力為 122.85(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 5,//     rsat: 18,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 45,//     svpUsual: 20.474999999999998,//     svpDesign: 20.474999999999998,//     depth: 2.5//   },//   {//     depthStart: 5,//     depthEnd: 10,//     rsat: 18,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 135,//     svpUsual: 61.425,//     svpDesign: 61.425,//     depth: 7.5//   },//   {//     depthStart: 10,//     depthEnd: 20,//     rsat: 18,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 270,//     svpUsual: 122.85,//     svpDesign: 122.85,//     depth: 15//   }// ] 122.85waterLevelUsual = 0waterLevelDesign = 0rows = [    {        depthStart: 0,        depthEnd: 5,        rsat: 18, //kN/m3    },    {        depthStart: 5,        depthEnd: 10,        rsat: 19, //kN/m3    },    {        depthStart: 10,        depthEnd: 20,        rsat: 20, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })console.log(rowsNew, (19 - 9.81) * 15) //地下 15(m) 處之垂直有效應力為 137.85(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 5,//     rsat: 18,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 45,//     svpUsual: 20.474999999999998,//     svpDesign: 20.474999999999998,//     depth: 2.5//   },//   {//     depthStart: 5,//     depthEnd: 10,//     rsat: 19,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 137.5,//     svpUsual: 63.925,//     svpDesign: 63.925,//     depth: 7.5//   },//   {//     depthStart: 10,//     depthEnd: 20,//     rsat: 20,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 285,//     svpUsual: 137.85,//     svpDesign: 137.85,//     depth: 15//   }// ] 137.85waterLevelUsual = 20waterLevelDesign = 20rows = [    {        depthStart: 0,        depthEnd: 5,        rd: 18, //kN/m3    },    {        depthStart: 5,        depthEnd: 10,        rd: 18, //kN/m3    },    {        depthStart: 10,        depthEnd: 20,        rd: 18, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })console.log(rowsNew, (18) * 15) //地下 15(m) 處之垂直總應力與垂直有效應力為 270(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 5,//     rd: 18,//     waterLevelUsual: 20,//     waterLevelDesign: 20,//     sv: 45,//     svpUsual: 45,//     svpDesign: 45,//     depth: 2.5//   },//   {//     depthStart: 5,//     depthEnd: 10,//     rd: 18,//     waterLevelUsual: 20,//     waterLevelDesign: 20,//     sv: 135,//     svpUsual: 135,//     svpDesign: 135,//     depth: 7.5//   },//   {//     depthStart: 10,//     depthEnd: 20,//     rd: 18,//     waterLevelUsual: 20,//     waterLevelDesign: 20,//     sv: 270,//     svpUsual: 270,//     svpDesign: 270,//     depth: 15//   }// ] 270waterLevelUsual = 3waterLevelDesign = 3rows = [    {        depthStart: 0,        depthEnd: 3,        rd: 18, //kN/m3    },    {        depthStart: 3,        depthEnd: 11,        rsat: 20, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })console.log(rowsNew, 18 * 3 + (20 * 4 - 9.81 * 4)) //地下 7(m) 處之垂直有效應力為 94.76(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 3,//     rd: 18,//     waterLevelUsual: 3,//     waterLevelDesign: 3,//     sv: 27,//     svpUsual: 27,//     svpDesign: 27,//     depth: 1.5//   },//   {//     depthStart: 3,//     depthEnd: 11,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 3,//     sv: 134,//     svpUsual: 94.75999999999999,//     svpDesign: 94.75999999999999,//     depth: 7//   }// ] 94.75999999999999waterLevelUsual = 3waterLevelDesign = 3rows = [    {        depthStart: 0,        depthEnd: 1,        rd: 18, //kN/m3    },    {        depthStart: 1,        depthEnd: 5,        rd: 18, //kN/m3        rsat: 20, //kN/m3    },    {        depthStart: 5,        depthEnd: 9,        rsat: 20, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })console.log(rowsNew, 18 * 3 + (20 * 4 - 9.81 * 4)) //地下 7(m) 處之垂直有效應力為 94.76(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 1,//     rd: 18,//     waterLevelUsual: 3,//     waterLevelDesign: 3,//     sv: 9,//     svpUsual: 9,//     svpDesign: 9,//     depth: 0.5//   },//   {//     depthStart: 1,//     depthEnd: 5,//     rd: 18,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 3,//     sv: 56,//     svpUsual: 56,//     svpDesign: 56,//     depth: 3//   },//   {//     depthStart: 5,//     depthEnd: 9,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 3,//     sv: 134,//     svpUsual: 94.75999999999999,//     svpDesign: 94.75999999999999,//     depth: 7//   }// ] 94.75999999999999waterLevelUsual = 3waterLevelDesign = 0rows = [    {        depthStart: 0,        depthEnd: 1,        rd: 18, //kN/m3        rsat: 20, //kN/m3    },    {        depthStart: 1,        depthEnd: 5,        rd: 18, //kN/m3        rsat: 20, //kN/m3    },    {        depthStart: 5,        depthEnd: 9,        rsat: 20, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })console.log(rowsNew, 18 * 3 + (20 * 4 - 9.81 * 4), (20 - 9.81) * 7) //地下 7(m) 處之常時垂直有效應力為 94.76(kN/m2), 設計垂直有效應力為 71.33(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 1,//     rd: 18,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 0,//     sv: 9,//     svpUsual: 9,//     svpDesign: 5.095,//     depth: 0.5//   },//   {//     depthStart: 1,//     depthEnd: 5,//     rd: 18,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 0,//     sv: 56,//     svpUsual: 56,//     svpDesign: 30.57,//     depth: 3//   },//   {//     depthStart: 5,//     depthEnd: 9,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 0,//     sv: 134,//     svpUsual: 94.75999999999999,//     svpDesign: 71.33,//     depth: 7//   }// ] 94.75999999999999 71.33</code></pre>
+    <pre class="prettyprint"><code>let waterLevelUsuallet waterLevelDesignlet rowslet rowsNewwaterLevelUsual = 0waterLevelDesign = 0rows = [    {        depthStart: 0,        depthEnd: 5,        rsat: 18, //kN/m3    },    {        depthStart: 5,        depthEnd: 10,        rsat: 18, //kN/m3    },    {        depthStart: 10,        depthEnd: 20,        rsat: 18, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })console.log(rowsNew, (18 - 9.81) * 15) //地下 15(m) 處之垂直有效應力為 122.85(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 5,//     rsat: 18,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 45,//     svpUsual: 20.474999999999998,//     svpDesign: 20.474999999999998,//     depth: 2.5//   },//   {//     depthStart: 5,//     depthEnd: 10,//     rsat: 18,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 135,//     svpUsual: 61.425,//     svpDesign: 61.425,//     depth: 7.5//   },//   {//     depthStart: 10,//     depthEnd: 20,//     rsat: 18,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 270,//     svpUsual: 122.85,//     svpDesign: 122.85,//     depth: 15//   }// ] 122.85waterLevelUsual = 0waterLevelDesign = 0rows = [    {        depthStart: 0,        depthEnd: 5,        rsat: 18, //kN/m3    },    {        depthStart: 5,        depthEnd: 10,        rsat: 19, //kN/m3    },    {        depthStart: 10,        depthEnd: 20,        rsat: 20, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })console.log(rowsNew, (19 - 9.81) * 15) //地下 15(m) 處之垂直有效應力為 137.85(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 5,//     rsat: 18,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 45,//     svpUsual: 20.474999999999998,//     svpDesign: 20.474999999999998,//     depth: 2.5//   },//   {//     depthStart: 5,//     depthEnd: 10,//     rsat: 19,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 137.5,//     svpUsual: 63.925,//     svpDesign: 63.925,//     depth: 7.5//   },//   {//     depthStart: 10,//     depthEnd: 20,//     rsat: 20,//     waterLevelUsual: 0,//     waterLevelDesign: 0,//     sv: 285,//     svpUsual: 137.85,//     svpDesign: 137.85,//     depth: 15//   }// ] 137.85waterLevelUsual = 20waterLevelDesign = 20rows = [    {        depthStart: 0,        depthEnd: 5,        rd: 18, //kN/m3    },    {        depthStart: 5,        depthEnd: 10,        rd: 18, //kN/m3    },    {        depthStart: 10,        depthEnd: 20,        rd: 18, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })console.log(rowsNew, (18) * 15) //地下 15(m) 處之垂直總應力與垂直有效應力為 270(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 5,//     rd: 18,//     waterLevelUsual: 20,//     waterLevelDesign: 20,//     sv: 45,//     svpUsual: 45,//     svpDesign: 45,//     depth: 2.5//   },//   {//     depthStart: 5,//     depthEnd: 10,//     rd: 18,//     waterLevelUsual: 20,//     waterLevelDesign: 20,//     sv: 135,//     svpUsual: 135,//     svpDesign: 135,//     depth: 7.5//   },//   {//     depthStart: 10,//     depthEnd: 20,//     rd: 18,//     waterLevelUsual: 20,//     waterLevelDesign: 20,//     sv: 270,//     svpUsual: 270,//     svpDesign: 270,//     depth: 15//   }// ] 270waterLevelUsual = 3waterLevelDesign = 3rows = [    {        depthStart: 0,        depthEnd: 3,        rd: 18, //kN/m3    },    {        depthStart: 3,        depthEnd: 11,        rsat: 20, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })console.log(rowsNew, 18 * 3 + (20 * 4 - 9.81 * 4)) //地下 7(m) 處之垂直有效應力為 94.76(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 3,//     rd: 18,//     waterLevelUsual: 3,//     waterLevelDesign: 3,//     sv: 27,//     svpUsual: 27,//     svpDesign: 27,//     depth: 1.5//   },//   {//     depthStart: 3,//     depthEnd: 11,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 3,//     sv: 134,//     svpUsual: 94.75999999999999,//     svpDesign: 94.75999999999999,//     depth: 7//   }// ] 94.75999999999999waterLevelUsual = 3waterLevelDesign = 3rows = [    {        depthStart: 0,        depthEnd: 1,        rd: 18, //kN/m3    },    {        depthStart: 1,        depthEnd: 5,        rd: 18, //kN/m3        rsat: 20, //kN/m3    },    {        depthStart: 5,        depthEnd: 9,        rsat: 20, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })console.log(rowsNew, 18 * 3 + (20 * 4 - 9.81 * 4)) //地下 7(m) 處之垂直有效應力為 94.76(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 1,//     rd: 18,//     waterLevelUsual: 3,//     waterLevelDesign: 3,//     sv: 9,//     svpUsual: 9,//     svpDesign: 9,//     depth: 0.5//   },//   {//     depthStart: 1,//     depthEnd: 5,//     rd: 18,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 3,//     sv: 56,//     svpUsual: 56,//     svpDesign: 56,//     depth: 3//   },//   {//     depthStart: 5,//     depthEnd: 9,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 3,//     sv: 134,//     svpUsual: 94.75999999999999,//     svpDesign: 94.75999999999999,//     depth: 7//   }// ] 94.75999999999999waterLevelUsual = 3waterLevelDesign = 0rows = [    {        depthStart: 0,        depthEnd: 1,        rd: 18, //kN/m3        rsat: 20, //kN/m3    },    {        depthStart: 1,        depthEnd: 5,        rd: 18, //kN/m3        rsat: 20, //kN/m3    },    {        depthStart: 5,        depthEnd: 9,        rsat: 20, //kN/m3    },]rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })console.log(rowsNew, 18 * 3 + (20 * 4 - 9.81 * 4), (20 - 9.81) * 7) //地下 7(m) 處之常時垂直有效應力為 94.76(kN/m2), 設計垂直有效應力為 71.33(kN/m2)// => [//   {//     depthStart: 0,//     depthEnd: 1,//     rd: 18,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 0,//     sv: 9,//     svpUsual: 9,//     svpDesign: 5.095,//     depth: 0.5//   },//   {//     depthStart: 1,//     depthEnd: 5,//     rd: 18,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 0,//     sv: 56,//     svpUsual: 56,//     svpDesign: 30.57,//     depth: 3//   },//   {//     depthStart: 5,//     depthEnd: 9,//     rsat: 20,//     waterLevelUsual: 3,//     waterLevelDesign: 0,//     sv: 134,//     svpUsual: 94.75999999999999,//     svpDesign: 71.33,//     depth: 7//   }// ] 94.75999999999999 71.33</code></pre>
 
 
 
@@ -5446,7 +5446,7 @@
 
     
 
-    <h4 class="name" id=".sptHBF"><span class="type-signature type-signature-static">(static) </span>sptHBF<span class="signature">(row)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".sptHBF"><span class="type-signature type-signature-static">(static) </span>sptHBF<span class="signature">(row, row[keyDepth)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -5743,10 +5743,17 @@
         </tr>
 
     
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
 
         <tr>
             
-                <td class="name"><code>depth</code></td>
+                <td class="name"><code>row[keyDepth</code></td>
             
 
             <td class="type">
@@ -5760,19 +5767,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本所在中點深度數字，單位m</p></td>
@@ -5782,7 +5777,7 @@
 
         <tr>
             
-                <td class="name"><code>N60</code></td>
+                <td class="name"><code>row.N60</code></td>
             
 
             <td class="type">
@@ -5796,19 +5791,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本N60數字</p></td>
@@ -5818,7 +5801,7 @@
 
         <tr>
             
-                <td class="name"><code>FC</code></td>
+                <td class="name"><code>row.FC</code></td>
             
 
             <td class="type">
@@ -5832,19 +5815,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本細粒料含量數字，單位%</p></td>
@@ -5854,7 +5825,7 @@
 
         <tr>
             
-                <td class="name"><code>PI</code></td>
+                <td class="name"><code>row.PI</code></td>
             
 
             <td class="type">
@@ -5868,19 +5839,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入塑性指數數字，單位%</p></td>
@@ -5890,7 +5849,7 @@
 
         <tr>
             
-                <td class="name"><code>sv</code></td>
+                <td class="name"><code>row.sv</code></td>
             
 
             <td class="type">
@@ -5904,19 +5863,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本中點深度之垂直總應力數字，單位(kN/m2)</p></td>
@@ -5926,7 +5873,7 @@
 
         <tr>
             
-                <td class="name"><code>svpUsual</code></td>
+                <td class="name"><code>row.svpUsual</code></td>
             
 
             <td class="type">
@@ -5940,19 +5887,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)</p></td>
@@ -5962,7 +5897,7 @@
 
         <tr>
             
-                <td class="name"><code>svpDesign</code></td>
+                <td class="name"><code>row.svpDesign</code></td>
             
 
             <td class="type">
@@ -5976,19 +5911,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)</p></td>
@@ -5998,7 +5921,7 @@
 
         <tr>
             
-                <td class="name"><code>PGA</code></td>
+                <td class="name"><code>row.PGA</code></td>
             
 
             <td class="type">
@@ -6012,19 +5935,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入設計地表最大水平加速度數字，單位(g)</p></td>
@@ -6034,7 +5945,7 @@
 
         <tr>
             
-                <td class="name"><code>Mw</code></td>
+                <td class="name"><code>row.Mw</code></td>
             
 
             <td class="type">
@@ -6048,29 +5959,10 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入設計地震矩規模數字</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
         </tr>
 
     
@@ -6123,7 +6015,7 @@
 
     
 
-    <h4 class="name" id=".sptNCEER"><span class="type-signature type-signature-static">(static) </span>sptNCEER<span class="signature">(row)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".sptNCEER"><span class="type-signature type-signature-static">(static) </span>sptNCEER<span class="signature">(row, row[keyDepth)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -6380,10 +6272,17 @@
         </tr>
 
     
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
 
         <tr>
             
-                <td class="name"><code>depth</code></td>
+                <td class="name"><code>row[keyDepth</code></td>
             
 
             <td class="type">
@@ -6397,19 +6296,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本所在中點深度數字，單位m</p></td>
@@ -6419,7 +6306,7 @@
 
         <tr>
             
-                <td class="name"><code>N60</code></td>
+                <td class="name"><code>row.N60</code></td>
             
 
             <td class="type">
@@ -6433,19 +6320,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本N60數字</p></td>
@@ -6455,7 +6330,7 @@
 
         <tr>
             
-                <td class="name"><code>FC</code></td>
+                <td class="name"><code>row.FC</code></td>
             
 
             <td class="type">
@@ -6469,19 +6344,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本細粒料含量數字，單位%</p></td>
@@ -6491,7 +6354,7 @@
 
         <tr>
             
-                <td class="name"><code>PI</code></td>
+                <td class="name"><code>row.PI</code></td>
             
 
             <td class="type">
@@ -6505,19 +6368,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入塑性指數數字，單位%</p></td>
@@ -6527,7 +6378,7 @@
 
         <tr>
             
-                <td class="name"><code>sv</code></td>
+                <td class="name"><code>row.sv</code></td>
             
 
             <td class="type">
@@ -6541,19 +6392,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本中點深度之垂直總應力數字，單位(kN/m2)</p></td>
@@ -6563,7 +6402,7 @@
 
         <tr>
             
-                <td class="name"><code>svpUsual</code></td>
+                <td class="name"><code>row.svpUsual</code></td>
             
 
             <td class="type">
@@ -6577,19 +6416,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)</p></td>
@@ -6599,7 +6426,7 @@
 
         <tr>
             
-                <td class="name"><code>svpDesign</code></td>
+                <td class="name"><code>row.svpDesign</code></td>
             
 
             <td class="type">
@@ -6613,19 +6440,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)</p></td>
@@ -6635,7 +6450,7 @@
 
         <tr>
             
-                <td class="name"><code>PGA</code></td>
+                <td class="name"><code>row.PGA</code></td>
             
 
             <td class="type">
@@ -6649,19 +6464,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入設計地表最大水平加速度數字，單位(g)</p></td>
@@ -6671,7 +6474,7 @@
 
         <tr>
             
-                <td class="name"><code>Mw</code></td>
+                <td class="name"><code>row.Mw</code></td>
             
 
             <td class="type">
@@ -6685,29 +6488,10 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入設計地震矩規模數字</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
         </tr>
 
     
@@ -6760,7 +6544,7 @@
 
     
 
-    <h4 class="name" id=".sptNJRA"><span class="type-signature type-signature-static">(static) </span>sptNJRA<span class="signature">(row)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".sptNJRA"><span class="type-signature type-signature-static">(static) </span>sptNJRA<span class="signature">(row, row[keyDepth)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -7097,10 +6881,17 @@
         </tr>
 
     
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
 
         <tr>
             
-                <td class="name"><code>depth</code></td>
+                <td class="name"><code>row[keyDepth</code></td>
             
 
             <td class="type">
@@ -7114,19 +6905,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本所在中點深度數字，單位m</p></td>
@@ -7136,7 +6915,7 @@
 
         <tr>
             
-                <td class="name"><code>N60</code></td>
+                <td class="name"><code>row.N60</code></td>
             
 
             <td class="type">
@@ -7150,19 +6929,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本N60數字</p></td>
@@ -7172,7 +6939,7 @@
 
         <tr>
             
-                <td class="name"><code>FC</code></td>
+                <td class="name"><code>row.FC</code></td>
             
 
             <td class="type">
@@ -7186,19 +6953,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本細粒料含量數字，單位%</p></td>
@@ -7208,7 +6963,7 @@
 
         <tr>
             
-                <td class="name"><code>PI</code></td>
+                <td class="name"><code>row.PI</code></td>
             
 
             <td class="type">
@@ -7222,19 +6977,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入塑性指數數字，單位%</p></td>
@@ -7244,7 +6987,7 @@
 
         <tr>
             
-                <td class="name"><code>D50</code></td>
+                <td class="name"><code>row.D50</code></td>
             
 
             <td class="type">
@@ -7258,19 +7001,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入累計50%通過粒徑數字，單位mm</p></td>
@@ -7280,7 +7011,7 @@
 
         <tr>
             
-                <td class="name"><code>D10</code></td>
+                <td class="name"><code>row.D10</code></td>
             
 
             <td class="type">
@@ -7294,19 +7025,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入累計10%通過粒徑數字，單位mm</p></td>
@@ -7316,7 +7035,7 @@
 
         <tr>
             
-                <td class="name"><code>sv</code></td>
+                <td class="name"><code>row.sv</code></td>
             
 
             <td class="type">
@@ -7330,19 +7049,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本中點深度之垂直總應力數字，單位(kN/m2)</p></td>
@@ -7352,7 +7059,7 @@
 
         <tr>
             
-                <td class="name"><code>svpUsual</code></td>
+                <td class="name"><code>row.svpUsual</code></td>
             
 
             <td class="type">
@@ -7366,19 +7073,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)</p></td>
@@ -7388,7 +7083,7 @@
 
         <tr>
             
-                <td class="name"><code>svpDesign</code></td>
+                <td class="name"><code>row.svpDesign</code></td>
             
 
             <td class="type">
@@ -7402,19 +7097,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)</p></td>
@@ -7424,7 +7107,7 @@
 
         <tr>
             
-                <td class="name"><code>PGA</code></td>
+                <td class="name"><code>row.PGA</code></td>
             
 
             <td class="type">
@@ -7438,29 +7121,10 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入設計地表最大水平加速度數字，單位(g)</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
         </tr>
 
     
@@ -7513,7 +7177,7 @@
 
     
 
-    <h4 class="name" id=".sptSeed"><span class="type-signature type-signature-static">(static) </span>sptSeed<span class="signature">(row)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".sptSeed"><span class="type-signature type-signature-static">(static) </span>sptSeed<span class="signature">(row, row[keyDepth)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -7770,10 +7434,17 @@
         </tr>
 
     
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
 
         <tr>
             
-                <td class="name"><code>depth</code></td>
+                <td class="name"><code>row[keyDepth</code></td>
             
 
             <td class="type">
@@ -7787,19 +7458,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本所在中點深度數字，單位m</p></td>
@@ -7809,7 +7468,7 @@
 
         <tr>
             
-                <td class="name"><code>N60</code></td>
+                <td class="name"><code>row.N60</code></td>
             
 
             <td class="type">
@@ -7823,19 +7482,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本N60數字</p></td>
@@ -7845,7 +7492,7 @@
 
         <tr>
             
-                <td class="name"><code>FC</code></td>
+                <td class="name"><code>row.FC</code></td>
             
 
             <td class="type">
@@ -7859,19 +7506,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本細粒料含量數字，單位%</p></td>
@@ -7881,7 +7516,7 @@
 
         <tr>
             
-                <td class="name"><code>sv</code></td>
+                <td class="name"><code>row.sv</code></td>
             
 
             <td class="type">
@@ -7895,19 +7530,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本中點深度之垂直總應力數字，單位(kN/m2)</p></td>
@@ -7917,7 +7540,7 @@
 
         <tr>
             
-                <td class="name"><code>svpUsual</code></td>
+                <td class="name"><code>row.svpUsual</code></td>
             
 
             <td class="type">
@@ -7931,19 +7554,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)</p></td>
@@ -7953,7 +7564,7 @@
 
         <tr>
             
-                <td class="name"><code>svpDesign</code></td>
+                <td class="name"><code>row.svpDesign</code></td>
             
 
             <td class="type">
@@ -7967,19 +7578,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)</p></td>
@@ -7989,7 +7588,7 @@
 
         <tr>
             
-                <td class="name"><code>PGA</code></td>
+                <td class="name"><code>row.PGA</code></td>
             
 
             <td class="type">
@@ -8003,19 +7602,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入設計地表最大水平加速度數字，單位(g)</p></td>
@@ -8025,7 +7612,7 @@
 
         <tr>
             
-                <td class="name"><code>Mw</code></td>
+                <td class="name"><code>row.Mw</code></td>
             
 
             <td class="type">
@@ -8039,29 +7626,10 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"><p>輸入設計地震矩規模數字</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
         </tr>
 
     
@@ -8114,7 +7682,7 @@
 
     
 
-    <h4 class="name" id=".sptTY"><span class="type-signature type-signature-static">(static) </span>sptTY<span class="signature">(row)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".sptTY"><span class="type-signature type-signature-static">(static) </span>sptTY<span class="signature">(row, row[keyDepth)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -8195,7 +7763,11 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -8221,7 +7793,19 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last"><p>輸入數據物件</p>
@@ -8451,10 +8035,17 @@
         </tr>
 
     
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
 
         <tr>
             
-                <td class="name"><code>depth</code></td>
+                <td class="name"><code>row[keyDepth</code></td>
             
 
             <td class="type">
@@ -8490,7 +8081,7 @@
 
         <tr>
             
-                <td class="name"><code>a</code></td>
+                <td class="name"><code>row.a</code></td>
             
 
             <td class="type">
@@ -8530,7 +8121,7 @@
 
         <tr>
             
-                <td class="name"><code>n</code></td>
+                <td class="name"><code>row.n</code></td>
             
 
             <td class="type">
@@ -8570,7 +8161,7 @@
 
         <tr>
             
-                <td class="name"><code>Cr</code></td>
+                <td class="name"><code>row.Cr</code></td>
             
 
             <td class="type">
@@ -8610,7 +8201,7 @@
 
         <tr>
             
-                <td class="name"><code>Cs</code></td>
+                <td class="name"><code>row.Cs</code></td>
             
 
             <td class="type">
@@ -8650,7 +8241,7 @@
 
         <tr>
             
-                <td class="name"><code>N60</code></td>
+                <td class="name"><code>row.N60</code></td>
             
 
             <td class="type">
@@ -8686,7 +8277,7 @@
 
         <tr>
             
-                <td class="name"><code>FC</code></td>
+                <td class="name"><code>row.FC</code></td>
             
 
             <td class="type">
@@ -8722,7 +8313,7 @@
 
         <tr>
             
-                <td class="name"><code>sv</code></td>
+                <td class="name"><code>row.sv</code></td>
             
 
             <td class="type">
@@ -8758,7 +8349,7 @@
 
         <tr>
             
-                <td class="name"><code>svpUsual</code></td>
+                <td class="name"><code>row.svpUsual</code></td>
             
 
             <td class="type">
@@ -8794,7 +8385,7 @@
 
         <tr>
             
-                <td class="name"><code>svpDesign</code></td>
+                <td class="name"><code>row.svpDesign</code></td>
             
 
             <td class="type">
@@ -8830,7 +8421,7 @@
 
         <tr>
             
-                <td class="name"><code>PGA</code></td>
+                <td class="name"><code>row.PGA</code></td>
             
 
             <td class="type">
@@ -8866,7 +8457,7 @@
 
         <tr>
             
-                <td class="name"><code>Mw</code></td>
+                <td class="name"><code>row.Mw</code></td>
             
 
             <td class="type">
@@ -8896,13 +8487,6 @@
             
 
             <td class="description last"><p>輸入設計地震矩規模數字</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
         </tr>
 
     
@@ -8970,7 +8554,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Thu Apr 13 2023 12:37:31 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sun Apr 16 2023 21:38:24 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
