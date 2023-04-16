@@ -25,7 +25,7 @@ import cnst from './cnst.mjs'
 import { intrpDefPp } from './intrpDefParam.mjs'
 import checkDepthStartEnd from './checkDepthStartEnd.mjs'
 import relaPorousParams from './relaPorousParams.mjs'
-import calcVerticalStress from './calcVerticalStress.mjs'
+import { checkVerticalStress, calcVerticalStress } from './calcVerticalStress.mjs'
 import { calcCptCore } from './calcCpt.mjs'
 
 
@@ -852,7 +852,7 @@ function sptSettlement(N160, N172, CSR, FS) {
  * @param {String} [row.noLiqueMode='new'] 輸入判斷非液化之土壤分類模式字串，預設'new'
  * @param {Number} [row.waterLevelDesign=0] 輸入設計地下水位數字，單位m，預設0
  * @param {String} [row.soilClassification='SW'] 輸入USCS土壤分類字串，預設'SW'
- * @param {Number} row.depth 輸入樣本所在中點深度數字，單位m
+ * @param {Number} row[keyDepth] 輸入樣本所在中點深度數字，單位m
  * @param {Number} row.N60 輸入樣本N60數字
  * @param {Number} row.FC 輸入樣本細粒料含量數字，單位%
  * @param {Number} row.sv 輸入樣本中點深度之垂直總應力數字，單位(kN/m2)
@@ -1379,7 +1379,7 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
  * @param {String} [row.noLiqueMode='new'] 輸入判斷非液化之土壤分類模式字串，預設'new'
  * @param {Number} [row.waterLevelDesign=0] 輸入設計地下水位數字，單位m，預設0
  * @param {String} [row.soilClassification='SW'] 輸入USCS土壤分類字串，預設'SW'
- * @param {Number} row.depth 輸入樣本所在中點深度數字，單位m
+ * @param {Number} row[keyDepth] 輸入樣本所在中點深度數字，單位m
  * @param {Number} row.N60 輸入樣本N60數字
  * @param {Number} row.FC 輸入樣本細粒料含量數字，單位%
  * @param {Number} row.PI 輸入塑性指數數字，單位%
@@ -1756,7 +1756,7 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
  * @param {String} [row.noLiqueMode='new'] 輸入判斷非液化之土壤分類模式字串，預設'new'
  * @param {Number} [row.waterLevelDesign=0] 輸入設計地下水位數字，單位m，預設0
  * @param {String} [row.soilClassification='SW'] 輸入USCS土壤分類字串，預設'SW'
- * @param {Number} row.depth 輸入樣本所在中點深度數字，單位m
+ * @param {Number} row[keyDepth] 輸入樣本所在中點深度數字，單位m
  * @param {Number} row.N60 輸入樣本N60數字
  * @param {Number} row.FC 輸入樣本細粒料含量數字，單位%
  * @param {Number} row.PI 輸入塑性指數數字，單位%
@@ -2121,7 +2121,7 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
  * @param {Number} [row.waterLevelDesign=0] 輸入設計地下水位數字，單位m，預設0
  * @param {String} [row.soilClassification='SW'] 輸入USCS土壤分類字串，預設'SW'
  * @param {Number} [row.vibrationType=1] 輸入震動形式數字，1為第一型震動[板塊邊界地震(遠震)]，2為第二型震動[內陸直下型地震(近震)]，預設1
- * @param {Number} row.depth 輸入樣本所在中點深度數字，單位m
+ * @param {Number} row[keyDepth] 輸入樣本所在中點深度數字，單位m
  * @param {Number} row.N60 輸入樣本N60數字
  * @param {Number} row.FC 輸入樣本細粒料含量數字，單位%
  * @param {Number} row.PI 輸入塑性指數數字，單位%
@@ -2662,7 +2662,7 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
  * @param {Number} [row.waterLevelDesign=0] 輸入設計地下水位數字，單位m，預設0
  * @param {String} [row.soilClassification='SW'] 輸入USCS土壤分類字串，預設'SW'
  * @param {Number} [row.vibrationType=1] 輸入震動形式數字，1為第一型震動[板塊邊界地震(遠震)]，2為第二型震動[內陸直下型地震(近震)]，預設1
- * @param {Number} row.depth 輸入樣本所在中點深度數字，單位m
+ * @param {Number} row[keyDepth] 輸入樣本所在中點深度數字，單位m
  * @param {Number} [row.a=0.45] 輸入分析設定參數a數字，預設0.45
  * @param {Number} [row.n=0.45] 輸入分析設定參數n數字，預設14
  * @param {Number} [row.Cr=0.57] 輸入分析設定參數Cr數字，預設0.57
@@ -3013,17 +3013,60 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
 }
 
 
+function cptCommon(depth, coe_a, qc, fs, u2, sv, svpUsual, useCnLeq) {
+
+    //u0(MPa), 現地孔隙壓力
+    let u0 = intrpDefPp(depth, 'MPa') //u0(MPa)
+
+    //CPT分析
+    let rc = null
+    if (true) {
+
+        //轉換單位成為MPa
+        let _sv = sv / 1000 //kPa -> MPa
+        let _svpUsual = svpUsual / 1000 //kPa -> MPa
+        // let _svpDesign = svpDesign / 1000 //kPa -> MPa
+        let _qc = qc //MPa
+        let _fs = fs //MPa
+        let _u2 = u2 //MPa
+        let _u0 = u0 //MPa
+
+        //dt
+        let dt = {
+            depth,
+            sv: _sv,
+            svp: _svpUsual, //使用常時垂直有效應力
+            qc: _qc,
+            fs: _fs,
+            u0: _u0,
+            u2: _u2,
+        }
+
+        //calcCptCore, 此處限制輸入與輸出皆使用MPa
+        rc = calcCptCore(dt, coe_a, { useCnLeq, unitSvSvp: 'MPa' })
+        // Ic = get(rc, 'Ic', null)
+        // Icn = get(rc, 'Icn', null)
+
+    }
+
+    return rc
+}
+
+
 function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw }) {
     //HBF(ver=2012,2017,2021)
+    //若有使用Robertson(1986)之後版本, qc皆視為使用qt(校正後qc)
     let err = []
+    let rc = {}
     let MSF = ''
     let rrd = ''
     let Ic = ''
     let Icn = ''
+    let qt = ''
     let qc1N = ''
+    let qc1Ncs = ''
     let Rf = ''
     let Kc = ''
-    let qc1Ncs = ''
     let CRR75 = ''
     let CRR = ''
     let CSR = ''
@@ -3032,13 +3075,14 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
     // let vstrIY = ''
 
     function ret() {
-        if (isnum(qc1N)) {
-            qc1N = qc1N / cvru
-        }
-        if (isnum(qc1Ncs)) {
-            qc1Ncs = qc1Ncs / cvru
-        }
-        let r = { rrd, Ic, Icn, qc1N, Rf, Kc, qc1Ncs, CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        //因經驗公式是與單位有關, 但無法確切定義其單位, 故避免轉換減少爭議
+        // if (isnum(qc1N)) {
+        //     qc1N = qc1N / 1000 / cvru //kg/cm2 -> MPa
+        // }
+        // if (isnum(qc1Ncs)) {
+        //     qc1Ncs = qc1Ncs / 1000 / cvru //kg/cm2 -> MPa
+        // }
+        let r = { ...rc, rrd, Ic, Icn, qc1N, Kc, qc1Ncs, CRR75, CRR, CSR, FS, err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -3058,6 +3102,18 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
             return ret() //重大錯誤直接報錯結束
         }
 
+        //check coe_a
+        if (!isnum(coe_a)) {
+            err.push(`coe_a${brk(coe_a)}非數字，強制預設為0.8`)
+            coe_a = 0.8
+        }
+        else {
+
+            //cdbl
+            coe_a = cdbl(coe_a)
+
+        }
+
         //check depth
         if (!isnum(depth)) {
             err.push(`depth${brk(depth)}非數字`)
@@ -3074,26 +3130,6 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
                 return ret() //重大錯誤直接報錯結束
             }
 
-        }
-
-        //check coe_a, ver=2021須要計算cpt分類故需要coe_a
-        if (ver === '2021') {
-            if (!isnum(coe_a)) {
-                err.push(`coe_a${brk(coe_a)}非數字，強制預設為0.8`)
-                coe_a = 0.8
-            }
-            else {
-
-                //cdbl
-                coe_a = cdbl(coe_a)
-
-                //check
-                if (coe_a < 0) {
-                    err.push(`coe_a${brk(coe_a)}<0，強制預設為0.8`)
-                    coe_a = 0.8
-                }
-
-            }
         }
 
         //check waterLevelUsual, 不使用故不需檢查
@@ -3299,35 +3335,31 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
         return ret() //觸發延遲報錯並結束
     }
 
-    //u0(MPa), 現地孔隙壓力
-    let u0 = intrpDefPp(depth) //u0(MPa)
+    //CPT分析
+    let useCnLeq = true //HBF法有限制Cn要小於等於1.7, 故得使用useCnLeq=true
+    rc = cptCommon(depth, coe_a, qc, fs, u2, sv, svpUsual, useCnLeq)
+    // Fr = get(rc, 'Fr', null)
+    Ic = get(rc, 'Ic', null)
+    Icn = get(rc, 'Icn', null)
+    qt = get(rc, 'qt', null)
+    // Qt = get(rc, 'Qt', null)
+    // Qtn = get(rc, 'Qtn', null)
+    Rf = get(rc, 'Rf', null)
+
+    //check
+    if (!isnum(qt)) {
+        err.push(`qt${brk(qt)}非數字`)
+        return ret() //重大錯誤直接報錯結束
+    }
+
+    //轉換單位成為kg/cm2
+    sv = sv * cvru //kPa -> kg/cm2
+    svpUsual = svpUsual * cvru //kPa -> kg/cm2
+    svpDesign = svpDesign * cvru //kPa -> kg/cm2
+    qt = qt * 1000 * cvru //MPa -> kg/cm2
 
     //2021版使用Icn檢查砂黏性土
     if (ver === '2021') {
-
-        //轉換單位成為MPa
-        let _sv = sv / 1000 //kPa -> MPa
-        let _svpUsual = svpUsual / 1000 //kPa -> MPa
-        // let _svpDesign = svpDesign / 1000 //kPa -> MPa
-        let _qc = qc //MPa
-        let _fs = fs //MPa
-        let _u2 = u2 //MPa
-        let _u0 = u0 //MPa
-
-        //dt
-        let dt = {
-            sv: _sv,
-            svp: _svpUsual, //使用常時垂直有效應力
-            qc: _qc,
-            fs: _fs,
-            u0: _u0,
-            u2: _u2,
-        }
-
-        //calcCptCore
-        let rc = calcCptCore(dt, coe_a, { useCnLeq: true }) //HBF法有限制Cn要小於等於1.7, 故得使用useCnLeq=true
-        Ic = get(rc, 'Ic', null)
-        Icn = get(rc, 'Icn', null)
 
         //useIc
         let useIc = null
@@ -3350,15 +3382,6 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
 
     }
 
-    //轉換單位成為kg/cm2
-    sv = sv * cvru //kPa -> kg/cm2
-    svpUsual = svpUsual * cvru //kPa -> kg/cm2
-    svpDesign = svpDesign * cvru //kPa -> kg/cm2
-    qc = qc * 1000 * cvru //MPa -> kg/cm2
-    fs = fs * 1000 * cvru //MPa -> kg/cm2
-    u2 = u2 * 1000 * cvru //MPa -> kg/cm2
-    u0 = u0 * 1000 * cvru //MPa -> kg/cm2
-
     //MSFPow, 原莊長賢excel內MSFPow=-1.11
     let MSFPow = null
     if (ver === '2012') {
@@ -3379,18 +3402,9 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
         rrd = 1.2 - 0.03 * depth
     }
 
-    //qc1N(kg/cm2)
-    qc1N = 1.7 / (svpUsual + 0.7) * qc //kg/cm2
-    // qc1N = 170 / (svpUsual + 70) * qc //kN/m2
-
-    //Rf, 摩擦比(fs與qc同單位故無單位)
-    Rf = null
-    if (qc > 0) {
-        Rf = fs / qc * 100
-    }
-    else {
-        Rf = 1e20
-    }
+    //qc1N, 單位基於kg/cm2但無法確切定義其單位, 故不給予
+    qc1N = 1.7 / (svpUsual + 0.7) * qt //kg/cm2
+    // qc1N = 170 / (svpUsual + 70) * qt //kN/m2
 
     //Kc, 管壁摩擦量對錐尖阻抗qc值之影響係數
     if (Rf <= 0.1) {
@@ -3400,7 +3414,7 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
         Kc = 0.4 * Rf ** 2 - 0.08 * Rf + 1.004
     }
 
-    //qc1Ncs(kg/cm2)
+    //qc1Ncs, 單位基於kg/cm2但無法確切定義其單位, 故不給予
     qc1Ncs = Kc * qc1N
 
     //非液化: 若是qc1Ncs大於180則直接判定為非液化
@@ -3457,15 +3471,20 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
 }
 
 
-function cptNCEER({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw }) {
+function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw }) {
     //NCEER液化研討會(1996)中Robertson利用Robertson(1990)所建立之CPT試驗土壤分類圖表，直接以錐尖阻抗qc及袖管摩擦比Rf為參數，
     //建立土壤行為類型指數Ic(Soil Behavior Type Index)，取代以往以平均粒徑D50來表示細粒料對土壤抗液化能力的影響，
     //建立全CPT法之土壤臨界液化強度曲線，即NCEER(1997)所選用之方法。詳細流程圖可見Robertson and Wride(1998)。
+    //若有使用Robertson(1986)之後版本, qc皆視為使用qt(校正後qc)
     let err = []
+    let rc = {}
     let MSF = ''
     let rrd = ''
-    let Qt1n = ''
     let Ic = ''
+    let Fr = ''
+    let qt = ''
+    let Qt = ''
+    let Qt1n = ''
     let Kc = ''
     let Qt1ncs = ''
     let CRR75 = ''
@@ -3482,7 +3501,7 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpU
         if (isnum(Qt1ncs)) {
             Qt1ncs = Qt1ncs / cvru
         }
-        let r = { rrd, Qt1n, Ic, Kc, Qt1ncs, CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        let r = { ...rc, rrd, Qt1n, Ic, Kc, Qt1ncs, CRR75, CRR, CSR, FS, err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -3500,6 +3519,18 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpU
         if (ver !== '1997') {
             err.push(`ver${brk(ver)}非1997`)
             return ret() //重大錯誤直接報錯結束
+        }
+
+        //check coe_a
+        if (!isnum(coe_a)) {
+            err.push(`coe_a${brk(coe_a)}非數字，強制預設為0.8`)
+            coe_a = 0.8
+        }
+        else {
+
+            //cdbl
+            coe_a = cdbl(coe_a)
+
         }
 
         //check depth
@@ -3723,13 +3754,27 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpU
         return ret() //觸發延遲報錯並結束
     }
 
+    //CPT分析
+    let useCnLeq = true //HBF法有限制Cn要小於等於1.7, 故得使用useCnLeq=true
+    rc = cptCommon(depth, coe_a, qc, fs, u2, sv, svpUsual, useCnLeq)
+    Fr = get(rc, 'Fr', null)
+    Ic = get(rc, 'Ic', null)
+    // Icn = get(rc, 'Icn', null)
+    qt = get(rc, 'qt', null)
+    Qt = get(rc, 'Qt', null)
+    // Qtn = get(rc, 'Qtn', null)
+
+    //check
+    if (!isnum(qt)) {
+        err.push(`qt${brk(qt)}非數字`)
+        return ret() //重大錯誤直接報錯結束
+    }
+
     //轉換單位成為kg/cm2
     sv = sv * cvru //kPa -> kg/cm2
     svpUsual = svpUsual * cvru //kPa -> kg/cm2
     svpDesign = svpDesign * cvru //kPa -> kg/cm2
-    qc = qc * 1000 * cvru //MPa -> kg/cm2
-    fs = fs * 1000 * cvru //MPa -> kg/cm2
-    u2 = u2 * 1000 * cvru //MPa -> kg/cm2
+    qt = qt * 1000 * cvru //MPa -> kg/cm2
 
     //MSF, 規模修正因子
     MSF = (Mw / 7.5) ** (-2.56)
@@ -3738,24 +3783,26 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpU
     rrd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
 
     //Q(none)
-    let Q = null
-    if (svpUsual > 0) {
-        Q = (qc - sv) / svpUsual
-    }
-    else {
-        Q = 1e20
-    }
+    // let Q = null
+    // if (svpUsual > 0) {
+    //     Q = (qt - sv) / svpUsual
+    // }
+    // else {
+    //     Q = 1e20
+    // }
+    let Q = Qt
 
     //F(%)
-    let F = (fs / (qc - sv)) * 100
+    // let F = (fs / (qt - sv)) * 100
+    let F = Fr
 
-    //Qt1n(none), Ic
+    //Qt1n(none), Ic(none)
     let Ict = Math.sqrt((3.47 - Math.log10(Q)) ** 2 + (Math.log10(F) + 1.22) ** 2)
     if (Ict <= 2.6) {
         let Pa = cnst.Pa * 1000 //大氣壓(kPa), MPa -> kPa
         Pa = Pa * cvru //kPa -> kg/cm2
         if (svpUsual > 0) {
-            Qt1n = (qc / Pa) * (Pa / svpUsual) ** 0.5
+            Qt1n = (qt / Pa) * (Pa / svpUsual) ** 0.5
         }
         else {
             Qt1n = 1e20
@@ -3766,7 +3813,7 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpU
         }
         else {
             if (svpUsual > 0) {
-                Qt1n = (qc / Pa) * (Pa / svpUsual) ** 0.75
+                Qt1n = (qt / Pa) * (Pa / svpUsual) ** 0.75
             }
             else {
                 Qt1n = 1e20
@@ -3863,7 +3910,9 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpU
 
 
 function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2, svp, svpUsual, svpDesign, sv, tou_s, su, PGA, Mw }) {
+    //若有使用Robertson(1986)之後版本, qc皆視為使用qt(校正後qc)
     let err = []
+    let rc = {}
     let MSF = ''
     let rrd = ''
     let Kc = ''
@@ -3871,6 +3920,7 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
     let Fr = ''
     let Ic = ''
     let Icn = ''
+    let qt = ''
     let Qt = ''
     let Qtn = ''
     let Qtncs = ''
@@ -3882,7 +3932,7 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
     // let vstrIY = ''
 
     function ret() {
-        let r = { rrd, Kc, Kalpha, Fr, Ic, Icn, Qt, Qtn, Qtncs, CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        let r = { ...rc, rrd, Kc, Kalpha, Fr, Ic, Icn, Qt, Qtn, Qtncs, CRR75, CRR, CSR, FS, err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -3902,6 +3952,18 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
             return ret() //重大錯誤直接報錯結束
         }
 
+        //check coe_a
+        if (!isnum(coe_a)) {
+            err.push(`coe_a${brk(coe_a)}非數字，強制預設為0.8`)
+            coe_a = 0.8
+        }
+        else {
+
+            //cdbl
+            coe_a = cdbl(coe_a)
+
+        }
+
         //check depth
         if (!isnum(depth)) {
             err.push(`depth${brk(depth)}非數字`)
@@ -3916,24 +3978,6 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
             if (depth < 0) {
                 err.push(`depth${brk(depth)}<0`)
                 return ret() //重大錯誤直接報錯結束
-            }
-
-        }
-
-        //check coe_a
-        if (!isnum(coe_a)) {
-            err.push(`coe_a${brk(coe_a)}非數字，強制預設為0.8`)
-            coe_a = 0.8
-        }
-        else {
-
-            //cdbl
-            coe_a = cdbl(coe_a)
-
-            //check
-            if (coe_a < 0) {
-                err.push(`coe_a${brk(coe_a)}<0，強制預設為0.8`)
-                coe_a = 0.8
             }
 
         }
@@ -4177,35 +4221,27 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
         return ret() //觸發延遲報錯並結束
     }
 
-    //u0(MPa), 現地孔隙壓力
-    let u0 = intrpDefPp(depth) //u0(MPa)
-
-    //轉換單位成為MPa
-    let _sv = sv / 1000 //kPa -> MPa
-    let _svpUsual = svpUsual / 1000 //kPa -> MPa
-    // let _svpDesign = svpDesign / 1000 //kPa -> MPa
-    let _qc = qc //MPa
-    let _fs = fs //MPa
-    let _u2 = u2 //MPa
-    let _u0 = u0 //MPa
-
-    //dt
-    let dt = {
-        sv: _sv,
-        svp: _svpUsual, //使用常時垂直有效應力
-        qc: _qc,
-        fs: _fs,
-        u0: _u0,
-        u2: _u2,
-    }
-
-    //calcCptCore
-    let rc = calcCptCore(dt, coe_a, { useCnLeq: false }) //Robertson法是沒有限制Cn要小於等於1.7, 故得使用useCnLeq=false
+    //CPT分析
+    let useCnLeq = false //Robertson法是沒有限制Cn要小於等於1.7, 故得使用useCnLeq=false
+    rc = cptCommon(depth, coe_a, qc, fs, u2, sv, svpUsual, useCnLeq)
     Fr = get(rc, 'Fr', null)
     Ic = get(rc, 'Ic', null)
     Icn = get(rc, 'Icn', null)
+    qt = get(rc, 'qt', null)
     Qt = get(rc, 'Qt', null)
     Qtn = get(rc, 'Qtn', null)
+
+    //check
+    if (!isnum(qt)) {
+        err.push(`qt${brk(qt)}非數字`)
+        return ret() //重大錯誤直接報錯結束
+    }
+
+    //轉換單位成為kg/cm2
+    sv = sv * cvru //kPa -> kg/cm2
+    svpUsual = svpUsual * cvru //kPa -> kg/cm2
+    svpDesign = svpDesign * cvru //kPa -> kg/cm2
+    qt = qt * 1000 * cvru //MPa -> kg/cm2
 
     //useIc
     let useIc = null
@@ -4226,14 +4262,6 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
         err.push(`無法計算Qtn，強制降轉使用Qt`)
         useQt = Qt
     }
-
-    //轉換單位成為kg/cm2
-    sv = sv * cvru //kPa -> kg/cm2
-    svpUsual = svpUsual * cvru //kPa -> kg/cm2
-    svpDesign = svpDesign * cvru //kPa -> kg/cm2
-    qc = qc * 1000 * cvru //MPa -> kg/cm2
-    fs = fs * 1000 * cvru //MPa -> kg/cm2
-    u2 = u2 * 1000 * cvru //MPa -> kg/cm2
 
     //MSF, 規模修正因子
     MSF = (Mw / 7.5) ** (-2.56)
@@ -4347,12 +4375,16 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
 }
 
 
-function cptJuang({ ver = '2002', waterLevelDesign, depth, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw }) {
+function cptJuang({ ver = '2002', waterLevelDesign, depth, coe_a, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw }) {
+    //若有使用Robertson(1986)之後版本, qc皆視為使用qt(校正後qc)
     let err = []
+    let rc = {}
     let MSF = ''
     let rrd = ''
-    let qc1N = ''
     let Ic = ''
+    let Fr = ''
+    let qt = ''
+    let qc1N = ''
     let qc1Ncs = ''
     let CRR75 = ''
     let CRR = ''
@@ -4362,13 +4394,14 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, qc, fs, u2, svp, svpU
     // let vstrIY = ''
 
     function ret() {
-        if (isnum(qc1N)) {
-            qc1N = qc1N / cvru
-        }
-        if (isnum(qc1Ncs)) {
-            qc1Ncs = qc1Ncs / cvru
-        }
-        let r = { rrd, qc1N, Ic, qc1Ncs, CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        //因經驗公式是與單位有關, 但無法確切定義其單位, 故避免轉換減少爭議
+        // if (isnum(qc1N)) {
+        //     qc1N = qc1N / 1000 / cvru //kg/cm2 -> MPa
+        // }
+        // if (isnum(qc1Ncs)) {
+        //     qc1Ncs = qc1Ncs / 1000 / cvru //kg/cm2 -> MPa
+        // }
+        let r = { ...rc, rrd, qc1N, Ic, qc1Ncs, CRR75, CRR, CSR, FS, err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -4386,6 +4419,18 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, qc, fs, u2, svp, svpU
         if (ver !== '2002') {
             err.push(`ver${brk(ver)}非2002`)
             return ret() //重大錯誤直接報錯結束
+        }
+
+        //check coe_a
+        if (!isnum(coe_a)) {
+            err.push(`coe_a${brk(coe_a)}非數字，強制預設為0.8`)
+            coe_a = 0.8
+        }
+        else {
+
+            //cdbl
+            coe_a = cdbl(coe_a)
+
         }
 
         //check depth
@@ -4609,13 +4654,27 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, qc, fs, u2, svp, svpU
         return ret() //觸發延遲報錯並結束
     }
 
+    //CPT分析
+    let useCnLeq = true //HBF法有限制Cn要小於等於1.7, 故得使用useCnLeq=true
+    rc = cptCommon(depth, coe_a, qc, fs, u2, sv, svpUsual, useCnLeq)
+    Fr = get(rc, 'Fr', null)
+    // Ic = get(rc, 'Ic', null)
+    // Icn = get(rc, 'Icn', null)
+    qt = get(rc, 'qt', null)
+    // Qt = get(rc, 'Qt', null)
+    // Qtn = get(rc, 'Qtn', null)
+
+    //check
+    if (!isnum(qt)) {
+        err.push(`qt${brk(qt)}非數字`)
+        return ret() //重大錯誤直接報錯結束
+    }
+
     //轉換單位成為kg/cm2
     sv = sv * cvru //kPa -> kg/cm2
     svpUsual = svpUsual * cvru //kPa -> kg/cm2
     svpDesign = svpDesign * cvru //kPa -> kg/cm2
-    qc = qc * 1000 * cvru //MPa -> kg/cm2
-    fs = fs * 1000 * cvru //MPa -> kg/cm2
-    u2 = u2 * 1000 * cvru //MPa -> kg/cm2
+    qt = qt * 1000 * cvru //MPa -> kg/cm2
 
     //MSF, 規模修正因子
     MSF = (Mw / 7.5) ** (-2.56)
@@ -4623,19 +4682,20 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, qc, fs, u2, svp, svpU
     //rrd, 應力折減係數
     rrd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
 
-    //F
-    let F = null
-    if ((qc - sv) > 0) {
-        F = (fs / (qc - sv)) * 100 //基於kg/cm2
-    }
-    // else {
-    //     F = 1e20 //除0就不要硬算
+    //F(%)
+    // let F = null
+    // if ((qt - sv) > 0) {
+    //     F = (fs / (qt - sv)) * 100 //基於kg/cm2
     // }
+    // // else {
+    // //     F = 1e20 //除0就不要硬算
+    // // }
+    let F = Fr
 
-    //qc1N(kg/cm2)
+    //qc1N, 單位基於kg/cm2但無法確切定義其單位, 故不給予
     qc1N = null
     if (svpUsual > 0) {
-        qc1N = qc / Math.sqrt(svpUsual) //基於kg/cm2
+        qc1N = qt / Math.sqrt(svpUsual) //基於kg/cm2
     }
     // else {
     //     qc1N = 1e20 //除0就不要硬算
@@ -4647,7 +4707,7 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, qc, fs, u2, svp, svpU
         Ic = Math.sqrt((3.47 - Math.log10(qc1N)) ** 2 + (Math.log10(F) + 1.22) ** 2)
     }
 
-    //qc1Ncs(kg/cm2)
+    //qc1Ncs, 單位基於kg/cm2但無法確切定義其單位, 故不給予
     qc1Ncs = null
     if (isNumber(qc1N) && isNumber(Ic)) {
         qc1Ncs = qc1N * (2.429 * Ic ** 4 - 16.943 * Ic ** 3 + 44.551 * Ic ** 2 - 51.497 * Ic + 22.802)
@@ -4708,13 +4768,16 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, qc, fs, u2, svp, svpU
 
 
 function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw }) {
+    //若有使用Robertson(1986)之後版本, qc皆視為使用qt(校正後qc)
     let err = []
+    let rc = {}
     let MSF = ''
     let rrd = ''
     let Fr = ''
     let Bq = ''
     let Ic = ''
     let Icn = ''
+    let qt = ''
     let Qt = ''
     let Qtn = ''
     let Icbj = ''
@@ -4728,7 +4791,7 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
     // let vstrIY = ''
 
     function ret() {
-        let r = { rrd, Fr, Bq, Ic, Icn, Qt, Qtn, Icbj, Csigma, Ksigma, CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        let r = { ...rc, rrd, Fr, Bq, Ic, Icn, Qt, Qtn, Icbj, Csigma, Ksigma, CRR75, CRR, CSR, FS, err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -4748,6 +4811,18 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
             return ret() //重大錯誤直接報錯結束
         }
 
+        //check coe_a
+        if (!isnum(coe_a)) {
+            err.push(`coe_a${brk(coe_a)}非數字，強制預設為0.8`)
+            coe_a = 0.8
+        }
+        else {
+
+            //cdbl
+            coe_a = cdbl(coe_a)
+
+        }
+
         //check depth
         if (!isnum(depth)) {
             err.push(`depth${brk(depth)}非數字`)
@@ -4762,24 +4837,6 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
             if (depth < 0) {
                 err.push(`depth${brk(depth)}<0`)
                 return ret() //重大錯誤直接報錯結束
-            }
-
-        }
-
-        //check coe_a
-        if (!isnum(coe_a)) {
-            err.push(`coe_a${brk(coe_a)}非數字，強制預設為0.8`)
-            coe_a = 0.8
-        }
-        else {
-
-            //cdbl
-            coe_a = cdbl(coe_a)
-
-            //check
-            if (coe_a < 0) {
-                err.push(`coe_a${brk(coe_a)}<0，強制預設為0.8`)
-                coe_a = 0.8
             }
 
         }
@@ -4987,36 +5044,28 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
         return ret() //觸發延遲報錯並結束
     }
 
-    //u0(MPa), 現地孔隙壓力
-    let u0 = intrpDefPp(depth) //u0(MPa)
-
-    //轉換單位成為MPa
-    let _sv = sv / 1000 //kPa -> MPa
-    let _svpUsual = svpUsual / 1000 //kPa -> MPa
-    // let _svpDesign = svpDesign / 1000 //kPa -> MPa
-    let _qc = qc //MPa
-    let _fs = fs //MPa
-    let _u2 = u2 //MPa
-    let _u0 = u0 //MPa
-
-    //dt
-    let dt = {
-        sv: _sv,
-        svp: _svpUsual, //使用常時垂直有效應力
-        qc: _qc,
-        fs: _fs,
-        u0: _u0,
-        u2: _u2,
-    }
-
-    //calcCptCore
-    let rc = calcCptCore(dt, coe_a, { useCnLeq: true }) //基於Idriss and Boulanger(2006)故有限制Cn要小於等於1.7, 得使用useCnLeq=true
+    //CPT分析
+    let useCnLeq = true //基於Idriss and Boulanger(2006)故有限制Cn要小於等於1.7, 得使用useCnLeq=true
+    rc = cptCommon(depth, coe_a, qc, fs, u2, sv, svpUsual, useCnLeq)
+    qt = get(rc, 'qt', null)
     Fr = get(rc, 'Fr', null)
     Bq = get(rc, 'Bq', null)
     Ic = get(rc, 'Ic', null)
     Icn = get(rc, 'Icn', null)
     Qt = get(rc, 'Qt', null)
     Qtn = get(rc, 'Qtn', null) //通過迭代算得, 基於Idriss and Boulanger(2006)中的qc(1N), 等同Ku and Juang (2012)中的qt(1N)
+
+    //check
+    if (!isnum(qt)) {
+        err.push(`qt${brk(qt)}非數字`)
+        return ret() //重大錯誤直接報錯結束
+    }
+
+    //轉換單位成為kg/cm2
+    sv = sv * cvru //kPa -> kg/cm2
+    svpUsual = svpUsual * cvru //kPa -> kg/cm2
+    svpDesign = svpDesign * cvru //kPa -> kg/cm2
+    // qt = qt * 1000 * cvru //MPa -> kg/cm2
 
     //useIc
     let useIc = null
@@ -5038,13 +5087,13 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
         useQt = Qt
     }
 
-    //轉換單位成為kg/cm2
-    sv = sv * cvru //kPa -> kg/cm2
-    svpUsual = svpUsual * cvru //kPa -> kg/cm2
-    svpDesign = svpDesign * cvru //kPa -> kg/cm2
-    qc = qc * 1000 * cvru //MPa -> kg/cm2
-    fs = fs * 1000 * cvru //MPa -> kg/cm2
-    u2 = u2 * 1000 * cvru //MPa -> kg/cm2
+    // //轉換單位成為kg/cm2
+    // sv = sv * cvru //kPa -> kg/cm2
+    // svpUsual = svpUsual * cvru //kPa -> kg/cm2
+    // svpDesign = svpDesign * cvru //kPa -> kg/cm2
+    // qt = qt * 1000 * cvru //MPa -> kg/cm2
+    // fs = fs * 1000 * cvru //MPa -> kg/cm2
+    // u2 = u2 * 1000 * cvru //MPa -> kg/cm2
 
     //MSF, 規模修正因子, Idriss and Boulanger(2006) for sand
     MSF = 6.9 * Math.exp(-Mw / 4) - 0.058
@@ -5143,10 +5192,13 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
 }
 
 
-function cptOlsen({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw }) {
+function cptOlsen({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw }) {
+    //若有使用Robertson(1986)之後版本, qc皆視為使用qt(校正後qc)
     let err = []
+    let rc = {}
     let MSF = ''
     let rrd = ''
+    let qt = ''
     let qc1 = ''
     let Rf = ''
     let CRR75 = ''
@@ -5157,10 +5209,11 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpU
     // let vstrIY = ''
 
     function ret() {
-        if (isnum(qc1)) {
-            qc1 = qc1 / cvru
-        }
-        let r = { rrd, qc1, Rf, CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        //因經驗公式是與單位有關, 但無法確切定義其單位, 故避免轉換減少爭議
+        // if (isnum(qc1)) {
+        //     qc1 = qc1 / cvru
+        // }
+        let r = { ...rc, rrd, qc1, Rf, CRR75, CRR, CSR, FS, err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -5178,6 +5231,18 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpU
         if (ver !== '1997') {
             err.push(`ver${brk(ver)}非1997`)
             return ret() //重大錯誤直接報錯結束
+        }
+
+        //check coe_a
+        if (!isnum(coe_a)) {
+            err.push(`coe_a${brk(coe_a)}非數字，強制預設為0.8`)
+            coe_a = 0.8
+        }
+        else {
+
+            //cdbl
+            coe_a = cdbl(coe_a)
+
         }
 
         //check depth
@@ -5401,13 +5466,60 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpU
         return ret() //觸發延遲報錯並結束
     }
 
+    //CPT分析
+    let useCnLeq = true
+    rc = cptCommon(depth, coe_a, qc, fs, u2, sv, svpUsual, useCnLeq)
+    // Ic = get(rc, 'Ic', null)
+    // Icn = get(rc, 'Icn', null)
+    qt = get(rc, 'qt', null)
+    Rf = get(rc, 'Rf', null)
+
+    //check
+    if (!isnum(qt)) {
+        err.push(`qt${brk(qt)}非數字`)
+        return ret() //重大錯誤直接報錯結束
+    }
+
     //轉換單位成為kg/cm2
     sv = sv * cvru //kPa -> kg/cm2
     svpUsual = svpUsual * cvru //kPa -> kg/cm2
     svpDesign = svpDesign * cvru //kPa -> kg/cm2
-    qc = qc * 1000 * cvru //MPa -> kg/cm2
-    fs = fs * 1000 * cvru //MPa -> kg/cm2
-    u2 = u2 * 1000 * cvru //MPa -> kg/cm2
+    qt = qt * 1000 * cvru //MPa -> kg/cm2
+
+    // //轉換單位成為kg/cm2
+    // sv = sv * cvru //kPa -> kg/cm2
+    // svpUsual = svpUsual * cvru //kPa -> kg/cm2
+    // svpDesign = svpDesign * cvru //kPa -> kg/cm2
+    // qt = qt * 1000 * cvru //MPa -> kg/cm2
+    // fs = fs * 1000 * cvru //MPa -> kg/cm2
+    // u2 = u2 * 1000 * cvru //MPa -> kg/cm2
+
+    // //CPT分析
+    // let useCnLeq = true
+    // rc = cptCommon(depth, coe_a, qc, fs, u2, sv, svpUsual, useCnLeq)
+    // Ic = get(rc, 'Ic', null)
+    // Icn = get(rc, 'Icn', null)
+    // qt = get(rc, 'qt', null)
+
+    // //check
+    // if (!isnum(qt)) {
+    //     err.push(`qt${brk(qt)}非數字`)
+    //     return ret() //重大錯誤直接報錯結束
+    // }
+
+    // //轉換單位成為kg/cm2
+    // sv = sv * cvru //kPa -> kg/cm2
+    // svpUsual = svpUsual * cvru //kPa -> kg/cm2
+    // svpDesign = svpDesign * cvru //kPa -> kg/cm2
+    // qt = qt * 1000 * cvru //MPa -> kg/cm2
+
+    // //轉換單位成為kg/cm2
+    // sv = sv * cvru //kPa -> kg/cm2
+    // svpUsual = svpUsual * cvru //kPa -> kg/cm2
+    // svpDesign = svpDesign * cvru //kPa -> kg/cm2
+    // qt = qt * 1000 * cvru //MPa -> kg/cm2
+    // fs = fs * 1000 * cvru //MPa -> kg/cm2
+    // u2 = u2 * 1000 * cvru //MPa -> kg/cm2
 
     //MSF, 規模修正因子
     MSF = (Mw / 7.5) ** (-2.56)
@@ -5415,22 +5527,22 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpU
     //rrd, 應力折減係數
     rrd = (1 - 0.4113 * depth ** 0.5 + 0.04052 * depth + 0.001753 * depth ** 1.5) / (1 - 0.4177 * depth ** 0.5 + 0.05729 * depth - 0.006205 * depth ** 1.5 + 0.00121 * depth ** 2)
 
-    //qc1(kg/cm2)
+    //qc1, 單位基於kg/cm2但無法確切定義其單位, 故不給予
     if (svpUsual > 0) {
-        qc1 = qc / svpUsual ** 0.7 //基於kg/cm2
+        qc1 = qt / svpUsual ** 0.7 //基於kg/cm2
     }
     else {
         qc1 = 1e20
     }
 
-    //Rf, 摩擦比(fs與qc同單位故無單位)
-    Rf = null
-    if (qc > 0) {
-        Rf = fs / qc * 100
-    }
-    else {
-        Rf = 1e20
-    }
+    //Rf(%), 摩擦比(fs與qc同單位故無單位)
+    // Rf = null
+    // if (qt > 0) {
+    //     Rf = fs / qt * 100
+    // }
+    // else {
+    //     Rf = 1e20
+    // }
 
     //CRR75
     CRR75 = 0.00128 * qc1 - 0.025 + 0.17 * Rf - 0.028 * Rf ** 2 + 0.0016 * Rf ** 3
@@ -5477,10 +5589,13 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, qc, fs, u2, svp, svpU
 }
 
 
-function cptShibata({ ver = '1988', waterLevelDesign, depth, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw, D50 }) {
+function cptShibata({ ver = '1988', waterLevelDesign, depth, coe_a, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw, D50 }) {
+    //若有使用Robertson(1986)之後版本, qc皆視為使用qt(校正後qc)
     let err = []
+    let rc = {}
     let MSF = ''
     let rrd = ''
+    let qt = ''
     let qc1 = ''
     let qc1cr = ''
     let CRR75 = ''
@@ -5491,13 +5606,14 @@ function cptShibata({ ver = '1988', waterLevelDesign, depth, qc, fs, u2, svp, sv
     // let vstrIY = ''
 
     function ret() {
-        if (isnum(qc1)) {
-            qc1 = qc1 / cvru
-        }
+        //因經驗公式是與單位有關, 但無法確切定義其單位, 故避免轉換減少爭議
+        // if (isnum(qc1)) {
+        //     qc1 = qc1 / cvru
+        // }
         if (isnum(qc1cr)) {
             qc1cr = qc1cr / cvru
         }
-        let r = { rrd, qc1, qc1cr, CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        let r = { ...rc, rrd, qc1, qc1cr, CRR75, CRR, CSR, FS, err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -5515,6 +5631,18 @@ function cptShibata({ ver = '1988', waterLevelDesign, depth, qc, fs, u2, svp, sv
         if (ver !== '1988') {
             err.push(`ver${brk(ver)}非1988`)
             return ret() //重大錯誤直接報錯結束
+        }
+
+        //check coe_a
+        if (!isnum(coe_a)) {
+            err.push(`coe_a${brk(coe_a)}非數字，強制預設為0.8`)
+            coe_a = 0.8
+        }
+        else {
+
+            //cdbl
+            coe_a = cdbl(coe_a)
+
         }
 
         //check depth
@@ -5756,13 +5884,40 @@ function cptShibata({ ver = '1988', waterLevelDesign, depth, qc, fs, u2, svp, sv
         return ret() //觸發延遲報錯並結束
     }
 
+    //CPT分析
+    let useCnLeq = true
+    rc = cptCommon(depth, coe_a, qc, fs, u2, sv, svpUsual, useCnLeq)
+    // Ic = get(rc, 'Ic', null)
+    // Icn = get(rc, 'Icn', null)
+    qt = get(rc, 'qt', null)
+
+    //check
+    if (!isnum(qt)) {
+        err.push(`qt${brk(qt)}非數字`)
+        return ret() //重大錯誤直接報錯結束
+    }
+
     //轉換單位成為kg/cm2
     sv = sv * cvru //kPa -> kg/cm2
     svpUsual = svpUsual * cvru //kPa -> kg/cm2
     svpDesign = svpDesign * cvru //kPa -> kg/cm2
-    qc = qc * 1000 * cvru //MPa -> kg/cm2
-    fs = fs * 1000 * cvru //MPa -> kg/cm2
-    u2 = u2 * 1000 * cvru //MPa -> kg/cm2
+    qt = qt * 1000 * cvru //MPa -> kg/cm2
+
+    // //轉換單位成為kg/cm2
+    // sv = sv * cvru //kPa -> kg/cm2
+    // svpUsual = svpUsual * cvru //kPa -> kg/cm2
+    // svpDesign = svpDesign * cvru //kPa -> kg/cm2
+    // qt = qt * 1000 * cvru //MPa -> kg/cm2
+    // fs = fs * 1000 * cvru //MPa -> kg/cm2
+    // u2 = u2 * 1000 * cvru //MPa -> kg/cm2
+
+    // //轉換單位成為kg/cm2
+    // sv = sv * cvru //kPa -> kg/cm2
+    // svpUsual = svpUsual * cvru //kPa -> kg/cm2
+    // svpDesign = svpDesign * cvru //kPa -> kg/cm2
+    // qt = qt * 1000 * cvru //MPa -> kg/cm2
+    // fs = fs * 1000 * cvru //MPa -> kg/cm2
+    // u2 = u2 * 1000 * cvru //MPa -> kg/cm2
 
     //MSF, 規模修正因子
     MSF = (Mw / 7.5) ** (-2.56)
@@ -5770,8 +5925,8 @@ function cptShibata({ ver = '1988', waterLevelDesign, depth, qc, fs, u2, svp, sv
     //rrd, 應力折減係數
     rrd = 1 - 0.015 * depth
 
-    //qc1(kg/cm2)
-    qc1 = 1.7 / (svpUsual + 0.7) * qc
+    //qc1, 單位基於kg/cm2但無法確切定義其單位, 故不給予
+    qc1 = 1.7 / (svpUsual + 0.7) * qt
 
     //C2
     let C2
@@ -6432,10 +6587,37 @@ let methodSettlements = {
 }
 
 
-function liquefaction(kind = 'auto', rows) {
-    // console.log('liquefaction', kind, rows)
+function liquefaction(kind = 'auto', rows, opt = {}) {
 
-    function getKeysFromRows(rows) {
+    //unitSvSvp
+    let unitSvSvp = get(opt, 'unitSvSvp')
+    if (unitSvSvp !== 'kPa' && unitSvSvp !== 'MPa') {
+        throw new Error(`opt.unitSvSvp[${unitSvSvp}] need kPa or MPa`)
+    }
+
+    //keyDepth, 計算核心複雜不提供更換鍵名
+    // let keyDepth = get(opt, 'keyDepth')
+    // if (!isestr(keyDepth)) {
+    //     keyDepth = 'depth'
+    // }
+    let keyDepth = 'depth'
+
+    //keyDepthStart, 計算核心複雜不提供更換鍵名
+    // let keyDepthStart = get(opt, 'keyDepthStart')
+    // if (!isestr(keyDepthStart)) {
+    //     keyDepthStart = 'depthStart'
+    // }
+    let keyDepthStart = 'depthStart'
+
+    //keyDepthEnd, 計算核心複雜不提供更換鍵名
+    // let keyDepthEnd = get(opt, 'keyDepthEnd')
+    // if (!isestr(keyDepthEnd)) {
+    //     keyDepthEnd = 'depthEnd'
+    // }
+    let keyDepthEnd = 'depthEnd'
+
+    //getKeysFromRows
+    let getKeysFromRows = (rows) => {
 
         //row0
         let row0 = get(rows, 0, [])
@@ -6477,7 +6659,8 @@ function liquefaction(kind = 'auto', rows) {
     //     return kind
     // }
 
-    function addDepthAndPorousParams(rows, kind, waterLevelUsual, waterLevelDesign) {
+    //addDepthAndPorousParams
+    let addDepthAndPorousParams = (rows, kind, waterLevelUsual, waterLevelDesign) => {
 
         //waterLevelUsual, waterLevelDesign
         waterLevelUsual = cdbl(waterLevelUsual)
@@ -6494,8 +6677,8 @@ function liquefaction(kind = 'auto', rows) {
             v.waterLevelDesign = waterLevelDesign
 
             //depth
-            let ds = get(v, 'depthStart', null)
-            let de = get(v, 'depthEnd', null)
+            let ds = get(v, keyDepthStart, null)
+            let de = get(v, keyDepthEnd, null)
             let bDepth = isnum(ds) && isnum(de)
             if (bDepth) {
                 ds = cdbl(ds)
@@ -6503,11 +6686,11 @@ function liquefaction(kind = 'auto', rows) {
 
                 //depth
                 let depth = (ds + de) / 2
-                v.depth = depth
+                v[keyDepth] = depth
 
             }
             else {
-                v.depth = ''
+                v[keyDepth] = ''
             }
 
             //relaPorousParams, SPT,CPT,VS都需要飽和與乾單位重計算垂直應力與垂直有效應力
@@ -6569,7 +6752,8 @@ function liquefaction(kind = 'auto', rows) {
         return rows
     }
 
-    function liqParams(kind, waterLevelUsual, waterLevelDesign, Mw, PGA, vibrationType, rows) {
+    //liqParams
+    let liqParams = (kind, waterLevelUsual, waterLevelDesign, Mw, PGA, vibrationType, rows) => {
 
         //複寫各層Mw, PGA, vibrationType, 且此處不檢核交由各列檢核
         rows = map(rows, (v, k) => {
@@ -6604,13 +6788,49 @@ function liquefaction(kind = 'auto', rows) {
         if (!hasVerticalStress) {
             //數據無垂直應力與垂直有效應力
 
-            //calcVerticalStress, 計算sv:土層中點深度之垂直總應力(kN/m2), svpUsual與svpDesign:土層中點深度之常時與設計垂直有效應力(kN/m2)
-            rows = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })
+            //calcVerticalStress, 輸出sv與svp單位為kPa, 計算sv:土層中點深度之垂直總應力(kN/m2), svpUsual與svpDesign:土層中點深度之常時與設計垂直有效應力(kN/m2)
+            rows = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
             // console.log('calcVerticalStress rows', rows[0])
 
         }
         else {
             //數據有垂直應力與垂直有效應力
+
+            //unitSvSvp, 此處限制用kPa, 故指定輸入為MPa才要轉kPa
+            if (unitSvSvp === 'MPa') {
+                rows = map(rows, (v, k) => {
+                    if (isNumber(v.sv)) {
+                        v.sv *= 1000
+                    }
+                    if (isNumber(v.svp)) {
+                        v.svp *= 1000
+                    }
+                    if (isNumber(v.svpUsual)) {
+                        v.svpUsual *= 1000
+                    }
+                    if (isNumber(v.svpDesign)) {
+                        v.svpDesign *= 1000
+                    }
+                    return v
+                })
+            }
+
+            //check
+            each(rows, (v, k) => {
+                // console.log(k, v, v[keyDepth], 'isNumber(v[keyDepth])', isNumber(v[keyDepth]))
+                if (isNumber(v.sv)) {
+                    checkVerticalStress(v.sv, v[keyDepth], 'kPa', 'sv')
+                }
+                if (isNumber(v.svp)) {
+                    checkVerticalStress(v.svp, v[keyDepth], 'kPa', 'svp')
+                }
+                if (isNumber(v.svpUsual)) {
+                    checkVerticalStress(v.svpUsual, v[keyDepth], 'kPa', 'svpUsual')
+                }
+                if (isNumber(v.svpDesign)) {
+                    checkVerticalStress(v.svpDesign, v[keyDepth], 'kPa', 'svpDesign')
+                }
+            })
 
             //提取calcVerticalStress部份功能, 儲存地下水位以及重算中點深度
             rows = map(rows, (v, k) => {
@@ -6620,8 +6840,8 @@ function liquefaction(kind = 'auto', rows) {
                 v.waterLevelDesign = waterLevelDesign
 
                 //ds, de
-                let ds = get(v, 'depthStart', null)
-                let de = get(v, 'depthEnd', null)
+                let ds = get(v, keyDepthStart, null)
+                let de = get(v, keyDepthEnd, null)
 
                 //check
                 if (!isnum(ds)) {
@@ -6634,7 +6854,7 @@ function liquefaction(kind = 'auto', rows) {
                 de = cdbl(de)
 
                 //depth, 土層中點深度(m)
-                v.depth = (de + ds) / 2
+                v[keyDepth] = (de + ds) / 2
 
                 return v
             })
@@ -6655,7 +6875,8 @@ function liquefaction(kind = 'auto', rows) {
         return rows
     }
 
-    function liqFS(kind, row) {
+    //liqFS
+    let liqFS = (kind, row) => {
 
         //cloneDeep
         row = cloneDeep(row)
@@ -6678,7 +6899,8 @@ function liquefaction(kind = 'auto', rows) {
         return row
     }
 
-    function liqPL(rows) {
+    //liqPL
+    let liqPL = (rows) => {
 
         //cloneDeep
         rows = cloneDeep(rows)
@@ -6699,18 +6921,18 @@ function liquefaction(kind = 'auto', rows) {
                 rows = map(rows, (v, k) => {
 
                     //液化方法的PL
-                    // console.log('isnum(v.depthStart)', isnum(v.depthStart), v.depthStart)
-                    // console.log('isnum(v.depthEnd)', isnum(v.depthEnd), v.depthEnd)
-                    // console.log('isnum(v.depth)', isnum(v.depth), v.depth)
+                    // console.log('isnum(v[keyDepthStart])', isnum(v[keyDepthStart]), v[keyDepthStart])
+                    // console.log('isnum(v[keyDepthEnd])', isnum(v[keyDepthEnd]), v[keyDepthEnd])
+                    // console.log('isnum(v[keyDepth])', isnum(v[keyDepth]), v[keyDepth])
                     // console.log('isnum(v[key])', isnum(v[key]), v[key])
-                    if (isnum(v.depthStart) &&
-                        isnum(v.depthEnd) &&
-                        isnum(v.depth) &&
+                    if (isnum(v[keyDepthStart]) &&
+                        isnum(v[keyDepthEnd]) &&
+                        isnum(v[keyDepth]) &&
                         isnum(v[key])
                     ) {
-                        let zs = cdbl(v.depthStart)
-                        let ze = cdbl(v.depthEnd)
-                        let z = cdbl(v.depth)
+                        let zs = cdbl(v[keyDepthStart])
+                        let ze = cdbl(v[keyDepthEnd])
+                        let z = cdbl(v[keyDepth])
                         let FL = cdbl(v[key])
                         let F = 1 - Math.min(Math.max(FL, 0), 1)
                         let W = 10 - 0.5 * z
@@ -6737,7 +6959,8 @@ function liquefaction(kind = 'auto', rows) {
         return rows
     }
 
-    function liqSett(rows) {
+    //liqSett
+    let liqSett = (rows) => {
 
         //cloneDeep
         rows = cloneDeep(rows)
@@ -6767,15 +6990,15 @@ function liquefaction(kind = 'auto', rows) {
                     // console.log(k, v, 'key', key, 'v[key]', v[key])
 
                     //液化方法的vstr
-                    // console.log('isnum(v.depthStart)', isnum(v.depthStart), v.depthStart)
-                    // console.log('isnum(v.depthEnd)', isnum(v.depthEnd), v.depthEnd)
+                    // console.log('isnum(v[keyDepthStart])', isnum(v[keyDepthStart]), v[keyDepthStart])
+                    // console.log('isnum(v[keyDepthEnd])', isnum(v[keyDepthEnd]), v[keyDepthEnd])
                     // console.log('isnum(v[key])', isnum(v[key]), v[key])
-                    if (isnum(v.depthStart) &&
-                        isnum(v.depthEnd) &&
+                    if (isnum(v[keyDepthStart]) &&
+                        isnum(v[keyDepthEnd]) &&
                         isnum(v[key])
                     ) {
-                        let zs = cdbl(v.depthStart)
-                        let ze = cdbl(v.depthEnd)
+                        let zs = cdbl(v[keyDepthStart])
+                        let ze = cdbl(v[keyDepthEnd])
 
                         let vstr = cdbl(v[key]) / 100 //由百分比(%)還原成比例
                         sumStl += vstr * (ze - zs)
@@ -6818,7 +7041,7 @@ function liquefaction(kind = 'auto', rows) {
 
     //sortBy
     rows = sortBy(rows, (v) => {
-        return cdbl(v.depthStart)
+        return cdbl(v[keyDepthStart])
     })
 
     //waterLevelUsual, 常時地下水位, 直接使用最上層數據
@@ -6903,17 +7126,34 @@ function liquefaction(kind = 'auto', rows) {
     })
 
     //清除非有效值
-    if (true) {
-        each(rows, (r, ir) => {
-            each(r, (v, k) => {
-                if (!isestr(v) && !isnum(v)) {
-                    // console.log(ir, k, v)
-                    rows[ir][k] = ''
-                }
-            })
+    each(rows, (r, ir) => {
+        each(r, (v, k) => {
+            if (!isestr(v) && !isnum(v)) {
+                // console.log(ir, k, v)
+                rows[ir][k] = ''
+            }
+        })
+    })
+    // console.log('rows', rows[0])
+
+    //unitSvSvp, 此處限制用kPa, 故指定為輸出MPa才要轉MPa
+    if (unitSvSvp === 'MPa') {
+        rows = map(rows, (v) => {
+            if (isNumber(v.sv)) {
+                v.sv /= 1000
+            }
+            if (isNumber(v.svp)) {
+                v.svp /= 1000
+            }
+            if (isNumber(v.svpUsual)) {
+                v.svpUsual /= 1000
+            }
+            if (isNumber(v.svpDesign)) {
+                v.svpDesign /= 1000
+            }
+            return v
         })
     }
-    // console.log('rows', rows[0])
 
     return rows
 }
@@ -6948,4 +7188,3 @@ let calcLiquefaction = {
 
 
 export default calcLiquefaction
-

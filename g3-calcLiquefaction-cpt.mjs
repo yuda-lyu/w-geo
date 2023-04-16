@@ -1,4 +1,5 @@
 import fs from 'fs'
+import _ from 'lodash'
 import w from 'wsemi'
 import calcLiquefaction from './src/calcLiquefaction.mjs'
 import calcCptUnitWeight from './src/calcCptUnitWeight.mjs'
@@ -400,25 +401,18 @@ function getRows(k) {
     ]
 
     //rowsIn2
-    let rowsIn2 = rowsIn1
+    let rowsIn2 = []
     if (true) {
 
         //opt
         let opt = {
             rsatIni: 19.5,
             coe_a: 0.8,
+            unitSvSvp: 'kPa', //因為rowsIn1的sv與svp使用kPa, 統一分析故使用kPa
         }
 
         //calcCptUnitWeight
-        rowsIn2 = calcCptUnitWeight(rowsIn2, opt)
-        // console.log('calcCptUnitWeight', rowsIn2[0])
-
-        //回傳qc,fs,u0,u2,sv,svp單位為MPa, 液化輸入sv,svp單位為kPa
-        for (let i = 0; i < rowsIn2.length; i++) {
-            rowsIn2[i].sv *= 1000
-            rowsIn2[i].svp *= 1000
-        }
-        // console.log('cv-unit', rowsIn2[0])
+        rowsIn2 = calcCptUnitWeight(_.cloneDeep(rowsIn1), opt)
 
     }
 
@@ -437,11 +431,15 @@ function calc(k) {
     let rowsIn = getRows(k)
     // console.log('rowsIn',rowsIn)
 
-    let rowsOut = calcLiquefaction.calc('CPT', rowsIn)
+    let opt = {
+        unitSvSvp: 'kPa',
+    }
+
+    let rowsOut = calcLiquefaction.calc('CPT', rowsIn, opt)
     // console.log('rowsOut',rowsOut)
 
-    fs.writeFileSync(`./calcLiquefaction-cpt-rowsIn${k}.json`, JSON.stringify(rowsIn), 'utf8')
-    fs.writeFileSync(`./calcLiquefaction-cpt-rowsOut${k}.json`, JSON.stringify(rowsOut), 'utf8')
+    fs.writeFileSync(`./calcLiquefaction-cpt-rowsIn${k}.json`, JSON.stringify(rowsIn, null, 2), 'utf8')
+    fs.writeFileSync(`./calcLiquefaction-cpt-rowsOut${k}.json`, JSON.stringify(rowsOut, null, 2), 'utf8')
 
     w.downloadExcelFileFromData(`./calcLiquefaction-cpt-mat${k}.xlsx`, 'mat', rowsOut)
 

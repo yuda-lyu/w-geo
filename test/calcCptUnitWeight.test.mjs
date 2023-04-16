@@ -9,7 +9,8 @@ describe(`calcCptUnitWeight`, function() {
     //opt
     let opt = {
         rsatIni: 19.5,
-        coe_a: 0.75
+        coe_a: 0.75,
+        unitSvSvp: 'MPa',
     }
 
     it(`should return rowsOut1 when calcCptUnitWeight(rowsIn1, ${JSON.stringify(opt)})`, function() {

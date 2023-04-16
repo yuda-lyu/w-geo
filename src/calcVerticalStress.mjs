@@ -16,6 +16,57 @@ import checkDepthStartEnd from './checkDepthStartEnd.mjs'
 let rw = cnst.rw
 
 
+function checkVerticalStress(v, depth, unit, lable = '') {
+
+    //check v
+    if (!isnum(v)) {
+        throw new Error(`v[${v}] is not a number`)
+    }
+    v = cdbl(v)
+
+    //check depth
+    if (!isnum(depth)) {
+        throw new Error(`depth[${depth}] is not a number`)
+    }
+    depth = cdbl(depth)
+
+    //check unit
+    if (unit !== 'kPa' && unit !== 'MPa') {
+        throw new Error(`unit[${unit}] need kPa or MPa`)
+    }
+
+    //最大最小單位重
+    let rmin = 5 //kN/m3
+    let rmax = 25 //kN/m3
+
+    //最大最小應力
+    let vmin = rmin * depth //kPa
+    let vmax = rmax * depth //kPa
+
+    //unit
+    if (unit === 'MPa') {
+        vmin /= 1000
+        vmax /= 1000
+    }
+
+    //lable
+    if (!isestr(lable)) {
+        lable = `v`
+    }
+
+    //check
+    if (v < vmin) {
+        throw new Error(`${lable}[${v}](${unit}) < min[${vmin}](${unit}) in depth[${depth}](m)`)
+        // console.log(`${lable}[${v}](${unit}) < min[${vmin}](${unit}) in depth[${depth}](m)`)
+    }
+    if (v > vmax) {
+        throw new Error(`${lable}[${v}](${unit}) > max[${vmax}](${unit}) in depth[${depth}](m)`)
+        // console.log(`${lable}[${v}](${unit}) > max[${vmax}](${unit}) in depth[${depth}](m)`)
+    }
+
+}
+
+
 function core(rows, waterLevel, opt = {}) {
 
     //keyDepth
@@ -96,7 +147,7 @@ function core(rows, waterLevel, opt = {}) {
                 rT = rsat
             }
             else {
-                throw new Error('非預期情形')
+                throw new Error('深度條件出現非預期情形')
             }
 
             //層厚度(m)
@@ -108,7 +159,7 @@ function core(rows, waterLevel, opt = {}) {
                 sv_bottom = ds * rT
             }
 
-            //sv, 土層中點深度之垂直總應力(kN/m2)
+            //sv(kN/m2), 土層中點深度之垂直總應力
             let dsv = dd * rT
             let sv = sv_bottom + dsv / 2
             v.sv = sv
@@ -116,15 +167,15 @@ function core(rows, waterLevel, opt = {}) {
             //更新土層底部之垂直總應力
             sv_bottom += dsv
 
-            //土層中點深度之水頭高(m)
+            //dpp(m), 土層中點深度之水頭高
             let dpp = Math.max(((ds + de) / 2 - waterLevel), 0)
             // console.log('dpp', dpp)
 
-            //pp, 土層中點深度之水壓(kN/m2)
+            //pp(kN/m2), 土層中點深度之水壓
             let pp = dpp * rw
             // console.log('pp', pp)
 
-            //svp, 土層中點深度之垂直有效應力(kN/m2)
+            //svp(kN/m2), 土層中點深度之垂直有效應力
             v.svp = Math.max(sv - pp, 0)
 
         }
@@ -189,7 +240,7 @@ function core(rows, waterLevel, opt = {}) {
  *         rsat: 18, //kN/m3
  *     },
  * ]
- * rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })
+ * rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
  * console.log(rowsNew, (18 - 9.81) * 15) //地下 15(m) 處之垂直有效應力為 122.85(kN/m2)
  * // => [
  * //   {
@@ -246,7 +297,7 @@ function core(rows, waterLevel, opt = {}) {
  *         rsat: 20, //kN/m3
  *     },
  * ]
- * rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })
+ * rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
  * console.log(rowsNew, (19 - 9.81) * 15) //地下 15(m) 處之垂直有效應力為 137.85(kN/m2)
  * // => [
  * //   {
@@ -303,7 +354,7 @@ function core(rows, waterLevel, opt = {}) {
  *         rd: 18, //kN/m3
  *     },
  * ]
- * rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })
+ * rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
  * console.log(rowsNew, (18) * 15) //地下 15(m) 處之垂直總應力與垂直有效應力為 270(kN/m2)
  * // => [
  * //   {
@@ -355,7 +406,7 @@ function core(rows, waterLevel, opt = {}) {
  *         rsat: 20, //kN/m3
  *     },
  * ]
- * rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })
+ * rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
  * console.log(rowsNew, 18 * 3 + (20 * 4 - 9.81 * 4)) //地下 7(m) 處之垂直有效應力為 94.76(kN/m2)
  * // => [
  * //   {
@@ -402,7 +453,7 @@ function core(rows, waterLevel, opt = {}) {
  *         rsat: 20, //kN/m3
  *     },
  * ]
- * rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })
+ * rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
  * console.log(rowsNew, 18 * 3 + (20 * 4 - 9.81 * 4)) //地下 7(m) 處之垂直有效應力為 94.76(kN/m2)
  * // => [
  * //   {
@@ -462,7 +513,7 @@ function core(rows, waterLevel, opt = {}) {
  *         rsat: 20, //kN/m3
  *     },
  * ]
- * rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign })
+ * rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
  * console.log(rowsNew, 18 * 3 + (20 * 4 - 9.81 * 4), (20 - 9.81) * 7) //地下 7(m) 處之常時垂直有效應力為 94.76(kN/m2), 設計垂直有效應力為 71.33(kN/m2)
  * // => [
  * //   {
@@ -508,6 +559,12 @@ function calcVerticalStress(rows, opt = {}) {
     //check
     if (!isearr(rows)) {
         throw new Error(`無有效數據`)
+    }
+
+    //unitSvSvp
+    let unitSvSvp = get(opt, 'unitSvSvp')
+    if (unitSvSvp !== 'kPa' && unitSvSvp !== 'MPa') {
+        throw new Error(`opt.unitSvSvp[${unitSvSvp}] need kPa or MPa`)
     }
 
     //keyDepth
@@ -569,7 +626,7 @@ function calcVerticalStress(rows, opt = {}) {
         v.waterLevelUsual = waterLevelUsual
         v.waterLevelDesign = waterLevelDesign
 
-        //save stress
+        //sv, svpUsual, svpDesign(kN/m2)
         let vUsual = rowsUsual[k]
         let vDesign = rowsDesign[k]
         v.sv = vUsual.sv //地下水位差異僅影響垂直有效應力, 故垂直總應力使用常時資料
@@ -580,8 +637,25 @@ function calcVerticalStress(rows, opt = {}) {
         return v
     })
 
+    //unitSvSvp, 此處限制用kPa, 故指定為輸出MPa才要轉MPa
+    if (unitSvSvp === 'MPa') {
+        rows = map(rows, (v) => {
+            v.sv /= 1000
+            v.svpUsual /= 1000
+            v.svpDesign /= 1000
+            return v
+        })
+    }
+
     return rows
 }
 
 
-export default calcVerticalStress
+export {
+    checkVerticalStress,
+    calcVerticalStress
+}
+export default { //整合輸出預設得要有default
+    checkVerticalStress,
+    calcVerticalStress
+}

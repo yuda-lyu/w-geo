@@ -5031,12 +5031,15 @@ if (true) {
     let opt = {
         rsatIni: 19.5,
         coe_a,
+        unitSvSvp: 'MPa',
     }
 
     //calcCptUnitWeight
     rs = calcCptUnitWeight(rs, opt)
     // console.log(rowsOut[0])
     // console.log('calcCpt rs', rs)
+
+    //bbb calcCptUnitWeight所得sv,svp為kPa
 
     rowsInOri = rs
 }
@@ -5057,6 +5060,7 @@ if (true) {
         },
         // intrpU0: (depth, k, v, ltdt) => {
         // },
+        unitSvSvp: 'MPa',
     }
 
     //calcCpt

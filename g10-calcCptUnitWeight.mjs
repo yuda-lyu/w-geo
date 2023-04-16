@@ -1260,12 +1260,15 @@ let rowsIn = [
 //opt
 let opt = {
     rsatIni: 19.5,
-    coe_a: 0.75
+    coe_a: 0.75,
+    unitSvSvp: 'MPa',
 }
 
 //calcCptUnitWeight
 let rowsOut = calcCptUnitWeight(rowsIn, opt)
 // console.log(rowsOut[0])
+
+//bbb calcCptUnitWeight所得sv,svp為kPa
 
 let k = 1
 fs.writeFileSync(`./calcCptUnitWeight-cpt-rowsIn${k}.json`, JSON.stringify(rowsIn), 'utf8')

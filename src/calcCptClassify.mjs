@@ -3565,7 +3565,7 @@ function simplifyRobertson1986Core(ram, opt = {}) {
 }
 
 
-function simplifyRobertson1986(iRobFrQt, iRobBqQt, opt = {}) {
+function simplifyRobertson1986(iRobRfqt, iRobBqqt, opt = {}) {
 
     //returnZone
     let returnZone = get(opt, 'returnZone')
@@ -3574,48 +3574,48 @@ function simplifyRobertson1986(iRobFrQt, iRobBqQt, opt = {}) {
     }
 
     //cint
-    if (isnum(iRobFrQt)) {
-        iRobFrQt = cint(iRobFrQt)
+    if (isnum(iRobRfqt)) {
+        iRobRfqt = cint(iRobRfqt)
     }
     else {
-        iRobFrQt = null
+        iRobRfqt = null
     }
-    if (isnum(iRobBqQt)) {
-        iRobBqQt = cint(iRobBqQt)
+    if (isnum(iRobBqqt)) {
+        iRobBqqt = cint(iRobBqqt)
     }
     else {
-        iRobBqQt = null
+        iRobBqqt = null
     }
 
     //simplifyRobertson1986Core
-    let cFrQt = simplifyRobertson1986Core(iRobFrQt, opt)
+    let cFrQt = simplifyRobertson1986Core(iRobRfqt, opt)
     // console.log('simplifyRobertson1986Core cFrQt', cFrQt)
-    let cBqQt = simplifyRobertson1986Core(iRobBqQt, opt)
+    let cBqQt = simplifyRobertson1986Core(iRobBqqt, opt)
     // console.log('simplifyRobertson1986Core cBqQt', cBqQt)
 
-    if (iRobFrQt === null && iRobBqQt === null) {
+    if (iRobRfqt === null && iRobBqqt === null) {
         return ''
     }
-    else if (iRobFrQt !== null && iRobBqQt === null) {
-        return returnZone ? iRobFrQt : cFrQt
+    else if (iRobRfqt !== null && iRobBqqt === null) {
+        return returnZone ? iRobRfqt : cFrQt
     }
-    else if (iRobFrQt === null && iRobBqQt !== null) {
-        return returnZone ? iRobBqQt : cBqQt
+    else if (iRobRfqt === null && iRobBqqt !== null) {
+        return returnZone ? iRobBqqt : cBqQt
     }
     else if (cFrQt !== cBqQt) {
         //6,7,8,9,10,11,12,13視為砂性其他黏性, 若cFrQt與cBqQt皆為砂性則使用cBqQt, 反之則使用cFrQt
-        let iRobFrQtIsSandy = iRobFrQt >= 6
-        let iRobBqQtIsSandy = iRobBqQt >= 6
+        let iRobFrQtIsSandy = iRobRfqt >= 6
+        let iRobBqQtIsSandy = iRobBqqt >= 6
         if (iRobFrQtIsSandy && iRobBqQtIsSandy) {
-            return returnZone ? iRobBqQt : cBqQt //皆砂性故使用cBqQt
+            return returnZone ? iRobBqqt : cBqQt //皆砂性故使用cBqQt
         }
         else if (!iRobFrQtIsSandy && !iRobBqQtIsSandy) {
-            return returnZone ? iRobFrQt : cFrQt //皆黏性故使用cFrQt
+            return returnZone ? iRobRfqt : cFrQt //皆黏性故使用cFrQt
         }
         return '' //FrQt與BqQt分類不同, 兩者又是砂與黏性不同, 故視為無效分類, 交由其他深度做判斷
     }
     else {
-        return returnZone ? iRobFrQt : cFrQt
+        return returnZone ? iRobRfqt : cFrQt
     }
 }
 

@@ -1,29 +1,21 @@
 import each from 'lodash/each'
 import map from 'lodash/map'
 import get from 'lodash/get'
-// import size from 'lodash/size'
-// import find from 'lodash/find'
-// import max from 'lodash/max'
 import cloneDeep from 'lodash/cloneDeep'
 import isNumber from 'lodash/isNumber'
 import trim from 'lodash/trim'
 import isstr from 'wsemi/src/isstr.mjs'
 import isfun from 'wsemi/src/isfun.mjs'
-// import isearr from 'wsemi/src/isearr.mjs'
 import iseobj from 'wsemi/src/iseobj.mjs'
 import isbol from 'wsemi/src/isbol.mjs'
-// import ispint from 'wsemi/src/ispint.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
-// import cint from 'wsemi/src/cint.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
-// import haskey from 'wsemi/src/haskey.mjs'
-// import pmSeries from 'wsemi/src/pmSeries.mjs'
-// import delay from 'wsemi/src/delay.mjs'
 import binarySearch from 'w-optimization/src/binarySearch.mjs'
 import { pickData } from './_share.mjs'
 import cnst from './cnst.mjs'
 import { intrpDefPp, intrpDefSvSvp } from './intrpDefParam.mjs'
 import smoothDepthByKey from './smoothDepthByKey.mjs'
+import { checkVerticalStress } from './calcVerticalStress.mjs'
 import { cptClassify } from './calcCptClassify.mjs'
 
 
@@ -102,13 +94,17 @@ function stress(ltdt, opt = {}) {
     //intrpSv
     let intrpSv = get(opt, 'intrpSv')
     if (!isfun(intrpSv)) {
-        intrpSv = intrpDefSvSvp
+        intrpSv = (depth) => {
+            return intrpDefSvSvp(depth, 'MPa')
+        }
     }
 
     //intrpU0
     let intrpU0 = get(opt, 'intrpU0')
     if (!isfun(intrpU0)) {
-        intrpU0 = intrpDefPp
+        intrpU0 = (depth) => {
+            return intrpDefPp(depth, 'MPa')
+        }
     }
 
     //rs
@@ -187,13 +183,13 @@ function calcRobQtnAndIcn(qnet, Fr, svp, opt = {}) {
 
     //core
     let core = (n) => {
-        let Cn = (Pa / svp) ** n
+        let Cn = (Pa / svp) ** n //Pa,svp單位對消
         if (useCnLeq) {
             Cn = Math.min(Cn, 1.7)
         }
         let Qtn = Cn * qnet / Pa
         let Icn = Math.sqrt((3.47 - Math.log10(Qtn)) ** 2 + (Math.log10(Fr) + 1.22) ** 2)
-        let nn = 0.381 * Icn + 0.05 * (svp / Pa) - 0.15
+        let nn = 0.381 * Icn + 0.05 * (svp / Pa) - 0.15 //Pa,svp單位對消
         return {
             n, Cn, Qtn, Icn, nn
         }
@@ -233,12 +229,27 @@ function calcRobQtnAndIcn(qnet, Fr, svp, opt = {}) {
 
 function calcCptCore(dt, coe_a, opt = {}) {
 
+    //unitSvSvp
+    let unitSvSvp = get(opt, 'unitSvSvp')
+    if (unitSvSvp !== 'kPa' && unitSvSvp !== 'MPa') {
+        throw new Error(`opt.unitSvSvp[${unitSvSvp}] need kPa or MPa`)
+    }
+
     //gv
     let gv = (o, key) => {
         return get(o, `success.${key}`, null)
     }
 
-    //sv(MPa)
+    //depth(m)
+    let depth = get(dt, 'depth')
+    if (!isnum(depth)) {
+        depth = null
+    }
+    else {
+        depth = cdbl(depth)
+    }
+
+    //sv
     let sv = get(dt, 'sv')
     if (!isnum(sv)) {
         sv = null
@@ -247,13 +258,28 @@ function calcCptCore(dt, coe_a, opt = {}) {
         sv = cdbl(sv)
     }
 
-    //svp(MPa)
+    //svp
     let svp = get(dt, 'svp')
     if (!isnum(svp)) {
         svp = null
     }
     else {
         svp = cdbl(svp)
+    }
+
+    //check sv, svp
+    // console.log('dt', dt)
+    if (isNumber(sv)) {
+        checkVerticalStress(sv, depth, unitSvSvp, 'sv')
+    }
+    if (isNumber(svp)) {
+        checkVerticalStress(svp, depth, unitSvSvp, 'svp')
+    }
+
+    //sv, svp(MPa), 後續sv, svp採MPa進行分析
+    if (unitSvSvp === 'kPa') {
+        sv /= 1000
+        svp /= 1000
     }
 
     //qc(MPa)
@@ -428,31 +454,23 @@ function calcCptCore(dt, coe_a, opt = {}) {
     }
     // console.log(r)
 
+    //unitSvSvp, 此處為MPa, 故指定為kPa才要轉
+    if (unitSvSvp === 'kPa') {
+        r.sv *= 1000
+        r.svp *= 1000
+    }
+
     return r
 }
 
 
 function calcCpt(ltdt, opt = {}) {
-    // ltdt: [
-    //   {
-    //     depth,
-    //     qc,
-    //     fs,
-    //     u2,
-    //   },
-    //   ...
-    // ]
-    // opt.coe_a: 0.85,
-    // opt.methodSmooth: 'none',
-    // opt.intrpSv: (depth, k, v, ltdt) => {
-    //     // console.log('intrpSv', depth, k, v)
-    //     let sv = v.sv //單位為MPa
-    //     return {
-    //         sv,
-    //     }
-    // },
-    // opt.intrpU0: (depth, k, v, ltdt) => {
-    // },
+
+    //unitSvSvp
+    let unitSvSvp = get(opt, 'unitSvSvp')
+    if (unitSvSvp !== 'kPa' && unitSvSvp !== 'MPa') {
+        throw new Error(`opt.unitSvSvp[${unitSvSvp}] need kPa or MPa`)
+    }
 
     //coe_a
     let coe_a = get(opt, 'coe_a')
@@ -475,8 +493,10 @@ function calcCpt(ltdt, opt = {}) {
 
     //calcCptCore
     ltdt = map(ltdt, (v) => {
-        return calcCptCore(v, coe_a)
+        return calcCptCore(v, coe_a, opt)
     })
+
+    //unitSvSvp已於calcCptCore處理轉換
 
     return ltdt
 }

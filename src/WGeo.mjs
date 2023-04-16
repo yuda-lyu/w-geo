@@ -5,6 +5,8 @@ export { default as calcDepthStartEndByConnect } from './calcDepthStartEndByConn
 export { default as calcDepthStartEndByGroup } from './calcDepthStartEndByGroup.mjs'
 export { default as calcDepthStartEndFromCenter } from './calcDepthStartEndFromCenter.mjs'
 export { default as calcLayers } from './calcLayers.mjs'
+export { default as calcLayersByCompress } from './calcLayersByCompress.mjs'
+export { default as calcLayersByMerge } from './calcLayersByMerge.mjs'
 export { default as calcLiquefaction } from './calcLiquefaction.mjs'
 export { default as calcVerticalStress } from './calcVerticalStress.mjs'
 export { default as checkDepth } from './checkDepth.mjs'

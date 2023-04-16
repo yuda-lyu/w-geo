@@ -3,7 +3,12 @@ import cdbl from 'wsemi/src/cdbl.mjs'
 import cnst from './cnst.mjs'
 
 
-function intrpDefPp(depth) {
+function intrpDefPp(depth, unit = 'kPa') {
+
+    //check
+    if (unit !== 'kPa' && unit !== 'MPa') {
+        throw new Error(`unit[${unit}] need kPa or MPa`)
+    }
 
     //check
     if (!isnum(depth)) {
@@ -15,14 +20,21 @@ function intrpDefPp(depth) {
 
     let r = depth * rw //kPa
 
-    //MPa
-    r /= 1000
+    //unit
+    if (unit === 'MPa') {
+        r /= 1000
+    }
 
     return r
 }
 
 
-function intrpDefSvSvp(depth) {
+function intrpDefSvSvp(depth, unit = 'kPa') {
+
+    //check
+    if (unit !== 'kPa' && unit !== 'MPa') {
+        throw new Error(`unit[${unit}] need kPa or MPa`)
+    }
 
     //check
     if (!isnum(depth)) {
@@ -33,24 +45,22 @@ function intrpDefSvSvp(depth) {
     //sv(kPa)
     let sv = depth * cnst.assesment_rsat //飽和單位重(kN/m3)
 
-    //sv(MPa)
-    sv /= 1000
-
     //pp(kPa)
-    let pp = intrpDefPp(depth)
+    let pp = intrpDefPp(depth, 'kPa')
 
-    //pp(MPa)
-    pp /= 1000
-
-    //svp(MPa)
+    //svp(kPa)
     let svp = sv - pp
     svp = Math.max(svp, 0)
 
     //svdry(kPa)
     let svdry = depth * cnst.assesment_rd //乾單位重(kN/m3)
 
-    //svdry(MPa)
-    svdry /= 1000
+    //unit
+    if (unit === 'MPa') {
+        sv /= 1000
+        pp /= 1000
+        svdry /= 1000
+    }
 
     return {
         sv,

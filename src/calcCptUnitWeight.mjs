@@ -8,9 +8,9 @@ import cdbl from 'wsemi/src/cdbl.mjs'
 import cint from 'wsemi/src/cint.mjs'
 import dig from 'wsemi/src/dig.mjs'
 import { intrpDefPp } from './intrpDefParam.mjs'
-import calcVerticalStress from './calcVerticalStress.mjs'
+import { calcVerticalStress } from './calcVerticalStress.mjs'
 import calcDepthStartEndFromCenter from './calcDepthStartEndFromCenter.mjs'
-import { simplifyRobertson1986 } from './calcCptClassify.mjs'
+// import { simplifyRobertson1986 } from './calcCptClassify.mjs'
 import { basic, calcCptCore } from './calcCpt.mjs'
 
 
@@ -74,7 +74,7 @@ function stress(ltdt, opt = {}) {
         //cdbl
         rsat = cdbl(rsat)
 
-        //rd
+        //rd(kN/m3)
         let rd = rsat - rdiff
 
         //save
@@ -84,8 +84,8 @@ function stress(ltdt, opt = {}) {
         return v
     })
 
-    //calcVerticalStress
-    ltdt = calcVerticalStress(ltdt, { ...opt, waterLevelUsual, waterLevelDesign })
+    //calcVerticalStress, 後續CPT分析(calcCptCore)採用MPa, 故須指定單位為MPa
+    ltdt = calcVerticalStress(ltdt, { ...opt, waterLevelUsual, waterLevelDesign, unitSvSvp: 'MPa' })
     // console.log('calcVerticalStress', ltdt[0])
     // calcVerticalStress {
     //   depth: 0.005,
@@ -107,13 +107,9 @@ function stress(ltdt, opt = {}) {
     //轉出svp
     ltdt = map(ltdt, (v) => {
 
-        //add svp
+        //svp(MPa)
         let svp = get(v, 'svpUsual')
         v.svp = svp
-
-        //轉換單位kPa至MPa
-        v.sv /= 1000
-        v.svp /= 1000
 
         //delete
         delete v.svpUsual
@@ -162,9 +158,9 @@ function estUnitWeightCore(ltdt, coe_a, opt = {}) {
     let r0 = 1 - ratio
     let r1 = ratio
 
-    //calcCptCore
+    //calcCptCore, CPT分析(calcCptCore)採用MPa
     ltdt = map(ltdt, (v) => {
-        return calcCptCore(v, coe_a)
+        return calcCptCore(v, coe_a, { unitSvSvp: 'MPa' })
     })
 
     //新飽和單位重
@@ -177,35 +173,52 @@ function estUnitWeightCore(ltdt, coe_a, opt = {}) {
             throw new Error(`estUnitWeight: 樣本無飽和單位重rsat`)
         }
 
-        //izone
-        let izone = null
-        if (isint(v.iRobFrQt) && isint(v.iRobBqQt)) {
+        // //izone, 會因為簡化導致單位重單一化, 故不使用
+        // let izone = null
+        // if (isint(v.iRobFrQt) && isint(v.iRobBqQt)) {
 
-            //simplifyRobertson1986
-            izone = simplifyRobertson1986(v.iRobFrQt, v.iRobBqQt, { numOfType: 3, returnZone: true })
+        //     //simplifyRobertson1986
+        //     izone = simplifyRobertson1986(v.iRobFrQt, v.iRobBqQt, { numOfType: 3, returnZone: true })
 
-        }
+        // }
 
-        //check 無izone
-        if (!isint(izone)) {
-            //無izone時則優先取用iRobBqQt或iRobFrQt
-            if (isint(v.iRobBqQt)) {
-                izone = v.iRobBqQt //優先使用砂的iRobBqQt
-            }
-            else if (isint(v.iRobFrQt)) {
-                izone = v.iRobFrQt
-            }
-        }
+        // //check 無izone
+        // if (!isint(izone)) {
+        //     //無izone時則優先取用iRobBqQt或iRobFrQt
+        //     if (isint(v.iRobBqQt)) {
+        //         izone = v.iRobBqQt //優先使用砂的iRobBqQt
+        //     }
+        //     else if (isint(v.iRobFrQt)) {
+        //         izone = v.iRobFrQt
+        //     }
+        // }
 
         //rsat(kN/m3)
         let rsat = null
-        if (isint(izone)) {
-            //有izone時則查表得飽和單位重
-            izone = cint(izone)
-            rsat = get(kpCPTClassForRobBqRfqt, izone, null)
-            if (!isnum(rsat)) {
-                throw new Error(`於kpCPTClassForRobBqRfqt找不到izone[${izone}]`)
+        // if (isint(izone)) {
+        //     //有izone時則查表得飽和單位重
+        //     izone = cint(izone)
+        //     rsat = get(kpCPTClassForRobBqRfqt, izone, null)
+        //     if (!isnum(rsat)) {
+        //         throw new Error(`於kpCPTClassForRobBqRfqt找不到izone[${izone}]`)
+        //     }
+        // }
+        let rsatFrQt = null
+        if (isint(v.iRobFrQt)) {
+            rsatFrQt = get(kpCPTClassForRobBqRfqt, v.iRobFrQt, null)
+            if (!isnum(rsatFrQt)) {
+                throw new Error(`於kpCPTClassForRobBqRfqt找不到rsatFrQt[${rsatFrQt}]`)
             }
+        }
+        let rsatBqQt = null
+        if (isint(v.iRobBqQt)) {
+            rsatBqQt = get(kpCPTClassForRobBqRfqt, v.iRobBqQt, null)
+            if (!isnum(rsatBqQt)) {
+                throw new Error(`於kpCPTClassForRobBqRfqt找不到rsatBqQt[${rsatBqQt}]`)
+            }
+        }
+        if (isnum(rsatFrQt) && isnum(rsatBqQt)) {
+            rsat = (rsatFrQt + rsatBqQt) / 2 //使用水壓與袖管摩擦兩圖所得zone值, 查得2單位重取平均
         }
 
         //check 無rsat
@@ -286,6 +299,12 @@ function estUnitWeight(ltdt, coe_a, opt = {}) {
 
 function calcCptUnitWeight(ltdt, opt = {}) {
 
+    //unitSvSvp
+    let unitSvSvp = get(opt, 'unitSvSvp')
+    if (unitSvSvp !== 'kPa' && unitSvSvp !== 'MPa') {
+        throw new Error(`opt.unitSvSvp[${unitSvSvp}] need kPa or MPa`)
+    }
+
     //rsatIni
     let rsatIni = get(opt, 'rsatIni')
     if (!isnum(rsatIni)) {
@@ -357,17 +376,16 @@ function calcCptUnitWeight(ltdt, opt = {}) {
 
     }
 
-    //add rsat
+    //add rsat(kN/m3)
     ltdt = map(ltdt, (v) => {
         v.rsat = rsatIni
         return v
     })
 
-    //add u0
+    //add u0(MPa)
     ltdt = map(ltdt, (v) => {
         //u0(MPa), 現地孔隙壓力
-        let u0 = intrpDefPp(v.depth) //u0(MPa)
-        v.u0 = u0
+        v.u0 = intrpDefPp(v.depth, 'MPa')
         return v
     })
 
@@ -379,7 +397,16 @@ function calcCptUnitWeight(ltdt, opt = {}) {
     ltdt = estUnitWeight(ltdt, coe_a, opt)
     // console.log('estUnitWeight', ltdt)
 
-    return ltdt //回傳qc,fs,u0,u2,sv,svp單位為MPa
+    //unitSvSvp, 此處為MPa, 故指定為kPa才要轉
+    if (unitSvSvp === 'kPa') {
+        ltdt = map(ltdt, (v) => {
+            v.sv *= 1000
+            v.svp *= 1000
+            return v
+        })
+    }
+
+    return ltdt //qc,fs,u0,u2單位為(MPa)
 }
 
 

@@ -19,6 +19,7 @@ describe(`calcCpt`, function() {
         },
         // intrpU0: (depth, k, v, ltdt) => {
         // },
+        unitSvSvp: 'MPa',
     }
 
     it(`should return rowsOut1 when calcCpt(rowsIn1, opt)`, function() {

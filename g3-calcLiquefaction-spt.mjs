@@ -47,11 +47,15 @@ function calc(k) {
     let rowsIn = getRows(k)
     // console.log('rowsIn',rowsIn)
 
-    let rowsOut = calcLiquefaction.calc('SPT', rowsIn)
+    let opt = {
+        unitSvSvp: 'kPa',
+    }
+
+    let rowsOut = calcLiquefaction.calc('SPT', rowsIn, opt)
     // console.log('rowsOut',rowsOut)
 
-    fs.writeFileSync(`./calcLiquefaction-spt-rowsIn${k}.json`, JSON.stringify(rowsIn), 'utf8')
-    fs.writeFileSync(`./calcLiquefaction-spt-rowsOut${k}.json`, JSON.stringify(rowsOut), 'utf8')
+    fs.writeFileSync(`./calcLiquefaction-spt-rowsIn${k}.json`, JSON.stringify(rowsIn, null, 2), 'utf8')
+    fs.writeFileSync(`./calcLiquefaction-spt-rowsOut${k}.json`, JSON.stringify(rowsOut, null, 2), 'utf8')
 
     // w.downloadExcelFileFromData(`./calcLiquefaction-spt-mat${k}.xlsx`, 'mat', rowsOut)
 
