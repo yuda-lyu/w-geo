@@ -3763,7 +3763,7 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     }
 
     //CPT分析
-    let useCnLeq = true //HBF法有限制Cn要小於等於1.7, 故得使用useCnLeq=true
+    let useCnLeq = false //未使用迭代法之Icn或Qtn, 故使用無限制之useCnLeq=false
     rc = cptCommon(depth, coe_a, qc, fs, u2, sv, svpUsual, useCnLeq)
     Fr = get(rc, 'Fr', null)
     Ic = get(rc, 'Ic', null)
@@ -4663,7 +4663,7 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     }
 
     //CPT分析
-    let useCnLeq = true //HBF法有限制Cn要小於等於1.7, 故得使用useCnLeq=true
+    let useCnLeq = false //未使用迭代法之Icn或Qtn, 故使用無限制之useCnLeq=false
     rc = cptCommon(depth, coe_a, qc, fs, u2, sv, svpUsual, useCnLeq)
     Fr = get(rc, 'Fr', null)
     // Ic = get(rc, 'Ic', null)
@@ -5475,7 +5475,7 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     }
 
     //CPT分析
-    let useCnLeq = true
+    let useCnLeq = false //未使用迭代法之Icn或Qtn, 故使用無限制之useCnLeq=false
     rc = cptCommon(depth, coe_a, qc, fs, u2, sv, svpUsual, useCnLeq)
     // Ic = get(rc, 'Ic', null)
     // Icn = get(rc, 'Icn', null)
@@ -5858,7 +5858,7 @@ function cptShibata({ ver = '1988', waterLevelDesign, depth, coe_a, qc, fs, u2, 
     }
 
     //CPT分析
-    let useCnLeq = true
+    let useCnLeq = false //未使用迭代法之Icn或Qtn, 故使用無限制之useCnLeq=false
     rc = cptCommon(depth, coe_a, qc, fs, u2, sv, svpUsual, useCnLeq)
     // Ic = get(rc, 'Ic', null)
     // Icn = get(rc, 'Icn', null)
