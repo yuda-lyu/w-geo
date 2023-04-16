@@ -1271,8 +1271,8 @@ let rowsOut = calcCptUnitWeight(rowsIn, opt)
 //bbb calcCptUnitWeight所得sv,svp為kPa
 
 let k = 1
-fs.writeFileSync(`./calcCptUnitWeight-cpt-rowsIn${k}.json`, JSON.stringify(rowsIn), 'utf8')
-fs.writeFileSync(`./calcCptUnitWeight-cpt-rowsOut${k}.json`, JSON.stringify(rowsOut), 'utf8')
+fs.writeFileSync(`./calcCptUnitWeight-cpt-rowsIn${k}.json`, JSON.stringify(rowsIn, null, 2), 'utf8')
+fs.writeFileSync(`./calcCptUnitWeight-cpt-rowsOut${k}.json`, JSON.stringify(rowsOut, null, 2), 'utf8')
 w.downloadExcelFileFromData(`./calcCptUnitWeight-cpt-mat.xlsx`, 'mat', rowsOut)
 
 //node --experimental-modules --es-module-specifier-resolution=node g10-calcCptUnitWeight.mjs

@@ -175,21 +175,21 @@ function estUnitWeightCore(ltdt, coe_a, opt = {}) {
 
         // //izone, 會因為簡化導致單位重單一化, 故不使用
         // let izone = null
-        // if (isint(v.iRobFrQt) && isint(v.iRobBqQt)) {
+        // if (isint(v.iRobRfqt) && isint(v.iRobBqqt)) {
 
         //     //simplifyRobertson1986
-        //     izone = simplifyRobertson1986(v.iRobFrQt, v.iRobBqQt, { numOfType: 3, returnZone: true })
+        //     izone = simplifyRobertson1986(v.iRobRfqt, v.iRobBqqt, { numOfType: 3, returnZone: true })
 
         // }
 
         // //check 無izone
         // if (!isint(izone)) {
-        //     //無izone時則優先取用iRobBqQt或iRobFrQt
-        //     if (isint(v.iRobBqQt)) {
-        //         izone = v.iRobBqQt //優先使用砂的iRobBqQt
+        //     //無izone時則優先取用iRobRfqt或iRobBqqt
+        //     if (isint(v.iRobRfqt)) {
+        //         izone = v.iRobRfqt //優先使用砂的iRobBqqt
         //     }
-        //     else if (isint(v.iRobFrQt)) {
-        //         izone = v.iRobFrQt
+        //     else if (isint(v.iRobBqqt)) {
+        //         izone = v.iRobBqqt
         //     }
         // }
 
@@ -203,22 +203,22 @@ function estUnitWeightCore(ltdt, coe_a, opt = {}) {
         //         throw new Error(`於kpCPTClassForRobBqRfqt找不到izone[${izone}]`)
         //     }
         // }
-        let rsatFrQt = null
-        if (isint(v.iRobFrQt)) {
-            rsatFrQt = get(kpCPTClassForRobBqRfqt, v.iRobFrQt, null)
-            if (!isnum(rsatFrQt)) {
-                throw new Error(`於kpCPTClassForRobBqRfqt找不到rsatFrQt[${rsatFrQt}]`)
+        let rsatRfqt = null
+        if (isint(v.iRobRfqt)) {
+            rsatRfqt = get(kpCPTClassForRobBqRfqt, v.iRobRfqt, null)
+            if (!isnum(rsatRfqt)) {
+                throw new Error(`於kpCPTClassForRobBqRfqt找不到rsatRfqt[${rsatRfqt}]`)
             }
         }
-        let rsatBqQt = null
-        if (isint(v.iRobBqQt)) {
-            rsatBqQt = get(kpCPTClassForRobBqRfqt, v.iRobBqQt, null)
-            if (!isnum(rsatBqQt)) {
-                throw new Error(`於kpCPTClassForRobBqRfqt找不到rsatBqQt[${rsatBqQt}]`)
+        let rsatBqqt = null
+        if (isint(v.iRobBqqt)) {
+            rsatBqqt = get(kpCPTClassForRobBqRfqt, v.iRobBqqt, null)
+            if (!isnum(rsatBqqt)) {
+                throw new Error(`於kpCPTClassForRobBqRfqt找不到rsatBqqt[${rsatBqqt}]`)
             }
         }
-        if (isnum(rsatFrQt) && isnum(rsatBqQt)) {
-            rsat = (rsatFrQt + rsatBqQt) / 2 //使用水壓與袖管摩擦兩圖所得zone值, 查得2單位重取平均
+        if (isnum(rsatRfqt) && isnum(rsatBqqt)) {
+            rsat = (rsatRfqt + rsatBqqt) / 2 //使用水壓與袖管摩擦兩圖所得zone值, 查得2單位重取平均
         }
 
         //check 無rsat
