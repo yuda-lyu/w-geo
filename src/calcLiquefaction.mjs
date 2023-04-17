@@ -3361,31 +3361,6 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
     svpDesign = svpDesign * cvru //kPa -> kg/cm2
     qt = qt * 1000 * cvru //MPa -> kg/cm2
 
-    //2021版使用Icn檢查砂黏性土
-    if (ver === '2021') {
-
-        //useIc
-        let useIc = null
-        if (useIc === null && isNumber(Icn)) {
-            useIc = Icn
-        }
-        if (useIc === null && isNumber(Ic)) {
-            err.push(`無法計算Icn，強制降轉使用Ic`)
-            useIc = Ic
-        }
-
-        //非液化: 若是useIc大於2.6則判定為非液化, 國震簡訊120期(2021)
-        if (useIc > 2.6) {
-            // err = [] //第二階段不清除錯誤
-            msg = `判定非液化: 判定用Ic[${useIc}]>2.6`
-            CRR = '-'
-            CSR = '-'
-            FS = 10
-            return ret() //已於while區塊外, 無錯誤並結束
-        }
-
-    }
-
     //MSFPow, 原莊長賢excel內MSFPow=-1.11
     let MSFPow = null
     if (ver === '2012') {
@@ -3458,6 +3433,31 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
     }
     if (isNumber(FS) && FS > 10) {
         FS = 10
+    }
+
+    //2021版使用Icn檢查砂黏性土
+    if (ver === '2021') {
+
+        //useIc
+        let useIc = null
+        if (useIc === null && isNumber(Icn)) {
+            useIc = Icn
+        }
+        if (useIc === null && isNumber(Ic)) {
+            err.push(`無法計算Icn，強制降轉使用Ic`)
+            useIc = Ic
+        }
+
+        //非液化: 若是useIc大於2.6則判定為非液化, 國震簡訊120期(2021)
+        if (useIc > 2.6) {
+            // err = [] //第二階段不清除錯誤
+            msg = `判定非液化: 判定用Ic[${useIc}]>2.6`
+            CRR = '-'
+            CSR = '-'
+            FS = 10
+            return ret() //已於while區塊外, 無錯誤並結束
+        }
+
     }
 
     //check
