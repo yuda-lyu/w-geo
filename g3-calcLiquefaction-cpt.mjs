@@ -446,6 +446,6 @@ function calc(k) {
 }
 
 calc(1)
-calc(2)
+// calc(2)
 
 //node --experimental-modules --es-module-specifier-resolution=node g3-calcLiquefaction-cpt.mjs

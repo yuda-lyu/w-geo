@@ -6561,7 +6561,12 @@ let methodSettlements = {
 }
 
 
-function liquefaction(kind = 'auto', rows, opt = {}) {
+function liquefaction(kind, rows, opt = {}) {
+
+    //check
+    if (kind !== 'SPT' && kind !== 'CPT' && kind !== 'VS') {
+        throw new Error(`kind(分析種類)${brk(kind)}非有效值: SPT, CPT, VS`)
+    }
 
     //unitSvSvp
     let unitSvSvp = get(opt, 'unitSvSvp')
@@ -6736,7 +6741,9 @@ function liquefaction(kind = 'auto', rows, opt = {}) {
         rows = map(rows, (v, k) => {
             v.Mw = Mw
             v.PGA = PGA
-            v.vibrationType = vibrationType
+            if (kind === 'SPT') {
+                v.vibrationType = vibrationType
+            }
             return v
         })
 
@@ -7017,7 +7024,7 @@ function liquefaction(kind = 'auto', rows, opt = {}) {
     if (!isestr(kind)) {
         throw new Error('kind(分析種類)非字串')
     }
-    if (kind !== 'SPT' && kind !== 'CPT' && kind !== 'VS') { //auto
+    if (kind !== 'SPT' && kind !== 'CPT' && kind !== 'VS') {
         throw new Error(`kind(分析種類)${brk(kind)}非有效值: SPT, CPT, VS`)
     }
 
@@ -7042,22 +7049,14 @@ function liquefaction(kind = 'auto', rows, opt = {}) {
     //waterLevelDesign, 設計地下水位, 直接使用最上層數據
     let waterLevelDesign = get(rows, '0.waterLevelDesign', 0)
 
-    //Mw, 地震矩規模, 直接使用最上層數據, 此處不檢核交由各列檢核
+    //Mw, 地震矩規模, 直接使用最上層數據, 此處不檢核交由各方法檢核
     let Mw = get(rows, '0.Mw', '')
 
-    //PGA, 最大地表加速度(g), 直接使用最上層數據, 此處不檢核交由各列檢核
+    //PGA(g), 最大地表加速度, 直接使用最上層數據, 此處不檢核交由各方法檢核
     let PGA = get(rows, '0.PGA', '')
 
-    //vibrationType, 振動形式, 直接使用最上層數據, 此處不檢核交由各列檢核
+    //vibrationType, 振動形式, 直接使用最上層數據, 此處不檢核交由各方法檢核
     let vibrationType = get(rows, '0.vibrationType', '')
-
-    // //kind
-    // if (kind === 'auto') {
-
-    //     //getLiqueKindFromRow, rows需已進行液化分析, 故可由第1列第1個出現[-FS]欄位判斷此數據所進行的液化分析種類kind
-    //     kind = getLiqueKindFromRow(rows)
-
-    // }
 
     //liqParams, 自動計算參數
     rows = liqParams(kind, waterLevelUsual, waterLevelDesign, Mw, PGA, vibrationType, rows)
