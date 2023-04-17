@@ -163,7 +163,7 @@ function calcLayer(ltdt, method, opt = {}) {
         let icis = getIcInfor()
 
         //check
-        if (key !== 'Ic' || key !== 'Icn') {
+        if (key !== 'Ic' && key !== 'Icn') {
             throw new Error(`key[${key}] must be Ic or Icn`)
         }
 
