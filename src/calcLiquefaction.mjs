@@ -19,6 +19,7 @@ import strright from 'wsemi/src/strright.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
 import isearr from 'wsemi/src/isearr.mjs'
+import isfun from 'wsemi/src/isfun.mjs'
 import cstr from 'wsemi/src/cstr.mjs'
 import interp1 from 'wsemi/src/interp1.mjs'
 import cnst from './cnst.mjs'
@@ -6568,6 +6569,9 @@ function liquefaction(kind = 'auto', rows, opt = {}) {
         throw new Error(`opt.unitSvSvp[${unitSvSvp}] need kPa or MPa`)
     }
 
+    //methdos
+    let methods = get(opt, 'methods', [])
+
     //keyDepth, 計算核心複雜不提供更換鍵名
     // let keyDepth = get(opt, 'keyDepth')
     // if (!isestr(keyDepth)) {
@@ -6854,8 +6858,23 @@ function liquefaction(kind = 'auto', rows, opt = {}) {
         //cloneDeep
         row = cloneDeep(row)
 
+        //ms
+        let ms = keys(methodLiques[kind])
+        if (size(methods) > 0) {
+            ms = methods
+        }
+
         //各種液化方法
-        each(methodLiques[kind], (func, method) => {
+        each(ms, (m) => {
+
+            //func
+            let func = methodLiques[kind][m]
+
+            //check
+            if (!isfun(func)) {
+                console.log('kind', kind, 'method', m, 'keys(methodLiques[kind])', keys(methodLiques[kind]))
+                throw new Error(`func is not a function`)
+            }
 
             //func
             let r = func(row)
@@ -6864,7 +6883,7 @@ function liquefaction(kind = 'auto', rows, opt = {}) {
             //CSR,CRR,FS,err
             each(r, (vv, kk) => {
                 // console.log(kk, 'vv', vv)
-                row[`${method}-${kk}`] = vv
+                row[`${m}-${kk}`] = vv
             })
 
         })
