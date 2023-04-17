@@ -244,6 +244,42 @@ function getSoilGroupsT9() {
 }
 
 
+function getSoilGroupsIcIcn(k) {
+
+    //check
+    if (k !== 'Ic' && k !== 'Icn') {
+        throw new Error(`k[${k}] must be Ic or Icn`)
+    }
+
+    //getIcInfor
+    let icis = getIcInfor()
+
+    //useTypes
+    let useTypes = []
+    each(icis, (ici) => {
+        let key = `${k}(${dig(ici.min, 2)}-${dig(ici.max, 2)})`
+        let t = {
+            key,
+            ...ici,
+        }
+        useTypes.push(t)
+    })
+    // console.log('useTypes', useTypes)
+
+    return useTypes
+}
+
+
+function getSoilGroupsIc() {
+    return getSoilGroupsIcIcn('Ic')
+}
+
+
+function getSoilGroupsIcn() {
+    return getSoilGroupsIcIcn('Icn')
+}
+
+
 function getKpSoilGroups() {
     let kp = {}
 
@@ -284,6 +320,8 @@ export {
     getSoilGroups,
     getSoilGroupByKV,
     sortSoilGroupsByKey,
+    getSoilGroupsIc,
+    getSoilGroupsIcn,
     getSoilGroupsT4,
     getSoilGroupsT6,
     getSoilGroupsT9,
@@ -293,6 +331,8 @@ export default { //整合輸出預設得要有default
     getSoilGroups,
     getSoilGroupByKV,
     sortSoilGroupsByKey,
+    getSoilGroupsIc,
+    getSoilGroupsIcn,
     getSoilGroupsT4,
     getSoilGroupsT6,
     getSoilGroupsT9,

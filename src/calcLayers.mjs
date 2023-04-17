@@ -18,20 +18,22 @@ import cint from 'wsemi/src/cint.mjs'
 import haskey from 'wsemi/src/haskey.mjs'
 import judge from './judge.mjs'
 import { getIcInfor } from './_cpt.mjs'
-import { getSoilGroupByKV, getSoilGroupsT4, getSoilGroupsT6, getSoilGroupsT9 } from './_soilGroup.mjs'
+import { getSoilGroupByKV, getSoilGroupsIc, getSoilGroupsIcn, getSoilGroupsT4, getSoilGroupsT6, getSoilGroupsT9 } from './_soilGroup.mjs'
 import calcDepthStartEndFromCenter from './calcDepthStartEndFromCenter.mjs'
 import { simplifyRobertson1986, simplifyRobertson1990, simplifyRobertson2009, simplifyRamsey } from './calcCptClassify.mjs'
 import calcLayersByMerge from './calcLayersByMerge.mjs'
 
 
-//soilGroupsT4, soilGroupsT6, soilGroupsT9
+//soilGroupsIc, soilGroupsIcn, soilGroupsT4, soilGroupsT6, soilGroupsT9
+let soilGroupsIc = getSoilGroupsIc()
+let soilGroupsIcn = getSoilGroupsIcn()
 let soilGroupsT4 = getSoilGroupsT4()
 let soilGroupsT6 = getSoilGroupsT6()
 let soilGroupsT9 = getSoilGroupsT9()
 
 
 function getKpSoilGroupsTn() {
-    return { soilGroupsT4, soilGroupsT6, soilGroupsT9 }
+    return { soilGroupsIc, soilGroupsIcn, soilGroupsT4, soilGroupsT6, soilGroupsT9 }
 }
 
 
