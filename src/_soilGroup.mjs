@@ -258,11 +258,7 @@ function getSoilGroupsIcIcn(k) {
     let useTypes = []
     each(icis, (ici) => {
         let key = `${k}(${dig(ici.min, 2)}-${dig(ici.max, 2)})`
-        let t = {
-            key,
-            ...ici,
-        }
-        useTypes.push(t)
+        useTypes.push(key)
     })
     // console.log('useTypes', useTypes)
 
