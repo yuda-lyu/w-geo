@@ -3,20 +3,14 @@ import each from 'lodash/each'
 import map from 'lodash/map'
 import size from 'lodash/size'
 import isNumber from 'lodash/isNumber'
-import filter from 'lodash/filter'
-import cloneDeep from 'lodash/cloneDeep'
 import dig from 'wsemi/src/dig.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
 import isfun from 'wsemi/src/isfun.mjs'
-import isarr from 'wsemi/src/isarr.mjs'
 import isearr from 'wsemi/src/isearr.mjs'
-import iseobj from 'wsemi/src/iseobj.mjs'
-import isbol from 'wsemi/src/isbol.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
 import cint from 'wsemi/src/cint.mjs'
 import haskey from 'wsemi/src/haskey.mjs'
-import judge from './judge.mjs'
 import { getIcInfor } from './_cpt.mjs'
 import { getSoilGroupByKV, getSoilGroupsIc, getSoilGroupsIcn, getSoilGroupsT4, getSoilGroupsT6, getSoilGroupsT9 } from './_soilGroup.mjs'
 import calcDepthStartEndFromCenter from './calcDepthStartEndFromCenter.mjs'
@@ -177,7 +171,7 @@ function calcLayer(ltdt, method, opt = {}) {
                 let type = ''
                 each(icis, (ici) => {
                     if (Ic < ici.max) {
-                        type = `Ic(${dig(ici.min, 2)}-${dig(ici.max, 2)})`
+                        type = `${key}(${dig(ici.min, 2)}-${dig(ici.max, 2)})`
                         return false //跳出
                     }
                 })
