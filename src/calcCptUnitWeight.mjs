@@ -158,9 +158,9 @@ function estUnitWeightCore(ltdt, coe_a, opt = {}) {
     let r0 = 1 - ratio
     let r1 = ratio
 
-    //calcCptCore, CPT分析(calcCptCore)採用MPa
+    //calcCptCore, CPT分析(calcCptCore)採用MPa, 預設Robertson(1990)迭代計算時useCnLeq使用false, 可得Icn,Qtn供外部使用, 此不影響後面使用Robertson(1986)評估分類與單位重
     ltdt = map(ltdt, (v) => {
-        return calcCptCore(v, coe_a, { unitSvSvp: 'MPa' })
+        return calcCptCore(v, coe_a, { unitSvSvp: 'MPa', useCnLeq: false })
     })
 
     //新飽和單位重
@@ -193,7 +193,7 @@ function estUnitWeightCore(ltdt, coe_a, opt = {}) {
         //     }
         // }
 
-        //rsat(kN/m3)
+        //rsat(kN/m3), 查kpCPTClassForRobBqRfqt資訊為Robertson(1986)
         let rsat = null
         // if (isint(izone)) {
         //     //有izone時則查表得飽和單位重
