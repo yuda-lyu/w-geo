@@ -246,8 +246,8 @@ function calcRobQtnAndIcn(qnet, Fr, svp, opt = {}) {
 
         //binarySearch
         let bs = binarySearch(fun, 0, 1)
-        let n = bs.x
-        let r = core(n)
+        let x = bs.x
+        let r = core(x)
         // console.log('r.n', r.n, 'r.nn', r.nn)
 
         //check 收斂性
