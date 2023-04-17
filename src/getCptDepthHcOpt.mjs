@@ -285,7 +285,7 @@ function getOption(optParam = {}) {
             return {
                 from: ici.min,
                 to: ici.max,
-                color: ici.color,
+                color: ici.colorSecondary,
                 borderColor: 'rgba(255,255,255,0.5)',
                 borderWidth: 1,
             }
