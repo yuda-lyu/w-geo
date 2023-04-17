@@ -3804,7 +3804,7 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     // let F = (fs / (qt - sv)) * 100
     let F = Fr
 
-    //Qt1n(none), Ic(none)
+    //Qt1n(none), Ic(none), 有另外計算Ic
     let Ict = Math.sqrt((3.47 - Math.log10(Q)) ** 2 + (Math.log10(F) + 1.22) ** 2)
     if (Ict <= 2.6) {
         let Pa = cnst.Pa * 1000 //大氣壓(kPa), MPa -> kPa
@@ -4709,7 +4709,7 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     //     qc1N = 1e20 //除0就不要硬算
     // }
 
-    //Ic
+    //Ic, 另外計算
     Ic = null
     if (isNumber(qc1N) && isNumber(F)) {
         Ic = Math.sqrt((3.47 - Math.log10(qc1N)) ** 2 + (Math.log10(F) + 1.22) ** 2)

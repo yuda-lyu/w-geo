@@ -163,8 +163,12 @@ function stress(ltdt, opt = {}) {
 
 
 function calcRobQtnAndIcn(qnet, Fr, svp, opt = {}) {
-    let errTemp = null
     let Pa = cnst.Pa //大氣壓(MPa)
+    let err = null
+    let n = null
+    let Cn = null
+    let Qtn = null
+    let Icn = null
 
     //useCnLeq
     let useCnLeq = get(opt, 'useCnLeq')
@@ -172,18 +176,50 @@ function calcRobQtnAndIcn(qnet, Fr, svp, opt = {}) {
         useCnLeq = false
     }
 
-    //check
-    if (svp <= 0) {
+    //ret
+    let ret = () => {
         return {
-            Qtn: null,
-            Icn: null,
-            err: 'svp <= 0',
+            n,
+            Cn,
+            Qtn,
+            Icn,
+            err,
         }
+    }
+
+    //check qnet
+    if (!isnum(qnet)) {
+        err = `qnet[${qnet}] is not a number`
+        return ret()
+    }
+    else if (qnet <= 0) {
+        err = `qnet[${qnet}] <= 0`
+        return ret()
+    }
+
+    //check Fr
+    if (!isnum(Fr)) {
+        err = `Fr[${Fr}] is not a number`
+        return ret()
+    }
+    else if (Fr <= 0) {
+        err = `Fr[${Fr}] <= 0`
+        return ret()
+    }
+
+    //check svp
+    if (!isnum(svp)) {
+        err = `svp[${svp}] is not a number`
+        return ret()
+    }
+    else if (svp <= 0) {
+        err = `svp[${svp}] <= 0`
+        return ret()
     }
 
     //core
     let core = (n) => {
-        let Cn = (Pa / svp) ** n //Pa,svp單位對消
+        let Cn = (Pa / svp) ** n //Pa(MPa),svp(MPa)單位對消
         if (useCnLeq) {
             Cn = Math.min(Cn, 1.7)
         }
@@ -201,29 +237,44 @@ function calcRobQtnAndIcn(qnet, Fr, svp, opt = {}) {
         return Math.abs(r.n - r.nn) //for binarySearch
     }
 
-    //Qtn, Icn
-    let Qtn = null
-    let Icn = null
+    //binarySearch
     try {
+
+        // //test 0,1
+        // let r0 = core(0)
+        // let r1 = core(1)
+
+        //binarySearch
         let bs = binarySearch(fun, 0, 1)
         let n = bs.x
         let r = core(n)
         // console.log('r.n', r.n, 'r.nn', r.nn)
+
+        //check 收斂性
         if (r.nn > 1) {
-            throw new Error('無法收斂')
+            // throw new Error('無法收斂')
+            r = core(1) //若無法收斂則依照要求強制使用n=1 2023/04/17
+            // console.log('無法收斂', r, 'r0.nn', r0.nn, 'r1.nn', r1.nn)
         }
+
+        //check 超大值
+        if (r.nn > 1e20) {
+            console.log('非預期超大值', r, { qnet, Fr, svp })
+            throw new Error('非預期超大值')
+        }
+
+        //save
+        n = get(r, 'n', null)
+        Cn = get(r, 'Cn', null)
         Qtn = get(r, 'Qtn', null)
         Icn = get(r, 'Icn', null)
+
     }
-    catch (err) {
-        errTemp = err.toString()
+    catch (e) {
+        err = e.toString()
     }
 
-    return {
-        Qtn,
-        Icn,
-        err: errTemp,
-    }
+    return ret()
 }
 
 
@@ -390,8 +441,10 @@ function calcCptCore(dt, coe_a, opt = {}) {
         }
     }
 
-    //Icn, Qtn, calcRobQtnAndIcn
+    //n, Cn, Icn, Qtn, calcRobQtnAndIcn
     let t = calcRobQtnAndIcn(qnet, Fr, svp, { useCnLeq })
+    let n = get(t, 'n', null)
+    let Cn = get(t, 'Cn', null)
     let Icn = get(t, 'Icn', null)
     let Qtn = get(t, 'Qtn', null)
 
@@ -439,6 +492,8 @@ function calcCptCore(dt, coe_a, opt = {}) {
         Fr,
         Ic,
         Icn,
+        n,
+        Cn,
 
         iIc,
         iIcn,
