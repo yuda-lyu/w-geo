@@ -433,19 +433,25 @@ function calc(k) {
 
     let opt = {
         unitSvSvp: 'kPa',
+        // methods: [
+        //     'cptHBF2021',
+        //     'cptKuAndJuang2012',
+        // ],
     }
 
     let rowsOut = calcLiquefaction.calc('CPT', rowsIn, opt)
     // console.log('rowsOut',rowsOut)
+    // console.log('rowsOut[0]', rowsOut[0])
+    // console.log('rowsOut[10]', rowsOut[10])
 
     fs.writeFileSync(`./calcLiquefaction-cpt-rowsIn${k}.json`, JSON.stringify(rowsIn, null, 2), 'utf8')
     fs.writeFileSync(`./calcLiquefaction-cpt-rowsOut${k}.json`, JSON.stringify(rowsOut, null, 2), 'utf8')
 
-    w.downloadExcelFileFromData(`./calcLiquefaction-cpt-mat${k}.xlsx`, 'mat', rowsOut)
+    // w.downloadExcelFileFromData(`./calcLiquefaction-cpt-mat${k}.xlsx`, 'mat', rowsOut)
 
 }
 
 calc(1)
-// calc(2)
+calc(2)
 
 //node --experimental-modules --es-module-specifier-resolution=node g3-calcLiquefaction-cpt.mjs

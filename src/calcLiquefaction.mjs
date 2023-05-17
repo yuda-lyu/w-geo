@@ -14,14 +14,17 @@ import keys from 'lodash/keys'
 import cloneDeep from 'lodash/cloneDeep'
 import cdbl from 'wsemi/src/cdbl.mjs'
 import cint from 'wsemi/src/cint.mjs'
+import cstr from 'wsemi/src/cstr.mjs'
 import strleft from 'wsemi/src/strleft.mjs'
 import strright from 'wsemi/src/strright.mjs'
+import replace from 'wsemi/src/replace.mjs'
+import sep from 'wsemi/src/sep.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
 import isearr from 'wsemi/src/isearr.mjs'
 import isfun from 'wsemi/src/isfun.mjs'
-import cstr from 'wsemi/src/cstr.mjs'
 import interp1 from 'wsemi/src/interp1.mjs'
+import dtmapping from 'wsemi/src/dtmapping.mjs'
 import cnst from './cnst.mjs'
 import { intrpDefPp } from './intrpDefParam.mjs'
 import checkDepthStartEnd from './checkDepthStartEnd.mjs'
@@ -47,10 +50,10 @@ let cvru = 1 / g * 1000 / 10000
 // PI(%)
 // D50(mm)
 // D10(mm)
-// svp(kN/m2)
-// svpUsual(kN/m2)
-// svpDesign(kN/m2)
-// sv(kN/m2)
+// svp(kPa或MPa)
+// svpUsual(kPa或MPa)
+// svpDesign(kPa或MPa)
+// sv(kPa或MPa)
 // PGA(none)
 // Mw(none)
 // qc(MPa)
@@ -3014,6 +3017,73 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
 }
 
 
+function cptGetCommonKeys() {
+    let t = `
+    
+    u0,
+    qt,
+    qnet,
+    Bq,
+    Qt,
+
+    `
+    t = replace(t, ',', '')
+    let ks = sep(t, '\n')
+    return ks
+}
+
+
+function cptGetCommonData(r) {
+    let ks = cptGetCommonKeys()
+    // console.log('cptGetCommonKeys ks', ks)
+    return dtmapping(r, ks)
+}
+
+
+function cptGetMethodKeys() {
+    let t = `
+        
+    Qtn,
+    Rf,
+    Fr,
+    Ic,
+    Icn,
+    n,
+    Cn,
+
+    iIc,
+    iIcn,
+    iRobBqqt,
+    iRobRfqt,
+    iRobBqQt,
+    iRobFrQt,
+    iRobBqQtn,
+    iRobFrQtn,
+    iRamBqQt,
+    iRamFrQt,
+
+    `
+    t = replace(t, ',', '')
+    let ks = sep(t, '\n')
+    return ks
+}
+
+
+function cptGetMethodData(r) {
+    let ks = cptGetMethodKeys()
+    // console.log('cptGetMethodKeys ks', ks)
+    return dtmapping(r, ks)
+}
+
+
+function cptGetData(r) {
+    // console.log('r', r)
+    let rr = { ...cptGetCommonData(r), ...cptGetMethodData(r) }
+    // console.log('rr', rr)
+    return rr
+}
+
+
 function cptCommon(depth, coe_a, qc, fs, u2, sv, svpUsual, useCnLeq) {
 
     //u0(MPa), 現地孔隙壓力
@@ -3084,7 +3154,7 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
         // if (isnum(qc1Ncs)) {
         //     qc1Ncs = qc1Ncs / 1000 / cvru //kg/cm2 -> MPa
         // }
-        let r = { ...rc, rrd, Ic, Icn, qc1N, Kc, qc1Ncs, CRR75, CRR, CSR, FS, msg, err: join(err, '; ') }
+        let r = { ...cptGetData(rc), rrd, Ic, Icn, qc1N, Kc, qc1Ncs, CRR75, CRR, CSR, FS, msg, err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -3486,6 +3556,7 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     //建立全CPT法之土壤臨界液化強度曲線，即NCEER(1997)所選用之方法。詳細流程圖可見Robertson and Wride(1998)。
     //若有使用Robertson(1986)之後版本, qc皆視為使用qt(校正後qc)
     let err = []
+    let msg = ''
     let rc = {}
     let MSF = ''
     let rrd = ''
@@ -3510,7 +3581,7 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
         if (isnum(Qt1ncs)) {
             Qt1ncs = Qt1ncs / cvru
         }
-        let r = { ...rc, rrd, Qt1n, Ic, Kc, Qt1ncs, CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        let r = { ...cptGetData(rc), rrd, Qt1n, Ic, Kc, Qt1ncs, CRR75, CRR, CSR, FS, msg, err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -3921,6 +3992,7 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
 function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2, svp, svpUsual, svpDesign, sv, tou_s, su, PGA, Mw }) {
     //若有使用Robertson(1986)之後版本, qc皆視為使用qt(校正後qc)
     let err = []
+    let msg = ''
     let rc = {}
     let MSF = ''
     let rrd = ''
@@ -3941,7 +4013,7 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
     // let vstrIY = ''
 
     function ret() {
-        let r = { ...rc, rrd, Kc, Kalpha, Fr, Ic, Icn, Qt, Qtn, Qtncs, CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        let r = { ...cptGetData(rc), rrd, Kc, Kalpha, Fr, Ic, Icn, Qt, Qtn, Qtncs, CRR75, CRR, CSR, FS, msg, err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -4387,6 +4459,7 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
 function cptJuang({ ver = '2002', waterLevelDesign, depth, coe_a, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw }) {
     //若有使用Robertson(1986)之後版本, qc皆視為使用qt(校正後qc)
     let err = []
+    let msg = ''
     let rc = {}
     let MSF = ''
     let rrd = ''
@@ -4410,7 +4483,7 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
         // if (isnum(qc1Ncs)) {
         //     qc1Ncs = qc1Ncs / 1000 / cvru //kg/cm2 -> MPa
         // }
-        let r = { ...rc, rrd, qc1N, Ic, qc1Ncs, CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        let r = { ...cptGetData(rc), rrd, qc1N, Ic, qc1Ncs, CRR75, CRR, CSR, FS, msg, err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -4779,6 +4852,7 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
 function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw }) {
     //若有使用Robertson(1986)之後版本, qc皆視為使用qt(校正後qc)
     let err = []
+    let msg = ''
     let rc = {}
     let MSF = ''
     let rrd = ''
@@ -4800,7 +4874,7 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
     // let vstrIY = ''
 
     function ret() {
-        let r = { ...rc, rrd, Fr, Bq, Ic, Icn, Qt, Qtn, Icbj, Csigma, Ksigma, CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        let r = { ...cptGetData(rc), rrd, Fr, Bq, Ic, Icn, Qt, Qtn, Icbj, Csigma, Ksigma, CRR75, CRR, CSR, FS, msg, err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -5204,6 +5278,7 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
 function cptOlsen({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw }) {
     //若有使用Robertson(1986)之後版本, qc皆視為使用qt(校正後qc)
     let err = []
+    let msg = ''
     let rc = {}
     let MSF = ''
     let rrd = ''
@@ -5222,7 +5297,7 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
         // if (isnum(qc1)) {
         //     qc1 = qc1 / cvru
         // }
-        let r = { ...rc, rrd, qc1, Rf, CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        let r = { ...cptGetData(rc), rrd, qc1, Rf, CRR75, CRR, CSR, FS, msg, err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -5566,6 +5641,7 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
 function cptShibata({ ver = '1988', waterLevelDesign, depth, coe_a, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw, D50 }) {
     //若有使用Robertson(1986)之後版本, qc皆視為使用qt(校正後qc)
     let err = []
+    let msg = ''
     let rc = {}
     let MSF = ''
     let rrd = ''
@@ -5587,7 +5663,7 @@ function cptShibata({ ver = '1988', waterLevelDesign, depth, coe_a, qc, fs, u2, 
         if (isnum(qc1cr)) {
             qc1cr = qc1cr / cvru
         }
-        let r = { ...rc, rrd, qc1, qc1cr, CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        let r = { ...cptGetData(rc), rrd, qc1, qc1cr, CRR75, CRR, CSR, FS, msg, err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -6743,6 +6819,7 @@ function liquefaction(kind, rows, opt = {}) {
             v.PGA = PGA
             if (kind === 'SPT') {
                 v.vibrationType = vibrationType
+                // console.log(kind, 'v.vibrationType', v.vibrationType)
             }
             return v
         })
@@ -6780,7 +6857,7 @@ function liquefaction(kind, rows, opt = {}) {
         else {
             //數據有垂直應力與垂直有效應力
 
-            //unitSvSvp, 此處限制用kPa, 故指定輸入為MPa才要轉kPa
+            //unitSvSvp, 此處sv,svp,svpUsual,svpDesign限制用kPa, 故指定輸入為MPa才要轉kPa
             if (unitSvSvp === 'MPa') {
                 rows = map(rows, (v, k) => {
                     if (isNumber(v.sv)) {
@@ -6887,11 +6964,37 @@ function liquefaction(kind, rows, opt = {}) {
             let r = func(row)
             // console.log('func r', r)
 
-            //CSR,CRR,FS,err
-            each(r, (vv, kk) => {
-                // console.log(kk, 'vv', vv)
-                row[`${m}-${kk}`] = vv
-            })
+            //提取各方法特定欄位, 例如CSR,CRR,FS,err
+            if (kind === 'SPT') {
+
+                each(r, (vv, kk) => {
+                    row[`${m}-${kk}`] = vv //分方法儲存至row
+                })
+
+            }
+            else if (kind === 'CPT') {
+
+                //cptGetCommonKeys
+                let ks = cptGetCommonKeys()
+
+                //提取CPT基本分析欄位, 例如u0,qt,qnet
+                each(ks, (kk) => {
+                    row[`${kk}`] = r[kk] //不分方法直接儲存至row
+                })
+
+                //刪除基本分析欄位
+                each(ks, (kk) => {
+                    delete r[kk]
+                })
+                // console.log('r', r)
+
+                //其他欄位直接視為各方法分析欄位, 例如Icn,Qtn,FS,err
+                each(r, (vv, kk) => {
+                    row[`${m}-${kk}`] = vv //分方法儲存至row
+                })
+
+            }
+            // console.log('row', cloneDeep(row))
 
         })
 
@@ -6909,50 +7012,196 @@ function liquefaction(kind, rows, opt = {}) {
 
         //計算各種液化潛勢PL
         each(ks, (key) => {
-            if (key.indexOf('-FS') >= 0) {
 
-                //method
-                let method = key.replace('-FS', '')
-                // console.log('method', method)
+            //從FS挑液化方法
+            if (key.indexOf('-FS') < 0) {
+                return //跳出換下一個
+            }
 
-                //sumPL
-                let sumPL = 0
-                rows = map(rows, (v, k) => {
+            //method, 從FS欄位提取液化方法method
+            let method = key.replace('-FS', '')
+            // console.log('method', method)
 
-                    //液化方法的PL
-                    // console.log('isnum(v[keyDepthStart])', isnum(v[keyDepthStart]), v[keyDepthStart])
-                    // console.log('isnum(v[keyDepthEnd])', isnum(v[keyDepthEnd]), v[keyDepthEnd])
-                    // console.log('isnum(v[keyDepth])', isnum(v[keyDepth]), v[keyDepth])
-                    // console.log('isnum(v[key])', isnum(v[key]), v[key])
-                    if (isnum(v[keyDepthStart]) &&
+            //sumPL
+            let sumPL = 0
+            rows = map(rows, (v, k) => {
+
+                //液化方法的PL
+                // console.log('isnum(v[keyDepthStart])', isnum(v[keyDepthStart]), v[keyDepthStart])
+                // console.log('isnum(v[keyDepthEnd])', isnum(v[keyDepthEnd]), v[keyDepthEnd])
+                // console.log('isnum(v[keyDepth])', isnum(v[keyDepth]), v[keyDepth])
+                // console.log('isnum(v[key])', isnum(v[key]), v[key])
+                if (isnum(v[keyDepthStart]) &&
                         isnum(v[keyDepthEnd]) &&
                         isnum(v[keyDepth]) &&
                         isnum(v[key])
-                    ) {
-                        let zs = cdbl(v[keyDepthStart])
-                        let ze = cdbl(v[keyDepthEnd])
-                        let z = cdbl(v[keyDepth])
-                        let FL = cdbl(v[key])
-                        let F = 1 - Math.min(Math.max(FL, 0), 1)
-                        let W = 10 - 0.5 * z
-                        sumPL += F * W * (ze - zs)
+                ) {
+                    let zs = cdbl(v[keyDepthStart])
+                    let ze = cdbl(v[keyDepthEnd])
+                    let z = cdbl(v[keyDepth])
+                    let FL = cdbl(v[key])
+                    let F = 1 - Math.min(Math.max(FL, 0), 1)
+                    let W = 10 - 0.5 * z
+                    sumPL += F * W * (ze - zs)
+                    // console.log('zs', zs)
+                    // console.log('ze', ze)
+                    // console.log('z', z)
+                    // console.log('FL', FL)
+                    // console.log('F', F)
+                    // console.log('W', W)
+                    // console.log('F * W * (ze - zs)', F * W * (ze - zs))
+                    // console.log('sumPL', sumPL)
+                    // console.log('')
+                }
+
+                //save
+                v[`${method}-PL`] = sumPL
+
+                return v
+            })
+
+        })
+
+        return rows
+    }
+
+    //liqH1
+    let liqH1 = (rows) => {
+
+        //cloneDeep
+        rows = cloneDeep(rows)
+
+        //getKeysFromRows
+        let ks = getKeysFromRows(rows)
+
+        //計算各液化方法下之非液化層厚度H1
+        each(ks, (key) => {
+
+            //從FS挑液化方法
+            if (key.indexOf('-FS') < 0) {
+                return //跳出換下一個
+            }
+
+            //method, 從FS欄位提取液化方法method
+            let method = key.replace('-FS', '')
+            // console.log('method', method)
+
+            //sumH1
+            let contiH1 = true //是否連續出現非液化層
+            let sumH1 = 0
+            rows = map(rows, (v, k) => {
+
+                //液化方法的H1
+                if (isnum(v[keyDepthStart]) &&
+                    isnum(v[keyDepthEnd]) &&
+                    // isnum(v[keyDepth]) &&
+                    isnum(v[key])
+                ) {
+                    let zs = cdbl(v[keyDepthStart])
+                    let ze = cdbl(v[keyDepthEnd])
+                    // let z = cdbl(v[keyDepth])
+                    let FS = cdbl(v[key])
+                    let noLiq = FS >= 1
+                    if (contiH1 && !noLiq) {
+                        contiH1 = false
+                    }
+                    if (contiH1) {
+                        sumH1 += noLiq ? (ze - zs) : 0 //僅針對非液化層才累積計算H1
+                        sumH1 = Math.min(sumH1, 7) //查表H1最大到7
                         // console.log('zs', zs)
                         // console.log('ze', ze)
-                        // console.log('z', z)
-                        // console.log('FL', FL)
-                        // console.log('F', F)
-                        // console.log('W', W)
-                        // console.log('F * W * (ze - zs)', F * W * (ze - zs))
-                        // console.log('sumPL', sumPL)
+                        // console.log('FS', FS)
+                        // console.log('sumH1', sumH1)
+                        // console.log('')
                     }
+                }
 
-                    //save
-                    v[`${method}-PL`] = sumPL
+                //save
+                v[`${method}-H1`] = sumH1 //往下會儲存各層所累積之H1, 故取最下方土層H1即為本孔之H1
 
-                    return v
-                })
+                return v
+            })
 
+        })
+
+        return rows
+    }
+
+    //liqH1PL
+    let liqH1PL = (rows) => {
+
+        //cloneDeep
+        rows = cloneDeep(rows)
+
+        //getKeysFromRows
+        let ks = getKeysFromRows(rows)
+
+        //計算各液化方法下之H1-PL判定結果(A,B1,B2,B3,C)
+        each(ks, (key) => {
+
+            //從FS挑液化方法
+            if (key.indexOf('-FS') < 0) {
+                return //跳出換下一個
             }
+
+            //method, 從FS欄位提取液化方法method
+            let method = key.replace('-FS', '')
+            // console.log('method', method)
+
+            //keyH1, keyPL
+            let keyH1 = `${method}-H1`
+            let keyPL = `${method}-PL`
+
+            //液化方法的H1-PL
+            rows = map(rows, (v, k) => {
+
+                //液化方法的H1PL, 若有有效H1與PL就計算判定結果, 越往下
+                // let iH1PL = 0
+                let H1PL = '-' //若無必要參數則給予預設值「-」
+                if (// isnum(v[keyDepthStart]) &&
+                    // isnum(v[keyDepthEnd]) &&
+                    // isnum(v[keyDepth]) &&
+                    isnum(v[keyH1]) &&
+                    isnum(v[keyPL])
+                ) {
+                    // let zs = cdbl(v[keyDepthStart])
+                    // let ze = cdbl(v[keyDepthEnd])
+                    // let z = cdbl(v[keyDepth])
+                    let H1 = cdbl(v[keyH1])
+                    let PL = cdbl(v[keyPL])
+                    if (H1 <= 3) {
+                        if (PL >= 5) {
+                            // iH1PL = 5
+                            H1PL = 'C'
+                        }
+                        else {
+                            // iH1PL = 4
+                            H1PL = 'B3'
+                        }
+                    }
+                    else if (H1 <= 5) {
+                        if (PL >= 5) {
+                            // iH1PL = 3
+                            H1PL = 'B2'
+                        }
+                        else {
+                            // iH1PL = 2
+                            H1PL = 'B1'
+                        }
+                    }
+                    else {
+                        // iH1PL = 1
+                        H1PL = 'A'
+                    }
+                }
+
+                //save
+                // v[`${method}-iH1PL`] = iH1PL
+                v[`${method}-H1PL`] = H1PL
+
+                return v
+            })
+
         })
 
         return rows
@@ -7077,6 +7326,16 @@ function liquefaction(kind, rows, opt = {}) {
         rows = liqSett(rows)
     }
 
+    //liqH1, 目前僅SPT法有支援計算H1
+    if (kind === 'SPT') {
+        rows = liqH1(rows)
+    }
+
+    //liqH1PL, 目前僅SPT法有支援計算H1-PL
+    if (kind === 'SPT') {
+        rows = liqH1PL(rows)
+    }
+
     //排序欄位
     rows = map(rows, (row) => {
         let r = {}
@@ -7112,6 +7371,7 @@ function liquefaction(kind, rows, opt = {}) {
                 r[kerr] = err
             }
         })
+        // console.log('r', cloneDeep(r))
 
         return r
     })
@@ -7124,10 +7384,11 @@ function liquefaction(kind, rows, opt = {}) {
                 rows[ir][k] = ''
             }
         })
+        // console.log('r', cloneDeep(r))
     })
     // console.log('rows', rows[0])
 
-    //unitSvSvp, 此處限制用kPa, 故指定為輸出MPa才要轉MPa
+    //unitSvSvp, 此處sv,svp,svpUsual,svpDesign限制用kPa, 故指定為輸出MPa才要轉MPa
     if (unitSvSvp === 'MPa') {
         rows = map(rows, (v) => {
             if (isNumber(v.sv)) {
@@ -7142,6 +7403,7 @@ function liquefaction(kind, rows, opt = {}) {
             if (isNumber(v.svpDesign)) {
                 v.svpDesign /= 1000
             }
+            // console.log('v', cloneDeep(v))
             return v
         })
     }

@@ -49,6 +49,10 @@ function calc(k) {
 
     let opt = {
         unitSvSvp: 'kPa',
+        // methods: [
+        //     'sptHBF2017',
+        //     'sptNJRA2017',
+        // ],
     }
 
     let rowsOut = calcLiquefaction.calc('SPT', rowsIn, opt)

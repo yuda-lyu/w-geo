@@ -487,6 +487,9 @@ function calcCptCore(dt, coe_a, opt = {}) {
         qnet,
         Bq,
         Qt,
+
+        //以下結果隨不同設定會有不同
+
         Qtn,
         Rf,
         Fr,
