@@ -1342,7 +1342,7 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
     }
 
     //FS
-    if (isNumber(CSR) && CSR > 0) {
+    if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 10) {
@@ -1356,7 +1356,10 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)}<=0`)
     }
-    if (FS < 0) {
+    if (!isNumber(FS)) {
+        err.push(`FS${brk(FS)}非數字`)
+    }
+    else if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
@@ -1720,7 +1723,7 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
     }
 
     //FS
-    if (isNumber(CSR) && CSR > 0) {
+    if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 10) {
@@ -1734,7 +1737,10 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)}<=0`)
     }
-    if (FS < 0) {
+    if (!isNumber(FS)) {
+        err.push(`FS${brk(FS)}非數字`)
+    }
+    else if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
@@ -2083,7 +2089,7 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
     }
 
     //FS
-    if (isNumber(CSR) && CSR > 0) {
+    if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 10) {
@@ -2097,7 +2103,10 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)}<=0`)
     }
-    if (FS < 0) {
+    if (!isNumber(FS)) {
+        err.push(`FS${brk(FS)}非數字`)
+    }
+    else if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
@@ -2624,7 +2633,7 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
     }
 
     //FS
-    if (isNumber(CSR) && CSR > 0) {
+    if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 10) {
@@ -2638,7 +2647,10 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)}<=0`)
     }
-    if (FS < 0) {
+    if (!isNumber(FS)) {
+        err.push(`FS${brk(FS)}非數字`)
+    }
+    else if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
@@ -2985,7 +2997,7 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
     }
 
     //FS
-    if (isNumber(CSR) && CSR > 0) {
+    if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 10) {
@@ -2999,7 +3011,10 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)}<=0`)
     }
-    if (FS < 0) {
+    if (!isNumber(FS)) {
+        err.push(`FS${brk(FS)}非數字`)
+    }
+    else if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
@@ -3467,18 +3482,11 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
     //qc1Ncs, 單位基於kg/cm2但無法確切定義其單位, 故不給予
     qc1Ncs = Kc * qc1N
 
-    //非液化: 若是qc1Ncs大於180則直接判定為非液化
-    if (qc1Ncs >= 180) {
-        // err = [] //第二階段不清除錯誤
-        msg = `判定非液化: qc1Ncs[${qc1Ncs}]>=180`
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret() //已於while區塊外, 無錯誤並結束
-    }
-
     //CRR75
-    CRR75 = 0.09 + (0.00028 * qc1Ncs) / (1 - qc1Ncs / 180) //基於kg/cm2 //前面檢查qc1Ncs>=180故不會除0
+    CRR75 = 1e20
+    if (qc1Ncs < 180) {
+        CRR75 = 0.09 + (0.00028 * qc1Ncs) / (1 - qc1Ncs / 180) //基於kg/cm2
+    }
 
     //CRR
     CRR = CRR75 * MSF
@@ -3499,11 +3507,22 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
     }
 
     //FS
-    if (isNumber(CSR) && CSR > 0) {
+    if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 10) {
         FS = 10
+    }
+
+    //非液化: 若是qc1Ncs大於180則直接判定為非液化
+    if (qc1Ncs >= 180) {
+        // err = [] //第二階段不清除錯誤
+        msg = `判定非液化: qc1Ncs[${qc1Ncs}]>=180`
+        //提供計算後CRR與CSR不複寫
+        // CRR = '-'
+        // CSR = '-'
+        FS = 10
+        return ret() //已於while區塊外, 無錯誤並結束
     }
 
     //2021版使用Icn檢查砂黏性土
@@ -3523,8 +3542,9 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
         if (useIc > 2.6) {
             // err = [] //第二階段不清除錯誤
             msg = `判定非液化: 判定用Ic[${useIc}]>2.6`
-            CRR = '-'
-            CSR = '-'
+            //提供計算後CRR與CSR不複寫
+            // CRR = '-'
+            // CSR = '-'
             FS = 10
             return ret() //已於while區塊外, 無錯誤並結束
         }
@@ -3538,7 +3558,10 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)}<=0`)
     }
-    if (FS < 0) {
+    if (!isNumber(FS)) {
+        err.push(`FS${brk(FS)}非數字`)
+    }
+    else if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
@@ -3966,7 +3989,7 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     }
 
     //FS
-    if (isNumber(CSR) && CSR > 0) {
+    if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 10) {
@@ -3980,7 +4003,10 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)}<=0`)
     }
-    if (FS < 0) {
+    if (!isNumber(FS)) {
+        err.push(`FS${brk(FS)}非數字`)
+    }
+    else if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
@@ -4433,7 +4459,7 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
     }
 
     //FS
-    if (isNumber(CSR) && CSR > 0) {
+    if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 10) {
@@ -4447,7 +4473,10 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)}<=0`)
     }
-    if (FS < 0) {
+    if (!isNumber(FS)) {
+        err.push(`FS${brk(FS)}非數字`)
+    }
+    else if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
@@ -4826,7 +4855,7 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     }
 
     //FS
-    if (isNumber(CSR) && CSR > 0) {
+    if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 10) {
@@ -4840,7 +4869,10 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)}<=0`)
     }
-    if (FS < 0) {
+    if (!isNumber(FS)) {
+        err.push(`FS${brk(FS)}非數字`)
+    }
+    else if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
@@ -5251,7 +5283,7 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
     // console.log('depth',depth,'CSR',CSR,'sv',sv,'svpDesign',svpDesign,'rrd',rrd,'PGA',PGA)
 
     //FS
-    if (isNumber(CSR) && CSR > 0) {
+    if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 10) {
@@ -5266,7 +5298,10 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)}<=0`)
     }
-    if (FS < 0) {
+    if (!isNumber(FS)) {
+        err.push(`FS${brk(FS)}非數字`)
+    }
+    else if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
@@ -5615,7 +5650,7 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     }
 
     //FS
-    if (isNumber(CSR) && CSR > 0) {
+    if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 10) {
@@ -5629,7 +5664,10 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)}<=0`)
     }
-    if (FS < 0) {
+    if (!isNumber(FS)) {
+        err.push(`FS${brk(FS)}非數字`)
+    }
+    else if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
@@ -6009,7 +6047,7 @@ function cptShibata({ ver = '1988', waterLevelDesign, depth, coe_a, qc, fs, u2, 
 
     CRR = qc1
     CSR = qc1cr
-    if (isNumber(CSR) && CSR > 0) {
+    if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 10) {
@@ -6023,7 +6061,10 @@ function cptShibata({ ver = '1988', waterLevelDesign, depth, coe_a, qc, fs, u2, 
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)}<=0`)
     }
-    if (FS < 0) {
+    if (!isNumber(FS)) {
+        err.push(`FS${brk(FS)}非數字`)
+    }
+    else if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
@@ -6177,7 +6218,7 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     }
 
     //FS
-    if (isNumber(CSR) && CSR > 0) {
+    if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 10) {
@@ -6199,7 +6240,10 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)}<=0`)
     }
-    if (FS < 0) {
+    if (!isNumber(FS)) {
+        err.push(`FS${brk(FS)}非數字`)
+    }
+    else if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
@@ -6349,7 +6393,7 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     }
 
     //FS
-    if (isNumber(CSR) && CSR > 0) {
+    if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 10) {
@@ -6371,7 +6415,10 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)}<=0`)
     }
-    if (FS < 0) {
+    if (!isNumber(FS)) {
+        err.push(`FS${brk(FS)}非數字`)
+    }
+    else if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
@@ -6521,7 +6568,7 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     }
 
     //FS
-    if (isNumber(CSR) && CSR > 0) {
+    if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 10) {
@@ -6543,7 +6590,10 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     if (CSR <= 0) {
         err.push(`CSR${brk(CSR)}<=0`)
     }
-    if (FS < 0) {
+    if (!isNumber(FS)) {
+        err.push(`FS${brk(FS)}非數字`)
+    }
+    else if (FS < 0) {
         err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
@@ -6718,7 +6768,7 @@ function liquefaction(kind, rows, opt = {}) {
     // }
 
     //addDepthAndPorousParams
-    let addDepthAndPorousParams = (rows, kind, waterLevelUsual, waterLevelDesign) => {
+    let addDepthAndPorousParams = (rows, waterLevelUsual, waterLevelDesign) => {
 
         //waterLevelUsual, waterLevelDesign
         waterLevelUsual = cdbl(waterLevelUsual)
@@ -6810,127 +6860,344 @@ function liquefaction(kind, rows, opt = {}) {
         return rows
     }
 
-    //liqParams
-    let liqParams = (kind, waterLevelUsual, waterLevelDesign, Mw, PGA, vibrationType, rows) => {
+    //getWaterLevelUsual, 常時地下水位(m)
+    let getWaterLevelUsual = (rows) => {
+        let r = null
 
-        //複寫各層Mw, PGA, vibrationType, 且此處不檢核交由各列檢核
-        rows = map(rows, (v, k) => {
-            v.Mw = Mw
-            v.PGA = PGA
-            if (kind === 'SPT') {
-                v.vibrationType = vibrationType
-                // console.log(kind, 'v.vibrationType', v.vibrationType)
-            }
-            return v
-        })
+        //使用最上層數據
+        if (!isnum(r)) {
+            r = get(rows, '0.waterLevelUsual', '')
+        }
 
-        //waterLevelUsual, waterLevelDesign
-        waterLevelUsual = cdbl(waterLevelUsual)
-        waterLevelDesign = cdbl(waterLevelDesign)
+        //使用opt數據
+        if (!isnum(r)) {
+            r = get(opt, 'waterLevelUsual', '')
+        }
 
-        //addDepthAndPorousParams
-        rows = addDepthAndPorousParams(rows, kind, waterLevelUsual, waterLevelDesign)
+        //cdbl
+        if (isnum(r)) {
+            r = cdbl(r)
+        }
 
-        //hasVerticalStress, check sv,svp
-        let hasVerticalStress = true
-        each(rows, (v) => {
-            let b1 = isnum(v.sv)
-            let b2a = isnum(v.svp)
-            let b2b = isnum(v.svpUsual) && isnum(v.svpDesign)
-            let b2 = b2a || b2b
-            let b = b1 && b2
-            if (!b) {
-                hasVerticalStress = false
-                return false //跳出
-            }
-        })
+        //預設值
+        if (!isnum(r)) {
+            r = 0
+        }
+
+        return r
+    }
+
+    //getWaterLevelDesign, 設計地下水位(m)
+    let getWaterLevelDesign = (rows) => {
+        let r = null
+
+        //使用最上層數據
+        if (!isnum(r)) {
+            r = get(rows, '0.waterLevelDesign', '')
+        }
+
+        //使用opt數據
+        if (!isnum(r)) {
+            r = get(opt, 'waterLevelDesign', '')
+        }
+
+        //cdbl
+        if (isnum(r)) {
+            r = cdbl(r)
+        }
+
+        //預設值
+        if (!isnum(r)) {
+            r = 0
+        }
+
+        return r
+    }
+
+    //getMw, 地震矩規模
+    let getMw = (rows) => {
+        let r = null
+
+        //使用最上層數據
+        let r_row0 = null
+        if (!isnum(r)) {
+            r = get(rows, '0.Mw', '')
+            r_row0 = r
+        }
+
+        //使用opt數據
+        let r_opt = null
+        if (!isnum(r)) {
+            r = get(opt, 'Mw', '')
+            r_opt = r
+        }
+
+        //cdbl
+        if (isnum(r)) {
+            r = cdbl(r)
+        }
 
         //check
-        if (!hasVerticalStress) {
-            //數據無垂直應力與垂直有效應力
-
-            //calcVerticalStress, 輸出sv與svp單位為kPa, 計算sv:土層中點深度之垂直總應力(kN/m2), svpUsual與svpDesign:土層中點深度之常時與設計垂直有效應力(kN/m2)
-            rows = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
-            // console.log('calcVerticalStress rows', rows[0])
-
+        if (!isnum(r)) {
+            throw new Error(`rows[0].Mw or opt.Mw is not a number`)
         }
-        else {
-            //數據有垂直應力與垂直有效應力
 
-            //unitSvSvp, 此處sv,svp,svpUsual,svpDesign限制用kPa, 故指定輸入為MPa才要轉kPa
-            if (unitSvSvp === 'MPa') {
-                rows = map(rows, (v, k) => {
-                    if (isNumber(v.sv)) {
-                        v.sv *= 1000
-                    }
-                    if (isNumber(v.svp)) {
-                        v.svp *= 1000
-                    }
-                    if (isNumber(v.svpUsual)) {
-                        v.svpUsual *= 1000
-                    }
-                    if (isNumber(v.svpDesign)) {
-                        v.svpDesign *= 1000
-                    }
-                    return v
-                })
-            }
+        //check
+        if (r <= 0) {
+            console.log(`rows[0].Mw`, r_row0)
+            console.log(`opt.Mw`, r_opt)
+            throw new Error(`Mw[${r}]<=0`)
+        }
+
+        return r
+    }
+
+    //getPGA, 最大地表加速度(g)
+    let getPGA = (rows) => {
+        let r = null
+
+        //使用最上層數據
+        let r_row0 = null
+        if (!isnum(r)) {
+            r = get(rows, '0.PGA', '')
+            r_row0 = r
+        }
+
+        //使用opt數據
+        let r_opt = null
+        if (!isnum(r)) {
+            r = get(opt, 'PGA', '')
+            r_opt = r
+        }
+
+        //cdbl
+        if (isnum(r)) {
+            r = cdbl(r)
+        }
+
+        //check
+        if (!isnum(r)) {
+            throw new Error(`rows[0].PGA or opt.PGA is not a number`)
+        }
+
+        //check
+        if (r <= 0) {
+            console.log(`rows[0].PGA`, r_row0)
+            console.log(`opt.PGA`, r_opt)
+            throw new Error(`PGA[${r}]<=0`)
+        }
+
+        return r
+    }
+
+    //getVibrationType, 振動形式, 1為第一型震動[板塊邊界地震(遠震)]，2為第二型震動[內陸直下型地震(近震)]
+    let getVibrationType = (rows) => {
+        let r = null
+
+        //使用最上層數據
+        if (!isnum(r)) {
+            r = get(rows, '0.vibrationType', '')
+        }
+
+        //使用opt數據
+        if (!isnum(r)) {
+            r = get(opt, 'vibrationType', '')
+        }
+
+        //cdbl
+        if (isnum(r)) {
+            r = cdbl(r)
+        }
+
+        //預設值
+        if (r !== 1 && r !== 2) {
+            r = 1
+        }
+
+        return r
+    }
+
+    //getCoe_a
+    let getCoe_a = (rows) => {
+        let r = null
+
+        //使用最上層數據
+        if (!isnum(r)) {
+            r = get(rows, '0.coe_a', '')
+        }
+
+        //使用opt數據
+        if (!isnum(r)) {
+            r = get(opt, 'coe_a', '')
+        }
+
+        //cdbl
+        if (isnum(r)) {
+            r = cdbl(r)
+        }
+
+        //預設值
+        if (!isnum(r)) {
+            r = 0.8
+        }
+
+        return r
+    }
+
+    //liqParams
+    let liqParams = (kind, rows) => {
+
+        //waterLevelUsual, waterLevelDesign, verticalStress
+        if (true) {
+
+            //waterLevelUsual
+            let waterLevelUsual = getWaterLevelUsual(rows)
+
+            //waterLevelDesign
+            let waterLevelDesign = getWaterLevelDesign(rows)
+
+            //addDepthAndPorousParams
+            rows = addDepthAndPorousParams(rows, waterLevelUsual, waterLevelDesign)
+
+            //hasVerticalStress, check sv,svp
+            let hasVerticalStress = true
+            each(rows, (v) => {
+                let b1 = isnum(v.sv)
+                let b2a = isnum(v.svp)
+                let b2b = isnum(v.svpUsual) && isnum(v.svpDesign)
+                let b2 = b2a || b2b
+                let b = b1 && b2
+                if (!b) {
+                    hasVerticalStress = false
+                    return false //跳出
+                }
+            })
 
             //check
-            each(rows, (v, k) => {
-                // console.log(k, v, v[keyDepth], 'isNumber(v[keyDepth])', isNumber(v[keyDepth]))
-                if (isNumber(v.sv)) {
-                    checkVerticalStress(v.sv, v[keyDepth], 'kPa', 'sv')
-                }
-                if (isNumber(v.svp)) {
-                    checkVerticalStress(v.svp, v[keyDepth], 'kPa', 'svp')
-                }
-                if (isNumber(v.svpUsual)) {
-                    checkVerticalStress(v.svpUsual, v[keyDepth], 'kPa', 'svpUsual')
-                }
-                if (isNumber(v.svpDesign)) {
-                    checkVerticalStress(v.svpDesign, v[keyDepth], 'kPa', 'svpDesign')
-                }
-            })
+            if (!hasVerticalStress) {
+                //數據無垂直應力與垂直有效應力
 
-            //提取calcVerticalStress部份功能, 儲存地下水位以及重算中點深度
-            rows = map(rows, (v, k) => {
+                //calcVerticalStress, 輸出sv與svp單位為kPa, 計算sv:土層中點深度之垂直總應力(kN/m2), svpUsual與svpDesign:土層中點深度之常時與設計垂直有效應力(kN/m2)
+                rows = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
+                // console.log('calcVerticalStress rows', rows[0])
 
-                //save waterLevelUsual,waterLevelDesign
-                v.waterLevelUsual = waterLevelUsual
-                v.waterLevelDesign = waterLevelDesign
+            }
+            else {
+                //數據有垂直應力與垂直有效應力
 
-                //ds, de
-                let ds = get(v, keyDepthStart, null)
-                let de = get(v, keyDepthEnd, null)
+                //unitSvSvp, 此處sv,svp,svpUsual,svpDesign限制用kPa, 故指定輸入為MPa才要轉kPa
+                if (unitSvSvp === 'MPa') {
+                    rows = map(rows, (v, k) => {
+                        if (isNumber(v.sv)) {
+                            v.sv *= 1000
+                        }
+                        if (isNumber(v.svp)) {
+                            v.svp *= 1000
+                        }
+                        if (isNumber(v.svpUsual)) {
+                            v.svpUsual *= 1000
+                        }
+                        if (isNumber(v.svpDesign)) {
+                            v.svpDesign *= 1000
+                        }
+                        return v
+                    })
+                }
 
                 //check
-                if (!isnum(ds)) {
-                    throw new Error(`第 ${k} 樣本起始深度(depthStart)非數值: ${ds}`)
-                }
-                if (!isnum(de)) {
-                    throw new Error(`第 ${k} 樣本結束深度(depthEnd)非數值: ${de}`)
-                }
-                ds = cdbl(ds)
-                de = cdbl(de)
+                each(rows, (v, k) => {
+                    // console.log(k, v, v[keyDepth], 'isNumber(v[keyDepth])', isNumber(v[keyDepth]))
+                    if (isNumber(v.sv)) {
+                        checkVerticalStress(v.sv, v[keyDepth], 'kPa', 'sv')
+                    }
+                    if (isNumber(v.svp)) {
+                        checkVerticalStress(v.svp, v[keyDepth], 'kPa', 'svp')
+                    }
+                    if (isNumber(v.svpUsual)) {
+                        checkVerticalStress(v.svpUsual, v[keyDepth], 'kPa', 'svpUsual')
+                    }
+                    if (isNumber(v.svpDesign)) {
+                        checkVerticalStress(v.svpDesign, v[keyDepth], 'kPa', 'svpDesign')
+                    }
+                })
 
-                //depth, 土層中點深度(m)
-                v[keyDepth] = (de + ds) / 2
+                //提取calcVerticalStress部份功能, 儲存地下水位以及重算中點深度
+                rows = map(rows, (v, k) => {
 
-                return v
-            })
-            // console.log('提取calcVerticalStress部份功能 rows', rows[0])
+                    //save waterLevelUsual,waterLevelDesign
+                    v.waterLevelUsual = waterLevelUsual
+                    v.waterLevelDesign = waterLevelDesign
+
+                    //ds, de
+                    let ds = get(v, keyDepthStart, null)
+                    let de = get(v, keyDepthEnd, null)
+
+                    //check
+                    if (!isnum(ds)) {
+                        throw new Error(`第 ${k} 樣本起始深度(depthStart)非數值: ${ds}`)
+                    }
+                    if (!isnum(de)) {
+                        throw new Error(`第 ${k} 樣本結束深度(depthEnd)非數值: ${de}`)
+                    }
+                    ds = cdbl(ds)
+                    de = cdbl(de)
+
+                    //depth, 土層中點深度(m)
+                    v[keyDepth] = (de + ds) / 2
+
+                    return v
+                })
+                // console.log('提取calcVerticalStress部份功能 rows', rows[0])
+
+            }
 
         }
 
-        // if (kind === 'SPT') {
+        //Mw, PGA
+        if (true) {
 
-        // }
-        // else if (kind === 'CPT') {
+            //Mw
+            let Mw = getMw(rows)
 
-        // }
-        // else if (kind === 'VS') {
+            //PGA(g)
+            let PGA = getPGA(rows)
 
+            //複寫各層Mw, PGA
+            rows = map(rows, (v, k) => {
+                v.Mw = Mw
+                v.PGA = PGA
+                return v
+            })
+
+        }
+
+        if (kind === 'SPT') {
+
+            //vibrationType
+            let vibrationType = getVibrationType(rows)
+
+            //複寫各層vibrationType
+            rows = map(rows, (v, k) => {
+                v.vibrationType = vibrationType
+                return v
+            })
+
+        }
+
+        if (kind === 'CPT') {
+
+            //coe_a
+            let coe_a = getCoe_a(rows)
+
+            //複寫各層coe_a
+            rows = map(rows, (v, k) => {
+                v.coe_a = coe_a
+                return v
+            })
+
+        }
+
+        // if (kind === 'VS') {
         // }
 
         return rows
@@ -7292,23 +7559,8 @@ function liquefaction(kind, rows, opt = {}) {
         return cdbl(v[keyDepthStart])
     })
 
-    //waterLevelUsual, 常時地下水位, 直接使用最上層數據
-    let waterLevelUsual = get(rows, '0.waterLevelUsual', 0)
-
-    //waterLevelDesign, 設計地下水位, 直接使用最上層數據
-    let waterLevelDesign = get(rows, '0.waterLevelDesign', 0)
-
-    //Mw, 地震矩規模, 直接使用最上層數據, 此處不檢核交由各方法檢核
-    let Mw = get(rows, '0.Mw', '')
-
-    //PGA(g), 最大地表加速度, 直接使用最上層數據, 此處不檢核交由各方法檢核
-    let PGA = get(rows, '0.PGA', '')
-
-    //vibrationType, 振動形式, 直接使用最上層數據, 此處不檢核交由各方法檢核
-    let vibrationType = get(rows, '0.vibrationType', '')
-
     //liqParams, 自動計算參數
-    rows = liqParams(kind, waterLevelUsual, waterLevelDesign, Mw, PGA, vibrationType, rows)
+    rows = liqParams(kind, rows)
     // console.log('liqParams rows', rows[0])
 
     //liqFS, 各樣本計算安全係數與沉陷
