@@ -4403,6 +4403,13 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
             CRR75 = 93 * (Qtncs / 1000) ** 3 + 0.08
         }
 
+        //CRR75 min from: P.K. Robertson(2009)-Performance based earthquake design using the CPT
+        //ref from: P.K. Robertson(1998)-Evaluating cyclic liquefaction potential using the cone penetration test
+        //Robertson and Wride (1998) set a minimum level for CRR7.5 = 0.05.
+
+        //最小值為0.05
+        CRR75 = Math.max(CRR75, 0.05)
+
     }
     else if (useIc < 2.7) { //2.5<Ic<2.7
         //關於2.5<Ic<2.7過度區:
@@ -4426,8 +4433,15 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
 
     }
     else { //Ic>=2.7
+
+        //CRR75 = 0.053 * Qtn * Kalpha from: P.K. Robertson(2009)-Performance based earthquake design using the CPT
+        //Kalpha from: Boulanger and Idriss(2007)-Evaluation of Cyclic Softening in Silts and Clays
         //tou_s: horizontal static shear stress
         //su: undrained shear strength
+        //in clay-like soils, the minimum level for CRR7.5 = 0.17 * Kalpha
+
+        //Kalpha被省略 from: Ku and Juang(2021)-CPT與 SPT及 Vs之液化潛能指數分析的差異性探討(2021工程永續與土木防災研討會)
+        //但應該為誤值
 
         //Kalpha
         Kalpha = 1.344 - (0.344 / (1 - tou_s / su) ** 0.638)
@@ -5210,6 +5224,17 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
     // fs = fs * 1000 * cvru //MPa -> kg/cm2
     // u2 = u2 * 1000 * cvru //MPa -> kg/cm2
 
+    //MSF from: Ku and Juang(2012)-No AccessLiquefaction and cyclic softening potential of soils – a unified piezocone penetration testing-based approach
+    //CSR (see Appendix B), such as depth-dependent shear stress reduction factor (rd), magnitude scaling factor (MSF),
+    //and overburden correction factor for cyclic stress ratio (Ks).
+    //Again, this subject is outside of the scope of the current paper,
+    //and the reader is referred to Juang et al. (2006, 2008a, 2008b).
+    //可知MSF是參考: Juang(2008)-Calibration of liquefaction potential index-A re-visit focusing on a new CPTU model.pdf
+    //The three intermediate parameters for the determination of adjusted CSR Eq. (4) are defined by Idriss and Boulanger (2004, 2006).
+    //They are provided herein for convenience in the calculation of LPI.
+    //The reader is referred to Idriss and Boulanger (2004, 2006) for details.
+    //實際上可知MSF是使用Idriss and Boulanger(2006)
+
     //MSF, 規模修正因子, Idriss and Boulanger(2006) for sand
     MSF = 6.9 * Math.exp(-Mw / 4) - 0.058
     MSF = Math.min(MSF, 1.8)
@@ -5268,6 +5293,11 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
         CRR = Math.min(CRR, 1e20)
     }
     // console.log('depth',depth,'CRR',CRR,'CRR75',CRR75,'MSF',MSF,'Ksigma',Ksigma,'Csigma',Csigma,'svpUsual',svpUsual,'Pa',Pa,'Math.log(svpUsual / Pa)',Math.log(svpUsual / Pa))
+
+    //CSR from: Ku and Juang(2012)-No AccessLiquefaction and cyclic softening potential of soils – a unified piezocone penetration testing-based approach
+    //The Juang et al. (2008) method is a CPTu-based model that follows the framework of simplified procedures.
+    //In this CPTu-based model, the cyclic stress ratio (CSR) is computed using the formulation established by Idriss & Boulanger (2006)
+    //所以rrd使用Idriss and Boulanger(2006)
 
     //CSR
     CSR = null
