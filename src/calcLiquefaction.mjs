@@ -4239,42 +4239,6 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
 
         }
 
-        //check tou_s
-        if (!isnum(tou_s)) {
-            err.push(`tou_s${brk(tou_s)}非數字`)
-            return ret() //重大錯誤直接報錯結束
-        }
-        else {
-
-            //cdbl
-            tou_s = cdbl(tou_s)
-
-            //check
-            if (tou_s < 0) {
-                err.push(`tou_s${brk(tou_s)}<0`)
-                return ret() //重大錯誤直接報錯結束
-            }
-
-        }
-
-        //check su
-        if (!isnum(su)) {
-            err.push(`su${brk(su)}非數字`)
-            return ret() //重大錯誤直接報錯結束
-        }
-        else {
-
-            //cdbl
-            su = cdbl(su)
-
-            //check
-            if (su < 0) {
-                err.push(`su${brk(su)}<0`)
-                return ret() //重大錯誤直接報錯結束
-            }
-
-        }
-
         //check PGA
         if (!isnum(PGA)) {
             err.push(`PGA${brk(PGA)}非數字`)
@@ -4440,11 +4404,56 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
         //su: undrained shear strength
         //in clay-like soils, the minimum level for CRR7.5 = 0.17 * Kalpha
 
-        //Kalpha被省略 from: Ku and Juang(2021)-CPT與 SPT及 Vs之液化潛能指數分析的差異性探討(2021工程永續與土木防災研討會)
-        //但應該為誤值
+        //Kalpha被忽略(Kalpha=1) from: Ku and Juang(2021)-CPT與 SPT及 Vs之液化潛能指數分析的差異性探討(2021工程永續與土木防災研討會)
+        //Robertson(2009)參考Boulanger and Idriss(2007)細粒土壤液化或軟化的評估方式而推導出細粒土壤的液化評估模式，其反覆阻抗比CRR計算方式如公式12(CRR75=0.053*Qtn)
+        //但應該是誤值，少乘Kalpha
 
-        //Kalpha
-        Kalpha = 1.344 - (0.344 / (1 - tou_s / su) ** 0.638)
+        //default
+        Kalpha = null
+
+        //check tou_s
+        if (!isnum(tou_s)) {
+            err.push(`tou_s${brk(tou_s)}非數字，強制使用Kalpha=1`)
+            Kalpha = 1 //因Ic>=2.7黏土本身較難液化, 考慮Ku and Juang(2021)視為OCR較大
+        }
+
+        //check su
+        if (!isnum(su)) {
+            err.push(`su${brk(su)}非數字，強制使用Kalpha=1`)
+            Kalpha = 1
+        }
+
+        //check
+        if (Kalpha === null) {
+
+            //cdbl
+            tou_s = cdbl(tou_s)
+
+            //check
+            if (tou_s < 0) {
+                err.push(`tou_s${brk(tou_s)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+            //cdbl
+            su = cdbl(su)
+
+            //check
+            if (su <= 0) {
+                err.push(`su${brk(su)}<=0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+            //check
+            if (tou_s === su) {
+                err.push(`出現tou_s${brk(tou_s)}=su${brk(su)}，無法計算Kalpha`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+            //Kalpha
+            Kalpha = 1.344 - (0.344 / (1 - tou_s / su) ** 0.638)
+
+        }
 
         //Qtncs
         Qtncs = Kalpha * useQt
