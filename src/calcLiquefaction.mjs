@@ -75,7 +75,7 @@ function isNoLiqueByUSCS(soilClassification, mode = 'new') {
     let r2 = strleft(soilClassification, 2)
     if (mode === 'new') {
         //開頭C,O,P,M(除了ML)視為非液化條件 (2020/07/30)
-        //開頭C,O,P,M(除了ML與MH)視為非液化條件 (2021/02/04)
+        //開頭C,O,P,M(除了ML與MH)視為非液化條件，但CL-ML視為C開頭 (2021/02/04)
         if (r1 === 'C' || r1 === 'O' || r1 === 'P') {
             return true
         }

@@ -13,6 +13,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
 import cint from 'wsemi/src/cint.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
+import pmSeries from 'wsemi/src/pmSeries.mjs'
 import genSerie from 'w-highcharts/src/genSerie.mjs'
 import renderNoDataByChart from 'w-highcharts/src/renderNoDataByChart.mjs'
 import getMarker from 'w-highcharts/src/getMarker.mjs'
@@ -659,7 +660,7 @@ async function getCptDepthHcOpt(dataCPT, retKind = '', optParam = {}) {
         return opt
     }
 
-    //optRes, 現共有12總
+    //optRes
     let optRes = null
     if (retKind === 'qc') {
         optRes = await core(dataCPT, 'qc', { yLabel, xLabelPre, xLabelCht: '錐尖阻抗 q<sub>c</sub>', xLabelEng: 'Cone resistance', xUnit: 'MPa', xLimMin: 0, xSoftMax: 30, xTickInterval: 10 })
@@ -724,35 +725,64 @@ async function getCptDepthHcOpt(dataCPT, retKind = '', optParam = {}) {
     else if (retKind === 'Ram:Fr-Qt') {
         optRes = await core(dataCPT, 'iRamFrQt', { yLabel, xLabelPre, xLabelCht: 'Ramsey F<sub>r</sub>-Q<sub>t</sub>', xLabelEng: 'Zone index', xUnit: '', xLimMin: 0, xLimMax: 10, displayDataMode: 'dot point' })
     }
-    else if (retKind === 'cptHBF2021-CRR') {
-        optRes = await core(dataCPT, 'cptHBF2021-CRR', { yLabel, xLabelPre, xLabelCht: 'HBF(2021) CRR', xLabelEng: 'CRR', xUnit: '', xLimMin: 0, xLimMax: 2 })
-    }
-    else if (retKind === 'cptHBF2021-CSR') {
-        optRes = await core(dataCPT, 'cptHBF2021-CSR', { yLabel, xLabelPre, xLabelCht: 'HBF(2021) CSR', xLabelEng: 'CSR', xUnit: '' })
-    }
-    else if (retKind === 'cptHBF2021-FS') {
-        optRes = await core(dataCPT, 'cptHBF2021-FS', { yLabel, xLabelPre, xLabelCht: 'HBF(2021) FS', xLabelEng: 'FS', xUnit: '', xLimMin: 0, xLimMax: 2, addFS1: true })
-    }
-    else if (retKind === 'cptRobertson2009-CRR') {
-        optRes = await core(dataCPT, 'cptRobertson2009-CRR', { yLabel, xLabelPre, xLabelCht: 'Robertson(2009) CRR', xLabelEng: 'CRR', xUnit: '', xLimMin: 0, xLimMax: 2 })
-    }
-    else if (retKind === 'cptRobertson2009-CSR') {
-        optRes = await core(dataCPT, 'cptRobertson2009-CSR', { yLabel, xLabelPre, xLabelCht: 'Robertson(2009) CSR', xLabelEng: 'CSR', xUnit: '' })
-    }
-    else if (retKind === 'cptRobertson2009-FS') {
-        optRes = await core(dataCPT, 'cptRobertson2009-FS', { yLabel, xLabelPre, xLabelCht: 'Robertson(2009) FS', xLabelEng: 'FS', xUnit: '', xLimMin: 0, xLimMax: 2, addFS1: true })
-    }
-    else if (retKind === 'cptKuAndJuang2012-CRR') {
-        optRes = await core(dataCPT, 'cptKuAndJuang2012-CRR', { yLabel, xLabelPre, xLabelCht: 'Ku & Juang(2012) CRR', xLabelEng: 'CRR', xUnit: '', xLimMin: 0, xLimMax: 2 })
-    }
-    else if (retKind === 'cptKuAndJuang2012-CSR') {
-        optRes = await core(dataCPT, 'cptKuAndJuang2012-CSR', { yLabel, xLabelPre, xLabelCht: 'Ku & Juang(2012) CSR', xLabelEng: 'CSR', xUnit: '' })
-    }
-    else if (retKind === 'cptKuAndJuang2012-FS') {
-        optRes = await core(dataCPT, 'cptKuAndJuang2012-FS', { yLabel, xLabelPre, xLabelCht: 'Ku & Juang(2012) FS', xLabelEng: 'FS', xUnit: '', xLimMin: 0, xLimMax: 2, addFS1: true })
+
+    if (optRes === null) {
+        let ms = [
+            {
+                name: 'HBF',
+                title: 'HBF',
+                year: 2017,
+            },
+            {
+                name: 'HBF',
+                title: 'HBF',
+                year: 2021,
+            },
+            {
+                name: 'NCEER',
+                title: 'NCEER',
+                year: 1997,
+            },
+            {
+                name: 'Robertson',
+                title: 'Robertson',
+                year: 2009,
+            },
+            {
+                name: 'Juang',
+                title: 'Juang',
+                year: 2002,
+            },
+            {
+                name: 'KuAndJuang',
+                title: 'Ku & Juang',
+                year: 2012,
+            },
+            {
+                name: 'Olsen',
+                title: 'Olsen',
+                year: 1997,
+            },
+            {
+                name: 'Shibata',
+                title: 'Shibata',
+                year: 1988,
+            },
+        ]
+        await pmSeries(ms, async (m) => {
+            if (retKind === `cpt${m.name}-CRR`) {
+                optRes = await core(dataCPT, `cpt${m.name}-CRR`, { yLabel, xLabelPre, xLabelCht: `${m.title}(${m.year}) CRR`, xLabelEng: 'CRR', xUnit: '', xLimMin: 0, xLimMax: 2 })
+            }
+            else if (retKind === `cpt${m.name}-CSR`) {
+                optRes = await core(dataCPT, `cpt${m.name}-CSR`, { yLabel, xLabelPre, xLabelCht: `${m.title}(${m.year}) CSR`, xLabelEng: 'CSR', xUnit: '' })
+            }
+            else if (retKind === `cpt${m.name}-FS`) {
+                optRes = await core(dataCPT, `cpt${m.name}-FS`, { yLabel, xLabelPre, xLabelCht: `${m.title}(${m.year}) FS`, xLabelEng: 'FS', xUnit: '', xLimMin: 0, xLimMax: 2, addFS1: true })
+            }
+        })
     }
 
-    else {
+    if (optRes === null) {
         throw new Error(`invalid retKind[${retKind}]`)
     }
 

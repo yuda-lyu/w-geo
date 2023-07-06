@@ -454,7 +454,6 @@ let inforRobBqqt = {
     markers: {
         'zone1': {
             p: [1.19678, -0.727798566],
-
             text: '1',
         },
         'zone2': {
