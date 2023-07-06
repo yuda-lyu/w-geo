@@ -29,7 +29,7 @@ import arrCount from 'w-statistic/src/arrCount.mjs'
  * @param {Number} [opt.ranger.depthHalf=0.25] 輸入提取上下距離數字，單位m，例如給予0.25代表上下取0.25m共0.5m，預設0.25
  * @returns {Array} 回傳平滑化後陣列
  * @example
-
+ * 待補充
  */
 function smoothDepthByKey(rows, key, opt = {}) {
 

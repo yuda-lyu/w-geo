@@ -903,16 +903,17 @@ function sptSettlement(N160, N172, CSR, FS) {
  * @param {String} [row.noLiqueMode='new'] 輸入判斷非液化之土壤分類模式字串，預設'new'
  * @param {Number} [row.waterLevelDesign=0] 輸入設計地下水位數字，單位m，預設0
  * @param {String} [row.soilClassification='SW'] 輸入USCS土壤分類字串，預設'SW'
- * @param {Number} row[keyDepth] 輸入樣本所在中點深度數字，單位m
- * @param {Number} row.N60 輸入樣本N60數字
- * @param {Number} row.FC 輸入樣本細粒料含量數字，單位%
- * @param {Number} row.sv 輸入樣本中點深度之垂直總應力數字，單位(kN/m2)
- * @param {Number} row.svpUsual 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
- * @param {Number} row.svpDesign 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
- * @param {Number} row.PGA 輸入設計地表最大水平加速度數字，單位(g)
- * @param {Number} row.Mw 輸入設計地震矩規模數字
+ * @param {Number} [row.depth] 輸入樣本所在中點深度數字，單位m
+ * @param {Number} [row.N60] 輸入樣本N60數字
+ * @param {Number} [row.FC] 輸入樣本細粒料含量數字，單位%
+ * @param {Number} [row.sv] 輸入樣本中點深度之垂直總應力數字，單位(kN/m2)
+ * @param {Number} [row.svpUsual] 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
+ * @param {Number} [row.svpDesign] 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
+ * @param {Number} [row.PGA] 輸入設計地表最大水平加速度數字，單位(g)
+ * @param {Number} [row.Mw] 輸入設計地震矩規模數字
  * @returns {Object} 回傳計算後數據物件
  * @example
+ * 待補充
  */
 function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, depth, N60, FC, sv, svpUsual, svpDesign, PGA, Mw }) {
     //Seed et al.(1985)
@@ -1433,17 +1434,18 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
  * @param {String} [row.noLiqueMode='new'] 輸入判斷非液化之土壤分類模式字串，預設'new'
  * @param {Number} [row.waterLevelDesign=0] 輸入設計地下水位數字，單位m，預設0
  * @param {String} [row.soilClassification='SW'] 輸入USCS土壤分類字串，預設'SW'
- * @param {Number} row[keyDepth] 輸入樣本所在中點深度數字，單位m
- * @param {Number} row.N60 輸入樣本N60數字
- * @param {Number} row.FC 輸入樣本細粒料含量數字，單位%
+ * @param {Number} [row.depth] 輸入樣本所在中點深度數字，單位m
+ * @param {Number} [row.N60] 輸入樣本N60數字
+ * @param {Number} [row.FC] 輸入樣本細粒料含量數字，單位%
  * @param {Number} row.PI 輸入塑性指數數字，單位%
- * @param {Number} row.sv 輸入樣本中點深度之垂直總應力數字，單位(kN/m2)
- * @param {Number} row.svpUsual 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
- * @param {Number} row.svpDesign 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
- * @param {Number} row.PGA 輸入設計地表最大水平加速度數字，單位(g)
- * @param {Number} row.Mw 輸入設計地震矩規模數字
+ * @param {Number} [row.sv] 輸入樣本中點深度之垂直總應力數字，單位(kN/m2)
+ * @param {Number} [row.svpUsual] 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
+ * @param {Number} [row.svpDesign] 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
+ * @param {Number} [row.PGA] 輸入設計地表最大水平加速度數字，單位(g)
+ * @param {Number} [row.Mw] 輸入設計地震矩規模數字
  * @returns {Object} 回傳計算後數據物件
  * @example
+ * 待補充
  */
 function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClassification, depth, N60, FC, PI, sv, svpUsual, svpDesign, PGA, Mw }) {
     //HBF(ver=2012,2017)
@@ -1813,17 +1815,18 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
  * @param {String} [row.noLiqueMode='new'] 輸入判斷非液化之土壤分類模式字串，預設'new'
  * @param {Number} [row.waterLevelDesign=0] 輸入設計地下水位數字，單位m，預設0
  * @param {String} [row.soilClassification='SW'] 輸入USCS土壤分類字串，預設'SW'
- * @param {Number} row[keyDepth] 輸入樣本所在中點深度數字，單位m
- * @param {Number} row.N60 輸入樣本N60數字
- * @param {Number} row.FC 輸入樣本細粒料含量數字，單位%
+ * @param {Number} [row.depth] 輸入樣本所在中點深度數字，單位m
+ * @param {Number} [row.N60] 輸入樣本N60數字
+ * @param {Number} [row.FC] 輸入樣本細粒料含量數字，單位%
  * @param {Number} row.PI 輸入塑性指數數字，單位%
- * @param {Number} row.sv 輸入樣本中點深度之垂直總應力數字，單位(kN/m2)
- * @param {Number} row.svpUsual 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
- * @param {Number} row.svpDesign 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
- * @param {Number} row.PGA 輸入設計地表最大水平加速度數字，單位(g)
- * @param {Number} row.Mw 輸入設計地震矩規模數字
+ * @param {Number} [row.sv] 輸入樣本中點深度之垂直總應力數字，單位(kN/m2)
+ * @param {Number} [row.svpUsual] 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
+ * @param {Number} [row.svpDesign] 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
+ * @param {Number} [row.PGA] 輸入設計地表最大水平加速度數字，單位(g)
+ * @param {Number} [row.Mw] 輸入設計地震矩規模數字
  * @returns {Object} 回傳計算後數據物件
  * @example
+ * 待補充
  */
 function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, depth, N60, FC, sv, svpUsual, svpDesign, PGA, Mw }) {
     //NCEER(1997)
@@ -2181,18 +2184,19 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
  * @param {Number} [row.waterLevelDesign=0] 輸入設計地下水位數字，單位m，預設0
  * @param {String} [row.soilClassification='SW'] 輸入USCS土壤分類字串，預設'SW'
  * @param {Number} [row.vibrationType=1] 輸入震動形式數字，1為第一型震動[板塊邊界地震(遠震)]，2為第二型震動[內陸直下型地震(近震)]，預設1
- * @param {Number} row[keyDepth] 輸入樣本所在中點深度數字，單位m
- * @param {Number} row.N60 輸入樣本N60數字
- * @param {Number} row.FC 輸入樣本細粒料含量數字，單位%
+ * @param {Number} [row.depth] 輸入樣本所在中點深度數字，單位m
+ * @param {Number} [row.N60] 輸入樣本N60數字
+ * @param {Number} [row.FC] 輸入樣本細粒料含量數字，單位%
  * @param {Number} row.PI 輸入塑性指數數字，單位%
  * @param {Number} row.D50 輸入累計50%通過粒徑數字，單位mm
  * @param {Number} row.D10 輸入累計10%通過粒徑數字，單位mm
- * @param {Number} row.sv 輸入樣本中點深度之垂直總應力數字，單位(kN/m2)
- * @param {Number} row.svpUsual 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
- * @param {Number} row.svpDesign 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
- * @param {Number} row.PGA 輸入設計地表最大水平加速度數字，單位(g)
+ * @param {Number} [row.sv] 輸入樣本中點深度之垂直總應力數字，單位(kN/m2)
+ * @param {Number} [row.svpUsual] 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
+ * @param {Number} [row.svpDesign] 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
+ * @param {Number} [row.PGA] 輸入設計地表最大水平加速度數字，單位(g)
  * @returns {Object} 回傳計算後數據物件
  * @example
+ * 待補充
  */
 function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClassification, vibrationType, depth, N60, FC, PI, D50, D10, sv, svpUsual, svpDesign, PGA }) {
     //NJRA(ver=1996,2017)
@@ -2725,20 +2729,21 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
  * @param {Number} [row.waterLevelDesign=0] 輸入設計地下水位數字，單位m，預設0
  * @param {String} [row.soilClassification='SW'] 輸入USCS土壤分類字串，預設'SW'
  * @param {Number} [row.vibrationType=1] 輸入震動形式數字，1為第一型震動[板塊邊界地震(遠震)]，2為第二型震動[內陸直下型地震(近震)]，預設1
- * @param {Number} row[keyDepth] 輸入樣本所在中點深度數字，單位m
+ * @param {Number} [row.depth] 輸入樣本所在中點深度數字，單位m
  * @param {Number} [row.a=0.45] 輸入分析設定參數a數字，預設0.45
  * @param {Number} [row.n=0.45] 輸入分析設定參數n數字，預設14
  * @param {Number} [row.Cr=0.57] 輸入分析設定參數Cr數字，預設0.57
  * @param {Number} [row.Cs=85] 輸入分析設定參數Cs數字，預設85
- * @param {Number} row.N60 輸入樣本N60數字
- * @param {Number} row.FC 輸入樣本細粒料含量數字，單位%
- * @param {Number} row.sv 輸入樣本中點深度之垂直總應力數字，單位(kN/m2)
- * @param {Number} row.svpUsual 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
- * @param {Number} row.svpDesign 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
- * @param {Number} row.PGA 輸入設計地表最大水平加速度數字，單位(g)
- * @param {Number} row.Mw 輸入設計地震矩規模數字
+ * @param {Number} [row.N60] 輸入樣本N60數字
+ * @param {Number} [row.FC] 輸入樣本細粒料含量數字，單位%
+ * @param {Number} [row.sv] 輸入樣本中點深度之垂直總應力數字，單位(kN/m2)
+ * @param {Number} [row.svpUsual] 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
+ * @param {Number} [row.svpDesign] 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
+ * @param {Number} [row.PGA] 輸入設計地表最大水平加速度數字，單位(g)
+ * @param {Number} [row.Mw] 輸入設計地震矩規模數字
  * @returns {Object} 回傳計算後數據物件
  * @example
+ * 待補充
  */
 function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60, FC, sv, svpUsual, svpDesign, PGA, Mw }) {
     //TY(1983), N值的鑽桿能量修正原本為80%, 現統一為72% (2021/03/11)
@@ -7793,7 +7798,7 @@ export default calcLiquefaction
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Thu Jul 06 2023 21:03:25 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Thu Jul 06 2023 21:10:32 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
