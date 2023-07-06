@@ -770,14 +770,14 @@ async function getCptDepthHcOpt(dataCPT, retKind = '', optParam = {}) {
             },
         ]
         await pmSeries(ms, async (m) => {
-            if (retKind === `cpt${m.name}-CRR`) {
-                optRes = await core(dataCPT, `cpt${m.name}-CRR`, { yLabel, xLabelPre, xLabelCht: `${m.title}(${m.year}) CRR`, xLabelEng: 'CRR', xUnit: '', xLimMin: 0, xLimMax: 2 })
+            if (retKind === `cpt${m.name}${m.year}-CRR`) {
+                optRes = await core(dataCPT, `cpt${m.name}${m.year}-CRR`, { yLabel, xLabelPre, xLabelCht: `${m.title}(${m.year}) CRR`, xLabelEng: 'CRR', xUnit: '', xLimMin: 0, xLimMax: 2 })
             }
-            else if (retKind === `cpt${m.name}-CSR`) {
-                optRes = await core(dataCPT, `cpt${m.name}-CSR`, { yLabel, xLabelPre, xLabelCht: `${m.title}(${m.year}) CSR`, xLabelEng: 'CSR', xUnit: '' })
+            else if (retKind === `cpt${m.name}${m.year}-CSR`) {
+                optRes = await core(dataCPT, `cpt${m.name}${m.year}-CSR`, { yLabel, xLabelPre, xLabelCht: `${m.title}(${m.year}) CSR`, xLabelEng: 'CSR', xUnit: '' })
             }
-            else if (retKind === `cpt${m.name}-FS`) {
-                optRes = await core(dataCPT, `cpt${m.name}-FS`, { yLabel, xLabelPre, xLabelCht: `${m.title}(${m.year}) FS`, xLabelEng: 'FS', xUnit: '', xLimMin: 0, xLimMax: 2, addFS1: true })
+            else if (retKind === `cpt${m.name}${m.year}-FS`) {
+                optRes = await core(dataCPT, `cpt${m.name}${m.year}-FS`, { yLabel, xLabelPre, xLabelCht: `${m.title}(${m.year}) FS`, xLabelEng: 'FS', xUnit: '', xLimMin: 0, xLimMax: 2, addFS1: true })
             }
         })
     }
