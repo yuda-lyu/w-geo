@@ -122,7 +122,7 @@ function isNoLiqueByUSCS(soilClassification, mode = 'new') {
     let r2 = strleft(soilClassification, 2)
     if (mode === 'new') {
         //開頭C,O,P,M(除了ML)視為非液化條件 (2020/07/30)
-        //開頭C,O,P,M(除了ML與MH)視為非液化條件 (2021/02/04)
+        //開頭C,O,P,M(除了ML與MH)視為非液化條件，但CL-ML視為C開頭 (2021/02/04)
         if (r1 === 'C' || r1 === 'O' || r1 === 'P') {
             return true
         }
@@ -903,16 +903,17 @@ function sptSettlement(N160, N172, CSR, FS) {
  * @param {String} [row.noLiqueMode='new'] 輸入判斷非液化之土壤分類模式字串，預設'new'
  * @param {Number} [row.waterLevelDesign=0] 輸入設計地下水位數字，單位m，預設0
  * @param {String} [row.soilClassification='SW'] 輸入USCS土壤分類字串，預設'SW'
- * @param {Number} row[keyDepth] 輸入樣本所在中點深度數字，單位m
- * @param {Number} row.N60 輸入樣本N60數字
- * @param {Number} row.FC 輸入樣本細粒料含量數字，單位%
- * @param {Number} row.sv 輸入樣本中點深度之垂直總應力數字，單位(kN/m2)
- * @param {Number} row.svpUsual 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
- * @param {Number} row.svpDesign 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
- * @param {Number} row.PGA 輸入設計地表最大水平加速度數字，單位(g)
- * @param {Number} row.Mw 輸入設計地震矩規模數字
+ * @param {Number} [row.depth] 輸入樣本所在中點深度數字，單位m
+ * @param {Number} [row.N60] 輸入樣本N60數字
+ * @param {Number} [row.FC] 輸入樣本細粒料含量數字，單位%
+ * @param {Number} [row.sv] 輸入樣本中點深度之垂直總應力數字，單位(kN/m2)
+ * @param {Number} [row.svpUsual] 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
+ * @param {Number} [row.svpDesign] 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
+ * @param {Number} [row.PGA] 輸入設計地表最大水平加速度數字，單位(g)
+ * @param {Number} [row.Mw] 輸入設計地震矩規模數字
  * @returns {Object} 回傳計算後數據物件
  * @example
+ * 待補充
  */
 function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, depth, N60, FC, sv, svpUsual, svpDesign, PGA, Mw }) {
     //Seed et al.(1985)
@@ -1433,17 +1434,18 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
  * @param {String} [row.noLiqueMode='new'] 輸入判斷非液化之土壤分類模式字串，預設'new'
  * @param {Number} [row.waterLevelDesign=0] 輸入設計地下水位數字，單位m，預設0
  * @param {String} [row.soilClassification='SW'] 輸入USCS土壤分類字串，預設'SW'
- * @param {Number} row[keyDepth] 輸入樣本所在中點深度數字，單位m
- * @param {Number} row.N60 輸入樣本N60數字
- * @param {Number} row.FC 輸入樣本細粒料含量數字，單位%
+ * @param {Number} [row.depth] 輸入樣本所在中點深度數字，單位m
+ * @param {Number} [row.N60] 輸入樣本N60數字
+ * @param {Number} [row.FC] 輸入樣本細粒料含量數字，單位%
  * @param {Number} row.PI 輸入塑性指數數字，單位%
- * @param {Number} row.sv 輸入樣本中點深度之垂直總應力數字，單位(kN/m2)
- * @param {Number} row.svpUsual 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
- * @param {Number} row.svpDesign 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
- * @param {Number} row.PGA 輸入設計地表最大水平加速度數字，單位(g)
- * @param {Number} row.Mw 輸入設計地震矩規模數字
+ * @param {Number} [row.sv] 輸入樣本中點深度之垂直總應力數字，單位(kN/m2)
+ * @param {Number} [row.svpUsual] 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
+ * @param {Number} [row.svpDesign] 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
+ * @param {Number} [row.PGA] 輸入設計地表最大水平加速度數字，單位(g)
+ * @param {Number} [row.Mw] 輸入設計地震矩規模數字
  * @returns {Object} 回傳計算後數據物件
  * @example
+ * 待補充
  */
 function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClassification, depth, N60, FC, PI, sv, svpUsual, svpDesign, PGA, Mw }) {
     //HBF(ver=2012,2017)
@@ -1813,17 +1815,18 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
  * @param {String} [row.noLiqueMode='new'] 輸入判斷非液化之土壤分類模式字串，預設'new'
  * @param {Number} [row.waterLevelDesign=0] 輸入設計地下水位數字，單位m，預設0
  * @param {String} [row.soilClassification='SW'] 輸入USCS土壤分類字串，預設'SW'
- * @param {Number} row[keyDepth] 輸入樣本所在中點深度數字，單位m
- * @param {Number} row.N60 輸入樣本N60數字
- * @param {Number} row.FC 輸入樣本細粒料含量數字，單位%
+ * @param {Number} [row.depth] 輸入樣本所在中點深度數字，單位m
+ * @param {Number} [row.N60] 輸入樣本N60數字
+ * @param {Number} [row.FC] 輸入樣本細粒料含量數字，單位%
  * @param {Number} row.PI 輸入塑性指數數字，單位%
- * @param {Number} row.sv 輸入樣本中點深度之垂直總應力數字，單位(kN/m2)
- * @param {Number} row.svpUsual 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
- * @param {Number} row.svpDesign 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
- * @param {Number} row.PGA 輸入設計地表最大水平加速度數字，單位(g)
- * @param {Number} row.Mw 輸入設計地震矩規模數字
+ * @param {Number} [row.sv] 輸入樣本中點深度之垂直總應力數字，單位(kN/m2)
+ * @param {Number} [row.svpUsual] 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
+ * @param {Number} [row.svpDesign] 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
+ * @param {Number} [row.PGA] 輸入設計地表最大水平加速度數字，單位(g)
+ * @param {Number} [row.Mw] 輸入設計地震矩規模數字
  * @returns {Object} 回傳計算後數據物件
  * @example
+ * 待補充
  */
 function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, depth, N60, FC, sv, svpUsual, svpDesign, PGA, Mw }) {
     //NCEER(1997)
@@ -2181,18 +2184,19 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
  * @param {Number} [row.waterLevelDesign=0] 輸入設計地下水位數字，單位m，預設0
  * @param {String} [row.soilClassification='SW'] 輸入USCS土壤分類字串，預設'SW'
  * @param {Number} [row.vibrationType=1] 輸入震動形式數字，1為第一型震動[板塊邊界地震(遠震)]，2為第二型震動[內陸直下型地震(近震)]，預設1
- * @param {Number} row[keyDepth] 輸入樣本所在中點深度數字，單位m
- * @param {Number} row.N60 輸入樣本N60數字
- * @param {Number} row.FC 輸入樣本細粒料含量數字，單位%
+ * @param {Number} [row.depth] 輸入樣本所在中點深度數字，單位m
+ * @param {Number} [row.N60] 輸入樣本N60數字
+ * @param {Number} [row.FC] 輸入樣本細粒料含量數字，單位%
  * @param {Number} row.PI 輸入塑性指數數字，單位%
  * @param {Number} row.D50 輸入累計50%通過粒徑數字，單位mm
  * @param {Number} row.D10 輸入累計10%通過粒徑數字，單位mm
- * @param {Number} row.sv 輸入樣本中點深度之垂直總應力數字，單位(kN/m2)
- * @param {Number} row.svpUsual 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
- * @param {Number} row.svpDesign 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
- * @param {Number} row.PGA 輸入設計地表最大水平加速度數字，單位(g)
+ * @param {Number} [row.sv] 輸入樣本中點深度之垂直總應力數字，單位(kN/m2)
+ * @param {Number} [row.svpUsual] 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
+ * @param {Number} [row.svpDesign] 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
+ * @param {Number} [row.PGA] 輸入設計地表最大水平加速度數字，單位(g)
  * @returns {Object} 回傳計算後數據物件
  * @example
+ * 待補充
  */
 function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClassification, vibrationType, depth, N60, FC, PI, D50, D10, sv, svpUsual, svpDesign, PGA }) {
     //NJRA(ver=1996,2017)
@@ -2725,20 +2729,21 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
  * @param {Number} [row.waterLevelDesign=0] 輸入設計地下水位數字，單位m，預設0
  * @param {String} [row.soilClassification='SW'] 輸入USCS土壤分類字串，預設'SW'
  * @param {Number} [row.vibrationType=1] 輸入震動形式數字，1為第一型震動[板塊邊界地震(遠震)]，2為第二型震動[內陸直下型地震(近震)]，預設1
- * @param {Number} row[keyDepth] 輸入樣本所在中點深度數字，單位m
+ * @param {Number} [row.depth] 輸入樣本所在中點深度數字，單位m
  * @param {Number} [row.a=0.45] 輸入分析設定參數a數字，預設0.45
  * @param {Number} [row.n=0.45] 輸入分析設定參數n數字，預設14
  * @param {Number} [row.Cr=0.57] 輸入分析設定參數Cr數字，預設0.57
  * @param {Number} [row.Cs=85] 輸入分析設定參數Cs數字，預設85
- * @param {Number} row.N60 輸入樣本N60數字
- * @param {Number} row.FC 輸入樣本細粒料含量數字，單位%
- * @param {Number} row.sv 輸入樣本中點深度之垂直總應力數字，單位(kN/m2)
- * @param {Number} row.svpUsual 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
- * @param {Number} row.svpDesign 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
- * @param {Number} row.PGA 輸入設計地表最大水平加速度數字，單位(g)
- * @param {Number} row.Mw 輸入設計地震矩規模數字
+ * @param {Number} [row.N60] 輸入樣本N60數字
+ * @param {Number} [row.FC] 輸入樣本細粒料含量數字，單位%
+ * @param {Number} [row.sv] 輸入樣本中點深度之垂直總應力數字，單位(kN/m2)
+ * @param {Number} [row.svpUsual] 輸入樣本中點深度之常時垂直有效應力數字，單位(kN/m2)
+ * @param {Number} [row.svpDesign] 輸入樣本中點深度之設計垂直有效應力數字，係考慮waterLevelDesign計算而得，單位(kN/m2)
+ * @param {Number} [row.PGA] 輸入設計地表最大水平加速度數字，單位(g)
+ * @param {Number} [row.Mw] 輸入設計地震矩規模數字
  * @returns {Object} 回傳計算後數據物件
  * @example
+ * 待補充
  */
 function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, depth, a, n, Cr, Cs, N60, FC, sv, svpUsual, svpDesign, PGA, Mw }) {
     //TY(1983), N值的鑽桿能量修正原本為80%, 現統一為72% (2021/03/11)
@@ -4286,42 +4291,6 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
 
         }
 
-        //check tou_s
-        if (!isnum(tou_s)) {
-            err.push(`tou_s${brk(tou_s)}非數字`)
-            return ret() //重大錯誤直接報錯結束
-        }
-        else {
-
-            //cdbl
-            tou_s = cdbl(tou_s)
-
-            //check
-            if (tou_s &lt; 0) {
-                err.push(`tou_s${brk(tou_s)}&lt;0`)
-                return ret() //重大錯誤直接報錯結束
-            }
-
-        }
-
-        //check su
-        if (!isnum(su)) {
-            err.push(`su${brk(su)}非數字`)
-            return ret() //重大錯誤直接報錯結束
-        }
-        else {
-
-            //cdbl
-            su = cdbl(su)
-
-            //check
-            if (su &lt; 0) {
-                err.push(`su${brk(su)}&lt;0`)
-                return ret() //重大錯誤直接報錯結束
-            }
-
-        }
-
         //check PGA
         if (!isnum(PGA)) {
             err.push(`PGA${brk(PGA)}非數字`)
@@ -4450,6 +4419,13 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
             CRR75 = 93 * (Qtncs / 1000) ** 3 + 0.08
         }
 
+        //CRR75 min from: P.K. Robertson(2009)-Performance based earthquake design using the CPT
+        //ref from: P.K. Robertson(1998)-Evaluating cyclic liquefaction potential using the cone penetration test
+        //Robertson and Wride (1998) set a minimum level for CRR7.5 = 0.05.
+
+        //最小值為0.05
+        CRR75 = Math.max(CRR75, 0.05)
+
     }
     else if (useIc &lt; 2.7) { //2.5&lt;Ic&lt;2.7
         //關於2.5&lt;Ic&lt;2.7過度區:
@@ -4473,11 +4449,63 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
 
     }
     else { //Ic>=2.7
+
+        //CRR75 = 0.053 * Qtn * Kalpha from: P.K. Robertson(2009)-Performance based earthquake design using the CPT
+        //Kalpha from: Boulanger and Idriss(2007)-Evaluation of Cyclic Softening in Silts and Clays
         //tou_s: horizontal static shear stress
         //su: undrained shear strength
+        //in clay-like soils, the minimum level for CRR7.5 = 0.17 * Kalpha
 
-        //Kalpha
-        Kalpha = 1.344 - (0.344 / (1 - tou_s / su) ** 0.638)
+        //Kalpha被忽略(Kalpha=1) from: Ku and Juang(2021)-CPT與 SPT及 Vs之液化潛能指數分析的差異性探討(2021工程永續與土木防災研討會)
+        //Robertson(2009)參考Boulanger and Idriss(2007)細粒土壤液化或軟化的評估方式而推導出細粒土壤的液化評估模式，其反覆阻抗比CRR計算方式如公式12(CRR75=0.053*Qtn)
+        //但應該是誤值，少乘Kalpha
+
+        //default
+        Kalpha = null
+
+        //check tou_s
+        if (!isnum(tou_s)) {
+            err.push(`tou_s${brk(tou_s)}非數字，強制使用Kalpha=1`)
+            Kalpha = 1 //因Ic>=2.7黏土本身較難液化, 考慮Ku and Juang(2021)視為OCR較大
+        }
+
+        //check su
+        if (!isnum(su)) {
+            err.push(`su${brk(su)}非數字，強制使用Kalpha=1`)
+            Kalpha = 1
+        }
+
+        //check
+        if (Kalpha === null) {
+
+            //cdbl
+            tou_s = cdbl(tou_s)
+
+            //check
+            if (tou_s &lt; 0) {
+                err.push(`tou_s${brk(tou_s)}&lt;0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+            //cdbl
+            su = cdbl(su)
+
+            //check
+            if (su &lt;= 0) {
+                err.push(`su${brk(su)}&lt;=0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+            //check
+            if (tou_s === su) {
+                err.push(`出現tou_s${brk(tou_s)}=su${brk(su)}，無法計算Kalpha`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+            //Kalpha
+            Kalpha = 1.344 - (0.344 / (1 - tou_s / su) ** 0.638)
+
+        }
 
         //Qtncs
         Qtncs = Kalpha * useQt
@@ -5257,6 +5285,17 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
     // fs = fs * 1000 * cvru //MPa -> kg/cm2
     // u2 = u2 * 1000 * cvru //MPa -> kg/cm2
 
+    //MSF from: Ku and Juang(2012)-No AccessLiquefaction and cyclic softening potential of soils – a unified piezocone penetration testing-based approach
+    //CSR (see Appendix B), such as depth-dependent shear stress reduction factor (rd), magnitude scaling factor (MSF),
+    //and overburden correction factor for cyclic stress ratio (Ks).
+    //Again, this subject is outside of the scope of the current paper,
+    //and the reader is referred to Juang et al. (2006, 2008a, 2008b).
+    //可知MSF是參考: Juang(2008)-Calibration of liquefaction potential index-A re-visit focusing on a new CPTU model.pdf
+    //The three intermediate parameters for the determination of adjusted CSR Eq. (4) are defined by Idriss and Boulanger (2004, 2006).
+    //They are provided herein for convenience in the calculation of LPI.
+    //The reader is referred to Idriss and Boulanger (2004, 2006) for details.
+    //實際上可知MSF是使用Idriss and Boulanger(2006)
+
     //MSF, 規模修正因子, Idriss and Boulanger(2006) for sand
     MSF = 6.9 * Math.exp(-Mw / 4) - 0.058
     MSF = Math.min(MSF, 1.8)
@@ -5315,6 +5354,11 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
         CRR = Math.min(CRR, 1e20)
     }
     // console.log('depth',depth,'CRR',CRR,'CRR75',CRR75,'MSF',MSF,'Ksigma',Ksigma,'Csigma',Csigma,'svpUsual',svpUsual,'Pa',Pa,'Math.log(svpUsual / Pa)',Math.log(svpUsual / Pa))
+
+    //CSR from: Ku and Juang(2012)-No AccessLiquefaction and cyclic softening potential of soils – a unified piezocone penetration testing-based approach
+    //The Juang et al. (2008) method is a CPTu-based model that follows the framework of simplified procedures.
+    //In this CPTu-based model, the cyclic stress ratio (CSR) is computed using the formulation established by Idriss &amp; Boulanger (2006)
+    //所以rrd使用Idriss and Boulanger(2006)
 
     //CSR
     CSR = null
@@ -7754,7 +7798,7 @@ export default calcLiquefaction
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Mon Jun 26 2023 15:02:02 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Thu Jul 06 2023 21:10:32 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
