@@ -573,8 +573,8 @@ async function getCptDepthHcOpt(dataCPT, retKind = '', optParam = {}) {
     // let xLimMax = get(optParam, 'xLimMax', undefined)
     let useXYLabelEng = get(optParam, 'useXYLabelEng', true)
     let useYLabel = get(optParam, 'useYLabel', true)
-    let yLabelCht = get(optParam, 'yLabelCht', '海床下深度')
-    let yLabelEng = get(optParam, 'yLabelEng', 'Depth below seabed')
+    let yLabelCht = get(optParam, 'yLabelCht', '深度') //海床下深度
+    let yLabelEng = get(optParam, 'yLabelEng', 'Depth') //Depth below seabed
     let yLabelTextSizeCht = get(optParam, 'yLabelTextSizeCht', 12)
     let yLabelTextSizeEng = get(optParam, 'yLabelTextSizeEng', 10)
     let yUnit = get(optParam, 'yUnit', 'm')

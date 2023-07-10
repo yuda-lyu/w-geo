@@ -1,6 +1,6 @@
 {
   "name": "w-geo",
-  "version": "1.0.86",
+  "version": "1.0.87",
   "main": "dist/w-geo.umd.js",
   "dependencies": {
     "decimal.js": "^10.4.3",
