@@ -1,3 +1,4 @@
+export { default as calcClassifyUscs } from './calcClassifyUscs.mjs'
 export { default as calcCpt } from './calcCpt.mjs'
 export { default as calcCptClassify } from './calcCptClassify.mjs'
 export { default as calcCptUnitWeight } from './calcCptUnitWeight.mjs'

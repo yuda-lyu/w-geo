@@ -453,7 +453,7 @@ function calc(k) {
     fs.writeFileSync(`./calcLiquefaction-cpt-rowsIn${k}.json`, JSON.stringify(rowsIn, null, 2), 'utf8')
     fs.writeFileSync(`./calcLiquefaction-cpt-rowsOut${k}.json`, JSON.stringify(rowsOut, null, 2), 'utf8')
 
-    w.downloadExcelFileFromData(`./calcLiquefaction-cpt-mat${k}.xlsx`, 'mat', rowsOut)
+    // w.downloadExcelFileFromData(`./calcLiquefaction-cpt-mat${k}.xlsx`, 'mat', rowsOut)
 
 }
 
