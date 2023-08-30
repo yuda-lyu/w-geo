@@ -1,5 +1,5 @@
 /*!
- * w-geo v1.0.89
+ * w-geo v1.1.0
  * (c) 2018-2021 yuda-lyu(semisphere)
  * Released under the MIT License.
  */
