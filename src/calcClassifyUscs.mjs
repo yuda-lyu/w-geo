@@ -20,7 +20,7 @@ function cvLL(oLL) {
     if (isnum(oLL)) {
         LL = cdbl(oLL)
     }
-    else if (oLL === cEmpty || oLL === cNP) {
+    else if (oLL === cEmpty || oLL === cNP) { //PI與LL可以給予NP
         LL = 40
     }
     else {
@@ -28,7 +28,21 @@ function cvLL(oLL) {
     }
     return LL
 }
-let cvPI = cvLL
+
+
+function cvPI(oPI) {
+    let PI = null
+    if (isnum(oPI)) {
+        PI = cdbl(oPI)
+    }
+    else if (oPI === cEmpty || oPI === cNP) { //PI與LL可以給予NP
+        PI = 0
+    }
+    else {
+        throw new Error(`PI[${oPI}] ${cErrLL}`)
+    }
+    return PI
+}
 
 
 function ckInvalidLFun(v, funCv) {
@@ -108,12 +122,13 @@ function getTypeByAlinePI(oPI, oLL) {
     // Else
     //     LL = 40 '非數字應該為"-"
     // End If
-    if (isnum(oPI)) {
-        PI = cdbl(oPI)
-    }
-    else {
-        PI = 0
-    }
+    // if (isnum(oPI)) {
+    //     PI = cdbl(oPI)
+    // }
+    // else {
+    //     PI = 0
+    // }
+    PI = cvPI(oPI)
     LL = cvLL(oLL)
 
     // Dim PIlim As Double = (0.73 * (LL - 20))
@@ -155,12 +170,13 @@ function getTypeByAline(oPI, oLL) {
     // Else
     //     LL = 40
     // End If
-    if (isnum(oPI)) {
-        PI = cdbl(oPI)
-    }
-    else {
-        PI = 0
-    }
+    // if (isnum(oPI)) {
+    //     PI = cdbl(oPI)
+    // }
+    // else {
+    //     PI = 0
+    // }
+    PI = cvPI(oPI)
     LL = cvLL(oLL)
 
     // Dim PIlim As Double = (0.73 * (LL - 20))
