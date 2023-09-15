@@ -1,8 +1,6 @@
 import fs from 'fs'
+import _ from 'lodash'
 import w from 'wsemi'
-// import relaPorousParams from './src/relaPorousParams.mjs'
-// import { calcVerticalStress } from './src/calcVerticalStress.mjs'
-// import calcLiquefaction from './src/calcLiquefaction.mjs'
 import calcDepthStartEndFromCenter from './src/calcDepthStartEndFromCenter.mjs'
 
 
@@ -105,4 +103,4 @@ console.log(rs)
 // ]
 
 
-//node --experimental-modules --es-module-specifier-resolution=node g4-calcDepthStartEndFromCenter.mjs
+//node --experimental-modules --es-module-specifier-resolution=node g4a-calcDepthStartEndFromCenter.mjs

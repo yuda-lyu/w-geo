@@ -2302,4 +2302,3 @@ export default { //整合輸出預設得要有default
     compressLayersByLabAndCpt
 }
 
-移植壓縮土層

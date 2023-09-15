@@ -200,7 +200,6 @@ function calcDepthStartEndFromCenter(rows, opt = {}) {
         dc1 = cdbl(dc1)
 
         //check
-        //if (dc0 >= dc1) {
         if (judge(dc0, '>=', dc1)) {
             errs.push(`第 ${k - 1} 樣本之中點深度${keyDepth}[${dc0}]大於等於第 ${k} 樣本之中點深度${keyDepth}[${dc1}]`)
         }
@@ -277,7 +276,6 @@ function calcDepthStartEndFromCenter(rows, opt = {}) {
     if (isNumber(depthEndMax)) {
         let rowsEnd = rows[up]
         let de = rowsEnd[keyDepthEnd]
-        //if (de < depthEndMax) {
         if (judge(de, '<', depthEndMax)) { //若最後樣本結束深度小於depthEndMax, 則自動改為depthEndMax
             rows[up][keyDepthEnd] = depthEndMax
         }

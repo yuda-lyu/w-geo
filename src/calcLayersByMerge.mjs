@@ -12,7 +12,7 @@ import cdbl from 'wsemi/src/cdbl.mjs'
 import judge from './judge.mjs'
 
 
-function mergeLayers(ltdt, opt = {}) {
+function calcLayersByMerge(ltdt, opt = {}) {
 
     //keyDepth
     let keyDepth = get(opt, 'keyDepth')
@@ -140,4 +140,4 @@ function mergeLayers(ltdt, opt = {}) {
 }
 
 
-export default mergeLayers
+export default calcLayersByMerge
