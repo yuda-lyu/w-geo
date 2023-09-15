@@ -29,7 +29,7 @@
 <nav >
     
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcDepthFromStartEnd">calcDepthFromStartEnd</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByConnect">calcDepthStartEndByConnect</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByGroup">calcDepthStartEndByGroup</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndFromCenter">calcDepthStartEndFromCenter</a></li><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepth">checkDepth</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.complementDepthData">complementDepthData</a></li><li data-type='method'><a href="w-geo.html#.groupByDepthStartEnd">groupByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.mergeByDepthStartEnd">mergeByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPlasticityParams">relaPlasticityParams</a></li><li data-type='method'><a href="w-geo.html#.relaPorousParams">relaPorousParams</a></li><li data-type='method'><a href="w-geo.html#.sepDepthStartEndByDepth">sepDepthStartEndByDepth</a></li><li data-type='method'><a href="w-geo.html#.smoothDepthByKey">smoothDepthByKey</a></li><li data-type='method'><a href="w-geo.html#.sptHBF">sptHBF</a></li><li data-type='method'><a href="w-geo.html#.sptNCEER">sptNCEER</a></li><li data-type='method'><a href="w-geo.html#.sptNJRA">sptNJRA</a></li><li data-type='method'><a href="w-geo.html#.sptSeed">sptSeed</a></li><li data-type='method'><a href="w-geo.html#.sptTY">sptTY</a></li></ul></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcDepthByDepthStartEnd">calcDepthByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByConnect">calcDepthStartEndByConnect</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByGroup">calcDepthStartEndByGroup</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndFromCenter">calcDepthStartEndFromCenter</a></li><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepth">checkDepth</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.complementDepthData">complementDepthData</a></li><li data-type='method'><a href="w-geo.html#.groupByDepthStartEnd">groupByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.mergeByDepthStartEnd">mergeByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPlasticityParams">relaPlasticityParams</a></li><li data-type='method'><a href="w-geo.html#.relaPorousParams">relaPorousParams</a></li><li data-type='method'><a href="w-geo.html#.sepDepthStartEndByDepth">sepDepthStartEndByDepth</a></li><li data-type='method'><a href="w-geo.html#.smoothDepthByKey">smoothDepthByKey</a></li><li data-type='method'><a href="w-geo.html#.sptHBF">sptHBF</a></li><li data-type='method'><a href="w-geo.html#.sptNCEER">sptNCEER</a></li><li data-type='method'><a href="w-geo.html#.sptNJRA">sptNJRA</a></li><li data-type='method'><a href="w-geo.html#.sptSeed">sptSeed</a></li><li data-type='method'><a href="w-geo.html#.sptTY">sptTY</a></li></ul></li></ul>
     
 </nav>
 
@@ -46,17 +46,23 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>import get from 'lodash/get'
+import each from 'lodash/each'
+import map from 'lodash/map'
 import size from 'lodash/size'
 import join from 'lodash/join'
 import sortBy from 'lodash/sortBy'
 import pullAt from 'lodash/pullAt'
+import filter from 'lodash/filter'
 import cloneDeep from 'lodash/cloneDeep'
 import cdbl from 'wsemi/src/cdbl.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
+import isnum from 'wsemi/src/isnum.mjs'
+import isarr from 'wsemi/src/isarr.mjs'
 import isearr from 'wsemi/src/isearr.mjs'
 import iseobj from 'wsemi/src/iseobj.mjs'
+import isbol from 'wsemi/src/isbol.mjs'
 import isfun from 'wsemi/src/isfun.mjs'
-// import judge from './judge.mjs'
+import judge from './judge.mjs'
 import checkDepthStartEnd from './checkDepthStartEnd.mjs'
 
 
@@ -70,11 +76,17 @@ import checkDepthStartEnd from './checkDepthStartEnd.mjs'
  * @param {String} [opt.keyDepthStart='depthStart'] 輸入欲儲存之起始深度欄位鍵值字串，預設'depthStart'
  * @param {String} [opt.keyDepthEnd='depthEnd'] 輸入欲儲存之結束深度欄位鍵值字串，預設'depthEnd'
  * @param {String} [opt.keyValue='value'] 輸入指定偵測欄位鍵值字串，預設'value'
+ * @param {Boolean} [opt.saveFromInds=false] 輸入是否儲存合併來源指標布林值，預設false
+ * @param {String} [opt.keyInd='ind'] 輸入標記來源指標欄位字串，預設'ind'
+ * @param {String} [opt.keyFromInds='fromInds'] 輸入儲存來源指標欄位字串，預設'fromInds'
+ * @param {String} [opt.typeDetect='fromInds'] 輸入偵測合併機制字串，可選'sequence'、'iterate'，前者代表一次性偵測合併，後者代表迭代多次偵測合併，預設'sequence'
+ * @param {Function} [opt.funMerge=null] 輸入字定義合併函數，輸入為v0與v1上下兩土層參數物件，回傳合併後參數物件，預設null
+ * @param {String} [opt.typeMerge='down'] 輸入合併方向字串，可選'down'、'up'，前者代表以下層土層參數為主，後者以上層土層參數為主，預設'down'
  * @returns {Array} 回傳合併後的數據陣列
  * @example
  *
  * let rows
- * let rs
+ * let rows
  *
  * rows = [
  *     {
@@ -102,8 +114,8 @@ import checkDepthStartEnd from './checkDepthStartEnd.mjs'
  *         ext: 2.3,
  *     },
  * ]
- * rs = mergeByDepthStartEnd(rows)
- * console.log(JSON.stringify(rs, null, 2))
+ * rows = mergeByDepthStartEnd(rows)
+ * console.log(JSON.stringify(rows, null, 2))
  * // => [
  * //   {
  * //     "depthStart": 0,
@@ -151,8 +163,8 @@ import checkDepthStartEnd from './checkDepthStartEnd.mjs'
  *         ext: 2.3,
  *     },
  * ]
- * rs = mergeByDepthStartEnd(rows, { keyDepthStart: 'ds', keyDepthEnd: 'de' })
- * console.log(JSON.stringify(rs, null, 2))
+ * rows = mergeByDepthStartEnd(rows, { keyDepthStart: 'ds', keyDepthEnd: 'de' })
+ * console.log(JSON.stringify(rows, null, 2))
  * // => [
  * //   {
  * //     "ds": 0,
@@ -200,8 +212,8 @@ import checkDepthStartEnd from './checkDepthStartEnd.mjs'
  *         ext: 2.3,
  *     },
  * ]
- * rs = mergeByDepthStartEnd(rows, { keyValue: 'data' })
- * console.log(JSON.stringify(rs, null, 2))
+ * rows = mergeByDepthStartEnd(rows, { keyValue: 'data' })
+ * console.log(JSON.stringify(rows, null, 2))
  * // => [
  * //   {
  * //     "depthStart": 0,
@@ -255,7 +267,7 @@ import checkDepthStartEnd from './checkDepthStartEnd.mjs'
  *         ext: 7.9,
  *     },
  * ]
- * rs = mergeByDepthStartEnd(rows, {
+ * rows = mergeByDepthStartEnd(rows, {
  *     funMerge: (v0, v1) => {
  *         return {
  *             // depthStart: null,
@@ -267,7 +279,7 @@ import checkDepthStartEnd from './checkDepthStartEnd.mjs'
  *         }
  *     }
  * })
- * console.log(JSON.stringify(rs, null, 2))
+ * console.log(JSON.stringify(rows, null, 2))
  * // => [
  * //   {
  * //     "depthStart": 0,
@@ -345,8 +357,8 @@ import checkDepthStartEnd from './checkDepthStartEnd.mjs'
  *         ext: 7.9,
  *     },
  * ]
- * rs = mergeByDepthStartEnd(rows, { typeMerge: 'up' })
- * console.log(JSON.stringify(rs, null, 2))
+ * rows = mergeByDepthStartEnd(rows, { typeMerge: 'up' })
+ * console.log(JSON.stringify(rows, null, 2))
  * // => [
  * //   {
  * //     "depthStart": 0,
@@ -376,6 +388,180 @@ function mergeByDepthStartEnd(rows, opt = {}) {
         throw new Error(`無有效數據`)
     }
 
+    // //keyDepthStart
+    // let keyDepthStart = get(opt, 'keyDepthStart')
+    // if (!isestr(keyDepthStart)) {
+    //     keyDepthStart = 'depthStart'
+    // }
+
+    // //keyDepthEnd
+    // let keyDepthEnd = get(opt, 'keyDepthEnd')
+    // if (!isestr(keyDepthEnd)) {
+    //     keyDepthEnd = 'depthEnd'
+    // }
+
+    // //keyValue
+    // let keyValue = get(opt, 'keyValue')
+    // if (!isestr(keyValue)) {
+    //     keyValue = 'value'
+    // }
+
+    // //saveFromInds
+    // let saveFromInds = get(opt, 'saveFromInds')
+    // if (!isbol(saveFromInds)) {
+    //     saveFromInds = false
+    // }
+
+    // //keyInd
+    // let keyInd = get(opt, 'keyInd')
+    // if (!isestr(keyInd)) {
+    //     keyInd = 'ind'
+    // }
+
+    // //keyFromInds
+    // let keyFromInds = get(opt, 'keyFromInds')
+    // if (!isestr(keyFromInds)) {
+    //     keyFromInds = 'fromInds'
+    // }
+
+    // //funMerge
+    // let funMerge = get(opt, 'funMerge')
+    // let useFunMerge = isfun(funMerge)
+
+    // //typeMerge
+    // let typeMerge = get(opt, 'typeMerge')
+    // if (typeMerge !== 'up' &amp;&amp; typeMerge !== 'down') {
+    //     typeMerge = 'down'
+    // }
+
+    // //cloneDeep
+    // rows = cloneDeep(rows)
+
+    // //checkDepthStartEnd
+    // let ckds = checkDepthStartEnd(rows, { keyDepthStart, keyDepthEnd })
+    // if (size(ckds) > 0) {
+    //     throw new Error(join(ckds, ', '))
+    // }
+
+    // //sortBy
+    // rows = sortBy(rows, (v) => {
+    //     return cdbl(v[keyDepthStart])
+    // })
+
+    // //saveFromInds
+    // if (saveFromInds) {
+    //     rows = map(rows, (v, k) => {
+    //         if (!isnum(v[keyInd])) {
+    //             v[keyInd] = k
+    //         }
+    //         return v
+    //     })
+    // }
+
+    // //proc
+    // let proc = (rows) => {
+
+    //     //偵測合併, 前面已檢查checkDepthStartEnd, 故各樣本起訖深度為接合
+    //     let b = false
+    //     for (let k = 1; k &lt; size(rows); k++) {
+
+    //         //v0, v1
+    //         let v0 = rows[k - 1]
+    //         let v1 = rows[k]
+
+    //         //ds0, de0, vl0
+    //         let ds0 = get(v0, keyDepthStart, null)
+    //         // let de0 = get(v0, keyDepthEnd, null)
+    //         let vl0 = get(v0, keyValue, null)
+
+    //         //ds1, de1, vl1
+    //         // let ds1 = get(v1, keyDepthStart, null)
+    //         let de1 = get(v1, keyDepthEnd, null)
+    //         let vl1 = get(v1, keyValue, null)
+
+    //         //check
+    //         if (vl0 === vl1) {
+    //             // console.log('v0', v0, 'v1', v1)
+
+    //             //saveFromInds
+    //             if (saveFromInds) {
+
+    //                 //check
+    //                 if (!isarr(v0[keyFromInds])) {
+    //                     v0[keyFromInds] = [v0[keyInd]]
+    //                 }
+
+    //                 //check
+    //                 if (!isarr(v1[keyFromInds])) {
+    //                     v1[keyFromInds] = [v1[keyInd]]
+    //                 }
+
+    //                 //merge
+    //                 v1[keyFromInds] = [
+    //                     ...v0[keyFromInds],
+    //                     ...v1[keyFromInds],
+    //                 ]
+
+    //             }
+
+    //             //vm
+    //             let vm = null
+    //             if (useFunMerge) {
+
+    //                 //r
+    //                 vm = funMerge(v0, v1)
+
+    //                 //check
+    //                 if (!iseobj(vm)) {
+    //                     throw new Error(`funMerge回傳[${vm}]非有效物件`)
+    //                 }
+
+    //             }
+    //             else {
+    //                 if (typeMerge === 'up') {
+    //                     vm = {
+    //                         ...v1,
+    //                         ...v0,
+    //                     }
+    //                 }
+    //                 else if (typeMerge === 'down') {
+    //                     vm = {
+    //                         ...v0,
+    //                         ...v1,
+    //                     }
+    //                 }
+    //             }
+
+    //             //合併深度
+    //             vm[keyDepthStart] = ds0
+    //             vm[keyDepthEnd] = de1
+    //             // console.log('vm', vm)
+
+    //             //儲存合併與刪除
+    //             rows = cloneDeep(rows)
+    //             rows[k - 1] = vm
+    //             pullAt(rows, k)
+    //             // console.log('rows pullAt', rows)
+
+    //             b = true
+    //             break
+    //         }
+
+    //     }
+
+    //     return {
+    //         merge: b,
+    //         rows,
+    //     }
+    // }
+
+    // //while proc
+    // let r = proc(rows)
+    // while (r.merge) {
+    //     r = proc(rows)
+    //     rows = r.rows
+    // }
+
     //keyDepthStart
     let keyDepthStart = get(opt, 'keyDepthStart')
     if (!isestr(keyDepthStart)) {
@@ -394,8 +580,33 @@ function mergeByDepthStartEnd(rows, opt = {}) {
         keyValue = 'value'
     }
 
+    //saveFromInds
+    let saveFromInds = get(opt, 'saveFromInds')
+    if (!isbol(saveFromInds)) {
+        saveFromInds = false
+    }
+
+    //keyInd
+    let keyInd = get(opt, 'keyInd')
+    if (!isestr(keyInd)) {
+        keyInd = 'ind'
+    }
+
+    //keyFromInds
+    let keyFromInds = get(opt, 'keyFromInds')
+    if (!isestr(keyFromInds)) {
+        keyFromInds = 'fromInds'
+    }
+
+    //typeDetect
+    let typeDetect = get(opt, 'typeDetect')
+    if (typeDetect !== 'sequence' &amp;&amp; typeDetect !== 'iterate') {
+        typeDetect = 'sequence'
+    }
+
     //funMerge
     let funMerge = get(opt, 'funMerge')
+    let useFunMerge = isfun(funMerge)
 
     //typeMerge
     let typeMerge = get(opt, 'typeMerge')
@@ -417,37 +628,225 @@ function mergeByDepthStartEnd(rows, opt = {}) {
         return cdbl(v[keyDepthStart])
     })
 
-    //proc
-    let proc = (rows) => {
+    //saveFromInds
+    if (saveFromInds) {
+        rows = map(rows, (v, k) => {
+            if (!isnum(v[keyInd])) {
+                v[keyInd] = k
+            }
+            return v
+        })
+    }
 
-        //偵測合併, 前面已檢查checkDepthStartEnd, 故各樣本起訖深度為接合
-        let b = false
-        for (let i = 1; i &lt; size(rows); i++) {
+    //typeDetect
+    if (typeDetect === 'iterate') {
+
+        //proc
+        let proc = (rows) => {
+
+            //偵測合併, 前面已檢查checkDepthStartEnd, 故各樣本起訖深度為接合
+            let b = false
+            for (let k = 1; k &lt; size(rows); k++) {
+
+                //v0, v1
+                let v0 = rows[k - 1]
+                let v1 = rows[k]
+
+                //ds0, de0, vl0
+                let ds0 = get(v0, keyDepthStart, null)
+                let de0 = get(v0, keyDepthEnd, null)
+                let vl0 = get(v0, keyValue, null)
+
+                //ds1, de1, vl1
+                let ds1 = get(v1, keyDepthStart, null)
+                let de1 = get(v1, keyDepthEnd, null)
+                let vl1 = get(v1, keyValue, null)
+
+                //check
+                if (vl0 === null) {
+                    console.log('v0', v0, 'keyValue', keyValue)
+                    throw new Error(`invalid vl0`)
+                }
+                if (vl1 === null) {
+                    console.log('v1', v1, 'keyValue', keyValue)
+                    throw new Error(`invalid vl1`)
+                }
+
+                //check
+                if (!isnum(ds0) || !isnum(de0) || !isnum(ds1) || !isnum(de1)) {
+                    return true //跳出換下一個
+                }
+
+                //cdbl
+                ds0 = cdbl(ds0)
+                de0 = cdbl(de0)
+                ds1 = cdbl(ds1)
+                de1 = cdbl(de1)
+
+                //check
+                if (vl0 === vl1 &amp;&amp; judge(de0, '===', ds1)) {
+                // console.log('v0', v0, 'v1', v1)
+
+                    //saveFromInds
+                    if (saveFromInds) {
+
+                        //check
+                        if (!isarr(v0[keyFromInds])) {
+                            v0[keyFromInds] = [v0[keyInd]]
+                        }
+
+                        //check
+                        if (!isarr(v1[keyFromInds])) {
+                            v1[keyFromInds] = [v1[keyInd]]
+                        }
+
+                        //merge
+                        v1[keyFromInds] = [
+                            ...v0[keyFromInds],
+                            ...v1[keyFromInds],
+                        ]
+
+                    }
+
+                    //vm
+                    let vm = null
+                    if (useFunMerge) {
+
+                        //r
+                        vm = funMerge(v0, v1)
+
+                        //check
+                        if (!iseobj(vm)) {
+                            throw new Error(`funMerge回傳[${vm}]非有效物件`)
+                        }
+
+                    }
+                    else {
+                        if (typeMerge === 'up') {
+                            vm = {
+                                ...v1,
+                                ...v0,
+                            }
+                        }
+                        else if (typeMerge === 'down') {
+                            vm = {
+                                ...v0,
+                                ...v1,
+                            }
+                        }
+                    }
+
+                    //更新起訖深度
+                    vm[keyDepthStart] = ds0
+                    vm[keyDepthEnd] = de1
+                    // console.log('vm', vm)
+
+                    //儲存合併與刪除
+                    rows = cloneDeep(rows)
+                    rows[k - 1] = vm
+                    pullAt(rows, k)
+                    // console.log('rows pullAt', rows)
+
+                    b = true
+                    break
+                }
+
+            }
+
+            return {
+                merge: b,
+                rows,
+            }
+        }
+
+        //while proc
+        let r = proc(rows)
+        while (r.merge) {
+            r = proc(rows)
+            rows = r.rows
+        }
+
+    }
+    else if (typeDetect === 'sequence') {
+
+        //偵測各層
+        each(rows, (v, k) => {
+
+            //check
+            if (k === 0) {
+                return true //跳出換下一個
+            }
+
+            //check
+            if (!iseobj(v)) {
+                throw new Error(`rows[${k}] is not an object`)
+            }
 
             //v0, v1
-            let v0 = rows[i - 1]
-            let v1 = rows[i]
+            let v0 = get(rows, k - 1)
+            let v1 = v
 
             //ds0, de0, vl0
             let ds0 = get(v0, keyDepthStart, null)
-            // let de0 = get(v0, keyDepthEnd, null)
+            let de0 = get(v0, keyDepthEnd, null)
             let vl0 = get(v0, keyValue, null)
 
             //ds1, de1, vl1
-            // let ds1 = get(v1, keyDepthStart, null)
+            let ds1 = get(v1, keyDepthStart, null)
             let de1 = get(v1, keyDepthEnd, null)
             let vl1 = get(v1, keyValue, null)
 
             //check
-            if (vl0 !== null &amp;&amp; vl1 !== null &amp;&amp; vl0 === vl1) {
-                // console.log('v0', v0, 'v1', v1)
+            if (vl0 === null) {
+                console.log('v0', v0, 'keyValue', keyValue)
+                throw new Error(`invalid vl0`)
+            }
+            if (vl1 === null) {
+                console.log('v1', v1, 'keyValue', keyValue)
+                throw new Error(`invalid vl1`)
+            }
+
+            //check
+            if (!isnum(ds0) || !isnum(de0) || !isnum(ds1) || !isnum(de1)) {
+                return true //跳出換下一個
+            }
+
+            //cdbl
+            ds0 = cdbl(ds0)
+            de0 = cdbl(de0)
+            ds1 = cdbl(ds1)
+            de1 = cdbl(de1)
+
+            //check
+            if (vl0 === vl1 &amp;&amp; judge(de0, '===', ds1)) {
+
+                //saveFromInds
+                if (saveFromInds) {
+
+                    //check
+                    if (!isarr(v0[keyFromInds])) {
+                        v0[keyFromInds] = [v0[keyInd]]
+                    }
+
+                    //check
+                    if (!isarr(v1[keyFromInds])) {
+                        v1[keyFromInds] = [v1[keyInd]]
+                    }
+
+                    //merge
+                    v1[keyFromInds] = [
+                        ...v0[keyFromInds],
+                        ...v1[keyFromInds],
+                    ]
+
+                }
 
                 //vm
                 let vm = null
-                if (isfun(funMerge)) {
+                if (useFunMerge) {
 
                     //r
-                    vm = funMerge(v0, v1)
+                    vm = funMerge(v0, v1) //funMerge須回傳合併層參數, 除起始深度會自動給予上層, 其他參數得自行回傳
 
                     //check
                     if (!iseobj(vm)) {
@@ -470,34 +869,23 @@ function mergeByDepthStartEnd(rows, opt = {}) {
                     }
                 }
 
-                //更新起訖深度
+                //合併深度
                 vm[keyDepthStart] = ds0
                 vm[keyDepthEnd] = de1
-                // console.log('vm', vm)
 
-                //儲存合併與刪除
-                rows = cloneDeep(rows)
-                rows[i - 1] = vm
-                pullAt(rows, i)
-                // console.log('rows pullAt', rows)
+                //儲存數據至下層
+                rows[k] = vm
 
-                b = true
-                break
+                //標注上層為null(待刪除)
+                rows[k - 1] = null
+
             }
 
-        }
+        })
 
-        return {
-            merge: b,
-            rows,
-        }
-    }
+        //filter
+        rows = filter(rows, iseobj)
 
-    //while proc
-    let r = proc(rows)
-    while (r.merge) {
-        r = proc(rows)
-        rows = r.rows
     }
 
     return rows
@@ -519,7 +907,7 @@ export default mergeByDepthStartEnd
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Fri Sep 15 2023 12:22:32 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Fri Sep 15 2023 16:37:42 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
