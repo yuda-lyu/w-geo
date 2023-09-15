@@ -274,8 +274,8 @@ describe(`mergeByDepthStartEnd`, function() {
                 r = mergeByDepthStartEnd(rows, {
                     funMerge: (v0, v1) => {
                         return {
-                        // depthStart: null,
-                        // depthEnd: null,
+                            // depthStart: null,
+                            // depthEnd: null,
                             value: v1.value,
                             ext: v1.ext,
                             _v0: v0,
@@ -363,6 +363,137 @@ describe(`mergeByDepthStartEnd`, function() {
     f5()
 
     let f6 = () => {
+        let rows = [
+            {
+                depthStart: 0,
+                depthEnd: 5,
+                value: 'a',
+                ext: 12.3,
+            },
+            {
+                depthStart: 5,
+                depthEnd: 7,
+                value: 'b',
+                ext: 12.4,
+            },
+            {
+                depthStart: 7,
+                depthEnd: 11,
+                value: 'b',
+                ext: 2.5,
+            },
+            {
+                depthStart: 11,
+                depthEnd: 15,
+                value: 'a',
+                ext: 2.3,
+            },
+        ]
+        let rowsNew = [
+            {
+                'depthStart': 0,
+                'depthEnd': 5,
+                'value': 'a',
+                'ext': 12.3,
+                '_ind': 0
+            },
+            {
+                'depthStart': 5,
+                'depthEnd': 11,
+                'value': 'b',
+                'ext': 2.5,
+                '_ind': 2,
+                '_fromInds': [
+                    1,
+                    2
+                ]
+            },
+            {
+                'depthStart': 11,
+                'depthEnd': 15,
+                'value': 'a',
+                'ext': 2.3,
+                '_ind': 3
+            }
+        ]
+        it(`should return ${JSON.stringify(rowsNew)} when mergeByDepthStartEnd(${JSON.stringify(rows)}, { saveFromInds: true, keyInd: '_ind', keyFromInds: '_fromInds' })`, function() {
+            let r = ''
+            try {
+                r = mergeByDepthStartEnd(rows, { saveFromInds: true, keyInd: '_ind', keyFromInds: '_fromInds' })
+            }
+            catch (err) {
+                r = err.toString()
+            }
+            let rr = rowsNew
+            assert.strict.deepStrictEqual(r, rr)
+        })
+
+    }
+    f6()
+
+    let f7 = () => {
+        let rows = [
+            {
+                depthStart: 0,
+                depthEnd: 5,
+                value: 'a',
+                ext: 12.3,
+            },
+            {
+                depthStart: 5,
+                depthEnd: 7,
+                value: 'b',
+                ext: 12.4,
+            },
+            {
+                depthStart: 7,
+                depthEnd: 11,
+                value: 'b',
+                ext: 2.5,
+            },
+            {
+                depthStart: 11,
+                depthEnd: 15,
+                value: 'a',
+                ext: 2.3,
+            },
+        ]
+        let rowsNew = [
+            {
+                'depthStart': 0,
+                'depthEnd': 5,
+                'value': 'a',
+                'ext': 12.3
+            },
+            {
+                'depthStart': 5,
+                'depthEnd': 11,
+                'value': 'b',
+                'ext': 2.5
+            },
+            {
+                'depthStart': 11,
+                'depthEnd': 15,
+                'value': 'a',
+                'ext': 2.3
+            }
+        ]
+        it(`should return ${JSON.stringify(rowsNew)} when mergeByDepthStartEnd(${JSON.stringify(rows)}, { typeDetect: 'iterate' })`, function() {
+            let r = ''
+            try {
+                r = mergeByDepthStartEnd(rows, { typeDetect: 'iterate' })
+            }
+            catch (err) {
+                r = err.toString()
+            }
+            let rr = rowsNew
+            assert.strict.deepStrictEqual(r, rr)
+        })
+
+    }
+    f7()
+
+    let f8 = () => {
         let rows = ''
         let rowsNew = 'Error: 無有效數據'
         it(`should return ${JSON.stringify(rowsNew)} when mergeByDepthStartEnd(${JSON.stringify(rows)})`, function() {
@@ -378,6 +509,6 @@ describe(`mergeByDepthStartEnd`, function() {
         })
 
     }
-    f6()
+    f8()
 
 })

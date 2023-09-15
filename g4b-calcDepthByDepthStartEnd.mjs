@@ -1,7 +1,7 @@
 import fs from 'fs'
 import _ from 'lodash'
 import w from 'wsemi'
-import calcDepthFromStartEnd from './src/calcDepthFromStartEnd.mjs'
+import calcDepthByDepthStartEnd from './src/calcDepthByDepthStartEnd.mjs'
 
 
 let rows
@@ -21,7 +21,7 @@ rows = [
         depthEnd: 20,
     },
 ]
-rs = calcDepthFromStartEnd(rows)
+rs = calcDepthByDepthStartEnd(rows)
 console.log(rs)
 // => [
 //   { depthStart: 0, depthEnd: 3, depth: 1.5 },
@@ -39,7 +39,7 @@ rows = [
         depthEnd: 20,
     },
 ]
-rs = calcDepthFromStartEnd(rows)
+rs = calcDepthByDepthStartEnd(rows)
 console.log(rs)
 // => [
 //   { depthStart: 0, depthEnd: 3, depth: 1.5 },
@@ -60,7 +60,7 @@ rows = [
         de: 20,
     },
 ]
-rs = calcDepthFromStartEnd(rows, { keyDepthStart: 'ds', keyDepthEnd: 'de', keyDepth: 'dc' })
+rs = calcDepthByDepthStartEnd(rows, { keyDepthStart: 'ds', keyDepthEnd: 'de', keyDepth: 'dc' })
 console.log(rs)
 // => [
 //   { ds: 0, de: 3, dc: 1.5 },
@@ -69,4 +69,4 @@ console.log(rs)
 // ]
 
 
-//node --experimental-modules --es-module-specifier-resolution=node g4b-calcDepthFromStartEnd.mjs
+//node --experimental-modules --es-module-specifier-resolution=node g4b-calcDepthByDepthStartEnd.mjs

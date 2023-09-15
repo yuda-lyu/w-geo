@@ -13,7 +13,7 @@ import isnum from 'wsemi/src/isnum.mjs'
 /**
  * 由樣本起訖深度反算中點深度
  *
- * Unit Test: {@link https://github.com/yuda-lyu/w-geo/blob/master/test/calcDepthFromStartEnd.test.js Github}
+ * Unit Test: {@link https://github.com/yuda-lyu/w-geo/blob/master/test/calcDepthByDepthStartEnd.test.js Github}
  * @memberOf w-geo
  * @param {Array} rows 輸入數據陣列，各數據為物件，至少需包含起始深度(depthStart)與結束深度(depthEnd)，深度單位為m
  * @param {Object} [opt={}] 輸入設定物件，預設{}
@@ -40,7 +40,7 @@ import isnum from 'wsemi/src/isnum.mjs'
  *         depthEnd: 20,
  *     },
  * ]
- * rs = calcDepthFromStartEnd(rows)
+ * rs = calcDepthByDepthStartEnd(rows)
  * console.log(rs)
  * // => [
  * //   { depthStart: 0, depthEnd: 3, depth: 1.5 },
@@ -58,7 +58,7 @@ import isnum from 'wsemi/src/isnum.mjs'
  *         depthEnd: 20,
  *     },
  * ]
- * rs = calcDepthFromStartEnd(rows)
+ * rs = calcDepthByDepthStartEnd(rows)
  * console.log(rs)
  * // => [
  * //   { depthStart: 0, depthEnd: 3, depth: 1.5 },
@@ -79,7 +79,7 @@ import isnum from 'wsemi/src/isnum.mjs'
  *         de: 20,
  *     },
  * ]
- * rs = calcDepthFromStartEnd(rows, { keyDepthStart: 'ds', keyDepthEnd: 'de', keyDepth: 'dc' })
+ * rs = calcDepthByDepthStartEnd(rows, { keyDepthStart: 'ds', keyDepthEnd: 'de', keyDepth: 'dc' })
  * console.log(rs)
  * // => [
  * //   { ds: 0, de: 3, dc: 1.5 },
@@ -88,7 +88,7 @@ import isnum from 'wsemi/src/isnum.mjs'
  * // ]
  *
  */
-function calcDepthFromStartEnd(rows, opt = {}) {
+function calcDepthByDepthStartEnd(rows, opt = {}) {
     let errs = []
 
     //check
@@ -171,4 +171,4 @@ function calcDepthFromStartEnd(rows, opt = {}) {
 }
 
 
-export default calcDepthFromStartEnd
+export default calcDepthByDepthStartEnd

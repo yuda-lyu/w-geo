@@ -1,8 +1,8 @@
 import assert from 'assert'
-import calcDepthFromStartEnd from '../src/calcDepthFromStartEnd.mjs'
+import calcDepthByDepthStartEnd from '../src/calcDepthByDepthStartEnd.mjs'
 
 
-describe(`calcDepthFromStartEnd`, function() {
+describe(`calcDepthByDepthStartEnd`, function() {
 
     let f1 = () => {
         let rows = [
@@ -25,8 +25,8 @@ describe(`calcDepthFromStartEnd`, function() {
             { depthStart: 13, depthEnd: 20, depth: 16.5 }
         ]
 
-        it(`should return ${JSON.stringify(rowsNew)} when calcDepthFromStartEnd(${JSON.stringify(rows)})`, function() {
-            let r = calcDepthFromStartEnd(rows)
+        it(`should return ${JSON.stringify(rowsNew)} when calcDepthByDepthStartEnd(${JSON.stringify(rows)})`, function() {
+            let r = calcDepthByDepthStartEnd(rows)
             let rr = rowsNew
             assert.strict.deepStrictEqual(r, rr)
         })
@@ -50,8 +50,8 @@ describe(`calcDepthFromStartEnd`, function() {
             { depthStart: 13, depthEnd: 20, depth: 16.5 }
         ]
 
-        it(`should return ${JSON.stringify(rowsNew)} when calcDepthFromStartEnd(${JSON.stringify(rows)})`, function() {
-            let r = calcDepthFromStartEnd(rows)
+        it(`should return ${JSON.stringify(rowsNew)} when calcDepthByDepthStartEnd(${JSON.stringify(rows)})`, function() {
+            let r = calcDepthByDepthStartEnd(rows)
             let rr = rowsNew
             assert.strict.deepStrictEqual(r, rr)
         })
@@ -80,8 +80,8 @@ describe(`calcDepthFromStartEnd`, function() {
             { ds: 13, de: 20, dc: 16.5 }
         ]
 
-        it(`should return ${JSON.stringify(rowsNew)} when calcDepthFromStartEnd(${JSON.stringify(rows)}, ${JSON.stringify({ keyDepthStart: 'ds', keyDepthEnd: 'de', keyDepth: 'dc' })})`, function() {
-            let r = calcDepthFromStartEnd(rows, { keyDepthStart: 'ds', keyDepthEnd: 'de', keyDepth: 'dc' })
+        it(`should return ${JSON.stringify(rowsNew)} when calcDepthByDepthStartEnd(${JSON.stringify(rows)}, ${JSON.stringify({ keyDepthStart: 'ds', keyDepthEnd: 'de', keyDepth: 'dc' })})`, function() {
+            let r = calcDepthByDepthStartEnd(rows, { keyDepthStart: 'ds', keyDepthEnd: 'de', keyDepth: 'dc' })
             let rr = rowsNew
             assert.strict.deepStrictEqual(r, rr)
         })

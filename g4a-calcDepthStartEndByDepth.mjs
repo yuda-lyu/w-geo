@@ -1,7 +1,7 @@
 import fs from 'fs'
 import _ from 'lodash'
 import w from 'wsemi'
-import calcDepthStartEndFromCenter from './src/calcDepthStartEndFromCenter.mjs'
+import calcDepthStartEndByDepth from './src/calcDepthStartEndByDepth.mjs'
 
 
 let rows
@@ -18,7 +18,7 @@ rows = [
         depth: 20,
     },
 ]
-rs = calcDepthStartEndFromCenter(rows)
+rs = calcDepthStartEndByDepth(rows)
 console.log(rs)
 // => [
 //   { depth: 0, depthStart: 0, depthEnd: 3 },
@@ -37,7 +37,7 @@ rows = [
         depth: 20,
     },
 ]
-rs = calcDepthStartEndFromCenter(rows)
+rs = calcDepthStartEndByDepth(rows)
 console.log(rs)
 // => [
 //   { depth: 4, depthStart: 0, depthEnd: 5 },
@@ -56,7 +56,7 @@ rows = [
         depth: 20,
     },
 ]
-rs = calcDepthStartEndFromCenter(rows, { depthEndMax: 25 })
+rs = calcDepthStartEndByDepth(rows, { depthEndMax: 25 })
 console.log(rs)
 // => [
 //   { depth: 4, depthStart: 0, depthEnd: 5 },
@@ -75,7 +75,7 @@ rows = [
         depth: 20,
     },
 ]
-rs = calcDepthStartEndFromCenter(rows, { depthEndMax: 15 })
+rs = calcDepthStartEndByDepth(rows, { depthEndMax: 15 })
 console.log(rs)
 // => [
 //   { depth: 4, depthStart: 0, depthEnd: 5 },
@@ -94,7 +94,7 @@ rows = [
         dc: 20,
     },
 ]
-rs = calcDepthStartEndFromCenter(rows, { keyDepth: 'dc', keyDepthStart: 'ds', keyDepthEnd: 'de' })
+rs = calcDepthStartEndByDepth(rows, { keyDepth: 'dc', keyDepthStart: 'ds', keyDepthEnd: 'de' })
 console.log(rs)
 // => [
 //   { dc: 4, ds: 0, de: 5 },
@@ -103,4 +103,4 @@ console.log(rs)
 // ]
 
 
-//node --experimental-modules --es-module-specifier-resolution=node g4a-calcDepthStartEndFromCenter.mjs
+//node --experimental-modules --es-module-specifier-resolution=node g4a-calcDepthStartEndByDepth.mjs

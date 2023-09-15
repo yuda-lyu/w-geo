@@ -299,5 +299,110 @@ console.log(JSON.stringify(rs, null, 2))
 //   }
 // ]
 
+rows = [
+    {
+        depthStart: 0,
+        depthEnd: 5,
+        value: 'a',
+        ext: 12.3,
+    },
+    {
+        depthStart: 5,
+        depthEnd: 7,
+        value: 'b',
+        ext: 12.4,
+    },
+    {
+        depthStart: 7,
+        depthEnd: 11,
+        value: 'b',
+        ext: 2.5,
+    },
+    {
+        depthStart: 11,
+        depthEnd: 15,
+        value: 'a',
+        ext: 2.3,
+    },
+]
+rs = mergeByDepthStartEnd(rows, { saveFromInds: true, keyInd: '_ind', keyFromInds: '_fromInds' })
+console.log(JSON.stringify(rs, null, 2))
+// => [
+//   {
+//     "depthStart": 0,
+//     "depthEnd": 5,
+//     "value": "a",
+//     "ext": 12.3,
+//     "_ind": 0
+//   },
+//   {
+//     "depthStart": 5,
+//     "depthEnd": 11,
+//     "value": "b",
+//     "ext": 2.5,
+//     "_ind": 2,
+//     "_fromInds": [
+//       1,
+//       2
+//     ]
+//   },
+//   {
+//     "depthStart": 11,
+//     "depthEnd": 15,
+//     "value": "a",
+//     "ext": 2.3,
+//     "_ind": 3
+//   }
+// ]
+
+rows = [
+    {
+        depthStart: 0,
+        depthEnd: 5,
+        value: 'a',
+        ext: 12.3,
+    },
+    {
+        depthStart: 5,
+        depthEnd: 7,
+        value: 'b',
+        ext: 12.4,
+    },
+    {
+        depthStart: 7,
+        depthEnd: 11,
+        value: 'b',
+        ext: 2.5,
+    },
+    {
+        depthStart: 11,
+        depthEnd: 15,
+        value: 'a',
+        ext: 2.3,
+    },
+]
+rs = mergeByDepthStartEnd(rows, { typeDetect: 'iterate' })
+console.log(JSON.stringify(rs, null, 2))
+// => [
+//   {
+//     "depthStart": 0,
+//     "depthEnd": 5,
+//     "value": "a",
+//     "ext": 12.3
+//   },
+//   {
+//     "depthStart": 5,
+//     "depthEnd": 11,
+//     "value": "b",
+//     "ext": 2.5
+//   },
+//   {
+//     "depthStart": 11,
+//     "depthEnd": 15,
+//     "value": "a",
+//     "ext": 2.3
+//   }
+// ]
+
 
 //node --experimental-modules --es-module-specifier-resolution=node g12-mergeByDepthStartEnd.mjs
