@@ -7025,10 +7025,10 @@ function liquefaction(kind, rows, opt = {}) {
         }
 
         //check
-        if (r <= 0) {
+        if (r < 0) {
             console.log(`rows[0].PGA`, r_row0)
             console.log(`opt.PGA`, r_opt)
-            throw new Error(`PGA[${r}]<=0`)
+            throw new Error(`PGA[${r}]<0`)
         }
 
         return r
