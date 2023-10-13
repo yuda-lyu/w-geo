@@ -7262,8 +7262,11 @@ function liquefaction(kind, rows, opt = {}) {
         //各種液化方法
         each(ms, (m) => {
 
+            //kpMethod
+            let kpMethod = get(methodLiques, kind, {})
+
             //func
-            let func = methodLiques[kind][m]
+            let func = get(kpMethod, m, null) //methodLiques[kind][m]
 
             //check
             if (!isfun(func)) {
