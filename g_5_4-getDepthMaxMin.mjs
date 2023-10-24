@@ -1,12 +1,9 @@
 import fs from 'fs'
 import w from 'wsemi'
-import calcCptUnitWeight from './src/calcCptUnitWeight.mjs'
-import { calcCpt } from './src/calcCpt.mjs'
-import { getKpSoilGroups } from './src/_soilGroup.mjs'
-import { getKpSoilGroupsTn, calcCptLayers } from './src/calcCptLayers.mjs'
+import { getDepthMaxMin } from './src/getDepthMaxMin.mjs'
 
 
-let rowsInOri = [
+let rowsIn = [
     { 'depth': '0', 'qc': '0.409166667', 'fs': '0.00225', 'u2': '-0.005923077', 'sv': '0', 'svp': '0' },
     { 'depth': '0.02', 'qc': '0.417438462', 'fs': '0.002153846', 'u2': '-0.005923077', 'sv': '0.000425319', 'svp': '0.000229119' },
     { 'depth': '0.04', 'qc': '0.425', 'fs': '0.002142857', 'u2': '-0.005285714', 'sv': '0.000850639', 'svp': '0.000458239' },
@@ -5008,109 +5005,18 @@ let rowsInOri = [
     { 'depth': '99.96', 'qc': '19.62571429', 'fs': '0.119428571', 'u2': '-0.601142857', 'sv': '2.125746676', 'svp': '1.145139076' },
     { 'depth': '99.98', 'qc': '19.64615385', 'fs': '0.117846154', 'u2': '-0.602846154', 'sv': '2.126171996', 'svp': '1.145368196' }
 ]
-let rowsIn = null
-let rowsOut = null
 
-let methods = [
-    'Robertson1986T6',
-    'Robertson1986T4',
-    'Robertson1990T6',
-    'Robertson1990T4',
-    'Robertson2009T6',
-    'Robertson2009T4',
-    'RamseyT6',
-    'RamseyT4',
-]
+//getDepthMaxMin
+let mm1 = getDepthMaxMin(rowsIn, { approximate: false })
+console.log(mm1)
+// => { depthMax: 99.98, depthMin: 0 }
 
-let coe_a = 0.74
+//getDepthMaxMin
+let mm2 = getDepthMaxMin(rowsIn, { approximate: true })
+console.log(mm2)
+// => { depthMax: 100, depthMin: 0 }
 
-if (true) {
-    let rs = rowsInOri
+let k = 1
+fs.writeFileSync(`./getDepthMaxMin-rowsIn${k}.json`, JSON.stringify(rowsIn), 'utf8')
 
-    //opt
-    let opt = {
-        rsatIni: 19.5,
-        coe_a,
-        unitSvSvp: 'MPa',
-    }
-
-    //calcCptUnitWeight
-    rs = calcCptUnitWeight(rs, opt)
-    // console.log(rowsOut[0])
-    // console.log('calcCpt rs', rs)
-
-    //bbb calcCptUnitWeight所得sv,svp為kPa
-
-    rowsInOri = rs
-}
-
-if (true) {
-    let rs = rowsInOri
-
-    //opt
-    let opt = {
-        coe_a,
-        methodSmooth: 'none', //測試數據已使用averageIn95
-        intrpSv: (depth, k, v, ltdt) => {
-            // console.log('intrpSv', depth, k, v)
-            let sv = v.sv //基於calcCptUnitWeight所推估算得, 單位為MPa
-            return {
-                sv,
-            }
-        },
-        // intrpU0: (depth, k, v, ltdt) => {
-        // },
-        unitSvSvp: 'MPa',
-    }
-
-    //calcCpt
-    rs = calcCpt(rs, opt)
-    // console.log('calcCpt rs', rs)
-
-    rowsIn = rs
-}
-
-if (true) {
-    let rs = rowsIn
-
-    //opt
-    let opt = {
-        keyDepth: 'depth',
-        keyDepthStart: 'depthStart',
-        keyDepthEnd: 'depthEnd',
-    }
-
-    //calcCptLayers
-    let rrs = calcCptLayers(rs, methods, opt)
-    // console.log('calcCptLayers rs', rs)
-
-    for (let k = 1; k <= methods.length; k++) {
-        let j = k - 1
-        let rs = rrs[j].ltdt
-        rs = rs.map((v) => {
-            v.fromInds = JSON.stringify(v.fromInds)
-            return v
-        })
-        rrs[j] = rs
-    }
-
-    rowsOut = rrs
-}
-// console.log('rowsOut', rowsOut)
-
-for (let k = 1; k <= methods.length; k++) {
-    let j = k - 1
-    if (k === 1) {
-        fs.writeFileSync(`./calcCptLayers-rowsIn${k}.json`, JSON.stringify(rowsIn), 'utf8')
-    }
-    fs.writeFileSync(`./calcCptLayers-rowsOut${k}.json`, JSON.stringify(rowsOut[j]), 'utf8')
-    w.downloadExcelFileFromData(`./calcCptLayers-${k}-${methods[j]}.xlsx`, methods[j], rowsOut[j])
-}
-
-// let kpTypeColors = getKpSoilGroups()
-// fs.writeFileSync(`./calcCptLayers-kpTypeColors.json`, JSON.stringify(kpTypeColors), 'utf8')
-
-// let kpSoilGroupsTn = getKpSoilGroupsTn()
-// fs.writeFileSync(`./calcCptLayers-kpSoilGroupsTn.json`, JSON.stringify(kpSoilGroupsTn), 'utf8')
-
-//node --experimental-modules --es-module-specifier-resolution=node g13-calcCptLayers.mjs
+//node --experimental-modules --es-module-specifier-resolution=node g_5_4-getDepthMaxMin.mjs

@@ -1,6 +1,6 @@
 import fs from 'fs'
 import w from 'wsemi'
-import calcLiquefactionSpt from './src/calcLiquefactionSpt.mjs'
+import calcLiquefaction from './src/calcLiquefaction.mjs'
 
 
 function getRows(k) {
@@ -47,30 +47,29 @@ function calc(k) {
     let rowsIn = getRows(k)
     // console.log('rowsIn',rowsIn)
 
-    let methods = [
-        'sptHBF2017',
-        'sptNJRA2017',
-    ]
-
     let opt = {
-        waterLevelUsual: 0.7,
-        waterLevelDesign: 0.7,
-        PGA: 0.32,
-        Mw: 7.3,
+        // waterLevelUsual: 0.7,
+        // waterLevelDesign: 0.7,
+        // PGA: 0.32,
+        // Mw: 7.3,
         unitSvSvp: 'kPa',
+        // methods: [
+        //     'sptHBF2017',
+        //     'sptNJRA2017',
+        // ],
     }
 
-    let resOut = calcLiquefactionSpt(rowsIn, methods, opt)
-    // console.log('resOut',resOut)
+    let rowsOut = calcLiquefaction.calc('SPT', rowsIn, opt)
+    // console.log('rowsOut',rowsOut)
 
-    fs.writeFileSync(`./calcLiquefactionSpt-rowsIn${k}.json`, JSON.stringify(rowsIn, null, 2), 'utf8')
-    fs.writeFileSync(`./calcLiquefactionSpt-resOut${k}.json`, JSON.stringify(resOut, null, 2), 'utf8')
+    fs.writeFileSync(`./calcLiquefaction-spt-rowsIn${k}.json`, JSON.stringify(rowsIn, null, 2), 'utf8')
+    fs.writeFileSync(`./calcLiquefaction-spt-rowsOut${k}.json`, JSON.stringify(rowsOut, null, 2), 'utf8')
 
-    // w.downloadExcelFileFromData(`./calcLiquefactionSpt-mat${k}.xlsx`, 'mat', resOut)
+    // w.downloadExcelFileFromData(`./calcLiquefaction-spt-mat${k}.xlsx`, 'mat', rowsOut)
 
 }
 
 calc(1)
 calc(2)
 
-//node --experimental-modules --es-module-specifier-resolution=node g3b-calcLiquefaction-spt.mjs
+//node --experimental-modules --es-module-specifier-resolution=node g_2_1_1-calcLiquefaction-spt.mjs

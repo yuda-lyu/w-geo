@@ -77,4 +77,4 @@ function calc(k) {
 calc(1)
 calc(2)
 
-//node --experimental-modules --es-module-specifier-resolution=node g16-calcLiquefactionSptForCriticalPga.mjs
+//node --experimental-modules --es-module-specifier-resolution=node g_2_3-calcLiquefactionSptForCriticalPga.mjs
