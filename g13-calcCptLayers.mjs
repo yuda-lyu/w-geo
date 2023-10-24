@@ -3,7 +3,7 @@ import w from 'wsemi'
 import calcCptUnitWeight from './src/calcCptUnitWeight.mjs'
 import { calcCpt } from './src/calcCpt.mjs'
 import { getKpSoilGroups } from './src/_soilGroup.mjs'
-import { getKpSoilGroupsTn, calcLayers } from './src/calcLayers.mjs'
+import { getKpSoilGroupsTn, calcCptLayers } from './src/calcCptLayers.mjs'
 
 
 let rowsInOri = [
@@ -5080,9 +5080,9 @@ if (true) {
         keyDepthEnd: 'depthEnd',
     }
 
-    //calcLayers
-    let rrs = calcLayers(rs, methods, opt)
-    // console.log('calcLayers rs', rs)
+    //calcCptLayers
+    let rrs = calcCptLayers(rs, methods, opt)
+    // console.log('calcCptLayers rs', rs)
 
     for (let k = 1; k <= methods.length; k++) {
         let j = k - 1
@@ -5101,16 +5101,16 @@ if (true) {
 for (let k = 1; k <= methods.length; k++) {
     let j = k - 1
     if (k === 1) {
-        fs.writeFileSync(`./calcLayers-rowsIn${k}.json`, JSON.stringify(rowsIn), 'utf8')
+        fs.writeFileSync(`./calcCptLayers-rowsIn${k}.json`, JSON.stringify(rowsIn), 'utf8')
     }
-    fs.writeFileSync(`./calcLayers-rowsOut${k}.json`, JSON.stringify(rowsOut[j]), 'utf8')
-    w.downloadExcelFileFromData(`./calcLayers-${k}-${methods[j]}.xlsx`, methods[j], rowsOut[j])
+    fs.writeFileSync(`./calcCptLayers-rowsOut${k}.json`, JSON.stringify(rowsOut[j]), 'utf8')
+    w.downloadExcelFileFromData(`./calcCptLayers-${k}-${methods[j]}.xlsx`, methods[j], rowsOut[j])
 }
 
 // let kpTypeColors = getKpSoilGroups()
-// fs.writeFileSync(`./calcLayers-kpTypeColors.json`, JSON.stringify(kpTypeColors), 'utf8')
+// fs.writeFileSync(`./calcCptLayers-kpTypeColors.json`, JSON.stringify(kpTypeColors), 'utf8')
 
 // let kpSoilGroupsTn = getKpSoilGroupsTn()
-// fs.writeFileSync(`./calcLayers-kpSoilGroupsTn.json`, JSON.stringify(kpSoilGroupsTn), 'utf8')
+// fs.writeFileSync(`./calcCptLayers-kpSoilGroupsTn.json`, JSON.stringify(kpSoilGroupsTn), 'utf8')
 
-//node --experimental-modules --es-module-specifier-resolution=node g13-calcLayers.mjs
+//node --experimental-modules --es-module-specifier-resolution=node g13-calcCptLayers.mjs

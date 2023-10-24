@@ -16,7 +16,7 @@ import judge from './judge.mjs'
 /**
  * 由樣本中點深度反算各樣本起訖深度，注意樣本添加起訖深度可能因最淺樣本起始深度最大為0，以及最深樣本可被修改為depthEndMax，故各樣本中點深度不一定是起訖深度之平均值
  *
- * Unit Test: {@link https://github.com/yuda-lyu/w-geo/blob/master/test/calcDepthStartEndFromCenter.test.js Github}
+ * Unit Test: {@link https://github.com/yuda-lyu/w-geo/blob/master/test/calcDepthStartEndByDepth.test.js Github}
  * @memberOf w-geo
  * @param {Array} rows 輸入數據陣列，各數據為物件，至少需包含起始深度(depthStart)與結束深度(depthEnd)，深度單位為m
  * @param {Object} [opt={}] 輸入設定物件，預設{}
@@ -41,7 +41,7 @@ import judge from './judge.mjs'
  *         depth: 20,
  *     },
  * ]
- * rs = calcDepthStartEndFromCenter(rows)
+ * rs = calcDepthStartEndByDepth(rows)
  * console.log(rs)
  * // => [
  * //   { depth: 0, depthStart: 0, depthEnd: 3 },
@@ -60,7 +60,7 @@ import judge from './judge.mjs'
  *         depth: 20,
  *     },
  * ]
- * rs = calcDepthStartEndFromCenter(rows)
+ * rs = calcDepthStartEndByDepth(rows)
  * console.log(rs)
  * // => [
  * //   { depth: 4, depthStart: 0, depthEnd: 5 },
@@ -79,7 +79,7 @@ import judge from './judge.mjs'
  *         depth: 20,
  *     },
  * ]
- * rs = calcDepthStartEndFromCenter(rows, { depthEndMax: 25 })
+ * rs = calcDepthStartEndByDepth(rows, { depthEndMax: 25 })
  * console.log(rs)
  * // => [
  * //   { depth: 4, depthStart: 0, depthEnd: 5 },
@@ -98,7 +98,7 @@ import judge from './judge.mjs'
  *         depth: 20,
  *     },
  * ]
- * rs = calcDepthStartEndFromCenter(rows, { depthEndMax: 15 })
+ * rs = calcDepthStartEndByDepth(rows, { depthEndMax: 15 })
  * console.log(rs)
  * // => [
  * //   { depth: 4, depthStart: 0, depthEnd: 5 },
@@ -117,7 +117,7 @@ import judge from './judge.mjs'
  *         dc: 20,
  *     },
  * ]
- * rs = calcDepthStartEndFromCenter(rows, { keyDepth: 'dc', keyDepthStart: 'ds', keyDepthEnd: 'de' })
+ * rs = calcDepthStartEndByDepth(rows, { keyDepth: 'dc', keyDepthStart: 'ds', keyDepthEnd: 'de' })
  * console.log(rs)
  * // => [
  * //   { dc: 4, ds: 0, de: 5 },
@@ -126,7 +126,7 @@ import judge from './judge.mjs'
  * // ]
  *
  */
-function calcDepthStartEndFromCenter(rows, opt = {}) {
+function calcDepthStartEndByDepth(rows, opt = {}) {
     let errs = []
 
     //check
@@ -285,4 +285,4 @@ function calcDepthStartEndFromCenter(rows, opt = {}) {
 }
 
 
-export default calcDepthStartEndFromCenter
+export default calcDepthStartEndByDepth

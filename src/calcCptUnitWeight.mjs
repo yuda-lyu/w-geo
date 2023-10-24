@@ -9,7 +9,7 @@ import cint from 'wsemi/src/cint.mjs'
 import dig from 'wsemi/src/dig.mjs'
 import { intrpDefPp } from './intrpDefParam.mjs'
 import { calcVerticalStress } from './calcVerticalStress.mjs'
-import calcDepthStartEndFromCenter from './calcDepthStartEndFromCenter.mjs'
+import calcDepthStartEndByDepth from './calcDepthStartEndByDepth.mjs'
 // import { simplifyRobertson1986 } from './calcCptClassify.mjs'
 import { basic, calcCptCore } from './calcCpt.mjs'
 
@@ -355,7 +355,7 @@ function calcCptUnitWeight(ltdt, opt = {}) {
     let ds0 = get(ltdt, `0.${keyDepthStart}`)
     let de0 = get(ltdt, `0.${keyDepthEnd}`)
     if (isnum(dc0) && !isnum(ds0) && !isnum(de0)) {
-        ltdt = calcDepthStartEndFromCenter(ltdt, opt)
+        ltdt = calcDepthStartEndByDepth(ltdt, opt)
     }
     else if (!isnum(dc0) && isnum(ds0) && isnum(de0)) {
         ltdt = map(ltdt, (v, k) => {

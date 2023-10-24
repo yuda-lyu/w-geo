@@ -38,13 +38,15 @@ function calcLiquefactionSpt(ltdt, methods, opt = {}) {
     let cneedMw = ''
     each(methods, (m) => {
         if (m.indexOf('JRA') >= 0) {
-            needPga = true
-            cneedPga = m
+            // needPga = true
+            // cneedPga = m
         }
         else {
             needMw = true
             cneedMw = m
         }
+        needPga = true //各方法皆需要pga
+        cneedPga = m
     })
     if (needPga && !isnum(PGA)) {
         throw new Error(`use method[${cneedPga}] but PGA is not a number`)

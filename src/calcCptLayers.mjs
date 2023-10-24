@@ -13,8 +13,8 @@ import cint from 'wsemi/src/cint.mjs'
 import haskey from 'wsemi/src/haskey.mjs'
 import { getIcInfor } from './_cpt.mjs'
 import { getSoilGroupByKV, getSoilGroupsIc, getSoilGroupsIcn, getSoilGroupsT4, getSoilGroupsT6, getSoilGroupsT9 } from './_soilGroup.mjs'
-import calcDepthStartEndFromCenter from './calcDepthStartEndFromCenter.mjs'
 import { simplifyRobertson1986, simplifyRobertson1990, simplifyRobertson2009, simplifyRamsey } from './calcCptClassify.mjs'
+import calcDepthStartEndByDepth from './calcDepthStartEndByDepth.mjs'
 import calcLayersByMerge from './calcLayersByMerge.mjs'
 
 
@@ -83,8 +83,8 @@ function genLayer(ltdt, opt = {}) {
         keyInd = 'ind'
     }
 
-    //calcDepthStartEndFromCenter
-    ltdt = calcDepthStartEndFromCenter(ltdt, opt)
+    //calcDepthStartEndByDepth
+    ltdt = calcDepthStartEndByDepth(ltdt, opt)
 
     //layers
     let layers = []
@@ -150,7 +150,7 @@ function genLayer(ltdt, opt = {}) {
 }
 
 
-function calcLayer(ltdt, method, opt = {}) {
+function calcCptLayer(ltdt, method, opt = {}) {
 
     //gfIc
     let gfIc = (key) => {
@@ -460,7 +460,7 @@ function calcLayer(ltdt, method, opt = {}) {
 }
 
 
-function calcLayers(ltdt, methods = [], opt = {}) {
+function calcCptLayers(ltdt, methods, opt = {}) {
 
     //check
     if (!isearr(methods)) {
@@ -469,7 +469,7 @@ function calcLayers(ltdt, methods = [], opt = {}) {
 
     //rrs
     let rrs = map(methods, (method) => {
-        let rs = calcLayer(ltdt, method, opt)
+        let rs = calcCptLayer(ltdt, method, opt)
         return {
             method,
             ltdt: rs,
@@ -485,13 +485,13 @@ export {
     getKpSoilGroupsTn,
     genLayer,
     calcLayersByMerge,
-    calcLayer,
-    calcLayers
+    calcCptLayer,
+    calcCptLayers
 }
 export default { //整合輸出預設得要有default
     getKpSoilGroupsTn,
     genLayer,
     calcLayersByMerge,
-    calcLayer,
-    calcLayers
+    calcCptLayer,
+    calcCptLayers
 }

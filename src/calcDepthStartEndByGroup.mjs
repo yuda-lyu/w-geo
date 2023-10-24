@@ -12,7 +12,7 @@ import isestr from 'wsemi/src/isestr.mjs'
 import isearr from 'wsemi/src/isearr.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
 import judge from './judge.mjs'
-import calcDepthStartEndFromCenter from './calcDepthStartEndFromCenter.mjs'
+import calcDepthStartEndByDepth from './calcDepthStartEndByDepth.mjs'
 
 
 /**
@@ -429,8 +429,8 @@ function calcDepthStartEndByGroup(rows, opt = {}) {
         throw new Error('無有效群數')
     }
 
-    //calcDepthStartEndFromCenter
-    rows = calcDepthStartEndFromCenter(rows, { keyDepth, keyDepthStart, keyDepthEnd, depthEndMax })
+    //calcDepthStartEndByDepth
+    rows = calcDepthStartEndByDepth(rows, { keyDepth, keyDepthStart, keyDepthEnd, depthEndMax })
 
     //ts, 備份
     let ts = cloneDeep(rows)
