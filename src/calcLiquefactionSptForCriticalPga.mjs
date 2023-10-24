@@ -370,6 +370,12 @@ function calcLiquefactionSptForCriticalPga(ltdt, methods, opt = {}) {
         useH1PL = true
     }
 
+    //keysPick
+    let keysPick = get(opt, 'keysPick', [])
+    if (!isearr(keysPick)) {
+        keysPick = []
+    }
+
     //returnLtdtForEachPga
     let returnLtdtForEachPga = get(opt, 'returnLtdtForEachPga', '')
     if (!isbol(returnLtdtForEachPga)) {
@@ -512,9 +518,10 @@ function calcLiquefactionSptForCriticalPga(ltdt, methods, opt = {}) {
 
     //ks
     let ks = [
-        'keyProjHole',
-        'projectNumber',
-        'holeId',
+        // 'keyProjHole',
+        // 'projectNumber',
+        // 'holeId',
+        ...keysPick,
         'inputPGA',
     ]
 

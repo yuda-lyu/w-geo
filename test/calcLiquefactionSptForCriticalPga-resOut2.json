@@ -289,9 +289,10 @@
   ],
   "ltdtRes": [
     {
-      "keyProjHole": "",
-      "projectNumber": "",
-      "holeId": "",
+      "sampleId": "S-13",
+      "depthStart": "25",
+      "depthEnd": "25.5",
+      "depth": 25.25,
       "inputPGA": 0.2,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 0.2,
@@ -327,9 +328,10 @@
       "sptNJRA2017-err": "depth[12.700-15.300]: D50非數字，強制略過部份非液化條件檢核; D10非數字，強制略過部份非液化條件檢核"
     },
     {
-      "keyProjHole": "",
-      "projectNumber": "",
-      "holeId": "",
+      "sampleId": "S-13",
+      "depthStart": "25",
+      "depthEnd": "25.5",
+      "depth": 25.25,
       "inputPGA": 0.4,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 0.4,
@@ -365,9 +367,10 @@
       "sptNJRA2017-err": "depth[12.700-15.300]: D50非數字，強制略過部份非液化條件檢核; D10非數字，強制略過部份非液化條件檢核; Volumetric Strain(Tokimatsu And Seed): CSR大於0.6超過原研究範疇，強制改為0.6"
     },
     {
-      "keyProjHole": "",
-      "projectNumber": "",
-      "holeId": "",
+      "sampleId": "S-13",
+      "depthStart": "25",
+      "depthEnd": "25.5",
+      "depth": 25.25,
       "inputPGA": 0.6000000000000001,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 0.6000000000000001,
@@ -403,9 +406,10 @@
       "sptNJRA2017-err": "depth[12.700-15.300]: D50非數字，強制略過部份非液化條件檢核; D10非數字，強制略過部份非液化條件檢核; Volumetric Strain(Tokimatsu And Seed): CSR大於0.6超過原研究範疇，強制改為0.6"
     },
     {
-      "keyProjHole": "",
-      "projectNumber": "",
-      "holeId": "",
+      "sampleId": "S-13",
+      "depthStart": "25",
+      "depthEnd": "25.5",
+      "depth": 25.25,
       "inputPGA": 0.8,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 0.8,
@@ -441,9 +445,10 @@
       "sptNJRA2017-err": "depth[12.700-15.300]: D50非數字，強制略過部份非液化條件檢核; D10非數字，強制略過部份非液化條件檢核; Volumetric Strain(Tokimatsu And Seed): CSR大於0.6超過原研究範疇，強制改為0.6"
     },
     {
-      "keyProjHole": "",
-      "projectNumber": "",
-      "holeId": "",
+      "sampleId": "S-13",
+      "depthStart": "25",
+      "depthEnd": "25.5",
+      "depth": 25.25,
       "inputPGA": 1,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 1,
@@ -479,9 +484,10 @@
       "sptNJRA2017-err": "depth[12.700-15.300]: D50非數字，強制略過部份非液化條件檢核; D10非數字，強制略過部份非液化條件檢核; Volumetric Strain(Tokimatsu And Seed): CSR大於0.6超過原研究範疇，強制改為0.6"
     },
     {
-      "keyProjHole": "",
-      "projectNumber": "",
-      "holeId": "",
+      "sampleId": "S-13",
+      "depthStart": "25",
+      "depthEnd": "25.5",
+      "depth": 25.25,
       "inputPGA": 1.2000000000000002,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 1.2000000000000002,
@@ -517,9 +523,10 @@
       "sptNJRA2017-err": "depth[12.700-15.300]: D50非數字，強制略過部份非液化條件檢核; D10非數字，強制略過部份非液化條件檢核; Volumetric Strain(Tokimatsu And Seed): CSR大於0.6超過原研究範疇，強制改為0.6"
     },
     {
-      "keyProjHole": "",
-      "projectNumber": "",
-      "holeId": "",
+      "sampleId": "S-13",
+      "depthStart": "25",
+      "depthEnd": "25.5",
+      "depth": 25.25,
       "inputPGA": 1.4000000000000001,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 1.4000000000000001,
@@ -555,9 +562,10 @@
       "sptNJRA2017-err": "depth[12.700-15.300]: D50非數字，強制略過部份非液化條件檢核; D10非數字，強制略過部份非液化條件檢核; Volumetric Strain(Tokimatsu And Seed): CSR大於0.6超過原研究範疇，強制改為0.6"
     },
     {
-      "keyProjHole": "",
-      "projectNumber": "",
-      "holeId": "",
+      "sampleId": "S-13",
+      "depthStart": "25",
+      "depthEnd": "25.5",
+      "depth": 25.25,
       "inputPGA": 1.6,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 1.6,
@@ -593,9 +601,10 @@
       "sptNJRA2017-err": "depth[12.700-15.300]: D50非數字，強制略過部份非液化條件檢核; D10非數字，強制略過部份非液化條件檢核; Volumetric Strain(Tokimatsu And Seed): CSR大於0.6超過原研究範疇，強制改為0.6"
     },
     {
-      "keyProjHole": "",
-      "projectNumber": "",
-      "holeId": "",
+      "sampleId": "S-13",
+      "depthStart": "25",
+      "depthEnd": "25.5",
+      "depth": 25.25,
       "inputPGA": 1.8,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 1.8,
@@ -631,9 +640,10 @@
       "sptNJRA2017-err": "depth[12.700-15.300]: D50非數字，強制略過部份非液化條件檢核; D10非數字，強制略過部份非液化條件檢核; Volumetric Strain(Tokimatsu And Seed): CSR大於0.6超過原研究範疇，強制改為0.6"
     },
     {
-      "keyProjHole": "",
-      "projectNumber": "",
-      "holeId": "",
+      "sampleId": "S-13",
+      "depthStart": "25",
+      "depthEnd": "25.5",
+      "depth": 25.25,
       "inputPGA": 2,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 2,
@@ -671,9 +681,10 @@
   ],
   "ltdtResp": [
     {
-      "keyProjHole": "",
-      "projectNumber": "",
-      "holeId": "",
+      "sampleId": "S-13",
+      "depthStart": "25",
+      "depthEnd": "25.5",
+      "depth": 25.25,
       "inputPGA": 2,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 0.2,

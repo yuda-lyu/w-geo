@@ -224,9 +224,10 @@
   ],
   "ltdtRes": [
     {
-      "keyProjHole": "",
-      "projectNumber": "",
-      "holeId": "",
+      "sampleId": "",
+      "depthStart": "18.525",
+      "depthEnd": "20",
+      "depth": 19.2625,
       "inputPGA": 0.2,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 0.2,
@@ -262,9 +263,10 @@
       "sptNJRA2017-err": "depth[0.000-2.025]: D50非數字，強制略過部份非液化條件檢核; D10非數字，強制略過部份非液化條件檢核; svpUsual非數字; depth[3.525-5.025]: D50非數字，強制略過部份非液化條件檢核; Volumetric Strain(Tokimatsu And Seed): 出現外插情形 N160=35.50674345290026 > N160Max=31.05756635779312，依照CSR=0.33334949396262337並給予最小體積應變vstr=0.1%; depth[5.025-6.525]: D50非數字，強制略過部份非液化條件檢核; Volumetric Strain(Tokimatsu And Seed): 出現外插情形 N160=36.550524751646115 > N160Max=31.250104142750004，依照CSR=0.3384840273940921並給予最小體積應變vstr=0.1%; Volumetric Strain(Ishihara And Yoshimine): 出現外插情形 N172=30.458770626371766 > N172Max=30，依照FS=2並給予最小體積應變vstr=0%; depth[6.525-8.025]: D50非數字，強制略過部份非液化條件檢核; depth[8.025-9.525]: D50非數字，強制略過部份非液化條件檢核; depth[9.525-11.025]: PI非數字與非NP，強制略過部份非液化條件檢核; D50非數字，強制略過部份非液化條件檢核; depth[11.025-12.525]: PI非數字與非NP，強制略過部份非液化條件檢核; depth[12.525-14.025]: PI非數字與非NP，強制略過部份非液化條件檢核; depth[14.025-15.525]: PI非數字與非NP，強制略過部份非液化條件檢核"
     },
     {
-      "keyProjHole": "",
-      "projectNumber": "",
-      "holeId": "",
+      "sampleId": "",
+      "depthStart": "18.525",
+      "depthEnd": "20",
+      "depth": 19.2625,
       "inputPGA": 0.4,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 0.4,
@@ -300,9 +302,10 @@
       "sptNJRA2017-err": "depth[0.000-2.025]: D50非數字，強制略過部份非液化條件檢核; D10非數字，強制略過部份非液化條件檢核; svpUsual非數字; depth[3.525-5.025]: D50非數字，強制略過部份非液化條件檢核; Volumetric Strain(Tokimatsu And Seed): CSR大於0.6超過原研究範疇，強制改為0.6; depth[5.025-6.525]: D50非數字，強制略過部份非液化條件檢核; Volumetric Strain(Ishihara And Yoshimine): 出現外插情形 N172=30.458770626371766 > N172Max=30，依照FS=1.8070378436289234並給予最小體積應變vstr=0.033104939606468285%; depth[6.525-8.025]: D50非數字，強制略過部份非液化條件檢核; depth[8.025-9.525]: D50非數字，強制略過部份非液化條件檢核; depth[9.525-11.025]: PI非數字與非NP，強制略過部份非液化條件檢核; D50非數字，強制略過部份非液化條件檢核; depth[11.025-12.525]: PI非數字與非NP，強制略過部份非液化條件檢核; depth[12.525-14.025]: PI非數字與非NP，強制略過部份非液化條件檢核; depth[14.025-15.525]: PI非數字與非NP，強制略過部份非液化條件檢核"
     },
     {
-      "keyProjHole": "",
-      "projectNumber": "",
-      "holeId": "",
+      "sampleId": "",
+      "depthStart": "18.525",
+      "depthEnd": "20",
+      "depth": 19.2625,
       "inputPGA": 0.6000000000000001,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 0.6000000000000001,
@@ -338,9 +341,10 @@
       "sptNJRA2017-err": "depth[0.000-2.025]: D50非數字，強制略過部份非液化條件檢核; D10非數字，強制略過部份非液化條件檢核; svpUsual非數字; depth[3.525-5.025]: D50非數字，強制略過部份非液化條件檢核; Volumetric Strain(Tokimatsu And Seed): CSR大於0.6超過原研究範疇，強制改為0.6; depth[5.025-6.525]: D50非數字，強制略過部份非液化條件檢核; Volumetric Strain(Ishihara And Yoshimine): 出現外插情形 N172=30.458770626371766 > N172Max=30，依照FS=1.2046918957526156並給予最小體積應變vstr=0.22887042453398543%; depth[6.525-8.025]: D50非數字，強制略過部份非液化條件檢核; depth[8.025-9.525]: D50非數字，強制略過部份非液化條件檢核; depth[9.525-11.025]: PI非數字與非NP，強制略過部份非液化條件檢核; D50非數字，強制略過部份非液化條件檢核; depth[11.025-12.525]: PI非數字與非NP，強制略過部份非液化條件檢核; depth[12.525-14.025]: PI非數字與非NP，強制略過部份非液化條件檢核; depth[14.025-15.525]: PI非數字與非NP，強制略過部份非液化條件檢核"
     },
     {
-      "keyProjHole": "",
-      "projectNumber": "",
-      "holeId": "",
+      "sampleId": "",
+      "depthStart": "18.525",
+      "depthEnd": "20",
+      "depth": 19.2625,
       "inputPGA": 0.8,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 0.8,
@@ -376,9 +380,10 @@
       "sptNJRA2017-err": "depth[0.000-2.025]: D50非數字，強制略過部份非液化條件檢核; D10非數字，強制略過部份非液化條件檢核; svpUsual非數字; depth[3.525-5.025]: D50非數字，強制略過部份非液化條件檢核; Volumetric Strain(Tokimatsu And Seed): CSR大於0.6超過原研究範疇，強制改為0.6; depth[5.025-6.525]: D50非數字，強制略過部份非液化條件檢核; Volumetric Strain(Ishihara And Yoshimine): 出現外插情形 N172=30.458770626371766 > N172Max=30，依照FS=0.9035189218144617並給予最小體積應變vstr=0.5634241332035161%; depth[6.525-8.025]: D50非數字，強制略過部份非液化條件檢核; depth[8.025-9.525]: D50非數字，強制略過部份非液化條件檢核; depth[9.525-11.025]: PI非數字與非NP，強制略過部份非液化條件檢核; D50非數字，強制略過部份非液化條件檢核; depth[11.025-12.525]: PI非數字與非NP，強制略過部份非液化條件檢核; depth[12.525-14.025]: PI非數字與非NP，強制略過部份非液化條件檢核; depth[14.025-15.525]: PI非數字與非NP，強制略過部份非液化條件檢核"
     },
     {
-      "keyProjHole": "",
-      "projectNumber": "",
-      "holeId": "",
+      "sampleId": "",
+      "depthStart": "18.525",
+      "depthEnd": "20",
+      "depth": 19.2625,
       "inputPGA": 1,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 1,
@@ -414,9 +419,10 @@
       "sptNJRA2017-err": "depth[0.000-2.025]: D50非數字，強制略過部份非液化條件檢核; D10非數字，強制略過部份非液化條件檢核; svpUsual非數字; depth[3.525-5.025]: D50非數字，強制略過部份非液化條件檢核; Volumetric Strain(Tokimatsu And Seed): CSR大於0.6超過原研究範疇，強制改為0.6; depth[5.025-6.525]: D50非數字，強制略過部份非液化條件檢核; Volumetric Strain(Ishihara And Yoshimine): 出現外插情形 N172=30.458770626371766 > N172Max=30，依照FS=0.7228151374515694並給予最小體積應變vstr=0.8686165078198826%; depth[6.525-8.025]: D50非數字，強制略過部份非液化條件檢核; depth[8.025-9.525]: D50非數字，強制略過部份非液化條件檢核; depth[9.525-11.025]: PI非數字與非NP，強制略過部份非液化條件檢核; D50非數字，強制略過部份非液化條件檢核; depth[11.025-12.525]: PI非數字與非NP，強制略過部份非液化條件檢核; depth[12.525-14.025]: PI非數字與非NP，強制略過部份非液化條件檢核; depth[14.025-15.525]: PI非數字與非NP，強制略過部份非液化條件檢核"
     },
     {
-      "keyProjHole": "",
-      "projectNumber": "",
-      "holeId": "",
+      "sampleId": "",
+      "depthStart": "18.525",
+      "depthEnd": "20",
+      "depth": 19.2625,
       "inputPGA": 1.2000000000000002,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 1.2000000000000002,
@@ -452,9 +458,10 @@
       "sptNJRA2017-err": "depth[0.000-2.025]: D50非數字，強制略過部份非液化條件檢核; D10非數字，強制略過部份非液化條件檢核; svpUsual非數字; depth[3.525-5.025]: D50非數字，強制略過部份非液化條件檢核; Volumetric Strain(Tokimatsu And Seed): CSR大於0.6超過原研究範疇，強制改為0.6; depth[5.025-6.525]: D50非數字，強制略過部份非液化條件檢核; Volumetric Strain(Ishihara And Yoshimine): 出現外插情形 N172=30.458770626371766 > N172Max=30，依照FS=0.6023459478763078並給予最小體積應變vstr=1.0879468697003545%; depth[6.525-8.025]: D50非數字，強制略過部份非液化條件檢核; depth[8.025-9.525]: D50非數字，強制略過部份非液化條件檢核; depth[9.525-11.025]: PI非數字與非NP，強制略過部份非液化條件檢核; D50非數字，強制略過部份非液化條件檢核; depth[11.025-12.525]: PI非數字與非NP，強制略過部份非液化條件檢核; depth[12.525-14.025]: PI非數字與非NP，強制略過部份非液化條件檢核; depth[14.025-15.525]: PI非數字與非NP，強制略過部份非液化條件檢核"
     },
     {
-      "keyProjHole": "",
-      "projectNumber": "",
-      "holeId": "",
+      "sampleId": "",
+      "depthStart": "18.525",
+      "depthEnd": "20",
+      "depth": 19.2625,
       "inputPGA": 1.4000000000000001,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 1.4000000000000001,
@@ -490,9 +497,10 @@
       "sptNJRA2017-err": "depth[0.000-2.025]: D50非數字，強制略過部份非液化條件檢核; D10非數字，強制略過部份非液化條件檢核; svpUsual非數字; depth[3.525-5.025]: D50非數字，強制略過部份非液化條件檢核; Volumetric Strain(Tokimatsu And Seed): CSR大於0.6超過原研究範疇，強制改為0.6; depth[5.025-6.525]: D50非數字，強制略過部份非液化條件檢核; Volumetric Strain(Ishihara And Yoshimine): 出現外插情形 N172=30.458770626371766 > N172Max=30，依照FS=0.5162965267511209並給予最小體積應變vstr=1.2139025360152742%; depth[6.525-8.025]: D50非數字，強制略過部份非液化條件檢核; depth[8.025-9.525]: D50非數字，強制略過部份非液化條件檢核; depth[9.525-11.025]: PI非數字與非NP，強制略過部份非液化條件檢核; D50非數字，強制略過部份非液化條件檢核; depth[11.025-12.525]: PI非數字與非NP，強制略過部份非液化條件檢核; depth[12.525-14.025]: PI非數字與非NP，強制略過部份非液化條件檢核; depth[14.025-15.525]: PI非數字與非NP，強制略過部份非液化條件檢核"
     },
     {
-      "keyProjHole": "",
-      "projectNumber": "",
-      "holeId": "",
+      "sampleId": "",
+      "depthStart": "18.525",
+      "depthEnd": "20",
+      "depth": 19.2625,
       "inputPGA": 1.6,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 1.6,
@@ -528,9 +536,10 @@
       "sptNJRA2017-err": "depth[0.000-2.025]: D50非數字，強制略過部份非液化條件檢核; D10非數字，強制略過部份非液化條件檢核; svpUsual非數字; depth[3.525-5.025]: D50非數字，強制略過部份非液化條件檢核; Volumetric Strain(Tokimatsu And Seed): CSR大於0.6超過原研究範疇，強制改為0.6; depth[5.025-6.525]: D50非數字，強制略過部份非液化條件檢核; Volumetric Strain(Ishihara And Yoshimine): 出現外插情形 N172=30.458770626371766 > N172Max=30，依照FS=0.45175946090723085並給予最小體積應變vstr=1.2691233330658147%; depth[6.525-8.025]: D50非數字，強制略過部份非液化條件檢核; depth[8.025-9.525]: D50非數字，強制略過部份非液化條件檢核; depth[9.525-11.025]: PI非數字與非NP，強制略過部份非液化條件檢核; D50非數字，強制略過部份非液化條件檢核; depth[11.025-12.525]: PI非數字與非NP，強制略過部份非液化條件檢核; depth[12.525-14.025]: PI非數字與非NP，強制略過部份非液化條件檢核; depth[14.025-15.525]: PI非數字與非NP，強制略過部份非液化條件檢核"
     },
     {
-      "keyProjHole": "",
-      "projectNumber": "",
-      "holeId": "",
+      "sampleId": "",
+      "depthStart": "18.525",
+      "depthEnd": "20",
+      "depth": 19.2625,
       "inputPGA": 1.8,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 1.8,
@@ -566,9 +575,10 @@
       "sptNJRA2017-err": "depth[0.000-2.025]: D50非數字，強制略過部份非液化條件檢核; D10非數字，強制略過部份非液化條件檢核; svpUsual非數字; depth[3.525-5.025]: D50非數字，強制略過部份非液化條件檢核; Volumetric Strain(Tokimatsu And Seed): CSR大於0.6超過原研究範疇，強制改為0.6; depth[5.025-6.525]: D50非數字，強制略過部份非液化條件檢核; Volumetric Strain(Ishihara And Yoshimine): 出現外插情形 N172=30.458770626371766 > N172Max=30，依照FS=0.4015639652508719並給予最小體積應變vstr=1.2869825024551163%; depth[6.525-8.025]: D50非數字，強制略過部份非液化條件檢核; depth[8.025-9.525]: D50非數字，強制略過部份非液化條件檢核; depth[9.525-11.025]: PI非數字與非NP，強制略過部份非液化條件檢核; D50非數字，強制略過部份非液化條件檢核; depth[11.025-12.525]: PI非數字與非NP，強制略過部份非液化條件檢核; depth[12.525-14.025]: PI非數字與非NP，強制略過部份非液化條件檢核; depth[14.025-15.525]: PI非數字與非NP，強制略過部份非液化條件檢核"
     },
     {
-      "keyProjHole": "",
-      "projectNumber": "",
-      "holeId": "",
+      "sampleId": "",
+      "depthStart": "18.525",
+      "depthEnd": "20",
+      "depth": 19.2625,
       "inputPGA": 2,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 2,
@@ -606,9 +616,10 @@
   ],
   "ltdtResp": [
     {
-      "keyProjHole": "",
-      "projectNumber": "",
-      "holeId": "",
+      "sampleId": "",
+      "depthStart": "18.525",
+      "depthEnd": "20",
+      "depth": 19.2625,
       "inputPGA": 2,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 0.2,

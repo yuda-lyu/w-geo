@@ -24,6 +24,7 @@ describe(`calcLiquefactionSptForCriticalPga`, function() {
         usePL: true,
         useStl: true,
         useH1PL: true,
+        keysPick: ['sampleId', 'depthStart', 'depthEnd', 'depth'],
         returnLtdtForEachPga: true,
     }
 
