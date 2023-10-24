@@ -29,7 +29,7 @@
 <nav >
     
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcDepthByDepthStartEnd">calcDepthByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByConnect">calcDepthStartEndByConnect</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByGroup">calcDepthStartEndByGroup</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndFromCenter">calcDepthStartEndFromCenter</a></li><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepth">checkDepth</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.complementDepthData">complementDepthData</a></li><li data-type='method'><a href="w-geo.html#.groupByDepthStartEnd">groupByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.mergeByDepthStartEnd">mergeByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPlasticityParams">relaPlasticityParams</a></li><li data-type='method'><a href="w-geo.html#.relaPorousParams">relaPorousParams</a></li><li data-type='method'><a href="w-geo.html#.sepDepthStartEndByDepth">sepDepthStartEndByDepth</a></li><li data-type='method'><a href="w-geo.html#.smoothDepthByKey">smoothDepthByKey</a></li><li data-type='method'><a href="w-geo.html#.sptHBF">sptHBF</a></li><li data-type='method'><a href="w-geo.html#.sptNCEER">sptNCEER</a></li><li data-type='method'><a href="w-geo.html#.sptNJRA">sptNJRA</a></li><li data-type='method'><a href="w-geo.html#.sptSeed">sptSeed</a></li><li data-type='method'><a href="w-geo.html#.sptTY">sptTY</a></li></ul></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcDepthByDepthStartEnd">calcDepthByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByConnect">calcDepthStartEndByConnect</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByDepth">calcDepthStartEndByDepth</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByGroup">calcDepthStartEndByGroup</a></li><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepth">checkDepth</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.complementDepthData">complementDepthData</a></li><li data-type='method'><a href="w-geo.html#.groupByDepthStartEnd">groupByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.mergeByDepthStartEnd">mergeByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPlasticityParams">relaPlasticityParams</a></li><li data-type='method'><a href="w-geo.html#.relaPorousParams">relaPorousParams</a></li><li data-type='method'><a href="w-geo.html#.sepDepthStartEndByDepth">sepDepthStartEndByDepth</a></li><li data-type='method'><a href="w-geo.html#.smoothDepthByKey">smoothDepthByKey</a></li><li data-type='method'><a href="w-geo.html#.sptHBF">sptHBF</a></li><li data-type='method'><a href="w-geo.html#.sptNCEER">sptNCEER</a></li><li data-type='method'><a href="w-geo.html#.sptNJRA">sptNJRA</a></li><li data-type='method'><a href="w-geo.html#.sptSeed">sptSeed</a></li><li data-type='method'><a href="w-geo.html#.sptTY">sptTY</a></li></ul></li></ul>
     
 </nav>
 
@@ -63,7 +63,7 @@ import judge from './judge.mjs'
 /**
  * 由樣本中點深度反算各樣本起訖深度，注意樣本添加起訖深度可能因最淺樣本起始深度最大為0，以及最深樣本可被修改為depthEndMax，故各樣本中點深度不一定是起訖深度之平均值
  *
- * Unit Test: {@link https://github.com/yuda-lyu/w-geo/blob/master/test/calcDepthStartEndFromCenter.test.js Github}
+ * Unit Test: {@link https://github.com/yuda-lyu/w-geo/blob/master/test/calcDepthStartEndByDepth.test.js Github}
  * @memberOf w-geo
  * @param {Array} rows 輸入數據陣列，各數據為物件，至少需包含起始深度(depthStart)與結束深度(depthEnd)，深度單位為m
  * @param {Object} [opt={}] 輸入設定物件，預設{}
@@ -88,7 +88,7 @@ import judge from './judge.mjs'
  *         depth: 20,
  *     },
  * ]
- * rs = calcDepthStartEndFromCenter(rows)
+ * rs = calcDepthStartEndByDepth(rows)
  * console.log(rs)
  * // => [
  * //   { depth: 0, depthStart: 0, depthEnd: 3 },
@@ -107,7 +107,7 @@ import judge from './judge.mjs'
  *         depth: 20,
  *     },
  * ]
- * rs = calcDepthStartEndFromCenter(rows)
+ * rs = calcDepthStartEndByDepth(rows)
  * console.log(rs)
  * // => [
  * //   { depth: 4, depthStart: 0, depthEnd: 5 },
@@ -126,7 +126,7 @@ import judge from './judge.mjs'
  *         depth: 20,
  *     },
  * ]
- * rs = calcDepthStartEndFromCenter(rows, { depthEndMax: 25 })
+ * rs = calcDepthStartEndByDepth(rows, { depthEndMax: 25 })
  * console.log(rs)
  * // => [
  * //   { depth: 4, depthStart: 0, depthEnd: 5 },
@@ -145,7 +145,7 @@ import judge from './judge.mjs'
  *         depth: 20,
  *     },
  * ]
- * rs = calcDepthStartEndFromCenter(rows, { depthEndMax: 15 })
+ * rs = calcDepthStartEndByDepth(rows, { depthEndMax: 15 })
  * console.log(rs)
  * // => [
  * //   { depth: 4, depthStart: 0, depthEnd: 5 },
@@ -164,7 +164,7 @@ import judge from './judge.mjs'
  *         dc: 20,
  *     },
  * ]
- * rs = calcDepthStartEndFromCenter(rows, { keyDepth: 'dc', keyDepthStart: 'ds', keyDepthEnd: 'de' })
+ * rs = calcDepthStartEndByDepth(rows, { keyDepth: 'dc', keyDepthStart: 'ds', keyDepthEnd: 'de' })
  * console.log(rs)
  * // => [
  * //   { dc: 4, ds: 0, de: 5 },
@@ -173,7 +173,7 @@ import judge from './judge.mjs'
  * // ]
  *
  */
-function calcDepthStartEndFromCenter(rows, opt = {}) {
+function calcDepthStartEndByDepth(rows, opt = {}) {
     let errs = []
 
     //check
@@ -332,7 +332,7 @@ function calcDepthStartEndFromCenter(rows, opt = {}) {
 }
 
 
-export default calcDepthStartEndFromCenter
+export default calcDepthStartEndByDepth
 </code></pre>
         </article>
     </section>
@@ -347,7 +347,7 @@ export default calcDepthStartEndFromCenter
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Fri Oct 13 2023 16:35:38 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Tue Oct 24 2023 14:03:29 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
