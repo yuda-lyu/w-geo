@@ -96,7 +96,7 @@ function ckPL(ltdt, keyPL) {
 }
 
 
-function ckStl(ltdt, keyStl) {
+function ckStl(ltdt, keyStl, stlLim = 0.3) {
     let state = '未有沉陷危害'
     let msg = '無'
     let failurePGA = ''
@@ -112,9 +112,9 @@ function ckStl(ltdt, keyStl) {
         state = '錯誤'
         msg = `欄位(${keyStl})的沉陷值(${Stl})非數字`
     }
-    else if (Stl >= 0.3) {
+    else if (Stl >= stlLim) {
         state = '具沉陷危害'
-        msg = `超過指定沉陷值(${Stl}>=0.3m)`
+        msg = `超過指定沉陷值(${Stl}>=${stlLim}m)`
         failurePGA = rowEnd.PGA
     }
     else {
@@ -217,6 +217,12 @@ function calcCriticalPga(ltdt, PGA, methods, opt = {}) {
         useStl = true
     }
 
+    //stlLim
+    let stlLim = get(opt, 'stlLim', '')
+    if (!isnum(stlLim)) {
+        stlLim = 0.3
+    }
+
     //useH1PL
     let useH1PL = get(opt, 'useH1PL', true)
     if (!isbol(useH1PL)) {
@@ -269,13 +275,13 @@ function calcCriticalPga(ltdt, PGA, methods, opt = {}) {
     //useStl
     if (useStl) {
         each(ksStlTS, (k) => {
-            let r = ckStl(ltdtTemp, k)
+            let r = ckStl(ltdtTemp, k, stlLim)
             dtRes[`${k}-state`] = r.state
             dtRes[`${k}-failurePGA`] = gPGA(r.failurePGA)
             dtRes[`${k}-msg`] = r.msg
         })
         each(ksStlIY, (k) => {
-            let r = ckStl(ltdtTemp, k)
+            let r = ckStl(ltdtTemp, k, stlLim)
             dtRes[`${k}-state`] = r.state
             dtRes[`${k}-failurePGA`] = gPGA(r.failurePGA)
             dtRes[`${k}-msg`] = r.msg
@@ -364,6 +370,12 @@ function calcLiquefactionSptForCriticalPga(ltdt, methods, opt = {}) {
         useStl = true
     }
 
+    //stlLim
+    let stlLim = get(opt, 'stlLim', '')
+    if (!isnum(stlLim)) {
+        stlLim = 0.3
+    }
+
     //useH1PL
     let useH1PL = get(opt, 'useH1PL', true)
     if (!isbol(useH1PL)) {
@@ -410,6 +422,7 @@ function calcLiquefactionSptForCriticalPga(ltdt, methods, opt = {}) {
             useFS,
             usePL,
             useStl,
+            stlLim,
             useH1PL,
         }
         let r = calcCriticalPga(ltdt, PGA, methods, optCalcCriticalPga)

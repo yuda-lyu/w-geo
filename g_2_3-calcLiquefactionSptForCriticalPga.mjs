@@ -53,8 +53,8 @@ function calc(k) {
     ]
 
     let opt = {
-        waterLevelUsual: 0.7,
-        waterLevelDesign: 0.7,
+        waterLevelUsual: 0,
+        waterLevelDesign: 0,
         unitSvSvp: 'kPa',
         Mw: 6.8,
         pgaMax: 2,
@@ -62,6 +62,7 @@ function calc(k) {
         useFS: true,
         usePL: true,
         useStl: true,
+        stlLim: 0.3,
         useH1PL: true,
         keysPick: ['sampleId', 'depthStart', 'depthEnd', 'depth'],
         returnLtdtForEachPga: true,
