@@ -6,6 +6,7 @@ import keys from 'lodash/keys'
 import filter from 'lodash/filter'
 import size from 'lodash/size'
 import times from 'lodash/times'
+import pull from 'lodash/pull'
 import isNumber from 'lodash/isNumber'
 import cloneDeep from 'lodash/cloneDeep'
 import dtmapping from 'wsemi/src/dtmapping.mjs'
@@ -565,6 +566,9 @@ function calcLiquefactionSptForCriticalPga(ltdt, methods, opt = {}) {
 
         return dt
     })
+
+    //modify ks, ltdtResp內為彙整各pga條件下結果, 故不需要inputPGA
+    pull(ks, 'inputPGA')
 
     //重排欄位 ltdtResp
     let ltdtResp = [res]

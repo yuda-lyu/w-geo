@@ -696,7 +696,6 @@
   ],
   "ltdtResp": [
     {
-      "inputPGA": 2,
       "sptHBF2017-FS-state": "已液化",
       "sptHBF2017-FS-failurePGA": 0.2,
       "sptHBF2017-FS-msg": "深度(9.525-11.025m)發生液化(FS=0.7236439297894386<=1)",
