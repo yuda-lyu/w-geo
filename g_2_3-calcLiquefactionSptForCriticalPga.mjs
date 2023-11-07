@@ -64,7 +64,7 @@ function calc(k) {
         useStl: true,
         stlLims: [0.2, 0.3],
         useH1PL: true,
-        keysPick: ['sampleId', 'depthStart', 'depthEnd', 'depth'],
+        // keysPick: ['keyProjHole', 'projectNumber', 'holeId'],
         returnLtdtForEachPga: true,
     }
 
