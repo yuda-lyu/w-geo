@@ -96,7 +96,7 @@ function ckPL(ltdt, keyPL) {
 }
 
 
-function ckStl(ltdt, keyStl, stlLim = 0.3) {
+function ckStl(ltdt, keyStl, stlLim) {
     let state = '未有沉陷危害'
     let msg = '無'
     let failurePGA = ''
@@ -217,10 +217,10 @@ function calcCriticalPga(ltdt, PGA, methods, opt = {}) {
         useStl = true
     }
 
-    //stlLim
-    let stlLim = get(opt, 'stlLim', '')
-    if (!isnum(stlLim)) {
-        stlLim = 0.3
+    //stlLims
+    let stlLims = get(opt, 'stlLims', [])
+    if (!isearr(stlLims)) {
+        stlLims = [0.3]
     }
 
     //useH1PL
@@ -274,17 +274,19 @@ function calcCriticalPga(ltdt, PGA, methods, opt = {}) {
 
     //useStl
     if (useStl) {
-        each(ksStlTS, (k) => {
-            let r = ckStl(ltdtTemp, k, stlLim)
-            dtRes[`${k}-state`] = r.state
-            dtRes[`${k}-failurePGA`] = gPGA(r.failurePGA)
-            dtRes[`${k}-msg`] = r.msg
-        })
-        each(ksStlIY, (k) => {
-            let r = ckStl(ltdtTemp, k, stlLim)
-            dtRes[`${k}-state`] = r.state
-            dtRes[`${k}-failurePGA`] = gPGA(r.failurePGA)
-            dtRes[`${k}-msg`] = r.msg
+        each(stlLims, (stlLim) => {
+            each(ksStlTS, (k) => {
+                let r = ckStl(ltdtTemp, k, stlLim)
+                dtRes[`${k}${stlLim}-state`] = r.state
+                dtRes[`${k}${stlLim}-failurePGA`] = gPGA(r.failurePGA)
+                dtRes[`${k}${stlLim}-msg`] = r.msg
+            })
+            each(ksStlIY, (k) => {
+                let r = ckStl(ltdtTemp, k, stlLim)
+                dtRes[`${k}${stlLim}-state`] = r.state
+                dtRes[`${k}${stlLim}-failurePGA`] = gPGA(r.failurePGA)
+                dtRes[`${k}${stlLim}-msg`] = r.msg
+            })
         })
     }
 
@@ -370,10 +372,10 @@ function calcLiquefactionSptForCriticalPga(ltdt, methods, opt = {}) {
         useStl = true
     }
 
-    //stlLim
-    let stlLim = get(opt, 'stlLim', '')
-    if (!isnum(stlLim)) {
-        stlLim = 0.3
+    //stlLims
+    let stlLims = get(opt, 'stlLims', [])
+    if (!isearr(stlLims)) {
+        stlLims = [0.3]
     }
 
     //useH1PL
@@ -422,7 +424,7 @@ function calcLiquefactionSptForCriticalPga(ltdt, methods, opt = {}) {
             useFS,
             usePL,
             useStl,
-            stlLim,
+            stlLims,
             useH1PL,
         }
         let r = calcCriticalPga(ltdt, PGA, methods, optCalcCriticalPga)
@@ -489,13 +491,17 @@ function calcLiquefactionSptForCriticalPga(ltdt, methods, opt = {}) {
     }
     if (useStl) {
 
-        //ksStlTSState
-        let ksStlTSState = pickCols(ltdtRes, '-stlTS-state')
-        searchLimit(ksStlTSState, '具沉陷危害')
+        each(stlLims, (stlLim) => {
 
-        //ksStlIYstate
-        let ksStlIYstate = pickCols(ltdtRes, '-stlIY-state')
-        searchLimit(ksStlIYstate, '具沉陷危害')
+            //ksStlTSState
+            let ksStlTSState = pickCols(ltdtRes, `-stlTS${stlLim}-state`)
+            searchLimit(ksStlTSState, '具沉陷危害')
+
+            //ksStlIYstate
+            let ksStlIYstate = pickCols(ltdtRes, `-stlIY${stlLim}-state`)
+            searchLimit(ksStlIYstate, '具沉陷危害')
+
+        })
 
     }
     if (useH1PL) {
@@ -515,8 +521,10 @@ function calcLiquefactionSptForCriticalPga(ltdt, methods, opt = {}) {
         ts.push('-PL')
     }
     if (useStl) {
-        ts.push('-stlTS')
-        ts.push('-stlIY')
+        each(stlLims, (stlLim) => {
+            ts.push(`-stlTS${stlLim}`)
+            ts.push(`-stlIY${stlLim}`)
+        })
     }
     if (useH1PL) {
         ts.push('-H1PL')

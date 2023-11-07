@@ -14,8 +14,8 @@ describe(`calcLiquefactionSptForCriticalPga`, function() {
     ]
 
     let opt = {
-        waterLevelUsual: 0.7,
-        waterLevelDesign: 0.7,
+        waterLevelUsual: 0,
+        waterLevelDesign: 0,
         unitSvSvp: 'kPa',
         Mw: 6.8,
         pgaMax: 2,
@@ -23,6 +23,7 @@ describe(`calcLiquefactionSptForCriticalPga`, function() {
         useFS: true,
         usePL: true,
         useStl: true,
+        stlLims: [0.2, 0.3],
         useH1PL: true,
         keysPick: ['sampleId', 'depthStart', 'depthEnd', 'depth'],
         returnLtdtForEachPga: true,

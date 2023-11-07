@@ -62,7 +62,7 @@ function calc(k) {
         useFS: true,
         usePL: true,
         useStl: true,
-        stlLim: 0.3,
+        stlLims: [0.2, 0.3],
         useH1PL: true,
         keysPick: ['sampleId', 'depthStart', 'depthEnd', 'depth'],
         returnLtdtForEachPga: true,
