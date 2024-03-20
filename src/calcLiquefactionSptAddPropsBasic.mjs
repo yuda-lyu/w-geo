@@ -1,5 +1,5 @@
-import get from 'lodash/get'
-import map from 'lodash/map'
+import get from 'lodash-es/get'
+import map from 'lodash-es/map'
 import isnum from 'wsemi/src/isnum.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'

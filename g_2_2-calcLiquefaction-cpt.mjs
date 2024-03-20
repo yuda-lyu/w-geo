@@ -1,5 +1,5 @@
 import fs from 'fs'
-import _ from 'lodash'
+import _ from 'lodash-es'
 import w from 'wsemi'
 import calcLiquefaction from './src/calcLiquefaction.mjs'
 import calcCptUnitWeight from './src/calcCptUnitWeight.mjs'
