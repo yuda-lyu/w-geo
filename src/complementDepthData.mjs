@@ -1,13 +1,13 @@
-import get from 'lodash-es/get'
-import set from 'lodash-es/set'
-import each from 'lodash-es/each'
-import size from 'lodash-es/size'
-import isNumber from 'lodash-es/isNumber'
-import cloneDeep from 'lodash-es/cloneDeep'
+import get from 'lodash-es/get.js'
+import set from 'lodash-es/set.js'
+import each from 'lodash-es/each.js'
+import size from 'lodash-es/size.js'
+import isNumber from 'lodash-es/isNumber.js'
+import cloneDeep from 'lodash-es/cloneDeep.js'
 import cdbl from 'wsemi/src/cdbl.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
-import isestr from 'wsemi/src/isestr'
-import isearr from 'wsemi/src/isearr'
+import isestr from 'wsemi/src/isestr.mjs'
+import isearr from 'wsemi/src/isearr.mjs'
 
 
 function gv(rows, key, k) {

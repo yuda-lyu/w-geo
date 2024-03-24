@@ -1,4 +1,4 @@
-import map from 'lodash-es/map'
+import map from 'lodash-es/map.js'
 
 
 function calcLiquefactionClearStress(ltdt) {
