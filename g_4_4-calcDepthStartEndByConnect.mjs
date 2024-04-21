@@ -120,5 +120,5 @@ console.log(rs)
 //   { depthStart: 10.5, depthEnd: 20 }
 // ]
 
-//node --experimental-modules --es-module-specifier-resolution=node g_4_4-calcDepthStartEndByConnect.mjs
+//node --experimental-modules g_4_4-calcDepthStartEndByConnect.mjs
 

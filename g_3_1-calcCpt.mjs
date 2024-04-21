@@ -5009,6 +5009,7 @@ let rowsIn = [
 //opt
 let opt = {
     coe_a: 0.74,
+    methodIterate: 'basic', //basic, binarySearch
     methodSmooth: 'none', //測試數據已使用averageIn95
     intrpSv: (depth, k, v, ltdt) => {
         // console.log('intrpSv', depth, k, v)
@@ -5024,6 +5025,7 @@ let opt = {
 
 //calcCpt
 let rowsOut = calcCpt(rowsIn, opt)
+// console.log(rowsOut)
 // console.log(rowsOut[0])
 
 let k = 1
@@ -5031,4 +5033,4 @@ fs.writeFileSync(`./calcCpt-rowsIn${k}.json`, JSON.stringify(rowsIn), 'utf8')
 fs.writeFileSync(`./calcCpt-rowsOut${k}.json`, JSON.stringify(rowsOut), 'utf8')
 w.downloadExcelFileFromData(`./calcCpt-mat.xlsx`, 'mat', rowsOut)
 
-//node --experimental-modules --es-module-specifier-resolution=node g_3_1-calcCpt.mjs
+//node --experimental-modules g_3_1-calcCpt.mjs

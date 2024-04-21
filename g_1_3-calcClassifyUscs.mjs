@@ -60,4 +60,4 @@ if (true) {
     console.log('cks', cks[0], _.size(cks))
 }
 
-//node --experimental-modules --es-module-specifier-resolution=node g_1_3-calcClassifyUscs.mjs
+//node --experimental-modules g_1_3-calcClassifyUscs.mjs

@@ -5019,4 +5019,4 @@ console.log(mm2)
 let k = 1
 fs.writeFileSync(`./getDepthMaxMin-rowsIn${k}.json`, JSON.stringify(rowsIn), 'utf8')
 
-//node --experimental-modules --es-module-specifier-resolution=node g_5_4-getDepthMaxMin.mjs
+//node --experimental-modules g_5_4-getDepthMaxMin.mjs

@@ -5050,6 +5050,7 @@ if (true) {
     //opt
     let opt = {
         coe_a,
+        methodIterate: 'basic', //basic, binarySearch
         methodSmooth: 'none', //測試數據已使用averageIn95
         intrpSv: (depth, k, v, ltdt) => {
             // console.log('intrpSv', depth, k, v)
@@ -5113,4 +5114,4 @@ for (let k = 1; k <= methods.length; k++) {
 // let kpSoilGroupsTn = getKpSoilGroupsTn()
 // fs.writeFileSync(`./calcCptLayers-kpSoilGroupsTn.json`, JSON.stringify(kpSoilGroupsTn), 'utf8')
 
-//node --experimental-modules --es-module-specifier-resolution=node g_3_3-calcCptLayers.mjs
+//node --experimental-modules g_3_3-calcCptLayers.mjs

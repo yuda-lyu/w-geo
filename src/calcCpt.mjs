@@ -162,7 +162,7 @@ function stress(ltdt, opt = {}) {
 }
 
 
-function calcRobQtnAndIcn(qnet, Fr, svp, opt = {}) {
+function calcRobQtnAndIcn(svp, qnet, Qt, Fr, Ic, opt = {}) {
     let Pa = cnst.Pa //大氣壓(MPa)
     let err = null
     let n = null
@@ -170,8 +170,14 @@ function calcRobQtnAndIcn(qnet, Fr, svp, opt = {}) {
     let Qtn = null
     let Icn = null
 
+    //methodIterate
+    let methodIterate = get(opt, 'methodIterate', '')
+    if (methodIterate !== 'basic' && methodIterate !== 'binarySearch') {
+        methodIterate = 'basic'
+    }
+
     //useCnLeq
-    let useCnLeq = get(opt, 'useCnLeq')
+    let useCnLeq = get(opt, 'useCnLeq', false)
     if (!isbol(useCnLeq)) {
         useCnLeq = false
     }
@@ -220,10 +226,14 @@ function calcRobQtnAndIcn(qnet, Fr, svp, opt = {}) {
     //core
     let core = (n) => {
         let Cn = (Pa / svp) ** n //Pa(MPa),svp(MPa)單位對消
+        // console.log('Pa', Pa, 'svp', svp, 'n', n)
+        // console.log('Cn', Cn)
         if (useCnLeq) {
             Cn = Math.min(Cn, 1.7)
         }
         let Qtn = Cn * qnet / Pa
+        // console.log('qnet', qnet)
+        // console.log('Qtn', Qtn, 'Fr', Fr)
         let Icn = Math.sqrt((3.47 - Math.log10(Qtn)) ** 2 + (Math.log10(Fr) + 1.22) ** 2)
         let nn = 0.381 * Icn + 0.05 * (svp / Pa) - 0.15 //Pa,svp單位對消
         return {
@@ -237,30 +247,101 @@ function calcRobQtnAndIcn(qnet, Fr, svp, opt = {}) {
         return Math.abs(r.n - r.nn) //for binarySearch
     }
 
-    //binarySearch
     try {
 
-        // //test 0,1
-        // let r0 = core(0)
-        // let r1 = core(1)
+        let r = null
+        if (methodIterate === 'basic') {
+            //一般迭代
 
-        //binarySearch
-        let bs = binarySearch(fun, 0, 1)
-        let x = bs.x
-        let r = core(x)
-        // console.log('r.n', r.n, 'r.nn', r.nn)
+            let dn = 0.01
+            let n = 1
+            while (true) {
 
-        //check 收斂性
-        if (r.nn > 1) {
-            // throw new Error('無法收斂')
-            r = core(1) //若無法收斂則依照要求強制使用n=1 2023/04/17
-            // console.log('無法收斂', r, 'r0.nn', r0.nn, 'r1.nn', r1.nn)
+                //core
+                r = core(n)
+                // console.log('r', r, 'diff n', Math.abs(r.n - r.nn))
+
+                //check 無法收斂
+                if (r.nn > 1) {
+                    if (r.n !== 1) { //若原本n不是1則須重新計算
+                        r = core(1) //若無法收斂則依照要求強制使用n=1 (2023/04/17)
+                        // console.log('r(無法收斂則依照要求強制使用n=1)', r)
+                    }
+                    break
+                }
+
+                //check 收斂性, 記得要放在檢測無法收斂之後, 否則n>1也可能滿足前後n差值小於誤差值
+                if (Math.abs(r.n - r.nn) <= dn) { //使用dn作為誤差門檻值
+                    // console.log('r(new)', r)
+                    break
+                }
+
+                //check 超大值
+                if (r.nn > 1e20) {
+                    console.log('非預期超大值', r, { qnet, Fr, svp })
+                    throw new Error('非預期超大值')
+                }
+
+                //update n
+                n = r.nn
+
+            }
+
+        }
+        else {
+            //binarySearch
+
+            // //test 0,1
+            // let r0 = core(0)
+            // let r1 = core(1)
+
+            //binarySearch
+            let bs = binarySearch(fun, 0, 1)
+            let x = bs.x
+            r = core(x)
+            // console.log('r.n', r.n, 'r.nn', r.nn)
+
+            //check 無法收斂
+            if (r.nn > 1) {
+                // throw new Error('無法收斂')
+                r = core(1) //若無法收斂則依照要求強制使用n=1 (2023/04/17)
+                // console.log('無法收斂', r, 'r0.nn', r0.nn, 'r1.nn', r1.nn)
+            }
+
+            //check 超大值
+            if (r.nn > 1e20) {
+                console.log('非預期超大值', r, { qnet, Fr, svp })
+                throw new Error('非預期超大值')
+            }
+
         }
 
-        //check 超大值
-        if (r.nn > 1e20) {
-            console.log('非預期超大值', r, { qnet, Fr, svp })
-            throw new Error('非預期超大值')
+        //check
+        let b = false
+        if (r.n > 1.0 || r.Icn > 2.6) {
+            b = true
+            n = 1.0
+            Cn = 0
+            Qtn = Qt
+            Icn = Ic
+        }
+        else if (r.n < 0.5) {
+            b = true
+            n = 0.5
+            Cn = (Pa / svp) ** n //Pa(MPa),svp(MPa)單位對消
+            if (useCnLeq) {
+                Cn = Math.min(Cn, 1.7)
+            }
+            Qtn = Cn * qnet / Pa
+            Icn = Math.sqrt((3.47 - Math.log10(Qtn)) ** 2 + (Math.log10(Fr) + 1.22) ** 2)
+        }
+
+        //update
+        if (b) {
+            r.n = n
+            r.Cn = Cn
+            r.Qtn = Qtn
+            r.Icn = Icn
         }
 
         //save
@@ -274,6 +355,7 @@ function calcRobQtnAndIcn(qnet, Fr, svp, opt = {}) {
         err = e.toString()
     }
 
+    // console.log('count', count)
     return ret()
 }
 
@@ -319,7 +401,6 @@ function calcCptCore(dt, coe_a, opt = {}) {
     }
 
     //check sv, svp
-    // console.log('dt', dt)
     if (isNumber(sv)) {
         checkVerticalStress(sv, depth, unitSvSvp, 'sv')
     }
@@ -442,7 +523,7 @@ function calcCptCore(dt, coe_a, opt = {}) {
     }
 
     //n, Cn, Icn, Qtn, calcRobQtnAndIcn
-    let t = calcRobQtnAndIcn(qnet, Fr, svp, { useCnLeq })
+    let t = calcRobQtnAndIcn(svp, qnet, Qt, Fr, Ic, { useCnLeq })
     let n = get(t, 'n', null)
     let Cn = get(t, 'Cn', null)
     let Icn = get(t, 'Icn', null)

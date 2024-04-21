@@ -460,4 +460,4 @@ function calc(k) {
 calc(1)
 calc(2)
 
-//node --experimental-modules --es-module-specifier-resolution=node g_2_2-calcLiquefaction-cpt.mjs
+//node --experimental-modules g_2_2-calcLiquefaction-cpt.mjs

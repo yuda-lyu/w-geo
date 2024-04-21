@@ -18,8 +18,8 @@ import { basic, calcCptCore } from './calcCpt.mjs'
 let defRsat = 19.5
 
 
-//zone區對應飽和單位重(kN/m3)
-let kpCPTClassForRobBqRfqt = { //Robertson(1986)
+//zone區對應飽和單位重(kN/m3), Robertson(1986)
+let kpCPTClassForRobBqRfqt = {
     1: 17.5, //'Sensitive fine grained',
     2: 12.5, //'Organic material',
     3: 17.5, //'Clay',
@@ -33,6 +33,20 @@ let kpCPTClassForRobBqRfqt = { //Robertson(1986)
     11: 20.5, // 'Very stiff find grained(overconsolidated or cemented)',
     12: 19, // 'Sand to clayer sand(overconsolidated or cemented)',
     13: (19.5 + 20 + 20.5 + 19) / 4, // '9,10,11,12',
+}
+
+
+//zone區對應飽和單位重(kN/m3), Lunne(1997)
+let kpCPTClassForLunneBqFrQt = {
+    1: 17.5, //Sensitive fine-grained
+    2: 12.5, //Clay - organic soil
+    3: 17.5, //Clays: clay to silty clay
+    4: 18, //Silt mixtures: clayey silt & silty clay
+    5: 18.25, //Sand mixtures: silty sand to sandy silt, 18.0~18.5(取18.25)
+    6: 19, //Sands: clean sands to silty sands
+    7: 19.75, //Dense sand to gravelly sand, 19.5~20.0(取19.75)
+    8: 19, //Stiff sand to clayey sand
+    9: 20.5, //Stiff fine-grained
 }
 
 
@@ -192,6 +206,16 @@ function estUnitWeightCore(ltdt, coe_a, opt = {}) {
         //         izone = v.iRobBqqt
         //     }
         // }
+
+        //bbb 用參數指定評估方法
+
+        //查 kpCPTClassForRobBqRfqt, Robertson(1986)
+
+        //查 kpCPTClassForLunneBqFrQt, Lunne(1997)
+
+        //Robertson and Cabal (2010)經驗公式
+
+        //Mayne (2014)經驗公式
 
         //rsat(kN/m3), 查kpCPTClassForRobBqRfqt資訊為Robertson(1986)
         let rsat = null

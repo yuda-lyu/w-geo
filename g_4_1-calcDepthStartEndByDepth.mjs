@@ -103,4 +103,4 @@ console.log(rs)
 // ]
 
 
-//node --experimental-modules --es-module-specifier-resolution=node g_4_1-calcDepthStartEndByDepth.mjs
+//node --experimental-modules g_4_1-calcDepthStartEndByDepth.mjs

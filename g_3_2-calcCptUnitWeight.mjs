@@ -1275,4 +1275,4 @@ fs.writeFileSync(`./calcCptUnitWeight-cpt-rowsIn${k}.json`, JSON.stringify(rowsI
 fs.writeFileSync(`./calcCptUnitWeight-cpt-rowsOut${k}.json`, JSON.stringify(rowsOut, null, 2), 'utf8')
 w.downloadExcelFileFromData(`./calcCptUnitWeight-cpt-mat.xlsx`, 'mat', rowsOut)
 
-//node --experimental-modules --es-module-specifier-resolution=node g_3_2-calcCptUnitWeight.mjs
+//node --experimental-modules g_3_2-calcCptUnitWeight.mjs
