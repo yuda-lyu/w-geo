@@ -36,7 +36,7 @@ function checkVerticalStress(v, depth, unit, lable = '') {
     }
 
     //最大最小單位重
-    let rmin = 5 //kN/m3
+    let rmin = 2 //kN/m3, 若最小飽和單位重12, 扣水單位重9.81, 最小乾單位重至少要低於2
     let rmax = 25 //kN/m3
 
     //最大最小應力
@@ -163,6 +163,10 @@ function core(rows, waterLevel, opt = {}) {
             let dsv = dd * rT
             let sv = sv_bottom + dsv / 2
             v.sv = sv
+            // console.log('sv', sv)
+            // if (de <= 0.011) {
+            //     console.log('dd', dd, 'rT', rT, 'sv_bottom', sv_bottom, 'sv', sv)
+            // }
 
             //更新土層底部之垂直總應力
             sv_bottom += dsv
@@ -170,6 +174,9 @@ function core(rows, waterLevel, opt = {}) {
             //dpp(m), 土層中點深度之水頭高
             let dpp = Math.max(((ds + de) / 2 - waterLevel), 0)
             // console.log('dpp', dpp)
+            // if (de <= 0.011) {
+            //     console.log('ds', ds, 'de', de, 'waterLevel', waterLevel, 'dpp', dpp)
+            // }
 
             //pp(kN/m2), 土層中點深度之水壓
             let pp = dpp * rw
@@ -177,6 +184,10 @@ function core(rows, waterLevel, opt = {}) {
 
             //svp(kN/m2), 土層中點深度之垂直有效應力
             v.svp = Math.max(sv - pp, 0)
+            // console.log('svp', v.svp)
+            // if (de <= 0.011) {
+            //     console.log('v.sv', v.sv, 'pp', pp, v.svp, 'v.svp')
+            // }
 
         }
         catch (e) {
@@ -615,9 +626,11 @@ function calcVerticalStress(rows, opt = {}) {
 
     //usual
     let rowsUsual = core(rows, waterLevelUsual, { keyDepth, keyDepthStart, keyDepthEnd })
+    // console.log('rowsUsual[0]', rowsUsual[0])
 
     //design
     let rowsDesign = core(rows, waterLevelDesign, { keyDepth, keyDepthStart, keyDepthEnd })
+    // console.log('rowsDesign[0]', rowsDesign[0])
 
     //each
     rows = map(rows, (v, k) => {

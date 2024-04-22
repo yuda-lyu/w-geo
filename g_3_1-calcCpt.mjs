@@ -5025,7 +5025,6 @@ let opt = {
 
 //calcCpt
 let rowsOut = calcCpt(rowsIn, opt)
-// console.log(rowsOut)
 // console.log(rowsOut[0])
 
 let k = 1

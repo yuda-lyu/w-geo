@@ -1,4 +1,5 @@
 import fs from 'fs'
+import _ from 'lodash-es'
 import w from 'wsemi'
 import calcCptUnitWeight from './src/calcCptUnitWeight.mjs'
 
@@ -1257,22 +1258,34 @@ let rowsIn = [
     { 'depth': '25', 'qc': '1.48', 'fs': '0.032', 'u2': '0.543' }
 ]
 
-//opt
-let opt = {
-    rsatIni: 19.5,
-    coe_a: 0.75,
-    unitSvSvp: 'MPa',
-}
+let ms = [
+    'Robertson(1986)',
+    'Lunne(1997)',
+    'Lunne(1997) for Robertsion stress exponent',
+    'Robertson and Cabal(2010)',
+    'Mayne(2014)',
+]
 
-//calcCptUnitWeight
-let rowsOut = calcCptUnitWeight(rowsIn, opt)
-// console.log(rowsOut[0])
+_.each(ms, (method, i) => {
+    let k = i + 1
 
-//bbb calcCptUnitWeight所得sv,svp為kPa
+    //opt
+    let opt = {
+        method,
+        rsatIni: 19.5,
+        coe_a: 0.75,
+        unitSvSvp: 'MPa',
+    }
 
-let k = 1
-fs.writeFileSync(`./calcCptUnitWeight-cpt-rowsIn${k}.json`, JSON.stringify(rowsIn, null, 2), 'utf8')
-fs.writeFileSync(`./calcCptUnitWeight-cpt-rowsOut${k}.json`, JSON.stringify(rowsOut, null, 2), 'utf8')
-w.downloadExcelFileFromData(`./calcCptUnitWeight-cpt-mat.xlsx`, 'mat', rowsOut)
+    //calcCptUnitWeight
+    let rowsOut = calcCptUnitWeight(rowsIn, opt)
+    // console.log(rowsOut[0])
+
+    fs.writeFileSync(`./calcCptUnitWeight-cpt-rowsIn.json`, JSON.stringify(rowsIn, null, 2), 'utf8')
+    fs.writeFileSync(`./calcCptUnitWeight-cpt-rowsOut${k}.json`, JSON.stringify(rowsOut, null, 2), 'utf8')
+    w.downloadExcelFileFromData(`./calcCptUnitWeight-cpt-mat(${opt.method}).xlsx`, 'mat', rowsOut)
+
+})
+
 
 //node --experimental-modules g_3_2-calcCptUnitWeight.mjs

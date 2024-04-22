@@ -9,7 +9,9 @@ import isfun from 'wsemi/src/isfun.mjs'
 import iseobj from 'wsemi/src/iseobj.mjs'
 import isbol from 'wsemi/src/isbol.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
+import isint from 'wsemi/src/isint.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
+import cint from 'wsemi/src/cint.mjs'
 import binarySearch from 'w-optimization/src/binarySearch.mjs'
 import { pickData } from './_share.mjs'
 import cnst from './cnst.mjs'
@@ -17,6 +19,10 @@ import { intrpDefPp, intrpDefSvSvp } from './intrpDefParam.mjs'
 import smoothDepthByKey from './smoothDepthByKey.mjs'
 import { checkVerticalStress } from './calcVerticalStress.mjs'
 import { cptClassify } from './calcCptClassify.mjs'
+
+
+//Pa, 大氣壓(MPa)
+let Pa = cnst.Pa
 
 
 function basic(ltdt, opt = {}) {
@@ -163,7 +169,6 @@ function stress(ltdt, opt = {}) {
 
 
 function calcRobQtnAndIcn(svp, qnet, Qt, Fr, Ic, opt = {}) {
-    let Pa = cnst.Pa //大氣壓(MPa)
     let err = null
     let n = null
     let Cn = null
@@ -223,6 +228,13 @@ function calcRobQtnAndIcn(svp, qnet, Qt, Fr, Ic, opt = {}) {
         return ret()
     }
 
+    //countMax, 主要給methodIterate=basic使用, 因可能n來回跳(0.3<>0.6)無法收斂
+    let countMax = get(opt, 'countMax')
+    if (!isint(countMax)) {
+        countMax = 1000
+    }
+    countMax = cint(countMax)
+
     //core
     let core = (n) => {
         let Cn = (Pa / svp) ** n //Pa(MPa),svp(MPa)單位對消
@@ -234,8 +246,16 @@ function calcRobQtnAndIcn(svp, qnet, Qt, Fr, Ic, opt = {}) {
         let Qtn = Cn * qnet / Pa
         // console.log('qnet', qnet)
         // console.log('Qtn', Qtn, 'Fr', Fr)
-        let Icn = Math.sqrt((3.47 - Math.log10(Qtn)) ** 2 + (Math.log10(Fr) + 1.22) ** 2)
-        let nn = 0.381 * Icn + 0.05 * (svp / Pa) - 0.15 //Pa,svp單位對消
+        let Icn = null
+        let nn = null
+        try {
+            Icn = Math.sqrt((3.47 - Math.log10(Qtn)) ** 2 + (Math.log10(Fr) + 1.22) ** 2)
+            nn = 0.381 * Icn + 0.05 * (svp / Pa) - 0.15 //Pa,svp單位對消
+        }
+        catch (err) {
+            console.log(err)
+            throw new Error(`無法計算Icn與n`)
+        }
         return {
             n, Cn, Qtn, Icn, nn
         }
@@ -247,113 +267,104 @@ function calcRobQtnAndIcn(svp, qnet, Qt, Fr, Ic, opt = {}) {
         return Math.abs(r.n - r.nn) //for binarySearch
     }
 
-    try {
+    let r = null
+    if (methodIterate === 'basic') {
+        //一般迭代
 
-        let r = null
-        if (methodIterate === 'basic') {
-            //一般迭代
+        let dn = 0.01
+        let n = 1
+        let i = 0
+        while (true) {
+            i++
+            // console.log(`迭代 ${i} 次`)
 
-            let dn = 0.01
-            let n = 1
-            while (true) {
-
-                //core
-                r = core(n)
-                // console.log('r', r, 'diff n', Math.abs(r.n - r.nn))
-
-                //check 無法收斂
-                if (r.nn > 1) {
-                    if (r.n !== 1) { //若原本n不是1則須重新計算
-                        r = core(1) //若無法收斂則依照要求強制使用n=1 (2023/04/17)
-                        // console.log('r(無法收斂則依照要求強制使用n=1)', r)
-                    }
-                    break
-                }
-
-                //check 收斂性, 記得要放在檢測無法收斂之後, 否則n>1也可能滿足前後n差值小於誤差值
-                if (Math.abs(r.n - r.nn) <= dn) { //使用dn作為誤差門檻值
-                    // console.log('r(new)', r)
-                    break
-                }
-
-                //check 超大值
-                if (r.nn > 1e20) {
-                    console.log('非預期超大值', r, { qnet, Fr, svp })
-                    throw new Error('非預期超大值')
-                }
-
-                //update n
-                n = r.nn
-
-            }
-
-        }
-        else {
-            //binarySearch
-
-            // //test 0,1
-            // let r0 = core(0)
-            // let r1 = core(1)
-
-            //binarySearch
-            let bs = binarySearch(fun, 0, 1)
-            let x = bs.x
-            r = core(x)
-            // console.log('r.n', r.n, 'r.nn', r.nn)
+            //core
+            r = core(n)
+            // console.log(i, 'r', r, 'diff n', Math.abs(r.n - r.nn))
 
             //check 無法收斂
             if (r.nn > 1) {
-                // throw new Error('無法收斂')
-                r = core(1) //若無法收斂則依照要求強制使用n=1 (2023/04/17)
-                // console.log('無法收斂', r, 'r0.nn', r0.nn, 'r1.nn', r1.nn)
+                if (r.n !== 1) { //若原本n不是1則須重新計算
+                    r = core(1) //若無法收斂則依照要求強制使用n=1 (2023/04/17)
+                    // console.log('r(無法收斂則依照要求強制使用n=1)', r)
+                }
+                break
             }
 
-            //check 超大值
-            if (r.nn > 1e20) {
-                console.log('非預期超大值', r, { qnet, Fr, svp })
-                throw new Error('非預期超大值')
+            //check 收斂性, 記得要放在檢測無法收斂之後, 否則n>1也可能滿足前後n差值小於誤差值
+            if (Math.abs(r.n - r.nn) <= dn) { //使用dn作為誤差門檻值
+                // console.log('r(new)', r)
+                break
+            }
+
+            //update n
+            n = r.nn
+
+            //check
+            if (i >= countMax) {
+                console.log(`超過迭代次數上限countMax[${countMax}]`, r, { qnet, Fr, svp })
+                // throw new Error(`超過迭代次數上限countMax[${countMax}]`)
+                break
             }
 
         }
-
-        //check
-        let b = false
-        if (r.n > 1.0 || r.Icn > 2.6) {
-            b = true
-            n = 1.0
-            Cn = 0
-            Qtn = Qt
-            Icn = Ic
-        }
-        else if (r.n < 0.5) {
-            b = true
-            n = 0.5
-            Cn = (Pa / svp) ** n //Pa(MPa),svp(MPa)單位對消
-            if (useCnLeq) {
-                Cn = Math.min(Cn, 1.7)
-            }
-            Qtn = Cn * qnet / Pa
-            Icn = Math.sqrt((3.47 - Math.log10(Qtn)) ** 2 + (Math.log10(Fr) + 1.22) ** 2)
-        }
-
-        //update
-        if (b) {
-            r.n = n
-            r.Cn = Cn
-            r.Qtn = Qtn
-            r.Icn = Icn
-        }
-
-        //save
-        n = get(r, 'n', null)
-        Cn = get(r, 'Cn', null)
-        Qtn = get(r, 'Qtn', null)
-        Icn = get(r, 'Icn', null)
 
     }
-    catch (e) {
-        err = e.toString()
+    else {
+        //binarySearch
+
+        // //test 0,1
+        // let r0 = core(0)
+        // let r1 = core(1)
+
+        //binarySearch
+        let bs = binarySearch(fun, 0, 1)
+        let x = bs.x
+        r = core(x)
+        // console.log('r.n', r.n, 'r.nn', r.nn)
+
+        //check 無法收斂
+        if (r.nn > 1) {
+            // throw new Error('無法收斂')
+            r = core(1) //若無法收斂則依照要求強制使用n=1 (2023/04/17)
+            // console.log('無法收斂', r, 'r0.nn', r0.nn, 'r1.nn', r1.nn)
+        }
+
     }
+
+    //check
+    let b = false
+    if (r.n > 1.0 || r.Icn > 2.6) {
+        b = true
+        n = 1.0
+        Cn = 0
+        Qtn = Qt
+        Icn = Ic
+    }
+    else if (r.n < 0.5) {
+        b = true
+        n = 0.5
+        Cn = (Pa / svp) ** n //Pa(MPa),svp(MPa)單位對消
+        if (useCnLeq) {
+            Cn = Math.min(Cn, 1.7)
+        }
+        Qtn = Cn * qnet / Pa
+        Icn = Math.sqrt((3.47 - Math.log10(Qtn)) ** 2 + (Math.log10(Fr) + 1.22) ** 2)
+    }
+
+    //update
+    if (b) {
+        r.n = n
+        r.Cn = Cn
+        r.Qtn = Qtn
+        r.Icn = Icn
+    }
+
+    //save
+    n = get(r, 'n', null)
+    Cn = get(r, 'Cn', null)
+    Qtn = get(r, 'Qtn', null)
+    Icn = get(r, 'Icn', null)
 
     // console.log('count', count)
     return ret()
@@ -402,10 +413,20 @@ function calcCptCore(dt, coe_a, opt = {}) {
 
     //check sv, svp
     if (isNumber(sv)) {
-        checkVerticalStress(sv, depth, unitSvSvp, 'sv')
+        try {
+            checkVerticalStress(sv, depth, unitSvSvp, 'sv')
+        }
+        catch (err) {
+            console.log('偵測sv發現錯誤', err.toString(), dt)
+        }
     }
     if (isNumber(svp)) {
-        checkVerticalStress(svp, depth, unitSvSvp, 'svp')
+        try {
+            checkVerticalStress(svp, depth, unitSvSvp, 'svp')
+        }
+        catch (err) {
+            console.log('偵測svp發現錯誤', err.toString(), dt)
+        }
     }
 
     //sv, svp(MPa), 後續sv, svp採MPa進行分析
