@@ -31,7 +31,7 @@ describe(`calcCptUnitWeight`, function() {
         method: 'Lunne(1997)',
         ...optDef,
     }
-    it(`should return rowsOut1 when calcCptUnitWeight(rowsIn, ${JSON.stringify(opt2)})`, function() {
+    it(`should return rowsOut2 when calcCptUnitWeight(rowsIn, ${JSON.stringify(opt2)})`, function() {
         let r = calcCptUnitWeight(rowsIn, opt2)
         let rr = rowsOut2
         assert.strict.deepStrictEqual(r, rr)
@@ -41,7 +41,7 @@ describe(`calcCptUnitWeight`, function() {
         method: 'Lunne(1997) for Robertsion stress exponent',
         ...optDef,
     }
-    it(`should return rowsOut1 when calcCptUnitWeight(rowsIn, ${JSON.stringify(opt3)})`, function() {
+    it(`should return rowsOut3 when calcCptUnitWeight(rowsIn, ${JSON.stringify(opt3)})`, function() {
         let r = calcCptUnitWeight(rowsIn, opt3)
         let rr = rowsOut3
         assert.strict.deepStrictEqual(r, rr)
@@ -51,7 +51,7 @@ describe(`calcCptUnitWeight`, function() {
         method: 'Robertson and Cabal(2010)',
         ...optDef,
     }
-    it(`should return rowsOut1 when calcCptUnitWeight(rowsIn, ${JSON.stringify(opt4)})`, function() {
+    it(`should return rowsOut4 when calcCptUnitWeight(rowsIn, ${JSON.stringify(opt4)})`, function() {
         let r = calcCptUnitWeight(rowsIn, opt4)
         let rr = rowsOut4
         assert.strict.deepStrictEqual(r, rr)
@@ -61,7 +61,7 @@ describe(`calcCptUnitWeight`, function() {
         method: 'Mayne(2014)',
         ...optDef,
     }
-    it(`should return rowsOut1 when calcCptUnitWeight(rowsIn, ${JSON.stringify(opt5)})`, function() {
+    it(`should return rowsOut5 when calcCptUnitWeight(rowsIn, ${JSON.stringify(opt5)})`, function() {
         let r = calcCptUnitWeight(rowsIn, opt5)
         let rr = rowsOut5
         assert.strict.deepStrictEqual(r, rr)

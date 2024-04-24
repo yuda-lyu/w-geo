@@ -1,4 +1,4 @@
-node --experimental-modules toolg/addVersion.mjs
+#node --experimental-modules toolg/addVersion.mjs
 node --experimental-modules toolg/modifyReadme.mjs
 
 node --experimental-modules toolg/gPackageIndex.mjs
@@ -18,5 +18,5 @@ npm run deploy
 
 #npm test
 
-npm publish
+#npm publish
 

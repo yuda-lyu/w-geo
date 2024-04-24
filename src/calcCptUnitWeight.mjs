@@ -162,7 +162,6 @@ function stress(ltdt, opt = {}) {
     })
     // console.log('ltdt[0](轉出svp)', ltdt[0])
 
-
     return ltdt
 }
 
@@ -235,11 +234,11 @@ function estUnitWeightCore(ltdt, coe_a, opt = {}) {
 
         //check 無rsat
         if (!isnum(v.rsat)) {
-            console.log('estUnitWeight', k, v)
-            throw new Error(`estUnitWeight: 樣本無飽和單位重rsat`)
+            console.log('樣本無飽和單位重rsat', k, v)
+            throw new Error(`樣本無飽和單位重rsat`)
         }
 
-        //rsat(kN/m3)
+        //rsat(kN/m3), 飽和單位重
         let rsat = null
         if (method === 'Robertson(1986)') {
             //查 kpCPTClassForRobBqRfqt, Robertson(1986)
@@ -364,17 +363,16 @@ function estUnitWeightCore(ltdt, coe_a, opt = {}) {
         if (rsat_ori_dig !== rsat_new_dig) {
             bUpdate = true
 
-            //rsat
+            //save rsat
             let rsatTemp = (rsat_ori * r0 + rsat_new * r1)
             v.rsat = fv(rsatTemp).vd
             // console.log(`rsat ${rsat_ori} -> ${rsatTemp}`)
 
-            //rd
+            //save rd
             let rdTemp = rsatTemp - rdiff
             v.rd = fv(rdTemp).vd
 
         }
-
 
         return v
     })
