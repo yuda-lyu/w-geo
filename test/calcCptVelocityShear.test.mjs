@@ -1,19 +1,19 @@
 import assert from 'assert'
 import calcCptUnitWeight from '../src/calcCptUnitWeight.mjs'
 import calcCptVelocityShear from '../src/calcCptVelocityShear.mjs'
-import _rowsIn from './calcCptVelocityShear-cpt-rowsIn.json' assert { type: "json" }
-import rowsOut1 from './calcCptVelocityShear-cpt-rowsOut1.json' assert { type: "json" }
-import rowsOut2 from './calcCptVelocityShear-cpt-rowsOut2.json' assert { type: "json" }
-import rowsOut3 from './calcCptVelocityShear-cpt-rowsOut3.json' assert { type: "json" }
-import rowsOut4 from './calcCptVelocityShear-cpt-rowsOut4.json' assert { type: "json" }
-import rowsOut5 from './calcCptVelocityShear-cpt-rowsOut5.json' assert { type: "json" }
-import rowsOut6 from './calcCptVelocityShear-cpt-rowsOut6.json' assert { type: "json" }
-import rowsOut7 from './calcCptVelocityShear-cpt-rowsOut7.json' assert { type: "json" }
-import rowsOut8 from './calcCptVelocityShear-cpt-rowsOut8.json' assert { type: "json" }
-import rowsOut9 from './calcCptVelocityShear-cpt-rowsOut9.json' assert { type: "json" }
-import rowsOut10 from './calcCptVelocityShear-cpt-rowsOut10.json' assert { type: "json" }
-import rowsOut11 from './calcCptVelocityShear-cpt-rowsOut11.json' assert { type: "json" }
-import rowsOut12 from './calcCptVelocityShear-cpt-rowsOut12.json' assert { type: "json" }
+import _rowsIn from './calcCptVelocityShear-rowsIn.json' assert { type: "json" }
+import rowsOut1 from './calcCptVelocityShear-rowsOut1.json' assert { type: "json" }
+import rowsOut2 from './calcCptVelocityShear-rowsOut2.json' assert { type: "json" }
+import rowsOut3 from './calcCptVelocityShear-rowsOut3.json' assert { type: "json" }
+import rowsOut4 from './calcCptVelocityShear-rowsOut4.json' assert { type: "json" }
+import rowsOut5 from './calcCptVelocityShear-rowsOut5.json' assert { type: "json" }
+import rowsOut6 from './calcCptVelocityShear-rowsOut6.json' assert { type: "json" }
+import rowsOut7 from './calcCptVelocityShear-rowsOut7.json' assert { type: "json" }
+import rowsOut8 from './calcCptVelocityShear-rowsOut8.json' assert { type: "json" }
+import rowsOut9 from './calcCptVelocityShear-rowsOut9.json' assert { type: "json" }
+import rowsOut10 from './calcCptVelocityShear-rowsOut10.json' assert { type: "json" }
+import rowsOut11 from './calcCptVelocityShear-rowsOut11.json' assert { type: "json" }
+import rowsOut12 from './calcCptVelocityShear-rowsOut12.json' assert { type: "json" }
 
 
 describe(`calcCptVelocityShear`, function() {

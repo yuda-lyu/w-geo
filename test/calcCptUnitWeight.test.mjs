@@ -1,11 +1,11 @@
 import assert from 'assert'
 import calcCptUnitWeight from '../src/calcCptUnitWeight.mjs'
-import rowsIn from './calcCptUnitWeight-cpt-rowsIn.json' assert { type: "json" }
-import rowsOut1 from './calcCptUnitWeight-cpt-rowsOut1.json' assert { type: "json" }
-import rowsOut2 from './calcCptUnitWeight-cpt-rowsOut2.json' assert { type: "json" }
-import rowsOut3 from './calcCptUnitWeight-cpt-rowsOut3.json' assert { type: "json" }
-import rowsOut4 from './calcCptUnitWeight-cpt-rowsOut4.json' assert { type: "json" }
-import rowsOut5 from './calcCptUnitWeight-cpt-rowsOut5.json' assert { type: "json" }
+import rowsIn from './calcCptUnitWeight-rowsIn.json' assert { type: "json" }
+import rowsOut1 from './calcCptUnitWeight-rowsOut1.json' assert { type: "json" }
+import rowsOut2 from './calcCptUnitWeight-rowsOut2.json' assert { type: "json" }
+import rowsOut3 from './calcCptUnitWeight-rowsOut3.json' assert { type: "json" }
+import rowsOut4 from './calcCptUnitWeight-rowsOut4.json' assert { type: "json" }
+import rowsOut5 from './calcCptUnitWeight-rowsOut5.json' assert { type: "json" }
 
 
 describe(`calcCptUnitWeight`, function() {

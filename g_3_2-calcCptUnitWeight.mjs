@@ -1272,8 +1272,8 @@ _.each(ms, (method, i) => {
     //opt
     let opt = {
         method,
-        rsatIni: 19.5,
         coe_a: 0.75,
+        rsatIni: 19.5,
         unitSvSvp: 'MPa',
     }
 
@@ -1281,9 +1281,9 @@ _.each(ms, (method, i) => {
     let rowsOut = calcCptUnitWeight(rowsIn, opt)
     // console.log(rowsOut[0])
 
-    fs.writeFileSync(`./calcCptUnitWeight-cpt-rowsIn.json`, JSON.stringify(rowsIn, null, 2), 'utf8')
-    fs.writeFileSync(`./calcCptUnitWeight-cpt-rowsOut${k}.json`, JSON.stringify(rowsOut, null, 2), 'utf8')
-    w.downloadExcelFileFromData(`./calcCptUnitWeight-cpt-mat(${opt.method}).xlsx`, 'mat', rowsOut)
+    fs.writeFileSync(`./calcCptUnitWeight-rowsIn.json`, JSON.stringify(rowsIn, null, 2), 'utf8')
+    fs.writeFileSync(`./calcCptUnitWeight-rowsOut${k}.json`, JSON.stringify(rowsOut, null, 2), 'utf8')
+    w.downloadExcelFileFromData(`./calcCptUnitWeight-mat(${opt.method}).xlsx`, 'mat', rowsOut)
 
 })
 

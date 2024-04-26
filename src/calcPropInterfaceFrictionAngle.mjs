@@ -56,6 +56,8 @@ async function calcPropInterfaceFrictionAngle(ltdt, xMeanTarget, opt = {}) {
 
     //check
     if (nps === 0) {
+        console.log('ltdt', ltdt)
+        console.log('keyX', keyX, 'keyY', keyY)
         throw new Error('no effective data')
     }
 

@@ -5028,8 +5028,8 @@ _.each(ms, (method, i) => {
 
     //optDef
     let optDef={
-        rsatIni: 19.5,
         coe_a: 0.75,
+        rsatIni: 19.5,
         unitSvSvp: 'MPa',
     }
 
@@ -5056,9 +5056,9 @@ _.each(ms, (method, i) => {
     let rowsOut = calcCptVelocityShear(rowsIn, optVelocityShear)
     // console.log('rowsOut[0](calcCptVelocityShear)',rowsOut[0])
 
-    fs.writeFileSync(`./calcCptVelocityShear-cpt-rowsIn.json`, JSON.stringify(_rowsIn, null, 2), 'utf8')
-    fs.writeFileSync(`./calcCptVelocityShear-cpt-rowsOut${k}.json`, JSON.stringify(rowsOut, null, 2), 'utf8')
-    w.downloadExcelFileFromData(`./calcCptVelocityShear-cpt-mat(${optVelocityShear.method}).xlsx`, 'mat', rowsOut)
+    fs.writeFileSync(`./calcCptVelocityShear-rowsIn.json`, JSON.stringify(_rowsIn, null, 2), 'utf8')
+    fs.writeFileSync(`./calcCptVelocityShear-rowsOut${k}.json`, JSON.stringify(rowsOut, null, 2), 'utf8')
+    w.downloadExcelFileFromData(`./calcCptVelocityShear-mat(${optVelocityShear.method}).xlsx`, 'mat', rowsOut)
 
 })
 
