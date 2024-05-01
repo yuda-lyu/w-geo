@@ -5036,7 +5036,7 @@ _.each(ms, (method, i) => {
     //optUnitWeight
     let optUnitWeight={
         ...optDef,
-        method:'Lunne(1997) for Robertsion stress exponent',
+        method:'Lunne(1997) for Robertson stress exponent',
     }
 
     //optVelocityShear

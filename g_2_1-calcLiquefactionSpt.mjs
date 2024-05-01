@@ -73,4 +73,4 @@ function calc(k) {
 calc(1)
 calc(2)
 
-//node --experimental-modules g_2_1_2-calcLiquefactionSpt.mjs
+//node --experimental-modules g_2_1_calcLiquefactionSpt.mjs

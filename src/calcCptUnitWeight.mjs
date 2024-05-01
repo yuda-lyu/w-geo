@@ -173,7 +173,7 @@ function estUnitWeightCore(ltdt, coe_a, opt = {}) {
     if (
         method !== 'Robertson(1986)' &&
         method !== 'Lunne(1997)' &&
-        method !== 'Lunne(1997) for Robertsion stress exponent' &&
+        method !== 'Lunne(1997) for Robertson stress exponent' &&
         method !== 'Robertson and Cabal(2010)' &&
         method !== 'Mayne(2014)' &&
         true
@@ -286,7 +286,7 @@ function estUnitWeightCore(ltdt, coe_a, opt = {}) {
             }
 
         }
-        else if (method === 'Lunne(1997) for Robertsion stress exponent') {
+        else if (method === 'Lunne(1997) for Robertson stress exponent') {
             //查 kpCPTClassForLunneBqFrQt, Lunne(1997), 改使用Robertson(1998)的FrQtn與BqQtn
 
             if (rsat === null && isint(v.iRobFrQtn)) { //查FrQtn圖優先

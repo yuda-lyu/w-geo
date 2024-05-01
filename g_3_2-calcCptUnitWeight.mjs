@@ -1261,7 +1261,7 @@ let rowsIn = [
 let ms = [
     'Robertson(1986)',
     'Lunne(1997)',
-    'Lunne(1997) for Robertsion stress exponent',
+    'Lunne(1997) for Robertson stress exponent',
     'Robertson and Cabal(2010)',
     'Mayne(2014)',
 ]

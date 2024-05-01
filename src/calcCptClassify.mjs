@@ -3435,7 +3435,7 @@ function csfRamFrQt(Fr, Qt) {
 }
 
 
-function simplifyRobertson1986Core(ram, opt = {}) {
+function simplifyRobertson1986Core(ir, opt = {}) {
     // 1: 'Sensitive fine grained',
     // 2: 'Organic material',
     // 3: 'Clay',
@@ -3461,13 +3461,13 @@ function simplifyRobertson1986Core(ram, opt = {}) {
     let funAdjust = get(opt, 'funAdjust')
 
     //check
-    if (!isnum(ram)) {
+    if (!isnum(ir)) {
         return ''
     }
 
     //計算對應分類
     let c = ''
-    let i = cint(ram)
+    let i = cint(ir)
     if (numOfType === 3) { //簡化之3種土壤單元
         let kp = {
             1: 'clay',
@@ -3566,6 +3566,12 @@ function simplifyRobertson1986Core(ram, opt = {}) {
 
 function simplifyRobertson1986(iRobRfqt, iRobBqqt, opt = {}) {
 
+    //fsFirst
+    let fsFirst = get(opt, 'fsFirst')
+    if (!isbol(fsFirst)) {
+        fsFirst = true
+    }
+
     //returnZone
     let returnZone = get(opt, 'returnZone')
     if (!isbol(returnZone)) {
@@ -3593,7 +3599,7 @@ function simplifyRobertson1986(iRobRfqt, iRobBqqt, opt = {}) {
     // console.log('simplifyRobertson1986Core cBqQt', cBqQt)
 
     if (iRobRfqt === null && iRobBqqt === null) {
-        return ''
+        return returnZone ? null : ''
     }
     else if (iRobRfqt !== null && iRobBqqt === null) {
         return returnZone ? iRobRfqt : cFrQt
@@ -3602,24 +3608,30 @@ function simplifyRobertson1986(iRobRfqt, iRobBqqt, opt = {}) {
         return returnZone ? iRobBqqt : cBqQt
     }
     else if (cFrQt !== cBqQt) {
-        //6,7,8,9,10,11,12,13視為砂性其他黏性, 若cFrQt與cBqQt皆為砂性則使用cBqQt, 反之則使用cFrQt
-        let iRobFrQtIsSandy = iRobRfqt >= 6
-        let iRobBqQtIsSandy = iRobBqqt >= 6
-        if (iRobFrQtIsSandy && iRobBqQtIsSandy) {
-            return returnZone ? iRobBqqt : cBqQt //皆砂性故使用cBqQt
+        if (fsFirst) {
+            return returnZone ? iRobRfqt : cFrQt //使用摩擦力-錐尖阻抗分類優先
         }
-        else if (!iRobFrQtIsSandy && !iRobBqQtIsSandy) {
-            return returnZone ? iRobRfqt : cFrQt //皆黏性故使用cFrQt
+        else {
+            //6,7,8,9,10,11,12,13視為砂性其他黏性, 若cFrQt與cBqQt皆為砂性則使用cBqQt, 反之則使用cFrQt
+            let iRobFrQtIsSandy = iRobRfqt >= 6
+            let iRobBqQtIsSandy = iRobBqqt >= 6
+            if (iRobFrQtIsSandy && iRobBqQtIsSandy) {
+                return returnZone ? iRobBqqt : cBqQt //皆砂性故使用cBqQt
+            }
+            else if (!iRobFrQtIsSandy && !iRobBqQtIsSandy) {
+                return returnZone ? iRobRfqt : cFrQt //皆黏性故使用cFrQt
+            }
         }
-        return '' //FrQt與BqQt分類不同, 兩者又是砂與黏性不同, 故視為無效分類, 交由其他深度做判斷
+
+        return returnZone ? null : '' //cFrQt與cBqQt分類不同, 兩者又是砂與黏性不同, 故視為無效分類, 交由其他深度做判斷
     }
     else {
-        return returnZone ? iRobRfqt : cFrQt
+        return returnZone ? iRobRfqt : cFrQt //cFrQt與cBqQt分類相同故預設回傳cFrQt
     }
 }
 
 
-function simplifyRobertson1990Core(ram, opt = {}) {
+function simplifyRobertson1990And2009Core(ir, opt = {}) {
     // 1: 'Sensitive fine grained',
     // 2: 'Organic soils - peats',
     // 3: 'Clays - clay to silty clay',
@@ -3641,13 +3653,13 @@ function simplifyRobertson1990Core(ram, opt = {}) {
     let funAdjust = get(opt, 'funAdjust')
 
     //check
-    if (!isnum(ram)) {
+    if (!isnum(ir)) {
         return ''
     }
 
     //計算對應分類
     let c = ''
-    let i = cint(ram)
+    let i = cint(ir)
     if (numOfType === 3) { //簡化之3種土壤單元
         let kp = {
             1: 'clay',
@@ -3768,7 +3780,14 @@ function simplifyRobertson1990Core(ram, opt = {}) {
 }
 
 
-function simplifyRobertson1990(iRobFrQt, iRobBqQt, opt = {}) {
+function simplifyRobertson1990And2009(iRobFrQt, iRobBqQt, opt = {}) {
+    //此函數為Robertson(1990)與Robertson(2009)共用核心, 故iRobFrQt與iRobBqQt亦代表iRobFrQtn與iRobBqQtn
+
+    //fsFirst
+    let fsFirst = get(opt, 'fsFirst')
+    if (!isbol(fsFirst)) {
+        fsFirst = true
+    }
 
     //returnZone
     let returnZone = get(opt, 'returnZone')
@@ -3790,14 +3809,14 @@ function simplifyRobertson1990(iRobFrQt, iRobBqQt, opt = {}) {
         iRobBqQt = null
     }
 
-    //simplifyRobertson1990Core
-    let cFrQt = simplifyRobertson1990Core(iRobFrQt, opt)
-    // console.log('simplifyRobertson1990Core cFrQt', cFrQt)
-    let cBqQt = simplifyRobertson1990Core(iRobBqQt, opt)
-    // console.log('simplifyRobertson1990Core cBqQt', cBqQt)
+    //simplifyRobertson1990And2009Core
+    let cFrQt = simplifyRobertson1990And2009Core(iRobFrQt, opt)
+    // console.log('simplifyRobertson1990And2009Core cFrQt', cFrQt)
+    let cBqQt = simplifyRobertson1990And2009Core(iRobBqQt, opt)
+    // console.log('simplifyRobertson1990And2009Core cBqQt', cBqQt)
 
     if (iRobFrQt === null && iRobBqQt === null) {
-        return ''
+        return returnZone ? null : ''
     }
     else if (iRobFrQt !== null && iRobBqQt === null) {
         return returnZone ? iRobFrQt : cFrQt
@@ -3806,29 +3825,39 @@ function simplifyRobertson1990(iRobFrQt, iRobBqQt, opt = {}) {
         return returnZone ? iRobBqQt : cBqQt
     }
     else if (cFrQt !== cBqQt) {
-        //6,7,8,9視為砂性其他黏性, 若cFrQt與cBqQt皆為砂性則使用cBqQt, 反之則使用cFrQt
-        let iRobFrQtIsSandy = iRobFrQt >= 6
-        let iRobBqQtIsSandy = iRobBqQt >= 6
-        if (iRobFrQtIsSandy && iRobBqQtIsSandy) {
-            return returnZone ? iRobBqQt : cBqQt //皆砂性故使用cBqQt
+        if (fsFirst) {
+            return returnZone ? iRobFrQt : cFrQt //使用摩擦力-錐尖阻抗分類優先
         }
-        else if (!iRobFrQtIsSandy && !iRobBqQtIsSandy) {
-            return returnZone ? iRobFrQt : cFrQt //皆黏性故使用cFrQt
+        else {
+            //6,7,8,9視為砂性其他黏性, 若cFrQt與cBqQt皆為砂性則使用cBqQt, 反之則使用cFrQt
+            let iRobFrQtIsSandy = iRobFrQt >= 6
+            let iRobBqQtIsSandy = iRobBqQt >= 6
+            if (iRobFrQtIsSandy && iRobBqQtIsSandy) {
+                return returnZone ? iRobBqQt : cBqQt //皆砂性故使用cBqQt
+            }
+            else if (!iRobFrQtIsSandy && !iRobBqQtIsSandy) {
+                return returnZone ? iRobFrQt : cFrQt //皆黏性故使用cFrQt
+            }
         }
-        return '' //FrQt與BqQt分類不同, 兩者又是砂與黏性不同, 故視為無效分類, 交由其他深度做判斷
+        return returnZone ? null : '' //cFrQt與cBqQt分類不同, 兩者又是砂與黏性不同, 故視為無效分類, 交由其他深度做判斷
     }
     else {
-        return returnZone ? iRobFrQt : cFrQt
+        return returnZone ? iRobFrQt : cFrQt //cFrQt與cBqQt分類相同故預設回傳cFrQt
     }
+}
+
+
+function simplifyRobertson1990(iRobFrQt, iRobBqQt, opt = {}) {
+    return simplifyRobertson1990And2009(iRobFrQt, iRobBqQt, opt)
 }
 
 
 function simplifyRobertson2009(iRobFrQtn, iRobBqQtn, opt = {}) {
-    return simplifyRobertson1990(iRobFrQtn, iRobBqQtn, opt)
+    return simplifyRobertson1990And2009(iRobFrQtn, iRobBqQtn, opt)
 }
 
 
-function simplifyRamseyCore(ram, opt = {}) {
+function simplifyRamseyCore(ir, opt = {}) {
     // 1: 'Extra sensitibe clay',
     // 2: 'Organic clay and peat',
     // 3: `Clay(su/p0'<=1)`,
@@ -3847,12 +3876,12 @@ function simplifyRamseyCore(ram, opt = {}) {
     }
 
     //check
-    if (!isnum(ram)) {
+    if (!isnum(ir)) {
         return ''
     }
 
     //計算對應分類
-    let i = cint(ram)
+    let i = cint(ir)
     if (numOfType === 3) { //簡化之3種土壤單元
         let kp = {
             1: 'clay',
@@ -3923,6 +3952,12 @@ function simplifyRamseyCore(ram, opt = {}) {
 
 function simplifyRamsey(iRamFrQt, iRamBqQt, opt = {}) {
 
+    //fsFirst
+    let fsFirst = get(opt, 'fsFirst')
+    if (!isbol(fsFirst)) {
+        fsFirst = true
+    }
+
     //returnZone
     let returnZone = get(opt, 'returnZone')
     if (!isbol(returnZone)) {
@@ -3950,7 +3985,7 @@ function simplifyRamsey(iRamFrQt, iRamBqQt, opt = {}) {
     // console.log('simplifyRamseyCore cBqQt', cBqQt)
 
     if (iRamFrQt === null && iRamBqQt === null) {
-        return ''
+        return returnZone ? null : ''
     }
     else if (iRamFrQt !== null && iRamBqQt === null) {
         return returnZone ? iRamFrQt : cFrQt
@@ -3959,19 +3994,24 @@ function simplifyRamsey(iRamFrQt, iRamBqQt, opt = {}) {
         return returnZone ? iRamFrQt : cBqQt
     }
     else if (cFrQt !== cBqQt) {
-        //5,8,9視為砂性其他黏性, 若cFrQt與cBqQt皆為砂性則使用cBqQt, 反之則使用cFrQt
-        let iRamFrQtIsSandy = iRamFrQt === 5 || iRamFrQt === 8 || iRamFrQt === 9
-        let iRamBqQtIsSandy = iRamBqQt === 5 || iRamBqQt === 8 || iRamBqQt === 9
-        if (iRamFrQtIsSandy && iRamBqQtIsSandy) {
-            return returnZone ? iRamFrQt : cBqQt //皆砂性故使用cBqQt
+        if (fsFirst) {
+            return returnZone ? iRamFrQt : cFrQt //使用摩擦力-錐尖阻抗分類優先
         }
-        else if (!iRamFrQtIsSandy && !iRamBqQtIsSandy) {
-            return returnZone ? iRamFrQt : cFrQt //皆黏性故使用cFrQt
+        else {
+            //5,8,9視為砂性其他黏性, 若cFrQt與cBqQt皆為砂性則使用cBqQt, 反之則使用cFrQt
+            let iRamFrQtIsSandy = iRamFrQt === 5 || iRamFrQt === 8 || iRamFrQt === 9
+            let iRamBqQtIsSandy = iRamBqQt === 5 || iRamBqQt === 8 || iRamBqQt === 9
+            if (iRamFrQtIsSandy && iRamBqQtIsSandy) {
+                return returnZone ? iRamFrQt : cBqQt //皆砂性故使用cBqQt
+            }
+            else if (!iRamFrQtIsSandy && !iRamBqQtIsSandy) {
+                return returnZone ? iRamFrQt : cFrQt //皆黏性故使用cFrQt
+            }
         }
-        return '' //FrQt與BqQt分類不同, 兩者又是砂與黏性不同, 故視為無效分類, 交由其他深度做判斷
+        return returnZone ? null : '' //FrQt與BqQt分類不同, 兩者又是砂與黏性不同, 故視為無效分類, 交由其他深度做判斷
     }
     else {
-        return returnZone ? iRamFrQt : cFrQt
+        return returnZone ? iRamFrQt : cFrQt //cFrQt與cBqQt分類相同故預設回傳cFrQt
     }
 }
 

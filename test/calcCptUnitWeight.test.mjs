@@ -38,7 +38,7 @@ describe(`calcCptUnitWeight`, function() {
     })
 
     let opt3 = {
-        method: 'Lunne(1997) for Robertsion stress exponent',
+        method: 'Lunne(1997) for Robertson stress exponent',
         ...optDef,
     }
     it(`should return rowsOut3 when calcCptUnitWeight(rowsIn, ${JSON.stringify(opt3)})`, function() {
