@@ -5155,5 +5155,16 @@ fs.writeFileSync(`./calcLayersByCompress-rowsIn.json`, JSON.stringify(_rowsIn), 
 fs.writeFileSync(`./calcLayersByCompress-rowsOut.json`, JSON.stringify(rowsOut), 'utf8')
 w.downloadExcelFileFromData(`./calcLayersByCompress-mat(${numMaxLayers}).xlsx`, 'data', rowsOut)
 
+//待加入可調整厚度陣列或起訖上下限設定
+
+// 已確認要加入「最小分層厚度」之分層機制，只要小於該厚度就判斷為「薄層」，整個風場採用相同「最小分層厚度」，完成各孔分層厚，
+
+// 最大層數若超過45層(暫定，強限制條件)，就增加「最小分層厚度」後重跑全孔；
+
+// 反之，若最大層數小於30層(暫定，弱限制條件，因為風場土層可能較為均質，雖然台灣海峽海域不太可能發生)，則減小「最小分層厚度」後重跑，
+
+// 另外「最小分層厚度」不宜太薄，可能須>=1.0 m(暫定，後續分析建模土層不宜過薄，強限制條件)。
+
+
 
 //node --experimental-modules g_6-1-calcLayersByCompress.mjs

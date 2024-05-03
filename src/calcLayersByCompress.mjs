@@ -10,6 +10,7 @@ import isnum from 'wsemi/src/isnum.mjs'
 import iseobj from 'wsemi/src/iseobj.mjs'
 import isbol from 'wsemi/src/isbol.mjs'
 import ispint from 'wsemi/src/ispint.mjs'
+import isearr from 'wsemi/src/isearr.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
 import cstr from 'wsemi/src/cstr.mjs'
 import arrSort from 'wsemi/src/arrSort.mjs'
@@ -65,6 +66,53 @@ function calcLayersByCompress(ltdt, opt = {}) {
 
     //keyMgValueIcn
     let keyMgValueIcn = get(opt, 'keyMgValueIcn', 'Icn')
+
+    //levelsForThicknessMax
+    let levelsForThicknessMax = get(opt, 'levelsForThicknessMax', [])
+    if (!isearr(levelsForThicknessMax)) {
+        levelsForThicknessMax = [
+            0.0201,
+            0.0401,
+            0.0601,
+            0.0801,
+            0.1001,
+            0.1251,
+            0.1501,
+            0.1751,
+            0.2001,
+            0.2501,
+            0.3001,
+            0.3501,
+            0.4001,
+            0.4501,
+            0.5001,
+            0.7501,
+            1.0001,
+            1.5001,
+            2.0001,
+            3.0001,
+            4.0001,
+            5.0001,
+            // 6.0001,
+            // 7.0001,
+            // 8.0001,
+            // 9.0001,
+            // 10.0001,
+        ]
+    }
+
+    //levelsForMgValueIcnDiffMax
+    let levelsForMgValueIcnDiffMax = get(opt, 'levelsForMgValueIcnDiffMax', [])
+    if (!isearr(levelsForMgValueIcnDiffMax)) {
+        levelsForMgValueIcnDiffMax = [
+            0.20,
+            0.25,
+            0.30,
+            // 0.35,
+            // 0.40,
+            // 0.50,
+        ]
+    }
 
     //saveFromInds
     let saveFromInds = get(opt, 'saveFromInds')
@@ -537,45 +585,10 @@ function calcLayersByCompress(ltdt, opt = {}) {
     if (true) {
 
         //_thicknessMax
-        let _thicknessMax = [
-            0.0201,
-            0.0401,
-            0.0601,
-            0.0801,
-            0.1001,
-            0.1251,
-            0.1501,
-            0.1751,
-            0.2001,
-            0.2501,
-            0.3001,
-            0.3501,
-            0.4001,
-            0.4501,
-            0.5001,
-            0.7501,
-            1.0001,
-            1.5001,
-            2.0001,
-            3.0001,
-            4.0001,
-            5.0001,
-            // 6.0001,
-            // 7.0001,
-            // 8.0001,
-            // 9.0001,
-            // 10.0001,
-        ]
+        let _thicknessMax = levelsForThicknessMax
 
         //_mgValueIcnDiffMax
-        let _mgValueIcnDiffMax = [
-            0.20,
-            0.25,
-            0.30,
-            // 0.35,
-            // 0.40,
-            // 0.50,
-        ]
+        let _mgValueIcnDiffMax = levelsForMgValueIcnDiffMax
 
         //ss
         let ss = []
