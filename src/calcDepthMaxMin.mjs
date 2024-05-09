@@ -7,7 +7,7 @@ import isestr from 'wsemi/src/isestr.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
 
 
-function getDepthMaxCeil(depth, interval) {
+function calcDepthMaxCeil(depth, interval) {
 
     //interval
     if (!isNumber(interval)) {
@@ -21,7 +21,7 @@ function getDepthMaxCeil(depth, interval) {
 }
 
 
-function getDepthMinFloor(depth, interval) {
+function calcDepthMinFloor(depth, interval) {
 
     //interval
     if (!isNumber(interval)) {
@@ -35,7 +35,7 @@ function getDepthMinFloor(depth, interval) {
 }
 
 
-function getDepthMax(ltdt, opt = {}) {
+function calcDepthMax(ltdt, opt = {}) {
     //取數據列最大深度
 
     //keyDepth
@@ -72,15 +72,15 @@ function getDepthMax(ltdt, opt = {}) {
             r = Math.max(r, cdbl(v[keyDepthEnd]))
         }
         if (isnum(v[keyDepth])) {
-            r = Math.max(r, cdbl(v[keyDepth])) //cpt只有depth
+            r = Math.max(r, cdbl(v[keyDepth]))
         }
     })
 
     //approximate
     if (approximate) {
 
-        //getDepthMaxCeil
-        r = getDepthMaxCeil(r)
+        //calcDepthMaxCeil
+        r = calcDepthMaxCeil(r)
 
     }
 
@@ -88,7 +88,7 @@ function getDepthMax(ltdt, opt = {}) {
 }
 
 
-function getDepthMin(ltdt, opt = {}) {
+function calcDepthMin(ltdt, opt = {}) {
     //取數據列最小深度
 
     //keyDepth
@@ -125,15 +125,15 @@ function getDepthMin(ltdt, opt = {}) {
             r = Math.min(r, cdbl(v[keyDepthEnd]))
         }
         if (isnum(v[keyDepth])) {
-            r = Math.min(r, cdbl(v[keyDepth])) //cpt只有depth
+            r = Math.min(r, cdbl(v[keyDepth]))
         }
     })
 
     //approximate
     if (approximate) {
 
-        //getDepthMinFloor
-        r = getDepthMinFloor(r)
+        //calcDepthMinFloor
+        r = calcDepthMinFloor(r)
 
     }
 
@@ -141,7 +141,7 @@ function getDepthMin(ltdt, opt = {}) {
 }
 
 
-function getDepthMaxMin(ltdt, opt = {}) {
+function calcDepthMaxMin(ltdt, opt = {}) {
 
     //keyDepth
     let keyDepth = get(opt, 'keyDepth')
@@ -167,11 +167,11 @@ function getDepthMaxMin(ltdt, opt = {}) {
         approximate = false
     }
 
-    //getDepthMax
-    let depthMax = getDepthMax(ltdt, opt)
+    //calcDepthMax
+    let depthMax = calcDepthMax(ltdt, opt)
 
-    //getDepthMin
-    let depthMin = getDepthMin(ltdt, opt)
+    //calcDepthMin
+    let depthMin = calcDepthMin(ltdt, opt)
 
     return {
         depthMax,
@@ -181,16 +181,16 @@ function getDepthMaxMin(ltdt, opt = {}) {
 
 
 export {
-    getDepthMaxCeil,
-    getDepthMinFloor,
-    getDepthMax,
-    getDepthMin,
-    getDepthMaxMin
+    calcDepthMaxCeil,
+    calcDepthMinFloor,
+    calcDepthMax,
+    calcDepthMin,
+    calcDepthMaxMin
 }
 export default { //整合輸出預設得要有default
-    getDepthMaxCeil,
-    getDepthMinFloor,
-    getDepthMax,
-    getDepthMin,
-    getDepthMaxMin
+    calcDepthMaxCeil,
+    calcDepthMinFloor,
+    calcDepthMax,
+    calcDepthMin,
+    calcDepthMaxMin
 }

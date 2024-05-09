@@ -1,6 +1,6 @@
 import fs from 'fs'
 import w from 'wsemi'
-import { getDepthMaxMin } from './src/getDepthMaxMin.mjs'
+import { calcDepthMaxMin } from './src/calcDepthMaxMin.mjs'
 
 
 let rowsIn = [
@@ -5006,17 +5006,17 @@ let rowsIn = [
     { 'depth': '99.98', 'qc': '19.64615385', 'fs': '0.117846154', 'u2': '-0.602846154', 'sv': '2.126171996', 'svp': '1.145368196' }
 ]
 
-//getDepthMaxMin
-let mm1 = getDepthMaxMin(rowsIn, { approximate: false })
+//calcDepthMaxMin
+let mm1 = calcDepthMaxMin(rowsIn, { approximate: false })
 console.log(mm1)
 // => { depthMax: 99.98, depthMin: 0 }
 
-//getDepthMaxMin
-let mm2 = getDepthMaxMin(rowsIn, { approximate: true })
+//calcDepthMaxMin
+let mm2 = calcDepthMaxMin(rowsIn, { approximate: true })
 console.log(mm2)
 // => { depthMax: 100, depthMin: 0 }
 
 let k = 1
-fs.writeFileSync(`./getDepthMaxMin-rowsIn${k}.json`, JSON.stringify(rowsIn), 'utf8')
+fs.writeFileSync(`./calcDepthMaxMin-rowsIn${k}.json`, JSON.stringify(rowsIn), 'utf8')
 
-//node --experimental-modules g_5_4-getDepthMaxMin.mjs
+//node --experimental-modules g_4_5-calcDepthMaxMin.mjs
