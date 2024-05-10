@@ -13,7 +13,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
 /**
  * 計算土壤塑性參數：液限LL、塑限PL、塑性指數PI之間互相轉換，至少3給2才能反推全部
  *
- * Unit Test: {@link https://github.com/yuda-lyu/w-geo/blob/master/test/relaPlasticityParams.test.js Github}
+ * Unit Test: {@link https://github.com/yuda-lyu/w-geo/blob/master/test/relaPlasticity.test.js Github}
  * @memberOf w-geo
  * @param {Number} [LL=null] 輸入液限數字，單位%，預設null
  * @param {Number} [PI=null] 輸入塑性指數數字，單位%，預設null
@@ -27,7 +27,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
  * let r
  *
  * try {
- *     r = relaPlasticityParams(LL, null, null)
+ *     r = relaPlasticity(LL, null, null)
  * }
  * catch (e) {
  *     r = e.toString()
@@ -36,7 +36,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
  * // => LL { LL: 24, PL: null, PI: null }
  *
  * try {
- *     r = relaPlasticityParams(null, PI, null)
+ *     r = relaPlasticity(null, PI, null)
  *     console.log('PI', r)
  * }
  * catch (e) {
@@ -45,7 +45,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
  * // => PI { LL: null, PL: null, PI: 14 }
  *
  * try {
- *     r = relaPlasticityParams(null, null, PL)
+ *     r = relaPlasticity(null, null, PL)
  * }
  * catch (e) {
  *     r = e.toString()
@@ -54,7 +54,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
  * // => PL { LL: null, PL: 10, PI: null }
  *
  * try {
- *     r = relaPlasticityParams(LL, PI, null)
+ *     r = relaPlasticity(LL, PI, null)
  * }
  * catch (e) {
  *     r = e.toString()
@@ -63,7 +63,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
  * // => LL,PI { LL: 24, PL: 10, PI: 14 }
  *
  * try {
- *     r = relaPlasticityParams(LL, null, PL)
+ *     r = relaPlasticity(LL, null, PL)
  * }
  * catch (e) {
  *     r = e.toString()
@@ -72,7 +72,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
  * // => LL,PL { LL: 24, PL: 10, PI: 14 }
  *
  * try {
- *     r = relaPlasticityParams(null, PI, PL)
+ *     r = relaPlasticity(null, PI, PL)
  * }
  * catch (e) {
  *     r = e.toString()
@@ -81,7 +81,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
  * // => PI,PL { LL: 24, PL: 10, PI: 14 }
  *
  * try {
- *     r = relaPlasticityParams(LL, PI, PL)
+ *     r = relaPlasticity(LL, PI, PL)
  * }
  * catch (e) {
  *     r = e.toString()
@@ -90,7 +90,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
  * // => LL,PI,PL { LL: 24, PL: 10, PI: 14 }
  *
  * try {
- *     r = relaPlasticityParams(2, PI, PL)
+ *     r = relaPlasticity(2, PI, PL)
  * }
  * catch (e) {
  *     r = e.toString()
@@ -104,7 +104,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
  * // }
  *
  * try {
- *     r = relaPlasticityParams(32, PI, PL)
+ *     r = relaPlasticity(32, PI, PL)
  * }
  * catch (e) {
  *     r = e.toString()
@@ -118,7 +118,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
  * // }
  *
  */
-function relaPlasticityParams(LL, PI, PL) {
+function relaPlasticity(LL, PI, PL, WC = null) {
     let kpErr = {} //非中斷報錯訊息
 
     //LL, %
@@ -257,11 +257,26 @@ function relaPlasticityParams(LL, PI, PL) {
         }
     }
 
+    //LI, CI
+    //CI<=0 : 流體狀，具流動性
+    //0<CI<=1 : 塑體狀，具塑狀性質
+    //CI>1 : 固體狀，具固體或半固體狀
+    //CI與LI之和為1
+    let LI = null //液性指數
+    let CI = null //稠度指數
+    if (isnum(WC) && PI !== 0) {
+        WC = cdbl(WC)
+        LI = (WC - PL) / PI
+        CI = (LL - WC) / PI
+    }
+
     //r
     let r = {
         LL,
         PL,
         PI,
+        LI,
+        CI,
     }
     if (iseobj(kpErr)) {
         let err = join(values(kpErr), ', ')
@@ -272,4 +287,4 @@ function relaPlasticityParams(LL, PI, PL) {
 }
 
 
-export default relaPlasticityParams
+export default relaPlasticity

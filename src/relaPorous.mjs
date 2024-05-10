@@ -98,7 +98,7 @@ function get_GS_from_rsat_e(rsat, e) {
 /**
  * 計算岩土孔隙參數：乾單位重rd、飽和單位重rsat、比重GS、孔隙比e之間互相轉換，至少4給2才能反推全部
  *
- * Unit Test: {@link https://github.com/yuda-lyu/w-geo/blob/master/test/relaPorousParams.test.js Github}
+ * Unit Test: {@link https://github.com/yuda-lyu/w-geo/blob/master/test/relaPorous.test.js Github}
  * @memberOf w-geo
  * @param {Number} [rd=null] 輸入乾單位重數字，單位kN/m3，預設null
  * @param {Number} [rsat=null] 輸入飽和單位重數字，單位kN/m3，預設null
@@ -115,7 +115,7 @@ function get_GS_from_rsat_e(rsat, e) {
  * let rsat = 18.776129032258066 //kN/m3
  * let r
  *
- * let coreFuncs = relaPorousParams(null, null, null, null, { returnFuncs: true }).coreFuncs
+ * let coreFuncs = relaPorous(null, null, null, null, { returnFuncs: true }).coreFuncs
  *
  * console.log('rd get_rd_from_GS_e', coreFuncs.get_rd_from_GS_e(GS, e))
  * // => rd get_rd_from_GS_e 14.240322580645163
@@ -153,7 +153,7 @@ function get_GS_from_rsat_e(rsat, e) {
  * console.log('GS get_GS_from_rsat_e', coreFuncs.get_GS_from_rsat_e(rsat, e))
  * // => GS get_GS_from_rsat_e 2.7
  *
- * r = relaPorousParams(rd, rsat, null, null)
+ * r = relaPorous(rd, rsat, null, null)
  * console.log('rd,rsat', r)
  * // => rd,rsat {
  * //     rd: 14.240322580645163,
@@ -162,7 +162,7 @@ function get_GS_from_rsat_e(rsat, e) {
  * //     e: 0.8599999999999998
  * // }
  *
- * r = relaPorousParams(rd, null, GS, null)
+ * r = relaPorous(rd, null, GS, null)
  * console.log('rd,GS', r)
  * // => rd,GS {
  * //     rd: 14.240322580645163,
@@ -171,7 +171,7 @@ function get_GS_from_rsat_e(rsat, e) {
  * //     e: 0.8599999999999999
  * // }
  *
- * r = relaPorousParams(rd, null, null, e)
+ * r = relaPorous(rd, null, null, e)
  * console.log('rd,e', r)
  * // => rd,e {
  * //     rd: 14.240322580645163,
@@ -180,7 +180,7 @@ function get_GS_from_rsat_e(rsat, e) {
  * //     e: 0.86
  * // }
  *
- * r = relaPorousParams(null, rsat, GS, null)
+ * r = relaPorous(null, rsat, GS, null)
  * console.log('rsat,GS', r)
  * // => rsat,GS {
  * //     rd: 14.240322580645161,
@@ -189,7 +189,7 @@ function get_GS_from_rsat_e(rsat, e) {
  * //     e: 0.8600000000000001
  * // }
  *
- * r = relaPorousParams(null, rsat, null, e)
+ * r = relaPorous(null, rsat, null, e)
  * console.log('rsat,e', r)
  * // => rsat,e {
  * //     rd: 14.240322580645163,
@@ -198,7 +198,7 @@ function get_GS_from_rsat_e(rsat, e) {
  * //     e: 0.86
  * // }
  *
- * r = relaPorousParams(null, null, GS, e)
+ * r = relaPorous(null, null, GS, e)
  * console.log('GS,e', r)
  * // => GS,e {
  * //     rd: 14.240322580645163,
@@ -207,7 +207,7 @@ function get_GS_from_rsat_e(rsat, e) {
  * //     e: 0.86
  * // }
  *
- * r = relaPorousParams(rd, rsat, GS, null)
+ * r = relaPorous(rd, rsat, GS, null)
  * console.log('rd,rsat,GS', r)
  * // => rd,rsat,GS {
  * //     rd: 14.240322580645163,
@@ -216,7 +216,7 @@ function get_GS_from_rsat_e(rsat, e) {
  * //     e: 0.8599999999999999
  * // }
  *
- * r = relaPorousParams(rd, rsat, null, e)
+ * r = relaPorous(rd, rsat, null, e)
  * console.log('rd,rsat,e', r)
  * // => rd,rsat,e {
  * //     rd: 14.240322580645163,
@@ -225,7 +225,7 @@ function get_GS_from_rsat_e(rsat, e) {
  * //     e: 0.86
  * // }
  *
- * r = relaPorousParams(rd, null, GS, e)
+ * r = relaPorous(rd, null, GS, e)
  * console.log('rd,GS,e', r)
  * // => rd,GS,e {
  * //     rd: 14.240322580645163,
@@ -234,7 +234,7 @@ function get_GS_from_rsat_e(rsat, e) {
  * //     e: 0.86
  * // }
  *
- * r = relaPorousParams(null, rsat, GS, e)
+ * r = relaPorous(null, rsat, GS, e)
  * console.log('rsat,GS,e', r)
  * // => rsat,GS,e {
  * //     rd: 14.240322580645163,
@@ -244,7 +244,7 @@ function get_GS_from_rsat_e(rsat, e) {
  * // }
  *
  * try {
- *     r = relaPorousParams(13.9, null, GS, e)
+ *     r = relaPorous(13.9, null, GS, e)
  * }
  * catch (e) {
  *     r = e.toString()
@@ -259,7 +259,7 @@ function get_GS_from_rsat_e(rsat, e) {
  * // }
  *
  */
-function relaPorousParams(rd, rsat, GS, e, opt = {}) {
+function relaPorous(rd, rsat, GS, e, opt = {}) {
     let kpErr = {} //非中斷報錯訊息
 
     //returnFuncs
@@ -462,4 +462,4 @@ function relaPorousParams(rd, rsat, GS, e, opt = {}) {
 }
 
 
-export default relaPorousParams
+export default relaPorous

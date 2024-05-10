@@ -1,8 +1,8 @@
 import assert from 'assert'
-import relaPorousParams from '../src/relaPorousParams.mjs'
+import relaPorous from '../src/relaPorous.mjs'
 
 
-describe(`relaPorousParams`, function() {
+describe(`relaPorous`, function() {
     let eps = 1e-6
     let GS = 2.7
     let e = 0.86
@@ -12,7 +12,7 @@ describe(`relaPorousParams`, function() {
         rd, rsat, GS, e
     }
     let call = JSON.stringify(all)
-    let coreFuncs = relaPorousParams(null, null, null, null, { returnFuncs: true }).coreFuncs
+    let coreFuncs = relaPorous(null, null, null, null, { returnFuncs: true }).coreFuncs
 
     it(`should return ${rd} when coreFuncs.get_rd_from_GS_e( ${GS}, ${e} )`, function() {
         let r = coreFuncs.get_rd_from_GS_e(GS, e)
@@ -90,62 +90,62 @@ describe(`relaPorousParams`, function() {
         return Math.abs(r.rd - rd) < eps && Math.abs(r.rsat - rsat) < eps && Math.abs(r.GS - GS) < eps && Math.abs(r.e - e) < eps
     }
 
-    it(`should return ${call} when relaPorousParams( ${rd}, ${rsat}, null, null )`, function() {
-        let r = relaPorousParams(rd, rsat, null, null)
+    it(`should return ${call} when relaPorous( ${rd}, ${rsat}, null, null )`, function() {
+        let r = relaPorous(rd, rsat, null, null)
         let rr = ck(r)
         assert.strict.deepStrictEqual(true, rr)
     })
 
-    it(`should return ${call} when relaPorousParams( ${rd}, null, ${GS}, null )`, function() {
-        let r = relaPorousParams(rd, null, GS, null)
+    it(`should return ${call} when relaPorous( ${rd}, null, ${GS}, null )`, function() {
+        let r = relaPorous(rd, null, GS, null)
         let rr = ck(r)
         assert.strict.deepStrictEqual(true, rr)
     })
 
-    it(`should return ${call} when relaPorousParams( ${rd}, null, null, ${e} )`, function() {
-        let r = relaPorousParams(rd, null, null, e)
+    it(`should return ${call} when relaPorous( ${rd}, null, null, ${e} )`, function() {
+        let r = relaPorous(rd, null, null, e)
         let rr = ck(r)
         assert.strict.deepStrictEqual(true, rr)
     })
 
-    it(`should return ${call} when relaPorousParams( null, ${rsat}, ${GS}, null )`, function() {
-        let r = relaPorousParams(null, rsat, GS, null)
+    it(`should return ${call} when relaPorous( null, ${rsat}, ${GS}, null )`, function() {
+        let r = relaPorous(null, rsat, GS, null)
         let rr = ck(r)
         assert.strict.deepStrictEqual(true, rr)
     })
 
-    it(`should return ${call} when relaPorousParams( null, ${rsat}, null, ${e} )`, function() {
-        let r = relaPorousParams(null, rsat, null, e)
+    it(`should return ${call} when relaPorous( null, ${rsat}, null, ${e} )`, function() {
+        let r = relaPorous(null, rsat, null, e)
         let rr = ck(r)
         assert.strict.deepStrictEqual(true, rr)
     })
 
-    it(`should return ${call} when relaPorousParams( null, null, ${GS}, ${e} )`, function() {
-        let r = relaPorousParams(null, null, GS, e)
+    it(`should return ${call} when relaPorous( null, null, ${GS}, ${e} )`, function() {
+        let r = relaPorous(null, null, GS, e)
         let rr = ck(r)
         assert.strict.deepStrictEqual(true, rr)
     })
 
-    it(`should return ${call} when relaPorousParams( ${rd}, ${rsat}, ${GS}, null )`, function() {
-        let r = relaPorousParams(rd, rsat, GS, null)
+    it(`should return ${call} when relaPorous( ${rd}, ${rsat}, ${GS}, null )`, function() {
+        let r = relaPorous(rd, rsat, GS, null)
         let rr = ck(r)
         assert.strict.deepStrictEqual(true, rr)
     })
 
-    it(`should return ${call} when relaPorousParams( ${rd}, ${rsat}, null, ${e} )`, function() {
-        let r = relaPorousParams(rd, rsat, null, e)
+    it(`should return ${call} when relaPorous( ${rd}, ${rsat}, null, ${e} )`, function() {
+        let r = relaPorous(rd, rsat, null, e)
         let rr = ck(r)
         assert.strict.deepStrictEqual(true, rr)
     })
 
-    it(`should return ${call} when relaPorousParams( ${rd}, null, ${GS}, ${e} )`, function() {
-        let r = relaPorousParams(rd, null, GS, e)
+    it(`should return ${call} when relaPorous( ${rd}, null, ${GS}, ${e} )`, function() {
+        let r = relaPorous(rd, null, GS, e)
         let rr = ck(r)
         assert.strict.deepStrictEqual(true, rr)
     })
 
-    it(`should return ${call} when relaPorousParams( null, ${rsat}, ${GS}, ${e} )`, function() {
-        let r = relaPorousParams(null, rsat, GS, e)
+    it(`should return ${call} when relaPorous( null, ${rsat}, ${GS}, ${e} )`, function() {
+        let r = relaPorous(null, rsat, GS, e)
         let rr = ck(r)
         assert.strict.deepStrictEqual(true, rr)
     })
@@ -157,8 +157,8 @@ describe(`relaPorousParams`, function() {
         e: 0.86,
         err: '輸入孔隙比[0.86]與反算出孔隙比[0.9055395683453238]差距過大'
     }
-    it(`should return ${JSON.stringify(rr1)} when relaPorousParams( 13.9, null, ${GS}, ${e} )`, function() {
-        let r = relaPorousParams(13.9, null, GS, e)
+    it(`should return ${JSON.stringify(rr1)} when relaPorous( 13.9, null, ${GS}, ${e} )`, function() {
+        let r = relaPorous(13.9, null, GS, e)
         let rr = rr1
         assert.strict.deepStrictEqual(r, rr)
     })

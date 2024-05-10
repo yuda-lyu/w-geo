@@ -1,4 +1,4 @@
-import relaPlasticityParams from './src/relaPlasticityParams.mjs'
+import relaPlasticity from './src/relaPlasticity.mjs'
 
 
 let LL = 24 //%
@@ -7,7 +7,7 @@ let PL = 10 //%
 let r
 
 try {
-    r = relaPlasticityParams(LL, null, null)
+    r = relaPlasticity(LL, null, null)
 }
 catch (e) {
     r = e.toString()
@@ -16,7 +16,7 @@ console.log('LL', r)
 // => LL { LL: 24, PL: null, PI: null }
 
 try {
-    r = relaPlasticityParams(null, PI, null)
+    r = relaPlasticity(null, PI, null)
     console.log('PI', r)
 }
 catch (e) {
@@ -25,7 +25,7 @@ catch (e) {
 // => PI { LL: null, PL: null, PI: 14 }
 
 try {
-    r = relaPlasticityParams(null, null, PL)
+    r = relaPlasticity(null, null, PL)
 }
 catch (e) {
     r = e.toString()
@@ -34,7 +34,7 @@ console.log('PL', r)
 // => PL { LL: null, PL: 10, PI: null }
 
 try {
-    r = relaPlasticityParams(LL, PI, null)
+    r = relaPlasticity(LL, PI, null)
 }
 catch (e) {
     r = e.toString()
@@ -43,7 +43,7 @@ console.log('LL,PI', r)
 // => LL,PI { LL: 24, PL: 10, PI: 14 }
 
 try {
-    r = relaPlasticityParams(LL, null, PL)
+    r = relaPlasticity(LL, null, PL)
 }
 catch (e) {
     r = e.toString()
@@ -52,7 +52,7 @@ console.log('LL,PL', r)
 // => LL,PL { LL: 24, PL: 10, PI: 14 }
 
 try {
-    r = relaPlasticityParams(null, PI, PL)
+    r = relaPlasticity(null, PI, PL)
 }
 catch (e) {
     r = e.toString()
@@ -61,7 +61,7 @@ console.log('PI,PL', r)
 // => PI,PL { LL: 24, PL: 10, PI: 14 }
 
 try {
-    r = relaPlasticityParams(LL, PI, PL)
+    r = relaPlasticity(LL, PI, PL)
 }
 catch (e) {
     r = e.toString()
@@ -70,7 +70,7 @@ console.log('LL,PI,PL', r)
 // => LL,PI,PL { LL: 24, PL: 10, PI: 14 }
 
 try {
-    r = relaPlasticityParams(2, PI, PL)
+    r = relaPlasticity(2, PI, PL)
 }
 catch (e) {
     r = e.toString()
@@ -84,7 +84,7 @@ console.log('2,PI,PL', r)
 // }
 
 try {
-    r = relaPlasticityParams(32, PI, PL)
+    r = relaPlasticity(32, PI, PL)
 }
 catch (e) {
     r = e.toString()
@@ -97,4 +97,4 @@ console.log('32,PI,PL', r)
 //   err: '輸入塑限[10]與反算出塑限[18]差距過大, 輸入塑性指數[14]與反算出塑性指數[22]差距過大, 輸入液限[32]與反算出液限[24]差距過大'
 // }
 
-//node --experimental-modules g_1_2-relaPlasticityParams.mjs
+//node --experimental-modules g_1_2-relaPlasticity.mjs

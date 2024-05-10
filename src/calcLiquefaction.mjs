@@ -28,7 +28,7 @@ import dtmapping from 'wsemi/src/dtmapping.mjs'
 import cnst from './cnst.mjs'
 import { intrpDefPp } from './intrpDefParam.mjs'
 import checkDepthStartEnd from './checkDepthStartEnd.mjs'
-import relaPorousParams from './relaPorousParams.mjs'
+import relaPorous from './relaPorous.mjs'
 import { checkVerticalStress, calcVerticalStress } from './calcVerticalStress.mjs'
 import { calcCptCore } from './calcCpt.mjs'
 
@@ -6845,12 +6845,12 @@ function liquefaction(kind, rows, opt = {}) {
                 v[keyDepth] = ''
             }
 
-            //relaPorousParams, SPT,CPT,VS都需要飽和與乾單位重計算垂直應力與垂直有效應力
+            //relaPorous, SPT,CPT,VS都需要飽和與乾單位重計算垂直應力與垂直有效應力
             let e = get(v, 'e', null)
             let GS = get(v, 'GS', null)
             let rd = get(v, 'rd', null) //乾單位重rd(kN/m3)
             let rsat = get(v, 'rsat', null) //飽和單位重rsat(kN/m3)
-            let t = relaPorousParams(rd, rsat, GS, e)
+            let t = relaPorous(rd, rsat, GS, e)
             if (get(t, 'err')) { //err為非中斷之錯誤訊息, 故需直接儲存
                 if (err === '') {
                     err = t.err

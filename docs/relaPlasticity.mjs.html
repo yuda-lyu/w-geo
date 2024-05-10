@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>relaPlasticityParams.mjs - Documentation</title>
+    <title>relaPlasticity.mjs - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -29,13 +29,13 @@
 <nav >
     
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcDepthByDepthStartEnd">calcDepthByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByConnect">calcDepthStartEndByConnect</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByDepth">calcDepthStartEndByDepth</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByGroup">calcDepthStartEndByGroup</a></li><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepth">checkDepth</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.complementDepthData">complementDepthData</a></li><li data-type='method'><a href="w-geo.html#.groupByDepthStartEnd">groupByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.mergeByDepthStartEnd">mergeByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPlasticityParams">relaPlasticityParams</a></li><li data-type='method'><a href="w-geo.html#.relaPorousParams">relaPorousParams</a></li><li data-type='method'><a href="w-geo.html#.sepDepthStartEndByDepth">sepDepthStartEndByDepth</a></li><li data-type='method'><a href="w-geo.html#.smoothDepthByKey">smoothDepthByKey</a></li><li data-type='method'><a href="w-geo.html#.sptHBF">sptHBF</a></li><li data-type='method'><a href="w-geo.html#.sptNCEER">sptNCEER</a></li><li data-type='method'><a href="w-geo.html#.sptNJRA">sptNJRA</a></li><li data-type='method'><a href="w-geo.html#.sptSeed">sptSeed</a></li><li data-type='method'><a href="w-geo.html#.sptTY">sptTY</a></li></ul></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcDepthByDepthStartEnd">calcDepthByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByConnect">calcDepthStartEndByConnect</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByDepth">calcDepthStartEndByDepth</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByGroup">calcDepthStartEndByGroup</a></li><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepth">checkDepth</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.complementDepthData">complementDepthData</a></li><li data-type='method'><a href="w-geo.html#.groupByDepthStartEnd">groupByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.mergeByDepthStartEnd">mergeByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPlasticity">relaPlasticity</a></li><li data-type='method'><a href="w-geo.html#.relaPorous">relaPorous</a></li><li data-type='method'><a href="w-geo.html#.sepDepthStartEndByDepth">sepDepthStartEndByDepth</a></li><li data-type='method'><a href="w-geo.html#.smoothDepthByKey">smoothDepthByKey</a></li><li data-type='method'><a href="w-geo.html#.sptHBF">sptHBF</a></li><li data-type='method'><a href="w-geo.html#.sptNCEER">sptNCEER</a></li><li data-type='method'><a href="w-geo.html#.sptNJRA">sptNJRA</a></li><li data-type='method'><a href="w-geo.html#.sptSeed">sptSeed</a></li><li data-type='method'><a href="w-geo.html#.sptTY">sptTY</a></li></ul></li></ul>
     
 </nav>
 
 <div id="main">
     
-    <h1 class="page-title">relaPlasticityParams.mjs</h1>
+    <h1 class="page-title">relaPlasticity.mjs</h1>
     
 
     
@@ -60,7 +60,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
 /**
  * 計算土壤塑性參數：液限LL、塑限PL、塑性指數PI之間互相轉換，至少3給2才能反推全部
  *
- * Unit Test: {@link https://github.com/yuda-lyu/w-geo/blob/master/test/relaPlasticityParams.test.js Github}
+ * Unit Test: {@link https://github.com/yuda-lyu/w-geo/blob/master/test/relaPlasticity.test.js Github}
  * @memberOf w-geo
  * @param {Number} [LL=null] 輸入液限數字，單位%，預設null
  * @param {Number} [PI=null] 輸入塑性指數數字，單位%，預設null
@@ -74,7 +74,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
  * let r
  *
  * try {
- *     r = relaPlasticityParams(LL, null, null)
+ *     r = relaPlasticity(LL, null, null)
  * }
  * catch (e) {
  *     r = e.toString()
@@ -83,7 +83,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
  * // => LL { LL: 24, PL: null, PI: null }
  *
  * try {
- *     r = relaPlasticityParams(null, PI, null)
+ *     r = relaPlasticity(null, PI, null)
  *     console.log('PI', r)
  * }
  * catch (e) {
@@ -92,7 +92,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
  * // => PI { LL: null, PL: null, PI: 14 }
  *
  * try {
- *     r = relaPlasticityParams(null, null, PL)
+ *     r = relaPlasticity(null, null, PL)
  * }
  * catch (e) {
  *     r = e.toString()
@@ -101,7 +101,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
  * // => PL { LL: null, PL: 10, PI: null }
  *
  * try {
- *     r = relaPlasticityParams(LL, PI, null)
+ *     r = relaPlasticity(LL, PI, null)
  * }
  * catch (e) {
  *     r = e.toString()
@@ -110,7 +110,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
  * // => LL,PI { LL: 24, PL: 10, PI: 14 }
  *
  * try {
- *     r = relaPlasticityParams(LL, null, PL)
+ *     r = relaPlasticity(LL, null, PL)
  * }
  * catch (e) {
  *     r = e.toString()
@@ -119,7 +119,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
  * // => LL,PL { LL: 24, PL: 10, PI: 14 }
  *
  * try {
- *     r = relaPlasticityParams(null, PI, PL)
+ *     r = relaPlasticity(null, PI, PL)
  * }
  * catch (e) {
  *     r = e.toString()
@@ -128,7 +128,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
  * // => PI,PL { LL: 24, PL: 10, PI: 14 }
  *
  * try {
- *     r = relaPlasticityParams(LL, PI, PL)
+ *     r = relaPlasticity(LL, PI, PL)
  * }
  * catch (e) {
  *     r = e.toString()
@@ -137,7 +137,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
  * // => LL,PI,PL { LL: 24, PL: 10, PI: 14 }
  *
  * try {
- *     r = relaPlasticityParams(2, PI, PL)
+ *     r = relaPlasticity(2, PI, PL)
  * }
  * catch (e) {
  *     r = e.toString()
@@ -151,7 +151,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
  * // }
  *
  * try {
- *     r = relaPlasticityParams(32, PI, PL)
+ *     r = relaPlasticity(32, PI, PL)
  * }
  * catch (e) {
  *     r = e.toString()
@@ -165,7 +165,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
  * // }
  *
  */
-function relaPlasticityParams(LL, PI, PL) {
+function relaPlasticity(LL, PI, PL, WC = null) {
     let kpErr = {} //非中斷報錯訊息
 
     //LL, %
@@ -304,11 +304,26 @@ function relaPlasticityParams(LL, PI, PL) {
         }
     }
 
+    //LI, CI
+    //CI&lt;=0 : 流體狀，具流動性
+    //0&lt;CI&lt;=1 : 塑體狀，具塑狀性質
+    //CI>1 : 固體狀，具固體或半固體狀
+    //CI與LI之和為1
+    let LI = null //液性指數
+    let CI = null //稠度指數
+    if (isnum(WC) &amp;&amp; PI !== 0) {
+        WC = cdbl(WC)
+        LI = (WC - PL) / PI
+        CI = (LL - WC) / PI
+    }
+
     //r
     let r = {
         LL,
         PL,
         PI,
+        LI,
+        CI,
     }
     if (iseobj(kpErr)) {
         let err = join(values(kpErr), ', ')
@@ -319,7 +334,7 @@ function relaPlasticityParams(LL, PI, PL) {
 }
 
 
-export default relaPlasticityParams
+export default relaPlasticity
 </code></pre>
         </article>
     </section>
@@ -334,7 +349,7 @@ export default relaPlasticityParams
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Fri May 10 2024 16:59:17 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Fri May 10 2024 22:48:58 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
