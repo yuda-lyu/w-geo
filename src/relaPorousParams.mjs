@@ -2,10 +2,10 @@ import get from 'lodash-es/get.js'
 import join from 'lodash-es/join.js'
 import values from 'lodash-es/values.js'
 import isNumber from 'lodash-es/isNumber.js'
-import cdbl from 'wsemi/src/cdbl.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
 import isbol from 'wsemi/src/isbol.mjs'
 import iseobj from 'wsemi/src/iseobj.mjs'
+import cdbl from 'wsemi/src/cdbl.mjs'
 import cnst from './cnst.mjs'
 
 
