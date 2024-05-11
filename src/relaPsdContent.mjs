@@ -2,7 +2,7 @@ import isnum from 'wsemi/src/isnum.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
 
 
-function relaPsdContent(ctGravel, ctSand, ctSilt, ctClay) {
+function relaPsdContent(ctGravel, ctSand, ctSilt, ctClay, opt = {}) {
 
     //ctCoarse
     let ctCoarse = null

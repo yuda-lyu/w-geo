@@ -4,6 +4,7 @@ import relaPlasticity from '../src/relaPlasticity.mjs'
 
 describe(`relaPlasticity`, function() {
     let eps = 1e-6
+
     let LL = 24 //%
     let PI = 14 //%
     let PL = 10 //%

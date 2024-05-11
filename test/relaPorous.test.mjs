@@ -4,6 +4,7 @@ import relaPorous from '../src/relaPorous.mjs'
 
 describe(`relaPorous`, function() {
     let eps = 1e-6
+
     let GS = 2.7
     let e = 0.86
     let rd = 14.240322580645163 //kN/m3
