@@ -275,6 +275,7 @@ function relaPlasticity(LL, PI, PL, WC = null) {
         LL,
         PL,
         PI,
+        WC,
         LI,
         CI,
     }

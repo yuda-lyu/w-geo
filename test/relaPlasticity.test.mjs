@@ -12,6 +12,7 @@ describe(`relaPlasticity`, function() {
         LL,
         PI,
         PL,
+        WC: null,
         CI: null,
         LI: null,
     }
@@ -25,6 +26,7 @@ describe(`relaPlasticity`, function() {
         LL: 24,
         PL: null,
         PI: null,
+        WC: null,
         CI: null,
         LI: null,
     }
@@ -38,6 +40,7 @@ describe(`relaPlasticity`, function() {
         LL: null,
         PL: null,
         PI: 14,
+        WC: null,
         CI: null,
         LI: null,
     }
@@ -51,6 +54,7 @@ describe(`relaPlasticity`, function() {
         LL: null,
         PL: 10,
         PI: null,
+        WC: null,
         CI: null,
         LI: null,
     }
@@ -88,6 +92,7 @@ describe(`relaPlasticity`, function() {
         LL: 2,
         PL: 10,
         PI: 14,
+        WC: null,
         CI: null,
         LI: null,
         err: '液限[2]<=塑限[10], 反算出塑限[-12]<=0, 反算出塑性指數[-8]<=0, 輸入液限[2]與反算出液限[24]差距過大'
@@ -102,6 +107,7 @@ describe(`relaPlasticity`, function() {
         LL: 32,
         PL: 10,
         PI: 14,
+        WC: null,
         CI: null,
         LI: null,
         err: '輸入塑限[10]與反算出塑限[18]差距過大, 輸入塑性指數[14]與反算出塑性指數[22]差距過大, 輸入液限[32]與反算出液限[24]差距過大'

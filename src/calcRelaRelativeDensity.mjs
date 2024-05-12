@@ -7,10 +7,10 @@ import isnum from 'wsemi/src/isnum.mjs'
 import isfun from 'wsemi/src/isfun.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
 import buildInterpFun from './buildInterpFun.mjs'
-import dtRelaPlasticity from './dtRelaPlasticity.mjs'
+import dtRelaRelativeDensity from './dtRelaRelativeDensity.mjs'
 
 
-function calcRelaPlasticity(ltdt, opt = {}) {
+function calcRelaRelativeDensity(ltdt, opt = {}) {
 
     //keyDepth
     let keyDepth = get(opt, 'keyDepth')
@@ -18,37 +18,37 @@ function calcRelaPlasticity(ltdt, opt = {}) {
         keyDepth = 'depth'
     }
 
-    //keyWc
-    let keyWc = get(opt, 'keyWc')
-    if (!isestr(keyWc)) {
-        keyWc = 'WC'
+    //keyRd
+    let keyRd = get(opt, 'keyRd')
+    if (!isestr(keyRd)) {
+        keyRd = 'rd'
     }
 
-    //interpWc, 有些阿太堡沒給含水量, 用內插補可再多計算LI,CI
-    let interpWc = null
+    //interpRd
+    let interpRd = null
     if (true) {
 
-        //WCs
-        let WCs = map(ltdt, keyWc)
-        WCs = filter(WCs, isnum)
+        //rds
+        let rds = map(ltdt, keyRd)
+        rds = filter(rds, isnum)
 
         //若ltdt內有部份提供WC, 則以此內插LI, CI
-        if (size(WCs) > 0) {
-            interpWc = buildInterpFun(ltdt, keyDepth, keyWc)
+        if (size(rds) > 0) {
+            interpRd = buildInterpFun(ltdt, keyDepth, keyRd)
         }
 
     }
 
     let rs = map(ltdt, (dt) => {
 
-        //WC, 含水量(%)
-        let WC = get(dt, keyWc)
-        if (!isnum(WC)) {
-            WC = null
+        //rd, 乾單位重(kN/m3)
+        let rd = get(dt, keyRd)
+        if (!isnum(rd)) {
+            rd = null
         }
 
         //check
-        if (!isnum(WC) && isfun(interpWc)) {
+        if (!isnum(rd) && isfun(interpRd)) {
 
             //depth
             let depth = get(dt, keyDepth)
@@ -59,29 +59,29 @@ function calcRelaPlasticity(ltdt, opt = {}) {
                 //cdbl
                 depth = cdbl(depth)
 
-                //interpWc
-                WC = interpWc(depth)
+                //interpRd
+                rd = interpRd(depth)
 
                 //check
-                if (!isnum(WC)) {
+                if (!isnum(rd)) {
                     console.log('keyDepth', keyDepth)
-                    console.log('keyWc', keyWc)
+                    console.log('keyRd', keyRd)
                     console.log('dt', dt)
-                    console.log('計算阿太堡時無法內插含水量')
+                    console.log('計算相對密度時無法內插乾單位重')
                 }
 
             }
 
         }
 
-        //merge WC
+        //merge rd
         dt = {
             ...dt,
-            WC,
+            rd,
         }
 
-        //dtRelaPlasticity
-        let r = dtRelaPlasticity(dt, opt)
+        //dtRelaRelativeDensity
+        let r = dtRelaRelativeDensity(dt, opt)
 
         return r
     })
@@ -89,4 +89,4 @@ function calcRelaPlasticity(ltdt, opt = {}) {
 }
 
 
-export default calcRelaPlasticity
+export default calcRelaRelativeDensity

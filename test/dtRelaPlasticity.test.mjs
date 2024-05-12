@@ -12,6 +12,7 @@ describe(`dtRelaPlasticity`, function() {
         LL,
         PI,
         PL,
+        WC: null,
         CI: null,
         LI: null,
     }
@@ -30,6 +31,7 @@ describe(`dtRelaPlasticity`, function() {
         LL: 24,
         PL: null,
         PI: null,
+        WC: null,
         CI: null,
         LI: null,
     }
@@ -48,6 +50,7 @@ describe(`dtRelaPlasticity`, function() {
         LL: null,
         PL: null,
         PI: 14,
+        WC: null,
         CI: null,
         LI: null,
     }
@@ -66,6 +69,7 @@ describe(`dtRelaPlasticity`, function() {
         LL: null,
         PL: 10,
         PI: null,
+        WC: null,
         CI: null,
         LI: null,
     }
@@ -128,6 +132,7 @@ describe(`dtRelaPlasticity`, function() {
         LL: 2,
         PL: 10,
         PI: 14,
+        WC: null,
         CI: null,
         LI: null,
         err: '液限[2]<=塑限[10], 反算出塑限[-12]<=0, 反算出塑性指數[-8]<=0, 輸入液限[2]與反算出液限[24]差距過大'
@@ -147,6 +152,7 @@ describe(`dtRelaPlasticity`, function() {
         LL: 32,
         PL: 10,
         PI: 14,
+        WC: null,
         CI: null,
         LI: null,
         err: '輸入塑限[10]與反算出塑限[18]差距過大, 輸入塑性指數[14]與反算出塑性指數[22]差距過大, 輸入液限[32]與反算出液限[24]差距過大'
@@ -154,6 +160,26 @@ describe(`dtRelaPlasticity`, function() {
     it(`should return ${JSON.stringify(rr9)} when dtRelaPlasticity(${JSON.stringify(r9)})`, function() {
         let r = dtRelaPlasticity(r9)
         let rr = rr9
+        assert.strict.deepStrictEqual(r, rr)
+    })
+
+    let r10 = {
+        LL,
+        PI,
+        PL,
+        WC: 11,
+    }
+    let rr10 = {
+        LL,
+        PI,
+        PL,
+        WC: 11,
+        CI: 0.9285714285714286,
+        LI: 0.07142857142857142,
+    }
+    it(`should return ${JSON.stringify(rr10)} when dtRelaPlasticity(${JSON.stringify(r10)})`, function() {
+        let r = dtRelaPlasticity(r10)
+        let rr = rr10
         assert.strict.deepStrictEqual(r, rr)
     })
 
