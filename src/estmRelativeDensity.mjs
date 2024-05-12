@@ -2,7 +2,7 @@ import isnum from 'wsemi/src/isnum.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
 
 
-function relaRelativeDensity(rd, Gt_dry_min, Gt_dry_max, opt = {}) {
+function estmRelativeDensity(rd, Gt_dry_min, Gt_dry_max, opt = {}) {
     //rd, , 乾單位重(kN/m3)
 
     //check rd
@@ -67,4 +67,4 @@ function relaRelativeDensity(rd, Gt_dry_min, Gt_dry_max, opt = {}) {
 }
 
 
-export default relaRelativeDensity
+export default estmRelativeDensity

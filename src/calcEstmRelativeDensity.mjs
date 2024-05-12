@@ -7,10 +7,10 @@ import isnum from 'wsemi/src/isnum.mjs'
 import isfun from 'wsemi/src/isfun.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
 import buildInterpFun from './buildInterpFun.mjs'
-import dtRelaRelativeDensity from './dtRelaRelativeDensity.mjs'
+import dtEstmRelativeDensity from './dtEstmRelativeDensity.mjs'
 
 
-function calcRelaRelativeDensity(ltdt, opt = {}) {
+function calcEstmRelativeDensity(ltdt, opt = {}) {
 
     //keyDepth
     let keyDepth = get(opt, 'keyDepth')
@@ -84,8 +84,8 @@ function calcRelaRelativeDensity(ltdt, opt = {}) {
             rd,
         }
 
-        //dtRelaRelativeDensity
-        let r = dtRelaRelativeDensity(dt, opt)
+        //dtEstmRelativeDensity
+        let r = dtEstmRelativeDensity(dt, opt)
 
         return r
     })
@@ -94,4 +94,4 @@ function calcRelaRelativeDensity(ltdt, opt = {}) {
 }
 
 
-export default calcRelaRelativeDensity
+export default calcEstmRelativeDensity

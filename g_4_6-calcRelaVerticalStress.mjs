@@ -1,4 +1,4 @@
-import calcRelaVerticalStress from './src/calcRelaVerticalStress.mjs'
+import calcEstmVerticalStress from './src/calcEstmVerticalStress.mjs'
 
 let ltdtIn
 let ltdtOut
@@ -15,7 +15,7 @@ ltdtIn = [
         rsat: 19.0,
     },
 ]
-ltdtOut = calcRelaVerticalStress(ltdtIn)
+ltdtOut = calcEstmVerticalStress(ltdtIn)
 console.log(ltdtOut)
 // => [
 //   { depth: 1, rd: 17.5, rsat: 18.5, sv: 17.34375, svp: 8.146875 },
@@ -37,7 +37,7 @@ ltdtIn = [
         rsat: 19.0,
     },
 ]
-ltdtOut = calcRelaVerticalStress(ltdtIn)
+ltdtOut = calcEstmVerticalStress(ltdtIn)
 console.log(ltdtOut)
 // => [
 //   { depth: 1, rd: 17.5, rsat: 18.5, sv: 17.34375, svp: 8.146875 },
@@ -45,4 +45,4 @@ console.log(ltdtOut)
 //   { depth: 3, rd: 18, rsat: 19, sv: 56.046875, svp: 26.616875 }
 // ]
 
-//node --experimental-modules g_4_6-calcRelaVerticalStress.mjs
+//node --experimental-modules g_4_6-calcEstmVerticalStress.mjs

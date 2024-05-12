@@ -57,7 +57,7 @@ function buildIntrpSvSvp(ed, depth) {
 }
 
 
-function calcRelaVerticalStress(ltdt, opt = {}) {
+function calcEstmVerticalStress(ltdt, opt = {}) {
 
     //keyDepth
     let keyDepth = get(opt, 'keyDepth')
@@ -188,4 +188,4 @@ function calcRelaVerticalStress(ltdt, opt = {}) {
 }
 
 
-export default calcRelaVerticalStress
+export default calcEstmVerticalStress

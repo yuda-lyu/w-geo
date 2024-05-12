@@ -1,16 +1,16 @@
 import get from 'lodash-es/get.js'
-import relaRelativeDensity from './relaRelativeDensity.mjs'
+import estmRelativeDensity from './estmRelativeDensity.mjs'
 
 
-function dtRelaRelativeDensity(dt, opt = {}) {
+function dtEstmRelativeDensity(dt, opt = {}) {
 
     //rd, Gt_dry_min, Gt_dry_max
     let rd = get(dt, 'rd', null)
     let Gt_dry_min = get(dt, 'Gt_dry_min', null)
     let Gt_dry_max = get(dt, 'Gt_dry_max', null)
 
-    //relaRelativeDensity
-    let r = relaRelativeDensity(rd, Gt_dry_min, Gt_dry_max, opt)
+    //estmRelativeDensity
+    let r = estmRelativeDensity(rd, Gt_dry_min, Gt_dry_max, opt)
     r = {
         ...dt,
         ...r,
@@ -20,4 +20,4 @@ function dtRelaRelativeDensity(dt, opt = {}) {
 }
 
 
-export default dtRelaRelativeDensity
+export default dtEstmRelativeDensity
