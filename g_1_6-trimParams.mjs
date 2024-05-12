@@ -22,4 +22,4 @@ console.log(rowsOut)
 //   { i1: '12.3', i2: '45.6', i3: '78.9', i4: '0.01' }
 // ]
 
-//node --experimental-modules g_1_5-trimParams.mjs
+//node --experimental-modules g_1_6-trimParams.mjs

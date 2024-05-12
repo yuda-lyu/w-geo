@@ -3,7 +3,7 @@ import cdbl from 'wsemi/src/cdbl.mjs'
 
 
 function estmRelativeDensity(rd, Gt_dry_min, Gt_dry_max, opt = {}) {
-    //rd, , 乾單位重(kN/m3)
+    //rd, 乾單位重(kN/m3)
 
     //check rd
     if (!isnum(rd)) {
