@@ -9,7 +9,7 @@ import cint from 'wsemi/src/cint.mjs'
 import dig from 'wsemi/src/dig.mjs'
 import cnst from './cnst.mjs'
 import { intrpDefPp } from './intrpDefParam.mjs'
-import { calcVerticalStress } from './calcVerticalStress.mjs'
+import calcVerticalStress from './calcVerticalStress.mjs'
 import calcDepthStartEndByDepth from './calcDepthStartEndByDepth.mjs'
 import { basic, calcCptCore } from './calcCpt.mjs'
 

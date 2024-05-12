@@ -29,7 +29,8 @@ import cnst from './cnst.mjs'
 import { intrpDefPp } from './intrpDefParam.mjs'
 import checkDepthStartEnd from './checkDepthStartEnd.mjs'
 import relaPorous from './relaPorous.mjs'
-import { checkVerticalStress, calcVerticalStress } from './calcVerticalStress.mjs'
+import checkVerticalStress from './checkVerticalStress.mjs'
+import calcVerticalStress from './calcVerticalStress.mjs'
 import { calcCptCore } from './calcCpt.mjs'
 
 

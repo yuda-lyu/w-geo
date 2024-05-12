@@ -39,6 +39,10 @@ function calcRelaPlasticity(ltdt, opt = {}) {
 
     }
 
+    //bInterpWc
+    let bInterpWc = isfun(interpWc)
+
+    //rs
     let rs = map(ltdt, (dt) => {
 
         //WC, 含水量(%)
@@ -48,7 +52,7 @@ function calcRelaPlasticity(ltdt, opt = {}) {
         }
 
         //check
-        if (!isnum(WC) && isfun(interpWc)) {
+        if (!isnum(WC) && bInterpWc) {
 
             //depth
             let depth = get(dt, keyDepth)
@@ -85,6 +89,7 @@ function calcRelaPlasticity(ltdt, opt = {}) {
 
         return r
     })
+
     return rs
 }
 

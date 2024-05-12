@@ -17,7 +17,7 @@ import { pickData } from './_share.mjs'
 import cnst from './cnst.mjs'
 import { intrpDefPp, intrpDefSvSvp } from './intrpDefParam.mjs'
 import smoothDepthByKey from './smoothDepthByKey.mjs'
-import { checkVerticalStress } from './calcVerticalStress.mjs'
+import checkVerticalStress from './checkVerticalStress.mjs'
 import { cptClassify } from './calcCptClassify.mjs'
 
 

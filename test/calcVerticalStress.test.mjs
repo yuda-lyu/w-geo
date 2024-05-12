@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { calcVerticalStress } from '../src/calcVerticalStress.mjs'
+import calcVerticalStress from '../src/calcVerticalStress.mjs'
 
 
 describe(`calcVerticalStress`, function() {
@@ -7,7 +7,7 @@ describe(`calcVerticalStress`, function() {
     let f1 = () => {
         let waterLevelUsual = 0
         let waterLevelDesign = 0
-        let rows = [
+        let ltdt = [
             {
                 depthStart: 0,
                 depthEnd: 5,
@@ -24,7 +24,7 @@ describe(`calcVerticalStress`, function() {
                 rsat: 18, //kN/m3
             },
         ]
-        // let rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
+        // let rowsNew = calcVerticalStress(ltdt, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
         // console.log(rowsNew, (18 - 9.81) * 15) //地下 15(m) 處之垂直有效應力為 122.85(kN/m2)
         let rowsNew = [
             {
@@ -62,8 +62,8 @@ describe(`calcVerticalStress`, function() {
             }
         ]
 
-        it(`should return ${JSON.stringify(rowsNew)} when calcVerticalStress(${JSON.stringify(rows)}, ${JSON.stringify({ waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })})`, function() {
-            let r = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
+        it(`should return ${JSON.stringify(rowsNew)} when calcVerticalStress(${JSON.stringify(ltdt)}, ${JSON.stringify({ waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })})`, function() {
+            let r = calcVerticalStress(ltdt, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
             let rr = rowsNew
             assert.strict.deepStrictEqual(r, rr)
         })
@@ -74,7 +74,7 @@ describe(`calcVerticalStress`, function() {
     let f2 = () => {
         let waterLevelUsual = 0
         let waterLevelDesign = 0
-        let rows = [
+        let ltdt = [
             {
                 depthStart: 0,
                 depthEnd: 5,
@@ -91,7 +91,7 @@ describe(`calcVerticalStress`, function() {
                 rsat: 20, //kN/m3
             },
         ]
-        // let rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
+        // let rowsNew = calcVerticalStress(ltdt, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
         // console.log(rowsNew, (19 - 9.81) * 15) //地下 15(m) 處之垂直有效應力為 137.85(kN/m2)
         let rowsNew = [
             {
@@ -129,8 +129,8 @@ describe(`calcVerticalStress`, function() {
             }
         ]
 
-        it(`should return ${JSON.stringify(rowsNew)} when calcVerticalStress(${JSON.stringify(rows)}, ${JSON.stringify({ waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })})`, function() {
-            let r = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
+        it(`should return ${JSON.stringify(rowsNew)} when calcVerticalStress(${JSON.stringify(ltdt)}, ${JSON.stringify({ waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })})`, function() {
+            let r = calcVerticalStress(ltdt, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
             let rr = rowsNew
             assert.strict.deepStrictEqual(r, rr)
         })
@@ -141,7 +141,7 @@ describe(`calcVerticalStress`, function() {
     let f3 = () => {
         let waterLevelUsual = 20
         let waterLevelDesign = 20
-        let rows = [
+        let ltdt = [
             {
                 depthStart: 0,
                 depthEnd: 5,
@@ -158,7 +158,7 @@ describe(`calcVerticalStress`, function() {
                 rd: 18, //kN/m3
             },
         ]
-        // let rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
+        // let rowsNew = calcVerticalStress(ltdt, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
         // console.log(rowsNew, (18) * 15) //地下 15(m) 處之垂直總應力與垂直有效應力為 270(kN/m2)
         let rowsNew = [
             {
@@ -196,8 +196,8 @@ describe(`calcVerticalStress`, function() {
             }
         ]
 
-        it(`should return ${JSON.stringify(rowsNew)} when calcVerticalStress(${JSON.stringify(rows)}, ${JSON.stringify({ waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })})`, function() {
-            let r = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
+        it(`should return ${JSON.stringify(rowsNew)} when calcVerticalStress(${JSON.stringify(ltdt)}, ${JSON.stringify({ waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })})`, function() {
+            let r = calcVerticalStress(ltdt, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
             let rr = rowsNew
             assert.strict.deepStrictEqual(r, rr)
         })
@@ -208,7 +208,7 @@ describe(`calcVerticalStress`, function() {
     let f4 = () => {
         let waterLevelUsual = 3
         let waterLevelDesign = 3
-        let rows = [
+        let ltdt = [
             {
                 depthStart: 0,
                 depthEnd: 3,
@@ -220,7 +220,7 @@ describe(`calcVerticalStress`, function() {
                 rsat: 20, //kN/m3
             },
         ]
-        // let rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
+        // let rowsNew = calcVerticalStress(ltdt, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
         // console.log(rowsNew, 18 * 3 + (20 * 4 - 9.81 * 4)) //地下 7(m) 處之垂直有效應力為 94.76(kN/m2)
         let rowsNew = [
             {
@@ -247,8 +247,8 @@ describe(`calcVerticalStress`, function() {
             }
         ]
 
-        it(`should return ${JSON.stringify(rowsNew)} when calcVerticalStress(${JSON.stringify(rows)}, ${JSON.stringify({ waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })})`, function() {
-            let r = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
+        it(`should return ${JSON.stringify(rowsNew)} when calcVerticalStress(${JSON.stringify(ltdt)}, ${JSON.stringify({ waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })})`, function() {
+            let r = calcVerticalStress(ltdt, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
             let rr = rowsNew
             assert.strict.deepStrictEqual(r, rr)
         })
@@ -259,7 +259,7 @@ describe(`calcVerticalStress`, function() {
     let f5 = () => {
         let waterLevelUsual = 3
         let waterLevelDesign = 3
-        let rows = [
+        let ltdt = [
             {
                 depthStart: 0,
                 depthEnd: 1,
@@ -277,7 +277,7 @@ describe(`calcVerticalStress`, function() {
                 rsat: 20, //kN/m3
             },
         ]
-        // let rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
+        // let rowsNew = calcVerticalStress(ltdt, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
         // console.log(rowsNew, 18 * 3 + (20 * 4 - 9.81 * 4)) //地下 7(m) 處之垂直有效應力為 94.76(kN/m2)
         let rowsNew = [
             {
@@ -316,8 +316,8 @@ describe(`calcVerticalStress`, function() {
             }
         ]
 
-        it(`should return ${JSON.stringify(rowsNew)} when calcVerticalStress(${JSON.stringify(rows)}, ${JSON.stringify({ waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })})`, function() {
-            let r = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
+        it(`should return ${JSON.stringify(rowsNew)} when calcVerticalStress(${JSON.stringify(ltdt)}, ${JSON.stringify({ waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })})`, function() {
+            let r = calcVerticalStress(ltdt, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
             let rr = rowsNew
             assert.strict.deepStrictEqual(r, rr)
         })
@@ -328,7 +328,7 @@ describe(`calcVerticalStress`, function() {
     let f6 = () => {
         let waterLevelUsual = 3
         let waterLevelDesign = 0
-        let rows = [
+        let ltdt = [
             {
                 depthStart: 0,
                 depthEnd: 1,
@@ -347,7 +347,7 @@ describe(`calcVerticalStress`, function() {
                 rsat: 20, //kN/m3
             },
         ]
-        // let rowsNew = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
+        // let rowsNew = calcVerticalStress(ltdt, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
         // console.log(rowsNew, 18 * 3 + (20 * 4 - 9.81 * 4), (20 - 9.81) * 7) //地下 7(m) 處之常時垂直有效應力為 94.76(kN/m2), 設計垂直有效應力為 71.33(kN/m2)
         let rowsNew = [
             {
@@ -387,8 +387,8 @@ describe(`calcVerticalStress`, function() {
             }
         ]
 
-        it(`should return ${JSON.stringify(rowsNew)} when calcVerticalStress(${JSON.stringify(rows)}, ${JSON.stringify({ waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })})`, function() {
-            let r = calcVerticalStress(rows, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
+        it(`should return ${JSON.stringify(rowsNew)} when calcVerticalStress(${JSON.stringify(ltdt)}, ${JSON.stringify({ waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })})`, function() {
+            let r = calcVerticalStress(ltdt, { waterLevelUsual, waterLevelDesign, unitSvSvp: 'kPa' })
             let rr = rowsNew
             assert.strict.deepStrictEqual(r, rr)
         })

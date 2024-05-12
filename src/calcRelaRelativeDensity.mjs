@@ -39,6 +39,10 @@ function calcRelaRelativeDensity(ltdt, opt = {}) {
 
     }
 
+    //bInterpRd
+    let bInterpRd = isfun(interpRd)
+
+    //rs
     let rs = map(ltdt, (dt) => {
 
         //rd, 乾單位重(kN/m3)
@@ -48,7 +52,7 @@ function calcRelaRelativeDensity(ltdt, opt = {}) {
         }
 
         //check
-        if (!isnum(rd) && isfun(interpRd)) {
+        if (!isnum(rd) && bInterpRd) {
 
             //depth
             let depth = get(dt, keyDepth)
@@ -85,6 +89,7 @@ function calcRelaRelativeDensity(ltdt, opt = {}) {
 
         return r
     })
+
     return rs
 }
 
