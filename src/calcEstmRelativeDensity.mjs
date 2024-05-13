@@ -24,6 +24,18 @@ function calcEstmRelativeDensity(ltdt, opt = {}) {
         keyRd = 'rd'
     }
 
+    // //keyRdMin
+    // let keyRdMin = get(opt, 'keyRdMin')
+    // if (!isestr(keyRdMin)) {
+    //     keyRdMin = 'rdMin'
+    // }
+
+    // //keyRdMax
+    // let keyRdMax = get(opt, 'keyRdMax')
+    // if (!isestr(keyRdMax)) {
+    //     keyRdMax = 'rdMax'
+    // }
+
     //interpRd
     let interpRd = null
     if (true) {
@@ -80,6 +92,7 @@ function calcEstmRelativeDensity(ltdt, opt = {}) {
 
                 //check
                 if (!isnum(rd)) {
+                    console.log('rd', rd)
                     console.log('keyDepth', keyDepth)
                     console.log('keyRd', keyRd)
                     console.log('dt', dt)

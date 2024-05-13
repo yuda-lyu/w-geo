@@ -80,7 +80,7 @@ function buildInterpFun(ltdt, keyDepth, keyTarget, opt = {}) {
         xMax: depthMax,
     }
 
-    //interpFun, 建立階梯內插函數
+    //interpFun
     let interpFun = (x) => {
         let one = false
         if (isnum(x)) {
