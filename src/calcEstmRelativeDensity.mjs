@@ -1,6 +1,6 @@
 import get from 'lodash-es/get.js'
+import each from 'lodash-es/each.js'
 import map from 'lodash-es/map.js'
-import filter from 'lodash-es/filter.js'
 import size from 'lodash-es/size.js'
 import isestr from 'wsemi/src/isestr.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
@@ -29,12 +29,24 @@ function calcEstmRelativeDensity(ltdt, opt = {}) {
     if (true) {
 
         //rds
-        let rds = map(ltdt, keyRd)
-        rds = filter(rds, isnum)
+        let rds = []
+        each(ltdt, (dt) => {
+            let depth = get(dt, keyDepth)
+            let rd = get(dt, keyRd)
+            if (isnum(depth) && isnum(rd)) {
+                depth = cdbl(depth)
+                rd = cdbl(rd)
+                rds.push({
+                    [keyDepth]: depth,
+                    [keyRd]: rd,
+                })
+            }
+        })
+        // console.log('rds', rds)
 
-        //若ltdt內有部份提供WC, 則以此內插LI, CI
+        //若ltdt內有部份提供depth與rd, 則以此內插rd
         if (size(rds) > 0) {
-            interpRd = buildInterpFun(ltdt, keyDepth, keyRd)
+            interpRd = buildInterpFun(rds, keyDepth, keyRd, { mode: 'linear' }) //內插rd使用線性內插
         }
 
     }

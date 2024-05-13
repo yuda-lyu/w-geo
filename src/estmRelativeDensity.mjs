@@ -2,7 +2,7 @@ import isnum from 'wsemi/src/isnum.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
 
 
-function estmRelativeDensity(rd, Gt_dry_min, Gt_dry_max, opt = {}) {
+function estmRelativeDensity(rd, rdMin, rdMax, opt = {}) {
     //rd, 乾單位重(kN/m3)
 
     //check rd
@@ -11,36 +11,36 @@ function estmRelativeDensity(rd, Gt_dry_min, Gt_dry_max, opt = {}) {
     }
     rd = cdbl(rd)
 
-    //check Gt_dry_min
-    if (!isnum(Gt_dry_min)) {
-        throw new Error(`Gt_dry_min[${Gt_dry_min}] is not a number`)
+    //check rdMin
+    if (!isnum(rdMin)) {
+        throw new Error(`rdMin[${rdMin}] is not a number`)
     }
-    Gt_dry_min = cdbl(Gt_dry_min)
+    rdMin = cdbl(rdMin)
 
-    //check Gt_dry_max
-    if (!isnum(Gt_dry_max)) {
-        throw new Error(`Gt_dry_max[${Gt_dry_max}] is not a number`)
+    //check rdMax
+    if (!isnum(rdMax)) {
+        throw new Error(`rdMax[${rdMax}] is not a number`)
     }
-    Gt_dry_max = cdbl(Gt_dry_max)
+    rdMax = cdbl(rdMax)
 
-    //check Gt_dry_min > Gt_dry_max
-    if (Gt_dry_min > Gt_dry_max) {
-        throw new Error(`Gt_dry_min[${Gt_dry_min}] > Gt_dry_max[${Gt_dry_max}]`)
-    }
-
-    //check rd < Gt_dry_min
-    if (rd < Gt_dry_min) {
-        throw new Error(`rd[${rd}] < Gt_dry_min[${Gt_dry_min}]`)
+    //check rdMin > rdMax
+    if (rdMin > rdMax) {
+        throw new Error(`rdMin[${rdMin}] > rdMax[${rdMax}]`)
     }
 
-    //check rd > Gt_dry_max
-    if (rd > Gt_dry_max) {
-        throw new Error(`rd[${rd}] > Gt_dry_max[${Gt_dry_max}]`)
+    //check rd < rdMin
+    if (rd < rdMin) {
+        throw new Error(`rd[${rd}] < rdMin[${rdMin}]`)
+    }
+
+    //check rd > rdMax
+    if (rd > rdMax) {
+        throw new Error(`rd[${rd}] > rdMax[${rdMax}]`)
     }
 
     //dr1, dr2
-    let dr1 = Gt_dry_max * (rd - Gt_dry_min)
-    let dr2 = rd * (Gt_dry_max - Gt_dry_min)
+    let dr1 = rdMax * (rd - rdMin)
+    let dr2 = rd * (rdMax - rdMin)
 
     //Dr, 相對密度(%)
     let Dr = null
@@ -58,8 +58,8 @@ function estmRelativeDensity(rd, Gt_dry_min, Gt_dry_max, opt = {}) {
     //r
     let r = {
         rd,
-        Gt_dry_min,
-        Gt_dry_max,
+        rdMin,
+        rdMax,
         Dr,
     }
 
