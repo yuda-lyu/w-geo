@@ -58,6 +58,28 @@ function calcEstmRelativeDensity(ltdt, opt = {}) {
 
         //若ltdt內有部份提供depth與rd, 則以此內插rd
         if (size(rds) > 0) {
+
+            let n = size(rds)
+
+            //rd0
+            let rd0 = get(rds, 0)
+
+            //rdn
+            let rdn = get(rds, n - 1)
+
+            //擴充最淺與最深處rd避免外插問題
+            rds = [
+                {
+                    ...rd0,
+                    [keyDepth]: rd0[keyDepth] - 1e10,
+                },
+                ...rds,
+                {
+                    ...rdn,
+                    [keyDepth]: rdn[keyDepth] + 1e10,
+                },
+            ]
+
             interpRd = buildInterpFun(rds, keyDepth, keyRd, { mode: 'linear' }) //內插rd使用線性內插
         }
 
