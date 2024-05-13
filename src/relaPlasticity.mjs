@@ -264,10 +264,20 @@ function relaPlasticity(LL, PI, PL, WC = null) {
     //CI與LI之和為1
     let LI = null //液性指數
     let CI = null //稠度指數
-    if (isnum(WC) && PI !== 0) {
+    if (isnum(WC) && isnum(PL) && isnum(LL) && PI > 0) {
         WC = cdbl(WC)
         LI = (WC - PL) / PI
         CI = (LL - WC) / PI
+        if (!isnum(LI)) {
+            console.log('WC', WC)
+            console.log('PL', PL)
+            throw new Error(`內插LI[${LI}]時發生錯誤`)
+        }
+        if (!isnum(CI)) {
+            console.log('WC', WC)
+            console.log('LL', LL)
+            throw new Error(`內插CI[${CI}]時發生錯誤`)
+        }
     }
 
     //r
