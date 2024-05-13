@@ -16,13 +16,26 @@ describe(`intrpPsdBySize`, function() {
             fraction: f,
         }
     })
-    let psizes = 0.063
-    // let r = intrpPsdBySize(pfss, psizes)
 
-    let out1 = 98.4880247416152
-    it(`should return ${out1} when intrpPsdBySize(pfss, ${psizes})`, function() {
-        let r = intrpPsdBySize(pfss, psizes)
-        let rr = out1
+    let psizes1 = 0.063
+    let rr1 = 98.4880247416152
+    it(`should return ${JSON.stringify(rr1)} when intrpPsdBySize(${JSON.stringify(pfss)}, ${JSON.stringify(psizes1)})`, function() {
+        let r = intrpPsdBySize(pfss, psizes1)
+        let rr = rr1
+        assert.strict.deepStrictEqual(r, rr)
+    })
+
+    let psizes2 = [
+        0.063,
+        0.02,
+    ]
+    let rr2 = [
+        98.4880247416152,
+        88.59851004564663,
+    ]
+    it(`should return ${JSON.stringify(rr2)} when intrpPsdBySize(${JSON.stringify(pfss)}, ${JSON.stringify(psizes2)})`, function() {
+        let r = intrpPsdBySize(pfss, psizes2)
+        let rr = rr2
         assert.strict.deepStrictEqual(r, rr)
     })
 

@@ -9,8 +9,8 @@ import cdbl from 'wsemi/src/cdbl.mjs'
 import intrpPsdBySize from './intrpPsdBySize.mjs'
 
 
-//parseStrArray
-let parseStrArray = (c) => {
+//partseStrArray
+let partseStrArray = (c) => {
     let r = j2o(c)
     if (!isearr(r)) {
         console.log('c', c)
@@ -40,7 +40,7 @@ function dtIntrpPsdBySize(dt, psizes, opt = {}) {
         throw new Error('invalid GSD')
     }
     if (isestr(GSD)) {
-        GSD = parseStrArray(GSD)
+        GSD = partseStrArray(GSD)
     }
     // console.log('GSD', GSD)
 
@@ -50,12 +50,21 @@ function dtIntrpPsdBySize(dt, psizes, opt = {}) {
         throw new Error('invalid GSP')
     }
     if (isestr(GSP)) {
-        GSP = parseStrArray(GSP)
+        GSP = partseStrArray(GSP)
     }
     // console.log('GSP', GSP)
 
+    //one
+    let one = false
+    if (isnum(psizes)) {
+        one = true
+    }
+
     //psizes
-    if (!isearr(psizes)) {
+    if (isnum(psizes)) {
+        psizes = [cdbl(psizes)]
+    }
+    else if (!isearr(psizes)) {
         //ASTM
         psizes = [
             101.6,
@@ -120,17 +129,23 @@ function dtIntrpPsdBySize(dt, psizes, opt = {}) {
     // console.log('fss', fss)
 
     //重算各size處之通過百分比
-    let rs = intrpPsdBySize(fss, psizes, { keySize, keyFraction })
-    rs = map(rs, (fraction, k) => {
+    let rts = intrpPsdBySize(fss, psizes, { keySize, keyFraction })
+    rts = map(rts, (fraction, k) => {
         let size = get(psizes, k)
         return {
             [keySize]: size,
             [keyFraction]: fraction,
         }
     })
-    // console.log('rs', rs)
+    // console.log('rts', rts)
 
-    return rs
+    //r
+    let r = rts
+    if (one) {
+        r = rts[0]
+    }
+
+    return r
 }
 
 

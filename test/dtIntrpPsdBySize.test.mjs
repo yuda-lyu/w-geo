@@ -11,7 +11,15 @@ describe(`dtIntrpPsdBySize`, function() {
         GSP: `[100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, -1.0, 100.0, 99.0, 96.0, 86.0, 74.0, 61.0, 51.0, 32.0, 16.0, 0.0, 0.0, 0.0]`,
     }
 
-    let psizes = [
+    let psizes1 = 0.63
+    let rr1 = { size: 0.63, fraction: 100.00000000000001 }
+    it(`should return ${JSON.stringify(rr1)} when dtIntrpPsdBySize(${JSON.stringify(dt)}, ${JSON.stringify(psizes1)})`, function() {
+        let r = dtIntrpPsdBySize(dt, psizes1)
+        let rr = rr1
+        assert.strict.deepStrictEqual(r, rr)
+    })
+
+    let psizes2 = [
         630,
         200,
         63,
@@ -25,9 +33,7 @@ describe(`dtIntrpPsdBySize`, function() {
         0.0063,
         0.002,
     ]
-    // let fss = dtIntrpPsdBySize(dt, psizes)
-
-    let out1 = [
+    let rr2 = [
         { size: 630, fraction: 100 },
         { size: 200, fraction: 100 },
         { size: 63, fraction: 99.99999999999999 },
@@ -41,9 +47,9 @@ describe(`dtIntrpPsdBySize`, function() {
         { size: 0.0063, fraction: 52.69597513510718 },
         { size: 0.002, fraction: 26.094876057143324 }
     ]
-    it(`should return ${out1} when dtIntrpPsdBySize(dt, ${psizes})`, function() {
-        let r = dtIntrpPsdBySize(dt, psizes)
-        let rr = out1
+    it(`should return ${JSON.stringify(rr2)} when dtIntrpPsdBySize(${JSON.stringify(dt)}, ${JSON.stringify(psizes2)})`, function() {
+        let r = dtIntrpPsdBySize(dt, psizes2)
+        let rr = rr2
         assert.strict.deepStrictEqual(r, rr)
     })
 

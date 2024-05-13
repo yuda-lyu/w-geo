@@ -65,18 +65,22 @@ function intrpPsdBySize(pfss, psizes, opt = {}) {
         throw new Error(`invalid rs`)
     }
 
-    //lrs
-    let lrs = map(rs, (v) => {
-        v[keySize] = Math.log(v[keySize])
-        return v
+    //rls
+    let rls = map(rs, (v) => {
+        let vlog = Math.log(v[keySize])
+        // v[keySize] = Math.log(v[keySize]) //因取filter再Math.log, 實際會造成對外部陣列物件修改, 得要用{...}或cloneDeep脫勾
+        return {
+            ...v,
+            [keySize]: vlog,
+        }
     })
 
     //sizeLogMax, sizeLogMin
-    let sizeLogMax = maxBy(lrs, keySize)
-    let sizeLogMin = minBy(lrs, keySize)
+    let sizeLogMax = maxBy(rls, keySize)
+    let sizeLogMin = minBy(rls, keySize)
 
-    //ifs
-    let ifs = map(psizes, (psize) => {
+    //rts
+    let rts = map(psizes, (psize) => {
 
         //sizeLog
         let sizeLog = Math.log(psize)
@@ -96,12 +100,12 @@ function intrpPsdBySize(pfss, psizes, opt = {}) {
             keyX: keySize,
             keyY: keyFraction,
         }
-        let pfraction = interp1(lrs, sizeLog, optP)
+        let pfraction = interp1(rls, sizeLog, optP)
         // console.log('pfraction', pfraction)
 
         //check
         if (get(pfraction, 'err')) {
-            console.log('lrs', lrs)
+            console.log('rls', rls)
             console.log('sizeLog', sizeLog)
             console.log('optP', optP)
             console.log('pfraction', pfraction)
@@ -110,12 +114,12 @@ function intrpPsdBySize(pfss, psizes, opt = {}) {
 
         return pfraction
     })
-    // console.log('ifs', ifs)
+    // console.log('rts', rts)
 
     //r
-    let r = ifs
+    let r = rts
     if (one) {
-        r = ifs[0]
+        r = rts[0]
     }
 
     return r
