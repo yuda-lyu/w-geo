@@ -156,33 +156,33 @@ function calcEstmVerticalStress(ltdt, opt = {}) {
 
                 //check
                 if (!isnum(sv)) {
-                    console.log('r', r)
-                    console.log('keyDepth', keyDepth)
                     console.log('dt', dt)
+                    console.log('keyDepth', keyDepth)
+                    console.log('r', r)
                     console.log('無法內插垂直總應力')
                 }
 
                 //check
                 if (!isnum(svp)) {
-                    console.log('r', r)
-                    console.log('keyDepth', keyDepth)
                     console.log('dt', dt)
+                    console.log('keyDepth', keyDepth)
+                    console.log('r', r)
                     console.log('無法內插垂直有效應力')
                 }
 
                 //check
                 if (!isnum(rd)) {
-                    console.log('r', r)
-                    console.log('keyDepth', keyDepth)
                     console.log('dt', dt)
+                    console.log('keyDepth', keyDepth)
+                    console.log('r', r)
                     console.log('無法內插乾單位重')
                 }
 
                 //check
                 if (!isnum(rsat)) {
-                    console.log('r', r)
-                    console.log('keyDepth', keyDepth)
                     console.log('dt', dt)
+                    console.log('keyDepth', keyDepth)
+                    console.log('r', r)
                     console.log('無法內插飽和單位重')
                 }
 

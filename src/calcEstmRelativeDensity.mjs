@@ -24,17 +24,17 @@ function calcEstmRelativeDensity(ltdt, opt = {}) {
         keyRd = 'rd'
     }
 
-    // //keyRdMin
-    // let keyRdMin = get(opt, 'keyRdMin')
-    // if (!isestr(keyRdMin)) {
-    //     keyRdMin = 'rdMin'
-    // }
+    //keyRdMin
+    let keyRdMin = get(opt, 'keyRdMin')
+    if (!isestr(keyRdMin)) {
+        keyRdMin = 'rdMin'
+    }
 
-    // //keyRdMax
-    // let keyRdMax = get(opt, 'keyRdMax')
-    // if (!isestr(keyRdMax)) {
-    //     keyRdMax = 'rdMax'
-    // }
+    //keyRdMax
+    let keyRdMax = get(opt, 'keyRdMax')
+    if (!isestr(keyRdMax)) {
+        keyRdMax = 'rdMax'
+    }
 
     //interpRd
     let interpRd = null
@@ -114,10 +114,10 @@ function calcEstmRelativeDensity(ltdt, opt = {}) {
 
                 //check
                 if (!isnum(rd)) {
-                    console.log('rd', rd)
+                    console.log('dt', dt)
                     console.log('keyDepth', keyDepth)
                     console.log('keyRd', keyRd)
-                    console.log('dt', dt)
+                    console.log('rd', rd)
                     console.log('計算相對密度時無法內插乾單位重')
                 }
 
@@ -125,16 +125,30 @@ function calcEstmRelativeDensity(ltdt, opt = {}) {
 
         }
 
-        //merge rd
-        dt = {
-            ...dt,
-            rd,
-        }
+        //rdMin, 最小乾單位重(kN/m3)
+        let rdMin = get(dt, keyRdMin)
+
+        //rdMax, 最大乾單位重(kN/m3)
+        let rdMax = get(dt, keyRdMax)
 
         //dtEstmRelativeDensity
-        let r = dtEstmRelativeDensity(dt, opt)
+        let r = {
+            rd,
+            rdMin,
+            rdMax,
+            Dr: null,
+        }
+        if (isnum(rd) && isnum(rdMin) && isnum(rdMax)) {
+            r = dtEstmRelativeDensity(dt, opt)
+        }
 
-        return r
+        //merge Dr
+        dt = {
+            ...dt,
+            ...r,
+        }
+
+        return dt
     })
 
     return rs
