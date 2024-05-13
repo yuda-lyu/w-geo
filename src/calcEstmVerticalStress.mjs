@@ -190,7 +190,7 @@ function calcEstmVerticalStress(ltdt, opt = {}) {
 
         }
 
-        //merge sv, svp
+        //merge
         dt = {
             ...dt,
             [keyRd]: rd,

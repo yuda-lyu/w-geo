@@ -36,6 +36,12 @@ function calcEstmRelativeDensity(ltdt, opt = {}) {
         keyRdMax = 'rdMax'
     }
 
+    //keyDr
+    let keyDr = get(opt, 'keyDr')
+    if (!isestr(keyDr)) {
+        keyDr = 'Dr'
+    }
+
     //interpRd
     let interpRd = null
     if (true) {
@@ -133,16 +139,16 @@ function calcEstmRelativeDensity(ltdt, opt = {}) {
 
         //dtEstmRelativeDensity
         let r = {
-            rd,
-            rdMin,
-            rdMax,
-            Dr: null,
+            [keyRd]: rd,
+            [keyRdMin]: rdMin,
+            [keyRdMax]: rdMax,
+            [keyDr]: null,
         }
         if (isnum(rd) && isnum(rdMin) && isnum(rdMax)) {
-            r = dtEstmRelativeDensity(dt, opt)
+            r = dtEstmRelativeDensity(r, opt)
         }
 
-        //merge Dr
+        //merge
         dt = {
             ...dt,
             ...r,
