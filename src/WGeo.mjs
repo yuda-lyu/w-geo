@@ -15,6 +15,7 @@ export { default as calcDepthStartEndFromCenter } from './calcDepthStartEndFromC
 export { default as calcEstmOcr } from './calcEstmOcr.mjs'
 export { default as calcEstmRelativeDensity } from './calcEstmRelativeDensity.mjs'
 export { default as calcEstmVerticalStress } from './calcEstmVerticalStress.mjs'
+export { default as calcIntrpPsdContentIso } from './calcIntrpPsdContentIso.mjs'
 export { default as calcLayersByCompress } from './calcLayersByCompress.mjs'
 export { default as calcLayersByMerge } from './calcLayersByMerge.mjs'
 export { default as calcLiquefaction } from './calcLiquefaction.mjs'

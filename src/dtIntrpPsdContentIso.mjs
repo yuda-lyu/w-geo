@@ -90,7 +90,7 @@ function dtIntrpPsdContentIso(dt, opt = {}) {
     ctClayISO = round(ctClayISO)
     // console.log('ctGravelISO', ctGravelISO, 'ctSandISO', ctSandISO, 'ctSiltISO', ctSiltISO, 'ctClayISO', ctClayISO)
 
-    //add prop.
+    //add ctCoarseISO, ctGravelISO, ctSandISO, ctFineISO, ctSiltISO, ctClayISO
     dt.ctCoarseISO = ctGravelISO + ctSandISO
     dt.ctGravelISO = ctGravelISO
     dt.ctSandISO = ctSandISO
