@@ -13,8 +13,9 @@ import intrpPsdBySize from './intrpPsdBySize.mjs'
 let partseStrArray = (c) => {
     let r = j2o(c)
     if (!isearr(r)) {
-        console.log('c', c)
-        throw new Error('無法解析JSON字串型陣列')
+        // console.log('c', c)
+        // throw new Error('無法解析JSON字串型陣列')
+        return null
     }
     return r
 }
@@ -55,6 +56,12 @@ function dtIntrpPsdBySize(dt, psizes, opt = {}) {
     if (isestr(GSD)) {
         GSD = partseStrArray(GSD)
     }
+    if (!isearr(GSD)) {
+        console.log('dt', dt)
+        console.log('dt[keyGSD]', dt[keyGSD])
+        console.log('GSD', GSD)
+        throw new Error('invalid dt.GSD')
+    }
     // console.log('GSD', GSD)
 
     //GSP
@@ -65,6 +72,12 @@ function dtIntrpPsdBySize(dt, psizes, opt = {}) {
     }
     if (isestr(GSP)) {
         GSP = partseStrArray(GSP)
+    }
+    if (!isearr(GSP)) {
+        console.log('dt', dt)
+        console.log('dt[keyGSP]', dt[keyGSP])
+        console.log('GSP', GSP)
+        throw new Error('invalid dt.GSP')
     }
     // console.log('GSP', GSP)
 
