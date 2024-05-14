@@ -61,6 +61,7 @@ function dtIntrpPsdContentIso(dt, opt = {}) {
         keyGSP,
         keySize,
         keyFraction,
+        showLog,
     })
     // console.log('psds', psds)
 
