@@ -5,6 +5,7 @@ import j2o from 'wsemi/src/j2o.mjs'
 import isearr from 'wsemi/src/isearr.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
+import isbol from 'wsemi/src/isbol.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
 import intrpPsdBySize from './intrpPsdBySize.mjs'
 
@@ -47,19 +48,25 @@ function dtIntrpPsdBySize(dt, psizes, opt = {}) {
         keyFraction = 'fraction'
     }
 
+    //showLog
+    let showLog = get(opt, 'showLog')
+    if (!isbol(showLog)) {
+        showLog = true
+    }
+
     //GSD
     let GSD = get(dt, keyGSD, '')
     if (!isestr(GSD) && !isearr(GSD)) {
-        console.log('dt', dt)
+        if (showLog) console.log('dt', dt)
         throw new Error('invalid dt.GSD')
     }
     if (isestr(GSD)) {
         GSD = partseStrArray(GSD)
     }
     if (!isearr(GSD)) {
-        console.log('dt', dt)
-        console.log('dt[keyGSD]', dt[keyGSD])
-        console.log('GSD', GSD)
+        if (showLog) console.log('dt', dt)
+        if (showLog) console.log('dt[keyGSD]', dt[keyGSD])
+        if (showLog) console.log('GSD', GSD)
         throw new Error('invalid dt.GSD')
     }
     // console.log('GSD', GSD)
@@ -67,16 +74,16 @@ function dtIntrpPsdBySize(dt, psizes, opt = {}) {
     //GSP
     let GSP = get(dt, 'GSP', '')
     if (!isestr(GSP) && !isearr(GSP)) {
-        console.log('dt', dt)
+        if (showLog) console.log('dt', dt)
         throw new Error('invalid dt.GSP')
     }
     if (isestr(GSP)) {
         GSP = partseStrArray(GSP)
     }
     if (!isearr(GSP)) {
-        console.log('dt', dt)
-        console.log('dt[keyGSP]', dt[keyGSP])
-        console.log('GSP', GSP)
+        if (showLog) console.log('dt', dt)
+        if (showLog) console.log('dt[keyGSP]', dt[keyGSP])
+        if (showLog) console.log('GSP', GSP)
         throw new Error('invalid dt.GSP')
     }
     // console.log('GSP', GSP)
@@ -138,13 +145,13 @@ function dtIntrpPsdBySize(dt, psizes, opt = {}) {
     each(GSD, (_v, k) => {
         let size = get(GSD, k, '')
         if (!isnum(size)) {
-            console.log(k, 'size', size)
+            if (showLog) console.log(k, 'size', size)
             throw new Error(`size[${size}] is not an effective number`)
         }
         size = cdbl(size)
         let fraction = get(GSP, k, '')
         if (!isnum(fraction)) {
-            console.log(k, 'fraction', fraction)
+            if (showLog) console.log(k, 'fraction', fraction)
             throw new Error(`fraction[${fraction}] is not an effective number`)
         }
         fraction = cdbl(fraction)

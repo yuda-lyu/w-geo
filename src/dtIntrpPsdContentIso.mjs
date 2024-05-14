@@ -4,6 +4,7 @@ import round from 'lodash-es/round.js'
 import size from 'lodash-es/size.js'
 import isnum from 'wsemi/src/isnum.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
+import isbol from 'wsemi/src/isbol.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
 import dtIntrpPsdBySize from './dtIntrpPsdBySize.mjs'
 
@@ -34,6 +35,12 @@ function dtIntrpPsdContentIso(dt, opt = {}) {
         keyFraction = 'fraction'
     }
 
+    //showLog
+    let showLog = get(opt, 'showLog')
+    if (!isbol(showLog)) {
+        showLog = true
+    }
+
     //dtIntrpPsdBySize
     let psizes = [
         630,
@@ -59,12 +66,12 @@ function dtIntrpPsdContentIso(dt, opt = {}) {
 
     //check
     if (size(psds) === 0) {
-        console.log('dt', dt)
-        console.log('psizes', psizes)
-        console.log('keyGSD', keyGSD)
-        console.log('keyGSP', keyGSP)
-        console.log('keySize', keySize)
-        console.log('keyFraction', keyFraction)
+        if (showLog) console.log('dt', dt)
+        if (showLog) console.log('psizes', psizes)
+        if (showLog) console.log('keyGSD', keyGSD)
+        if (showLog) console.log('keyGSP', keyGSP)
+        if (showLog) console.log('keySize', keySize)
+        if (showLog) console.log('keyFraction', keyFraction)
         throw new Error('invalid PSD')
     }
 

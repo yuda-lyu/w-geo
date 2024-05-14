@@ -12,12 +12,14 @@ function dtRelaPlasticity(dt, opt = {}) {
 
     //relaPlasticity
     let r = relaPlasticity(LL, PI, PL, WC, opt)
-    r = {
+
+    //merge
+    dt = {
         ...dt,
         ...r,
     }
 
-    return r
+    return dt
 }
 
 

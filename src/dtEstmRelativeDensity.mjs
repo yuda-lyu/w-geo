@@ -1,6 +1,7 @@
 import get from 'lodash-es/get.js'
 import isestr from 'wsemi/src/isestr.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
+import isbol from 'wsemi/src/isbol.mjs'
 import estmRelativeDensity from './estmRelativeDensity.mjs'
 
 
@@ -30,6 +31,12 @@ function dtEstmRelativeDensity(dt, opt = {}) {
         keyDr = 'Dr'
     }
 
+    //showLog
+    let showLog = get(opt, 'showLog')
+    if (!isbol(showLog)) {
+        showLog = true
+    }
+
     //rd, rdMin, rdMax
     let rd = get(dt, keyRd, null)
     let rdMin = get(dt, keyRdMin, null)
@@ -37,12 +44,15 @@ function dtEstmRelativeDensity(dt, opt = {}) {
 
     //check
     if (!isnum(rd)) {
+        if (showLog) console.log('dt', dt)
         throw new Error(`rd[${rd}] is not a number`)
     }
     if (!isnum(rdMin)) {
+        if (showLog) console.log('dt', dt)
         throw new Error(`rdMin[${rdMin}] is not a number`)
     }
     if (!isnum(rdMax)) {
+        if (showLog) console.log('dt', dt)
         throw new Error(`rdMax[${rdMax}] is not a number`)
     }
 

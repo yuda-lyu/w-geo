@@ -12,12 +12,14 @@ function dtRelaPorous(dt, opt = {}) {
 
     //relaPorous
     let r = relaPorous(rd, rsat, GS, e, opt)
-    r = {
+
+    //merge
+    dt = {
         ...dt,
         ...r,
     }
 
-    return r
+    return dt
 }
 
 

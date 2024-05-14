@@ -12,12 +12,14 @@ function dtRelaPsdContent(dt, opt = {}) {
 
     //relaPsdContent
     let r = relaPsdContent(ctGravel, ctSand, ctSilt, ctClay, opt)
-    r = {
+
+    //merge
+    dt = {
         ...dt,
         ...r,
     }
 
-    return r
+    return dt
 }
 
 
