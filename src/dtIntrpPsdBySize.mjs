@@ -22,6 +22,18 @@ let partseStrArray = (c) => {
 
 function dtIntrpPsdBySize(dt, psizes, opt = {}) {
 
+    //keyGSD
+    let keyGSD = get(opt, 'keyGSD', '')
+    if (!isestr(keyGSD)) {
+        keyGSD = 'GSD'
+    }
+
+    //keyGSP
+    let keyGSP = get(opt, 'keyGSP', '')
+    if (!isestr(keyGSP)) {
+        keyGSP = 'GSP'
+    }
+
     //keySize
     let keySize = get(opt, 'keySize', '')
     if (!isestr(keySize)) {
@@ -35,9 +47,10 @@ function dtIntrpPsdBySize(dt, psizes, opt = {}) {
     }
 
     //GSD
-    let GSD = get(dt, 'GSD', '')
+    let GSD = get(dt, keyGSD, '')
     if (!isestr(GSD) && !isearr(GSD)) {
-        throw new Error('invalid GSD')
+        console.log('dt', dt)
+        throw new Error('invalid dt.GSD')
     }
     if (isestr(GSD)) {
         GSD = partseStrArray(GSD)
@@ -47,7 +60,8 @@ function dtIntrpPsdBySize(dt, psizes, opt = {}) {
     //GSP
     let GSP = get(dt, 'GSP', '')
     if (!isestr(GSP) && !isearr(GSP)) {
-        throw new Error('invalid GSP')
+        console.log('dt', dt)
+        throw new Error('invalid dt.GSP')
     }
     if (isestr(GSP)) {
         GSP = partseStrArray(GSP)

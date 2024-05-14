@@ -4,8 +4,22 @@ import dtRelaPorous from './dtRelaPorous.mjs'
 
 function calcRelaPorous(ltdt, opt = {}) {
     let rs = map(ltdt, (dt) => {
-        let r = dtRelaPorous(dt, opt)
-        return r
+
+        try {
+
+            //dtRelaPorous
+            let r = dtRelaPorous(dt, opt)
+
+            //merge
+            dt = {
+                ...dt,
+                ...r,
+            }
+
+        }
+        catch (err) {}
+
+        return dt
     })
     return rs
 }

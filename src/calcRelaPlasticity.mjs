@@ -78,16 +78,27 @@ function calcRelaPlasticity(ltdt, opt = {}) {
 
         }
 
-        //merge WC
+        //merge
         dt = {
             ...dt,
             WC,
         }
 
-        //dtRelaPlasticity
-        let r = dtRelaPlasticity(dt, opt)
+        try {
 
-        return r
+            //dtRelaPlasticity
+            let r = dtRelaPlasticity(dt, opt)
+
+            //merge
+            dt = {
+                ...dt,
+                ...r,
+            }
+
+        }
+        catch (err) {}
+
+        return dt
     })
 
     return rs

@@ -10,6 +10,18 @@ import dtIntrpPsdBySize from './dtIntrpPsdBySize.mjs'
 
 function dtIntrpPsdContentIso(dt, opt = {}) {
 
+    //keyGSD
+    let keyGSD = get(opt, 'keyGSD', '')
+    if (!isestr(keyGSD)) {
+        keyGSD = 'GSD'
+    }
+
+    //keyGSP
+    let keyGSP = get(opt, 'keyGSP', '')
+    if (!isestr(keyGSP)) {
+        keyGSP = 'GSP'
+    }
+
     //keySize
     let keySize = get(opt, 'keySize', '')
     if (!isestr(keySize)) {
@@ -37,13 +49,20 @@ function dtIntrpPsdContentIso(dt, opt = {}) {
         0.0063,
         0.002,
     ]
-    let psds = dtIntrpPsdBySize(dt, psizes, { keySize, keyFraction })
+    let psds = dtIntrpPsdBySize(dt, psizes, {
+        keyGSD,
+        keyGSP,
+        keySize,
+        keyFraction,
+    })
     // console.log('psds', psds)
 
     //check
     if (size(psds) === 0) {
         console.log('dt', dt)
         console.log('psizes', psizes)
+        console.log('keyGSD', keyGSD)
+        console.log('keyGSP', keyGSP)
         console.log('keySize', keySize)
         console.log('keyFraction', keyFraction)
         throw new Error('invalid PSD')

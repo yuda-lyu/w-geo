@@ -3,9 +3,24 @@ import dtIntrpPsdContentIso from './dtIntrpPsdContentIso.mjs'
 
 
 function calcIntrpPsdContentIso(ltdt, opt = {}) {
+
     let rs = map(ltdt, (dt) => {
-        let r = dtIntrpPsdContentIso(dt, opt)
-        return r
+
+        try {
+
+            //dtIntrpPsdContentIso
+            let r = dtIntrpPsdContentIso(dt, opt)
+
+            //merge
+            dt = {
+                ...dt,
+                ...r,
+            }
+
+        }
+        catch (err) {}
+
+        return dt
     })
     return rs
 }
