@@ -166,7 +166,7 @@ function stress(ltdt, opt = {}) {
 }
 
 
-function estUnitWeightCore(ltdt, coe_a, opt = {}) {
+function estUnitWeightCore(ltdt, opt = {}) {
 
     //method
     let method = get(opt, 'method', '')
@@ -225,7 +225,7 @@ function estUnitWeightCore(ltdt, coe_a, opt = {}) {
 
     //calcCptCore, CPT分析(calcCptCore)採用MPa, 預設Robertson(1990)迭代計算時useCnLeq使用false, 可得Icn,Qtn供外部使用, 此不影響後面使用Robertson(1986)評估分類與單位重
     ltdt = map(ltdt, (v) => {
-        return calcCptCore(v, coe_a, { unitSvSvp: 'MPa', useCnLeq: false })
+        return calcCptCore(v, { unitSvSvp: 'MPa', useCnLeq: false })
     })
 
     //重算飽和單位重
@@ -384,7 +384,7 @@ function estUnitWeightCore(ltdt, coe_a, opt = {}) {
 }
 
 
-function estUnitWeight(ltdt, coe_a, opt = {}) {
+function estUnitWeight(ltdt, opt = {}) {
 
     //countMax
     let countMax = get(opt, 'countMax')
@@ -402,7 +402,7 @@ function estUnitWeight(ltdt, coe_a, opt = {}) {
         // console.log(`迭代 ${i} 次`)
 
         //estUnitWeightCore
-        let r = estUnitWeightCore(rs, coe_a, opt)
+        let r = estUnitWeightCore(rs, opt)
 
         //update
         bUpdate = r.bUpdate
@@ -435,16 +435,6 @@ function calcCptUnitWeight(ltdt, opt = {}) {
     rsatIni = cdbl(rsatIni)
     if (rsatIni <= 0) {
         throw new Error(`rsatIni[${rsatIni}]<=0`)
-    }
-
-    //coe_a
-    let coe_a = get(opt, 'coe_a')
-    if (!isnum(coe_a)) {
-        coe_a = 0.8
-    }
-    coe_a = cdbl(coe_a)
-    if (coe_a <= 0) {
-        throw new Error(`coe_a[${coe_a}]<=0`)
     }
 
     //keyDepth
@@ -491,13 +481,28 @@ function calcCptUnitWeight(ltdt, opt = {}) {
             }
             else {
                 console.log(k, v)
-                throw new Error(`第 ${k} 樣本無起始深度(${keyDepthStart})或結束深度(${keyDepthEnd})數據`)
+                throw new Error(`第 ${k} 樣本的起始深度[${keyDepthStart}]或結束深度[${keyDepthEnd}]非數字`)
             }
             return v
         })
 
     }
     // console.log('ltdt[0](ds,de)', ltdt[0])
+
+    //check coe_a
+    ltdt = map(ltdt, (v, k) => {
+        let coe_a = get(v, 'coe_a')
+        if (isnum(coe_a)) {
+            coe_a = cdbl(coe_a)
+        }
+        else {
+            console.log(k, v)
+            throw new Error(`第 ${k} 樣本的coe_a[${coe_a}]非數字`)
+        }
+        v.coe_a = coe_a
+        return v
+    })
+    // console.log('ltdt[0](rsat)', ltdt[0])
 
     //add rsat(kN/m3)
     ltdt = map(ltdt, (v) => {
@@ -515,7 +520,7 @@ function calcCptUnitWeight(ltdt, opt = {}) {
     // console.log('ltdt[0](u0)', ltdt[0])
 
     //estUnitWeight
-    ltdt = estUnitWeight(ltdt, coe_a, opt)
+    ltdt = estUnitWeight(ltdt, opt)
     // console.log('ltdt[0](estUnitWeight)', ltdt[0])
 
     //unitSvSvp, 此處為MPa, 故指定為kPa才要轉

@@ -56,13 +56,7 @@ function dtIntrpPsdContentIso(dt, opt = {}) {
         0.0063,
         0.002,
     ]
-    let psds = dtIntrpPsdBySize(dt, psizes, {
-        keyGSD,
-        keyGSP,
-        keySize,
-        keyFraction,
-        showLog,
-    })
+    let psds = dtIntrpPsdBySize(dt, psizes, opt)
     // console.log('psds', psds)
 
     //check

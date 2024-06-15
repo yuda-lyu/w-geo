@@ -1257,6 +1257,10 @@ let rowsIn = [
     { 'depth': '24.98', 'qc': '1.45', 'fs': '0.031', 'u2': '0.546' },
     { 'depth': '25', 'qc': '1.48', 'fs': '0.032', 'u2': '0.543' }
 ]
+rowsIn = _.map(rowsIn, (v) => {
+    v.coe_a = 0.75
+    return v
+})
 
 let ms = [
     'Robertson(1986)',
@@ -1272,7 +1276,7 @@ _.each(ms, (method, i) => {
     //opt
     let opt = {
         method,
-        coe_a: 0.75,
+        // coe_a: 0.75,
         rsatIni: 19.5,
         unitSvSvp: 'MPa',
     }

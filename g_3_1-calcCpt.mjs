@@ -1,4 +1,5 @@
 import fs from 'fs'
+import _ from 'lodash-es'
 import w from 'wsemi'
 import { calcCpt } from './src/calcCpt.mjs'
 
@@ -5005,10 +5006,14 @@ let rowsIn = [
     { 'depth': '99.96', 'qc': '19.62571429', 'fs': '0.119428571', 'u2': '-0.601142857', 'sv': '2.125746676', 'svp': '1.145139076' },
     { 'depth': '99.98', 'qc': '19.64615385', 'fs': '0.117846154', 'u2': '-0.602846154', 'sv': '2.126171996', 'svp': '1.145368196' }
 ]
+rowsIn = _.map(rowsIn, (v) => {
+    v.coe_a = 0.74
+    return v
+})
 
 //opt
 let opt = {
-    coe_a: 0.74,
+    // coe_a: 0.74,
     methodIterate: 'basic', //basic, binarySearch
     methodSmooth: 'none', //測試數據已使用averageIn95
     intrpSv: (depth, k, v, ltdt) => {

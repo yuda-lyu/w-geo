@@ -5007,6 +5007,10 @@ let _rowsIn = [
     {"depth":"99.96","qc":"7.44","fs":"0.473","u2":"0.067"},
     {"depth":"99.98","qc":"7.34","fs":"0.566","u2":"0.158"}
 ]
+_rowsIn = _.map(_rowsIn, (v) => {
+    v.coe_a = 0.75
+    return v
+})
 
 let ms = [
     'Baldi(1989) for sand',
@@ -5028,7 +5032,7 @@ _.each(ms, (method, i) => {
 
     //optDef
     let optDef={
-        coe_a: 0.75,
+        // coe_a: 0.75,
         rsatIni: 19.5,
         unitSvSvp: 'MPa',
     }

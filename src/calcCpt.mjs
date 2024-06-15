@@ -371,7 +371,7 @@ function calcRobQtnAndIcn(svp, qnet, Qt, Fr, Ic, opt = {}) {
 }
 
 
-function calcCptCore(dt, coe_a, opt = {}) {
+function calcCptCore(dt, opt = {}) {
 
     //unitSvSvp
     let unitSvSvp = get(opt, 'unitSvSvp')
@@ -472,6 +472,7 @@ function calcCptCore(dt, coe_a, opt = {}) {
     }
 
     //coe_a
+    let coe_a = get(dt, 'coe_a')
     if (!isnum(coe_a)) {
         throw new Error(`coe_a[${coe_a}] is not a number`)
     }
@@ -632,13 +633,6 @@ function calcCpt(ltdt, opt = {}) {
         throw new Error(`opt.unitSvSvp[${unitSvSvp}] need kPa or MPa`)
     }
 
-    //coe_a
-    let coe_a = get(opt, 'coe_a')
-    if (!isnum(coe_a)) {
-        coe_a = 0.8
-    }
-    coe_a = cdbl(coe_a)
-
     //cloneDeep
     ltdt = cloneDeep(ltdt)
 
@@ -653,7 +647,7 @@ function calcCpt(ltdt, opt = {}) {
 
     //calcCptCore
     ltdt = map(ltdt, (v) => {
-        return calcCptCore(v, coe_a, opt)
+        return calcCptCore(v, opt)
     })
 
     //unitSvSvp已於calcCptCore處理轉換

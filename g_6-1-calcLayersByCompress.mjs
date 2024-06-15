@@ -5008,7 +5008,11 @@ let _rowsIn=[
     {"depth":"99.94","qc":"7.42","fs":"0.437","u2":"1.10348142","_Icn":"3.348860192","_Zone Number":"3","_rsat":"17.5","_sv":"1.80746","_ESU":"3","_DESU":"3"},
     {"depth":"99.96","qc":"7.44","fs":"0.473","u2":"1.13648142","_Icn":"3.367566459","_Zone Number":"3","_rsat":"17.5","_sv":"1.80781","_ESU":"3","_DESU":"3"},
     {"depth":"99.98","qc":"7.34","fs":"0.566","u2":"0.158","_Icn":"3.45499929","_Zone Number":"2","_rsat":"12.5","_sv":"1.80806","_ESU":"2","_DESU":"3"}
-    ]
+]
+_rowsIn = _.map(_rowsIn, (v) => {
+    v.coe_a = 0.75
+    return v
+})
 
 //rowsIn
 let rowsIn = _.cloneDeep(_rowsIn)
@@ -5018,8 +5022,8 @@ let numMaxLayers = 20
 
 //optDef
 let optDef = {
+    // coe_a: 0.75,
     rsatIni: 19.5,
-    coe_a: 0.75,
     unitSvSvp: 'MPa',
 }
 
@@ -5154,17 +5158,6 @@ if (true) {
 fs.writeFileSync(`./calcLayersByCompress-rowsIn.json`, JSON.stringify(_rowsIn), 'utf8')
 fs.writeFileSync(`./calcLayersByCompress-rowsOut.json`, JSON.stringify(rowsOut), 'utf8')
 w.downloadExcelFileFromData(`./calcLayersByCompress-mat(${numMaxLayers}).xlsx`, 'data', rowsOut)
-
-//待加入可調整厚度陣列或起訖上下限設定
-
-// 已確認要加入「最小分層厚度」之分層機制，只要小於該厚度就判斷為「薄層」，整個風場採用相同「最小分層厚度」，完成各孔分層厚，
-
-// 最大層數若超過45層(暫定，強限制條件)，就增加「最小分層厚度」後重跑全孔；
-
-// 反之，若最大層數小於30層(暫定，弱限制條件，因為風場土層可能較為均質，雖然台灣海峽海域不太可能發生)，則減小「最小分層厚度」後重跑，
-
-// 另外「最小分層厚度」不宜太薄，可能須>=1.0 m(暫定，後續分析建模土層不宜過薄，強限制條件)。
-
 
 
 //node --experimental-modules g_6-1-calcLayersByCompress.mjs

@@ -3126,6 +3126,7 @@ function cptCommon(depth, coe_a, qc, fs, u2, sv, svpUsual, useCnLeq) {
         //dt
         let dt = {
             depth,
+            coe_a,
             sv: _sv,
             svp: _svpUsual, //使用常時垂直有效應力
             qc: _qc,
@@ -3135,7 +3136,7 @@ function cptCommon(depth, coe_a, qc, fs, u2, sv, svpUsual, useCnLeq) {
         }
 
         //calcCptCore, 此處限制輸入與輸出皆使用MPa
-        rc = calcCptCore(dt, coe_a, { useCnLeq, unitSvSvp: 'MPa' })
+        rc = calcCptCore(dt, { useCnLeq, unitSvSvp: 'MPa' })
         // Ic = get(rc, 'Ic', null)
         // Icn = get(rc, 'Icn', null)
 
