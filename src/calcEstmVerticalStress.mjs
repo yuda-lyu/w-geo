@@ -12,6 +12,23 @@ import { intrpDefSvSvp } from './intrpDefParam.mjs'
 
 function buildIntrpSvSvp(ed, depth) {
 
+    //check depth=0
+    let rsv0 = get(ed, 'svs.0', null)
+    let dsv0 = get(rsv0, '0', null)
+    if (dsv0 > 0) {
+        ed.svs = [
+            [0, 0],
+            ...ed.svs,
+        ]
+    }
+    let dsvp0 = get(rsv0, '0', null)
+    if (dsvp0 > 0) {
+        ed.svps = [
+            [0, 0],
+            ...ed.svps,
+        ]
+    }
+
     //interp1
     let _sv = interp1(ed.svs, depth)
 
