@@ -332,24 +332,19 @@ function calcRobQtnAndIcn(svp, qnet, Qt, Fr, Ic, opt = {}) {
 
     }
 
-    //check
+    //b
     let b = false
     if (r.n > 1.0 || r.Icn > 2.6) {
         b = true
         n = 1.0
-        // Cn = 0
-        // Qtn = Qt
-        // Icn = Ic
-        Cn = (Pa / svp) ** n //Pa(MPa),svp(MPa)單位對消
-        if (useCnLeq) {
-            Cn = Math.min(Cn, 1.7)
-        }
-        Qtn = Cn * qnet / Pa
-        Icn = Math.sqrt((3.47 - Math.log10(Qtn)) ** 2 + (Math.log10(Fr) + 1.22) ** 2)
     }
     else if (r.n < 0.5) {
         b = true
         n = 0.5
+    }
+
+    //calc Cn, Qtn, Icn
+    if (b) {
         Cn = (Pa / svp) ** n //Pa(MPa),svp(MPa)單位對消
         if (useCnLeq) {
             Cn = Math.min(Cn, 1.7)
