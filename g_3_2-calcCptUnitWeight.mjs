@@ -1276,7 +1276,6 @@ _.each(ms, (method, i) => {
     //opt
     let opt = {
         method,
-        // coe_a: 0.75,
         rsatIni: 19.5,
         unitSvSvp: 'MPa',
     }

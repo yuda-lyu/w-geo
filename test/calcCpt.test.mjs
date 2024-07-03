@@ -8,7 +8,6 @@ describe(`calcCpt`, function() {
 
     //opt
     let opt = {
-        coe_a: 0.74,
         methodIterate: 'basic', //basic, binarySearch
         methodSmooth: 'none', //測試數據已使用averageIn95
         intrpSv: (depth, k, v, ltdt) => {

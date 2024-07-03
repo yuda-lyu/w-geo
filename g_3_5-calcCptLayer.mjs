@@ -5015,7 +5015,6 @@ rowsIn = _.map(rowsIn, (v) => {
 
 //optDef
 let optDef = {
-    // coe_a: 0.75,
     rsatIni: 19.5,
     unitSvSvp: 'MPa',
 }

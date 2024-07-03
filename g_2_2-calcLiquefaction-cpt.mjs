@@ -399,6 +399,10 @@ function getRows(k) {
         { 'depthStart': '19.925', 'depthEnd': '19.975', 'qc': '2.02086', 'fs': '0.065727', 'u2': '0.570942', 'sv': '361.2623941', 'svp': '172.4198941' },
         { 'depthStart': '19.975', 'depthEnd': '20.025', 'qc': '1.99143', 'fs': '0.063765', 'u2': '0.489519', 'sv': '361.3174766', 'svp': '171.9844766' }
     ]
+    rowsIn1 = _.map(rowsIn1, (v) => {
+        v.coe_a = 0.85
+        return v
+    })
 
     //rowsIn2
     let rowsIn2 = []
@@ -407,7 +411,6 @@ function getRows(k) {
         //opt
         let opt = {
             rsatIni: 19.5,
-            coe_a: 0.85,
             waterLevel: 0.7,
             unitSvSvp: 'kPa', //因為rowsIn1的sv與svp使用kPa, 統一分析故使用kPa
         }
@@ -433,7 +436,6 @@ function calc(k) {
     // console.log('rowsIn',rowsIn)
 
     let opt = {
-        coe_a: 0.85,
         waterLevelUsual: 0.7,
         waterLevelDesign: 0.7,
         PGA: 0.32,

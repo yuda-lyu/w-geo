@@ -237,7 +237,7 @@ function calcRobQtnAndIcn(svp, qnet, Qt, Fr, Ic, opt = {}) {
 
     //core
     let core = (n) => {
-        Cn = (Pa / svp) ** n //Pa(MPa),svp(MPa)單位對消
+        let Cn = (Pa / svp) ** n //Pa(MPa),svp(MPa)單位對消
         // console.log('Pa', Pa, 'svp', svp, 'n', n)
         // console.log('Cn', Cn)
         if (useCnLeq) {
@@ -337,9 +337,15 @@ function calcRobQtnAndIcn(svp, qnet, Qt, Fr, Ic, opt = {}) {
     if (r.n > 1.0 || r.Icn > 2.6) {
         b = true
         n = 1.0
-        Cn = 0
-        Qtn = Qt
-        Icn = Ic
+        // Cn = 0
+        // Qtn = Qt
+        // Icn = Ic
+        Cn = (Pa / svp) ** n //Pa(MPa),svp(MPa)單位對消
+        if (useCnLeq) {
+            Cn = Math.min(Cn, 1.7)
+        }
+        Qtn = Cn * qnet / Pa
+        Icn = Math.sqrt((3.47 - Math.log10(Qtn)) ** 2 + (Math.log10(Fr) + 1.22) ** 2)
     }
     else if (r.n < 0.5) {
         b = true

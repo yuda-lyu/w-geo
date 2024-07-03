@@ -18,7 +18,6 @@ describe(`calcLayersByCompress`, function() {
     //optDef
     let optDef = {
         rsatIni: 19.5,
-        coe_a: 0.75,
         unitSvSvp: 'MPa',
     }
 

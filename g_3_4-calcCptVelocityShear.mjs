@@ -5032,7 +5032,6 @@ _.each(ms, (method, i) => {
 
     //optDef
     let optDef={
-        // coe_a: 0.75,
         rsatIni: 19.5,
         unitSvSvp: 'MPa',
     }
