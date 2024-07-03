@@ -237,7 +237,7 @@ function calcRobQtnAndIcn(svp, qnet, Qt, Fr, Ic, opt = {}) {
 
     //core
     let core = (n) => {
-        let Cn = (Pa / svp) ** n //Pa(MPa),svp(MPa)單位對消
+        Cn = (Pa / svp) ** n //Pa(MPa),svp(MPa)單位對消
         // console.log('Pa', Pa, 'svp', svp, 'n', n)
         // console.log('Cn', Cn)
         if (useCnLeq) {
