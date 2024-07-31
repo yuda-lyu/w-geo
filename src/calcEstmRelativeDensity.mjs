@@ -4,6 +4,7 @@ import map from 'lodash-es/map.js'
 import size from 'lodash-es/size.js'
 import isestr from 'wsemi/src/isestr.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
+import isbol from 'wsemi/src/isbol.mjs'
 import isfun from 'wsemi/src/isfun.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
 import buildInterpFun from './buildInterpFun.mjs'
@@ -40,6 +41,12 @@ function calcEstmRelativeDensity(ltdt, opt = {}) {
     let keyDr = get(opt, 'keyDr')
     if (!isestr(keyDr)) {
         keyDr = 'Dr'
+    }
+
+    //checkLimit
+    let checkLimit = get(opt, 'checkLimit')
+    if (!isbol(checkLimit)) {
+        checkLimit = true
     }
 
     //interpRd

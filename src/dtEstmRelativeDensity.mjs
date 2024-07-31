@@ -31,6 +31,12 @@ function dtEstmRelativeDensity(dt, opt = {}) {
         keyDr = 'Dr'
     }
 
+    //checkLimit
+    let checkLimit = get(opt, 'checkLimit')
+    if (!isbol(checkLimit)) {
+        checkLimit = true
+    }
+
     //showLog
     let showLog = get(opt, 'showLog')
     if (!isbol(showLog)) {

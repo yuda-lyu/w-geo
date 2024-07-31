@@ -1,9 +1,17 @@
+import get from 'lodash-es/get.js'
 import isnum from 'wsemi/src/isnum.mjs'
+import isbol from 'wsemi/src/isbol.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
 
 
 function estmRelativeDensity(rd, rdMin, rdMax, opt = {}) {
     //rd, 乾單位重(kN/m3)
+
+    //checkLimit
+    let checkLimit = get(opt, 'checkLimit')
+    if (!isbol(checkLimit)) {
+        checkLimit = true
+    }
 
     //check rd
     if (!isnum(rd)) {
@@ -24,17 +32,17 @@ function estmRelativeDensity(rd, rdMin, rdMax, opt = {}) {
     rdMax = cdbl(rdMax)
 
     //check rdMin > rdMax
-    if (rdMin > rdMax) {
+    if (checkLimit && rdMin > rdMax) {
         throw new Error(`rdMin[${rdMin}] > rdMax[${rdMax}]`)
     }
 
     //check rd < rdMin
-    if (rd < rdMin) {
+    if (checkLimit && rd < rdMin) {
         throw new Error(`rd[${rd}] < rdMin[${rdMin}]`)
     }
 
     //check rd > rdMax
-    if (rd > rdMax) {
+    if (checkLimit && rd > rdMax) {
         throw new Error(`rd[${rd}] > rdMax[${rdMax}]`)
     }
 

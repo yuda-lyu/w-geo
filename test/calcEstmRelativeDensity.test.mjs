@@ -4,22 +4,18 @@ import calcEstmRelativeDensity from '../src/calcEstmRelativeDensity.mjs'
 
 describe(`calcEstmRelativeDensity`, function() {
 
-    let rd = 16.5 //kN/m3
-    let rdMin = 16 //kN/m3
-    let rdMax = 17 //kN/m3
-
     let r1 = [{
-        rd,
-        rdMin,
-        rdMax,
+        rd: 16.5, //kN/m3
+        rdMin: 16, //kN/m3
+        rdMax: 17, //kN/m3
     }]
     let rr1 = [{
-        rd,
-        rdMin,
-        rdMax,
+        rd: 16.5, //kN/m3
+        rdMin: 16, //kN/m3
+        rdMax: 17, //kN/m3
         Dr: 51.515151515151516,
     }]
-    it(`should return ${JSON.stringify(rr1)} when calcEstmRelativeDensity(${JSON.stringify(r1)})`, function() {
+    it(`should return ${JSON.stringify(rr1)} when calcEstmRelativeDensity( ${JSON.stringify(r1)} )`, function() {
         let r = calcEstmRelativeDensity(r1)
         let rr = rr1
         assert.strict.deepStrictEqual(r, rr)
@@ -68,9 +64,26 @@ describe(`calcEstmRelativeDensity`, function() {
             Dr: 37.593984962406054,
         },
     ]
-    it(`should return ${JSON.stringify(rr2)} when calcEstmRelativeDensity(${JSON.stringify(r2)})`, function() {
+    it(`should return ${JSON.stringify(rr2)} when calcEstmRelativeDensity( ${JSON.stringify(r2)} )`, function() {
         let r = calcEstmRelativeDensity(r2)
         let rr = rr2
+        assert.strict.deepStrictEqual(r, rr)
+    })
+
+    let r3 = [{
+        rd: 17.5, //kN/m3
+        rdMin: 16, //kN/m3
+        rdMax: 17, //kN/m3
+    }]
+    let rr3 = [{
+        rd: 17.5, //kN/m3
+        rdMin: 16, //kN/m3
+        rdMax: 17, //kN/m3
+        Dr: 100,
+    }]
+    it(`should return ${JSON.stringify(rr3)} when calcEstmRelativeDensity( ${JSON.stringify(r3)}, { checkLimit: false } )`, function() {
+        let r = calcEstmRelativeDensity(r3, { checkLimit: false })
+        let rr = rr3
         assert.strict.deepStrictEqual(r, rr)
     })
 
