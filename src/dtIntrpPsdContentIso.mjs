@@ -112,12 +112,12 @@ function dtIntrpPsdContentIso(dt, opt = {}) {
     // console.log('ctGravelISO', ctGravelISO, 'ctSandISO', ctSandISO, 'ctSiltISO', ctSiltISO, 'ctClayISO', ctClayISO)
 
     //add ctCoarseISO, ctGravelISO, ctSandISO, ctFineISO, ctSiltISO, ctClayISO
-    dt.ctCoarseISO = ctGravelISO + ctSandISO
     dt.ctGravelISO = ctGravelISO
     dt.ctSandISO = ctSandISO
-    dt.ctFineISO = ctSiltISO + ctClayISO
     dt.ctSiltISO = ctSiltISO
     dt.ctClayISO = ctClayISO
+    dt.ctCoarseISO = ctGravelISO + ctSandISO
+    dt.ctFineISO = ctSiltISO + ctClayISO
     // console.log('ctGravel Ori', dt.ctGravel, 'New', ctGravelISO)
     // console.log('ctSand Ori', dt.ctSand, 'New', ctSandISO)
     // console.log('ctFine Ori', (cdbl(dt.ctSilt) + cdbl(dt.ctClay)), 'New', ctFineISO)

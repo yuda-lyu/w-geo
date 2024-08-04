@@ -120,6 +120,7 @@ function dtIntrpPsdBySize(dt, psizes, opt = {}) {
             0.013,
             0.009,
             0.007,
+            0.005,
             0.003,
             0.001,
         ]
