@@ -20,15 +20,15 @@ import checkDepthStartEnd from './checkDepthStartEnd.mjs'
 
 
 /**
- * 基於各樣本之起訖深度與指定欄位值進行合併
+ * 基於各樣本之起訖深度與指定欄位值進行合併，各樣本起訖深度須為接合，預設合併成功取下方數據
  *
  * Unit Test: {@link https://github.com/yuda-lyu/w-geo/blob/master/test/mergeByDepthStartEnd.test.js Github}
  * @memberOf w-geo
- * @param {Array} rows 輸入數據陣列，各數據為物件，至少需包含起始深度(depthStart)與結束深度(depthEnd)，深度單位為m
+ * @param {Array} rows 輸入數據陣列，各數據為物件，至少需包含起始深度(keyDepthStart)與結束深度(keyDepthEnd)，深度單位為m
  * @param {Object} [opt={}] 輸入設定物件，預設{}
  * @param {String} [opt.keyDepthStart='depthStart'] 輸入欲儲存之起始深度欄位鍵值字串，預設'depthStart'
  * @param {String} [opt.keyDepthEnd='depthEnd'] 輸入欲儲存之結束深度欄位鍵值字串，預設'depthEnd'
- * @param {String} [opt.keyValue='value'] 輸入指定偵測欄位鍵值字串，預設'value'
+ * @param {String} [opt.keyValue='value'] 輸入指定偵測合併欄位鍵值字串，預設'value'
  * @param {Boolean} [opt.saveFromInds=false] 輸入是否儲存合併來源指標布林值，預設false
  * @param {String} [opt.keyInd='ind'] 輸入標記來源指標欄位字串，預設'ind'
  * @param {String} [opt.keyFromInds='fromInds'] 輸入儲存來源指標欄位字串，預設'fromInds'

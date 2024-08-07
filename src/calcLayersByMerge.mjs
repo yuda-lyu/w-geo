@@ -13,6 +13,23 @@ import cstr from 'wsemi/src/cstr.mjs'
 import judge from './judge.mjs'
 
 
+/**
+ * 基於各樣本之起訖深度與指定欄位值進行合併，各樣本起訖深度不一定須為接合，預設合併成功取下方數據
+ *
+ * Unit Test: {@link https://github.com/yuda-lyu/w-geo/blob/master/test/calcLayersByMerge.test.js Github}
+ * @memberOf w-geo
+ * @param {Array} ltdt 輸入數據陣列，各數據為物件，至少需包含起始深度(keyDepthStart)與結束深度(keyDepthEnd)，深度單位為m
+ * @param {Object} [opt={}] 輸入設定物件，預設{}
+ * @param {String} [opt.keyDepth='depth'] 輸入欲儲存之中點深度欄位鍵值字串，預設'depth'
+ * @param {String} [opt.keyDepthStart='depthStart'] 輸入欲儲存之起始深度欄位鍵值字串，預設'depthStart'
+ * @param {String} [opt.keyDepthEnd='depthEnd'] 輸入欲儲存之結束深度欄位鍵值字串，預設'depthEnd'
+ * @param {String} [opt.keyType='type'] 輸入指定偵測合併欄位鍵值字串，預設'type'
+ * @param {Boolean} [opt.saveFromInds=false] 輸入是否儲存合併來源指標布林值，預設false
+ * @param {String} [opt.keyInd='ind'] 輸入標記來源指標欄位字串，預設'ind'
+ * @param {String} [opt.keyFromInds='fromInds'] 輸入儲存來源指標欄位字串，預設'fromInds'
+ * @returns {Array} 回傳合併後的數據陣列
+ * @example
+ */
 function calcLayersByMerge(ltdt, opt = {}) {
 
     //keyDepth
