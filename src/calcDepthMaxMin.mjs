@@ -28,8 +28,8 @@ function calcDepthMinFloor(depth, interval) {
         interval = 0.1
     }
 
-    //ceil
-    depth = Math.floor(depth / interval) * interval //以 interval(m)為單位, 取較大數值
+    //floor
+    depth = Math.floor(depth / interval) * interval //以 interval(m)為單位, 取較小數值
 
     return depth
 }
