@@ -3,7 +3,7 @@ import _ from 'lodash-es'
 import w from 'wsemi'
 import calcCptUnitWeight from './src/calcCptUnitWeight.mjs'
 import { calcCpt } from './src/calcCpt.mjs'
-import { calcCptLayer } from './src/calcCptLayer.mjs'
+import { calcCptLayer } from './src/calcCptLayers.mjs'
 
 
 let rowsIn = [
@@ -5069,6 +5069,7 @@ let ms = [
     'RamseyT6',
     'RamseyT4',
 ]
+//多methods可用calcCptLayers
 
 _.each(ms, (method, i) => {
     let k = i + 1
@@ -5087,10 +5088,10 @@ _.each(ms, (method, i) => {
     let rowsOut = calcCptLayer(rs, method, optLayer)
     // console.log('rowsOut', rowsOut)
 
-    fs.writeFileSync(`./calcCptLayer-rowsIn.json`, JSON.stringify(rs), 'utf8')
-    fs.writeFileSync(`./calcCptLayer-rowsOut${k}.json`, JSON.stringify(rowsOut), 'utf8')
-    w.downloadExcelFileFromData(`./calcCptLayer-mat(${method}).xlsx`, method, rowsOut)
+    fs.writeFileSync(`./calcCptLayers-rowsIn.json`, JSON.stringify(rs), 'utf8')
+    fs.writeFileSync(`./calcCptLayers-rowsOut${k}.json`, JSON.stringify(rowsOut), 'utf8')
+    w.downloadExcelFileFromData(`./calcCptLayers-mat(${method}).xlsx`, method, rowsOut)
 
 })
 
-//node --experimental-modules g_3_5-calcCptLayer.mjs
+//node --experimental-modules g_3_5-calcCptLayers.mjs

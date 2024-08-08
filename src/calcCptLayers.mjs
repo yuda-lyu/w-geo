@@ -460,36 +460,41 @@ function calcCptLayer(ltdt, method, opt = {}) {
 }
 
 
-// function calcCptLayers(ltdt, methods, opt = {}) {
+function calcCptLayers(ltdt, methods, opt = {}) {
 
-//     //check
-//     if (!isearr(methods)) {
-//         throw new Error(`methods[${methods}] is not an effective array`)
-//     }
+    //methods
+    if (isestr(methods)) {
+        methods = [methods]
+    }
+    if (!isearr(methods)) {
+        throw new Error(`methods[${methods}] is not an effective array`)
+    }
 
-//     //rrs
-//     let rrs = map(methods, (method) => {
-//         let rs = calcCptLayer(ltdt, method, opt)
-//         return {
-//             method,
-//             ltdt: rs,
-//         }
-//     })
-//     // console.log('rrs', rrs)
+    //rrs
+    let rrs = map(methods, (method) => {
+        let rs = calcCptLayer(ltdt, method, opt)
+        return {
+            method,
+            ltdt: rs,
+        }
+    })
+    // console.log('rrs', rrs)
 
-//     return rrs
-// }
+    return rrs
+}
 
 
 export {
     getKpSoilGroupsTn,
     genLayer,
     calcLayersByMerge,
-    calcCptLayer
+    calcCptLayer,
+    calcCptLayers
 }
 export default { //整合輸出預設得要有default
     getKpSoilGroupsTn,
     genLayer,
     calcLayersByMerge,
     calcCptLayer,
+    calcCptLayers,
 }

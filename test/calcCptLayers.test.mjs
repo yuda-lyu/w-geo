@@ -1,17 +1,17 @@
 import assert from 'assert'
-import { calcCptLayer } from '../src/calcCptLayer.mjs'
-import rowsIn from './calcCptLayer-rowsIn.json' assert { type: "json" }
-import rowsOut1 from './calcCptLayer-rowsOut1.json' assert { type: "json" }
-import rowsOut2 from './calcCptLayer-rowsOut2.json' assert { type: "json" }
-import rowsOut3 from './calcCptLayer-rowsOut3.json' assert { type: "json" }
-import rowsOut4 from './calcCptLayer-rowsOut4.json' assert { type: "json" }
-import rowsOut5 from './calcCptLayer-rowsOut5.json' assert { type: "json" }
-import rowsOut6 from './calcCptLayer-rowsOut6.json' assert { type: "json" }
-import rowsOut7 from './calcCptLayer-rowsOut7.json' assert { type: "json" }
-import rowsOut8 from './calcCptLayer-rowsOut8.json' assert { type: "json" }
+import { calcCptLayer } from '../src/calcCptLayers.mjs'
+import rowsIn from './calcCptLayers-rowsIn.json' assert { type: "json" }
+import rowsOut1 from './calcCptLayers-rowsOut1.json' assert { type: "json" }
+import rowsOut2 from './calcCptLayers-rowsOut2.json' assert { type: "json" }
+import rowsOut3 from './calcCptLayers-rowsOut3.json' assert { type: "json" }
+import rowsOut4 from './calcCptLayers-rowsOut4.json' assert { type: "json" }
+import rowsOut5 from './calcCptLayers-rowsOut5.json' assert { type: "json" }
+import rowsOut6 from './calcCptLayers-rowsOut6.json' assert { type: "json" }
+import rowsOut7 from './calcCptLayers-rowsOut7.json' assert { type: "json" }
+import rowsOut8 from './calcCptLayers-rowsOut8.json' assert { type: "json" }
 
 
-describe(`calcCptLayer`, function() {
+describe(`calcCptLayers`, function() {
 
     let methods = [
         'Robertson1986T6',
