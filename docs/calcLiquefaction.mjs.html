@@ -29,7 +29,7 @@
 <nav >
     
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcDepthByDepthStartEnd">calcDepthByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByConnect">calcDepthStartEndByConnect</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByDepth">calcDepthStartEndByDepth</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByGroup">calcDepthStartEndByGroup</a></li><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepth">checkDepth</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.complementDepthData">complementDepthData</a></li><li data-type='method'><a href="w-geo.html#.groupByDepthStartEnd">groupByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.mergeByDepthStartEnd">mergeByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPlasticity">relaPlasticity</a></li><li data-type='method'><a href="w-geo.html#.relaPorous">relaPorous</a></li><li data-type='method'><a href="w-geo.html#.sepDepthStartEndByDepth">sepDepthStartEndByDepth</a></li><li data-type='method'><a href="w-geo.html#.smoothDepthByKey">smoothDepthByKey</a></li><li data-type='method'><a href="w-geo.html#.sptHBF">sptHBF</a></li><li data-type='method'><a href="w-geo.html#.sptNCEER">sptNCEER</a></li><li data-type='method'><a href="w-geo.html#.sptNJRA">sptNJRA</a></li><li data-type='method'><a href="w-geo.html#.sptSeed">sptSeed</a></li><li data-type='method'><a href="w-geo.html#.sptTY">sptTY</a></li></ul></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="w-geo.html">w-geo</a><ul class='methods'><li data-type='method'><a href="w-geo.html#.calcDepthByDepthStartEnd">calcDepthByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByConnect">calcDepthStartEndByConnect</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByDepth">calcDepthStartEndByDepth</a></li><li data-type='method'><a href="w-geo.html#.calcDepthStartEndByGroup">calcDepthStartEndByGroup</a></li><li data-type='method'><a href="w-geo.html#.calcLayersByMerge">calcLayersByMerge</a></li><li data-type='method'><a href="w-geo.html#.calcVerticalStress">calcVerticalStress</a></li><li data-type='method'><a href="w-geo.html#.checkDepth">checkDepth</a></li><li data-type='method'><a href="w-geo.html#.checkDepthStartEnd">checkDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.complementDepthData">complementDepthData</a></li><li data-type='method'><a href="w-geo.html#.groupByDepthStartEnd">groupByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.mergeByDepthStartEnd">mergeByDepthStartEnd</a></li><li data-type='method'><a href="w-geo.html#.relaPlasticity">relaPlasticity</a></li><li data-type='method'><a href="w-geo.html#.relaPorous">relaPorous</a></li><li data-type='method'><a href="w-geo.html#.sepDepthStartEndByDepth">sepDepthStartEndByDepth</a></li><li data-type='method'><a href="w-geo.html#.smoothDepthByKey">smoothDepthByKey</a></li><li data-type='method'><a href="w-geo.html#.sptHBF">sptHBF</a></li><li data-type='method'><a href="w-geo.html#.sptNCEER">sptNCEER</a></li><li data-type='method'><a href="w-geo.html#.sptNJRA">sptNJRA</a></li><li data-type='method'><a href="w-geo.html#.sptSeed">sptSeed</a></li><li data-type='method'><a href="w-geo.html#.sptTY">sptTY</a></li></ul></li></ul>
     
 </nav>
 
@@ -1394,8 +1394,11 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
     if (isNumber(CRR) &amp;&amp; isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) &amp;&amp; FS > 10) {
-        FS = 10
+    // if (isNumber(FS) &amp;&amp; FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) &amp;&amp; FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //check
@@ -1776,8 +1779,11 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
     if (isNumber(CRR) &amp;&amp; isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) &amp;&amp; FS > 10) {
-        FS = 10
+    // if (isNumber(FS) &amp;&amp; FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) &amp;&amp; FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //check
@@ -2143,8 +2149,11 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
     if (isNumber(CRR) &amp;&amp; isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) &amp;&amp; FS > 10) {
-        FS = 10
+    // if (isNumber(FS) &amp;&amp; FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) &amp;&amp; FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //check
@@ -2688,8 +2697,11 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
     if (isNumber(CRR) &amp;&amp; isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) &amp;&amp; FS > 10) {
-        FS = 10
+    // if (isNumber(FS) &amp;&amp; FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) &amp;&amp; FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //check
@@ -3053,8 +3065,11 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
     if (isNumber(CRR) &amp;&amp; isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) &amp;&amp; FS > 10) {
-        FS = 10
+    // if (isNumber(FS) &amp;&amp; FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) &amp;&amp; FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //check
@@ -3564,8 +3579,11 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
     if (isNumber(CRR) &amp;&amp; isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) &amp;&amp; FS > 10) {
-        FS = 10
+    // if (isNumber(FS) &amp;&amp; FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) &amp;&amp; FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //非液化: 若是qc1Ncs大於180則直接判定為非液化
@@ -4046,8 +4064,11 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     if (isNumber(CRR) &amp;&amp; isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) &amp;&amp; FS > 10) {
-        FS = 10
+    // if (isNumber(FS) &amp;&amp; FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) &amp;&amp; FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //check
@@ -4539,8 +4560,11 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
     if (isNumber(CRR) &amp;&amp; isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) &amp;&amp; FS > 10) {
-        FS = 10
+    // if (isNumber(FS) &amp;&amp; FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) &amp;&amp; FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //check
@@ -4935,8 +4959,11 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     if (isNumber(CRR) &amp;&amp; isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) &amp;&amp; FS > 10) {
-        FS = 10
+    // if (isNumber(FS) &amp;&amp; FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) &amp;&amp; FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //check
@@ -5379,8 +5406,11 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
     if (isNumber(CRR) &amp;&amp; isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) &amp;&amp; FS > 10) {
-        FS = 10
+    // if (isNumber(FS) &amp;&amp; FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) &amp;&amp; FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
     // console.log('depth',depth,'FS',FS)
 
@@ -5746,8 +5776,11 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     if (isNumber(CRR) &amp;&amp; isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) &amp;&amp; FS > 10) {
-        FS = 10
+    // if (isNumber(FS) &amp;&amp; FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) &amp;&amp; FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //check
@@ -6143,8 +6176,11 @@ function cptShibata({ ver = '1988', waterLevelDesign, depth, coe_a, qc, fs, u2, 
     if (isNumber(CRR) &amp;&amp; isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) &amp;&amp; FS > 10) {
-        FS = 10
+    // if (isNumber(FS) &amp;&amp; FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) &amp;&amp; FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //check
@@ -6314,8 +6350,11 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     if (isNumber(CRR) &amp;&amp; isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) &amp;&amp; FS > 10) {
-        FS = 10
+    // if (isNumber(FS) &amp;&amp; FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) &amp;&amp; FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //非液化: 深度大於20m
@@ -6489,8 +6528,11 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     if (isNumber(CRR) &amp;&amp; isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) &amp;&amp; FS > 10) {
-        FS = 10
+    // if (isNumber(FS) &amp;&amp; FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) &amp;&amp; FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //非液化: 深度大於20m
@@ -6664,8 +6706,11 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     if (isNumber(CRR) &amp;&amp; isNumber(CSR) &amp;&amp; CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) &amp;&amp; FS > 10) {
-        FS = 10
+    // if (isNumber(FS) &amp;&amp; FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) &amp;&amp; FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //非液化: 深度大於20m
@@ -7803,7 +7848,7 @@ export default calcLiquefaction
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sun Aug 04 2024 15:47:03 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Thu Aug 08 2024 12:49:39 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

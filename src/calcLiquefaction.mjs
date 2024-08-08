@@ -1347,8 +1347,11 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) && FS > 10) {
-        FS = 10
+    // if (isNumber(FS) && FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //check
@@ -1729,8 +1732,11 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) && FS > 10) {
-        FS = 10
+    // if (isNumber(FS) && FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //check
@@ -2096,8 +2102,11 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) && FS > 10) {
-        FS = 10
+    // if (isNumber(FS) && FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //check
@@ -2641,8 +2650,11 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) && FS > 10) {
-        FS = 10
+    // if (isNumber(FS) && FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //check
@@ -3006,8 +3018,11 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) && FS > 10) {
-        FS = 10
+    // if (isNumber(FS) && FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //check
@@ -3517,8 +3532,11 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) && FS > 10) {
-        FS = 10
+    // if (isNumber(FS) && FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //非液化: 若是qc1Ncs大於180則直接判定為非液化
@@ -3999,8 +4017,11 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) && FS > 10) {
-        FS = 10
+    // if (isNumber(FS) && FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //check
@@ -4492,8 +4513,11 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) && FS > 10) {
-        FS = 10
+    // if (isNumber(FS) && FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //check
@@ -4888,8 +4912,11 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) && FS > 10) {
-        FS = 10
+    // if (isNumber(FS) && FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //check
@@ -5332,8 +5359,11 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) && FS > 10) {
-        FS = 10
+    // if (isNumber(FS) && FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
     // console.log('depth',depth,'FS',FS)
 
@@ -5699,8 +5729,11 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) && FS > 10) {
-        FS = 10
+    // if (isNumber(FS) && FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //check
@@ -6096,8 +6129,11 @@ function cptShibata({ ver = '1988', waterLevelDesign, depth, coe_a, qc, fs, u2, 
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) && FS > 10) {
-        FS = 10
+    // if (isNumber(FS) && FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //check
@@ -6267,8 +6303,11 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) && FS > 10) {
-        FS = 10
+    // if (isNumber(FS) && FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //非液化: 深度大於20m
@@ -6442,8 +6481,11 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) && FS > 10) {
-        FS = 10
+    // if (isNumber(FS) && FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //非液化: 深度大於20m
@@ -6617,8 +6659,11 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    if (isNumber(FS) && FS > 10) {
-        FS = 10
+    // if (isNumber(FS) && FS > 10) {
+    //     FS = 10
+    // }
+    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
+        FS = 2
     }
 
     //非液化: 深度大於20m
