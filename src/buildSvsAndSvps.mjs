@@ -18,6 +18,18 @@ function buildSvsAndSvps(ltdt, opt = {}) {
         keyDepth = 'depth'
     }
 
+    //keyDepthStart
+    let keyDepthStart = get(opt, 'keyDepthStart')
+    if (!isestr(keyDepthStart)) {
+        keyDepthStart = 'depthStart'
+    }
+
+    //keyDepthEnd
+    let keyDepthEnd = get(opt, 'keyDepthEnd')
+    if (!isestr(keyDepthEnd)) {
+        keyDepthEnd = 'depthEnd'
+    }
+
     //keyRd
     let keyRd = get(opt, 'keyRd')
     if (!isestr(keyRd)) {
@@ -130,6 +142,11 @@ function buildSvsAndSvps(ltdt, opt = {}) {
     let rsn = null
     try {
         rsn = calcVerticalStress(rs, {
+            keyDepth,
+            keyDepthStart,
+            keyDepthEnd,
+            keyRd,
+            keyRsat,
             waterLevelUsual,
             waterLevelDesign,
             unitSvSvp: 'kPa',

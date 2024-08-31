@@ -82,6 +82,18 @@ function calcEstmVerticalStress(ltdt, opt = {}) {
         keyDepth = 'depth'
     }
 
+    //keyDepthStart
+    let keyDepthStart = get(opt, 'keyDepthStart')
+    if (!isestr(keyDepthStart)) {
+        keyDepthStart = 'depthStart'
+    }
+
+    //keyDepthEnd
+    let keyDepthEnd = get(opt, 'keyDepthEnd')
+    if (!isestr(keyDepthEnd)) {
+        keyDepthEnd = 'depthEnd'
+    }
+
     //keyRd
     let keyRd = get(opt, 'keyRd')
     if (!isestr(keyRd)) {
@@ -111,6 +123,8 @@ function calcEstmVerticalStress(ltdt, opt = {}) {
     //buildSvsAndSvps
     let ed = buildSvsAndSvps(ltdt, {
         keyDepth,
+        keyDepthStart,
+        keyDepthEnd,
         keyRd,
         keyRsat,
         waterLevelUsual,
