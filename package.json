@@ -1,14 +1,14 @@
 {
   "name": "w-geo",
-  "version": "1.1.52",
+  "version": "1.1.53",
   "main": "dist/w-geo.umd.js",
   "dependencies": {
     "decimal.js": "^10.4.3",
     "lodash-es": "^4.17.21",
     "w-highcharts": "^1.0.4",
-    "w-optimization": "^1.0.11",
-    "w-statistic": "^1.0.20",
-    "wsemi": "^1.7.51"
+    "w-optimization": "^1.0.17",
+    "w-statistic": "^1.0.21",
+    "wsemi": "^1.7.58"
   },
   "devDependencies": {
     "w-package-tools": "^1.0.75"
