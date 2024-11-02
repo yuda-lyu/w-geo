@@ -1369,6 +1369,18 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
+    if (isNumber(CSR) && CSR === 0) {
+        if (sv === 0) {
+            stateFS.push(`sv${brk(sv)}=0，FS強制改為3`)
+        }
+        if (PGA === 0) {
+            stateFS.push(`PGA${brk(PGA)}=0，FS強制改為3`)
+        }
+        if (rrd === 0) {
+            stateFS.push(`rrd${brk(rrd)}=0，FS強制改為3`)
+        }
+        FS = 3
+    }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
         stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
@@ -1764,6 +1776,18 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
+    if (isNumber(CSR) && CSR === 0) {
+        if (sv === 0) {
+            stateFS.push(`sv${brk(sv)}=0，FS強制改為3`)
+        }
+        if (PGA === 0) {
+            stateFS.push(`PGA${brk(PGA)}=0，FS強制改為3`)
+        }
+        if (rrd === 0) {
+            stateFS.push(`rrd${brk(rrd)}=0，FS強制改為3`)
+        }
+        FS = 3
+    }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
         stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
@@ -2142,6 +2166,18 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
     //FS
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
+    }
+    if (isNumber(CSR) && CSR === 0) {
+        if (sv === 0) {
+            stateFS.push(`sv${brk(sv)}=0，FS強制改為3`)
+        }
+        if (PGA === 0) {
+            stateFS.push(`PGA${brk(PGA)}=0，FS強制改為3`)
+        }
+        if (rrd === 0) {
+            stateFS.push(`rrd${brk(rrd)}=0，FS強制改為3`)
+        }
+        FS = 3
     }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
         stateFS.push(`FS${brk(FS)}>3，強制改為3`)
@@ -2703,6 +2739,18 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
+    if (isNumber(CSR) && CSR === 0) {
+        if (sv === 0) {
+            stateFS.push(`sv${brk(sv)}=0，FS強制改為3`)
+        }
+        if (PGA === 0) { //khc=PGA
+            stateFS.push(`PGA${brk(PGA)}=0，FS強制改為3`)
+        }
+        if (rrd === 0) {
+            stateFS.push(`rrd${brk(rrd)}=0，FS強制改為3`)
+        }
+        FS = 3
+    }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
         stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
@@ -3070,6 +3118,9 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
     else {
         CSR = 1e20
     }
+    if (Mw < 1) { //Mw<1會導致CSR<0, 故改視為無法計算
+        CSR = null
+    }
     if (isNumber(CSR)) {
         CSR = Math.min(CSR, 1e20)
     }
@@ -3077,6 +3128,21 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
     //FS
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
+    }
+    if (isNumber(CSR) && CSR === 0) {
+        if (sv === 0) {
+            stateFS.push(`sv${brk(sv)}=0，FS強制改為3`)
+        }
+        if (Mw <= 1) {
+            stateFS.push(`Mw${brk(Mw)}<=1，FS強制改為3`)
+        }
+        if (PGA === 0) {
+            stateFS.push(`PGA${brk(PGA)}=0，FS強制改為3`)
+        }
+        if (rrd === 0) {
+            stateFS.push(`rrd${brk(rrd)}=0，FS強制改為3`)
+        }
+        FS = 3
     }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
         stateFS.push(`FS${brk(FS)}>3，強制改為3`)
@@ -3590,6 +3656,18 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
+    if (isNumber(CSR) && CSR === 0) {
+        if (sv === 0) {
+            stateFS.push(`sv${brk(sv)}=0，FS強制改為3`)
+        }
+        if (PGA === 0) {
+            stateFS.push(`PGA${brk(PGA)}=0，FS強制改為3`)
+        }
+        if (rrd === 0) {
+            stateFS.push(`rrd${brk(rrd)}=0，FS強制改為3`)
+        }
+        FS = 3
+    }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
         stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
@@ -4071,6 +4149,18 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     //FS
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
+    }
+    if (isNumber(CSR) && CSR === 0) {
+        if (sv === 0) {
+            stateFS.push(`sv${brk(sv)}=0，FS強制改為3`)
+        }
+        if (PGA === 0) {
+            stateFS.push(`PGA${brk(PGA)}=0，FS強制改為3`)
+        }
+        if (rrd === 0) {
+            stateFS.push(`rrd${brk(rrd)}=0，FS強制改為3`)
+        }
+        FS = 3
     }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
         stateFS.push(`FS${brk(FS)}>3，強制改為3`)
@@ -4568,6 +4658,18 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
+    if (isNumber(CSR) && CSR === 0) {
+        if (sv === 0) {
+            stateFS.push(`sv${brk(sv)}=0，FS強制改為3`)
+        }
+        if (PGA === 0) {
+            stateFS.push(`PGA${brk(PGA)}=0，FS強制改為3`)
+        }
+        if (rrd === 0) {
+            stateFS.push(`rrd${brk(rrd)}=0，FS強制改為3`)
+        }
+        FS = 3
+    }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
         stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
@@ -4966,6 +5068,18 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     //FS
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
+    }
+    if (isNumber(CSR) && CSR === 0) {
+        if (sv === 0) {
+            stateFS.push(`sv${brk(sv)}=0，FS強制改為3`)
+        }
+        if (PGA === 0) {
+            stateFS.push(`PGA${brk(PGA)}=0，FS強制改為3`)
+        }
+        if (rrd === 0) {
+            stateFS.push(`rrd${brk(rrd)}=0，FS強制改為3`)
+        }
+        FS = 3
     }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
         stateFS.push(`FS${brk(FS)}>3，強制改為3`)
@@ -5414,6 +5528,18 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
+    if (isNumber(CSR) && CSR === 0) {
+        if (sv === 0) {
+            stateFS.push(`sv${brk(sv)}=0，FS強制改為3`)
+        }
+        if (PGA === 0) {
+            stateFS.push(`PGA${brk(PGA)}=0，FS強制改為3`)
+        }
+        if (rrd === 0) {
+            stateFS.push(`rrd${brk(rrd)}=0，FS強制改為3`)
+        }
+        FS = 3
+    }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
         stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
@@ -5783,6 +5909,18 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     //FS
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
+    }
+    if (isNumber(CSR) && CSR === 0) {
+        if (sv === 0) {
+            stateFS.push(`sv${brk(sv)}=0，FS強制改為3`)
+        }
+        if (PGA === 0) {
+            stateFS.push(`PGA${brk(PGA)}=0，FS強制改為3`)
+        }
+        if (rrd === 0) {
+            stateFS.push(`rrd${brk(rrd)}=0，FS強制改為3`)
+        }
+        FS = 3
     }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
         stateFS.push(`FS${brk(FS)}>3，強制改為3`)
@@ -6184,6 +6322,9 @@ function cptShibata({ ver = '1988', waterLevelDesign, depth, coe_a, qc, fs, u2, 
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
+    if (isNumber(CSR) && CSR === 0) {
+        //qc1cr有取最小值0.1使CSR>=0.1, 故不須偵測與添加stateFS
+    }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
         stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
@@ -6474,6 +6615,18 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
+    if (isNumber(CSR) && CSR === 0) {
+        if (sv === 0) {
+            stateFS.push(`sv${brk(sv)}=0，FS強制改為3`)
+        }
+        if (PGA === 0) {
+            stateFS.push(`PGA${brk(PGA)}=0，FS強制改為3`)
+        }
+        if (rrd === 0) {
+            stateFS.push(`rrd${brk(rrd)}=0，FS強制改為3`)
+        }
+        FS = 3
+    }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
         stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
@@ -6760,6 +6913,18 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
+    if (isNumber(CSR) && CSR === 0) {
+        if (sv === 0) {
+            stateFS.push(`sv${brk(sv)}=0，FS強制改為3`)
+        }
+        if (PGA === 0) {
+            stateFS.push(`PGA${brk(PGA)}=0，FS強制改為3`)
+        }
+        if (rrd === 0) {
+            stateFS.push(`rrd${brk(rrd)}=0，FS強制改為3`)
+        }
+        FS = 3
+    }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
         stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
@@ -7045,6 +7210,18 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     //FS
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
+    }
+    if (isNumber(CSR) && CSR === 0) {
+        if (sv === 0) {
+            stateFS.push(`sv${brk(sv)}=0，FS強制改為3`)
+        }
+        if (PGA === 0) {
+            stateFS.push(`PGA${brk(PGA)}=0，FS強制改為3`)
+        }
+        if (rrd === 0) {
+            stateFS.push(`rrd${brk(rrd)}=0，FS強制改為3`)
+        }
+        FS = 3
     }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
         stateFS.push(`FS${brk(FS)}>3，強制改為3`)
