@@ -966,19 +966,19 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
 
         //非液化: 地下水位以上
         if (depth < waterLevelDesign) {
-            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
         }
 
         //非液化: 統一土壤分類屬黏土
         if (isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
-            stateFS.push(`isNoLiqueByUSCS[${soilClassification}]`)
+            stateFS.push(`非液化之土壤分類${brk(soilClassification)}`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
-            stateFS.push(`depth[${depth}]>20`)
+            stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
         }
 
@@ -1000,7 +1000,7 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
 
             //非液化: N值>=50
             if (N60 >= 50) {
-                stateFS.push(`N60[${N60}]>=50`)
+                stateFS.push(`N60${brk(N60)}>=50`)
                 noLique = true
             }
 
@@ -1370,6 +1370,7 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
     }
 
@@ -1515,19 +1516,19 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
 
         //非液化: 地下水位以上
         if (depth < waterLevelDesign) {
-            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
         }
 
         //非液化: 統一土壤分類屬黏土, (N160cs>=39, 於後面檢查)
         if (isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
-            stateFS.push(`isNoLiqueByUSCS[${soilClassification}]`)
+            stateFS.push(`非液化之土壤分類${brk(soilClassification)}`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
-            stateFS.push(`depth[${depth}]>20`)
+            stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
         }
 
@@ -1542,7 +1543,7 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
         }
         else {
             if (cdbl(PI) > 7) { //PI單位(%)
-                stateFS.push(`PI[${PI}]>7`)
+                stateFS.push(`PI${brk(PI)}>7`)
                 noLique = true
             }
         }
@@ -1565,7 +1566,7 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
 
             //非液化: N值>=50
             if (N60 >= 50) {
-                stateFS.push(`N60[${N60}]>=50`)
+                stateFS.push(`N60${brk(N60)}>=50`)
                 noLique = true
             }
 
@@ -1763,6 +1764,7 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
     }
 
@@ -1902,19 +1904,19 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
 
         //非液化: 地下水位以上
         if (depth < waterLevelDesign) {
-            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
         }
 
         //非液化: 統一土壤分類屬黏土, (N160cs>=30, 於後面處理)
         if (isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
-            stateFS.push(`isNoLiqueByUSCS[${soilClassification}]`)
+            stateFS.push(`非液化之土壤分類${brk(soilClassification)}`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
-            stateFS.push(`depth[${depth}]>20`)
+            stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
         }
 
@@ -1936,7 +1938,7 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
 
             //非液化: N值>=50
             if (N60 >= 50) {
-                stateFS.push(`N60[${N60}]>=50`)
+                stateFS.push(`N60${brk(N60)}>=50`)
                 noLique = true
             }
 
@@ -2140,6 +2142,7 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
     }
 
@@ -2291,13 +2294,13 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
 
         //非液化: 非砂或礫質土, 強制視為非液化, 暫時用統一土壤分類區分 2021/05/07
         if (isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
-            stateFS.push(`isNoLiqueByUSCS[${soilClassification}]`)
+            stateFS.push(`非液化之土壤分類${brk(soilClassification)}`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
-            stateFS.push(`depth[${depth}]>20`)
+            stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
         }
 
@@ -2319,7 +2322,7 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
 
             //非液化: N值>=50
             if (N60 >= 50) {
-                stateFS.push(`N60[${N60}]>=50`)
+                stateFS.push(`N60${brk(N60)}>=50`)
                 noLique = true
             }
 
@@ -2339,13 +2342,13 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
 
         //非液化: 地下水位以上, 地下水低於地表下10m以下, 細料含量>35%且PI值>=15, D50>10mm或D10>1mm
         if (depth < waterLevelDesign) {
-            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
         }
 
         //非液化: 地下水位以上, 地下水低於地表下10m以下, 細料含量>35%且PI值>=15, D50>10mm或D10>1mm
         if (waterLevelDesign > 10) {
-            stateFS.push(`waterLevelDesign[${waterLevelDesign}] > 10`)
+            stateFS.push(`waterLevelDesign${brk(waterLevelDesign)}>10`)
             noLique = true
         }
 
@@ -2388,7 +2391,7 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
                         //可能液化, FC超過35％但塑性指數IP小於15的土層
                     }
                     else {
-                        stateFS.push(`FC[${FC}]>35且PI[${PI}]>=15`)
+                        stateFS.push(`FC${brk(FC)}>35且PI${brk(PI)}>=15`)
                         noLique = true
                     }
 
@@ -2417,13 +2420,13 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
 
             //check
             if (D50 > 10) {
-                stateFS.push(`D50[${D50}]>10`)
+                stateFS.push(`D50${brk(D50)}>10`)
                 noLique = true
             }
 
             //check
             if (D10 > 1) {
-                stateFS.push(`D10[${D10}]>1`)
+                stateFS.push(`D10${brk(D10)}>1`)
                 noLique = true
             }
 
@@ -2699,6 +2702,7 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
     }
 
@@ -2842,19 +2846,19 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
 
         //非液化(無資料, 比照Seed法提供): 地下水位以上
         if (depth < waterLevelDesign) {
-            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
         }
 
         //非液化(無資料, 比照Seed法提供): 統一土壤分類屬黏土
         if (isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
-            stateFS.push(`isNoLiqueByUSCS[${soilClassification}]`)
+            stateFS.push(`非液化之土壤分類${brk(soilClassification)}`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
-            stateFS.push(`depth[${depth}]>20`)
+            stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
         }
 
@@ -2876,7 +2880,7 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
 
             //非液化: N值>=50
             if (N60 >= 50) {
-                stateFS.push(`N60[${N60}]>=50`)
+                stateFS.push(`N60${brk(N60)}>=50`)
                 noLique = true
             }
 
@@ -3073,6 +3077,7 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
     }
 
@@ -3314,13 +3319,13 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
 
         //非液化: 地下水位以上
         if (depth < waterLevelDesign) {
-            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
-            stateFS.push(`depth[${depth}]>20`)
+            stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
         }
 
@@ -3584,13 +3589,14 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
     }
 
     //非液化: 若是qc1Ncs大於180則直接判定為非液化
     if (qc1Ncs >= 180) {
         // err = [] //第二階段不清除錯誤
-        stateFS.push(`qc1Ncs[${qc1Ncs}] >= 180`)
+        stateFS.push(`qc1Ncs${brk(qc1Ncs)}>=180`)
         //提供計算後CRR與CSR不複寫
         // CRR = '-'
         // CSR = '-'
@@ -3614,7 +3620,7 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
         //非液化: 若是useIc大於2.6則判定為非液化, 國震簡訊120期(2021)
         if (useIc > 2.6) {
             // err = [] //第二階段不清除錯誤
-            stateFS.push(`Ic[${useIc}] > 2.6`)
+            stateFS.push(`Ic${brk(useIc)}>2.6`)
             //提供計算後CRR與CSR不複寫
             // CRR = '-'
             // CSR = '-'
@@ -3746,13 +3752,13 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
 
         //非液化: 地下水位以上
         if (depth < waterLevelDesign) {
-            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
-            stateFS.push(`depth[${depth}]>20`)
+            stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
         }
 
@@ -4065,6 +4071,7 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
     }
 
@@ -4183,13 +4190,13 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
 
         //非液化: 地下水位以上
         if (depth < waterLevelDesign) {
-            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
-            stateFS.push(`depth[${depth}]>20`)
+            stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
         }
 
@@ -4560,6 +4567,7 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
     }
 
@@ -4681,13 +4689,13 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
 
         //非液化: 地下水位以上
         if (depth < waterLevelDesign) {
-            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
-            stateFS.push(`depth[${depth}]>20`)
+            stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
         }
 
@@ -4958,6 +4966,7 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
     }
 
@@ -5077,13 +5086,13 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
 
         //非液化: 地下水位以上
         if (depth < waterLevelDesign) {
-            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
-            stateFS.push(`depth[${depth}]>20`)
+            stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
         }
 
@@ -5404,6 +5413,7 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
     }
     // console.log('depth',depth,'FS',FS)
@@ -5521,13 +5531,13 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
 
         //非液化: 地下水位以上
         if (depth < waterLevelDesign) {
-            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
-            stateFS.push(`depth[${depth}]>20`)
+            stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
         }
 
@@ -5773,6 +5783,7 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
     }
 
@@ -5892,13 +5903,13 @@ function cptShibata({ ver = '1988', waterLevelDesign, depth, coe_a, qc, fs, u2, 
 
         //非液化: 地下水位以上
         if (depth < waterLevelDesign) {
-            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
-            stateFS.push(`depth[${depth}]>20`)
+            stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
         }
 
@@ -6172,6 +6183,7 @@ function cptShibata({ ver = '1988', waterLevelDesign, depth, coe_a, qc, fs, u2, 
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
     }
 
@@ -6216,7 +6228,7 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     //check
     let noLique = false
     let delayErr = false
-    while (true) { //bbb
+    while (true) {
 
         //check depth
         if (!isnum(depth)) {
@@ -6258,13 +6270,13 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
 
         //非液化: 地下水位以上
         if (depth < waterLevelDesign) {
-            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
-            stateFS.push(`depth[${depth}]>20`)
+            stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
         }
 
@@ -6461,6 +6473,7 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
     }
 
@@ -6504,7 +6517,7 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     //check
     let noLique = false
     let delayErr = false
-    while (true) { //bbb
+    while (true) {
 
         //check depth
         if (!isnum(depth)) {
@@ -6546,13 +6559,13 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
 
         //非液化: 地下水位以上
         if (depth < waterLevelDesign) {
-            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
-            stateFS.push(`depth[${depth}]>20`)
+            stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
         }
 
@@ -6746,6 +6759,7 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
     }
 
@@ -6789,7 +6803,7 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     //check
     let noLique = false
     let delayErr = false
-    while (true) { //bbb
+    while (true) {
 
         //check depth
         if (!isnum(depth)) {
@@ -6831,13 +6845,13 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
 
         //非液化: 地下水位以上
         if (depth < waterLevelDesign) {
-            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
-            stateFS.push(`depth[${depth}]>20`)
+            stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
         }
 
@@ -7031,6 +7045,7 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         FS = CRR / CSR
     }
     if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        stateFS.push(`FS${brk(FS)}>3，強制改為3`)
         FS = 3
     }
 
