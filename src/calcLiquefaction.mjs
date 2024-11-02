@@ -1732,8 +1732,9 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
     //非液化: (地下水位以上, 統一土壤分類屬黏土, 已於前面檢查), N160cs>=39
     if (N160cs >= 39) {
         // err = [] //第二階段不清除錯誤
-        CRR = '-'
-        CSR = '-'
+        stateFS.push(`N160cs${brk(N160cs)}>=39`)
+        CRR = '-' //尚未計算CRR故複寫「-」
+        CSR = '-' //尚未計算CSR故複寫「-」
         FS = 3
         return ret() //已於while區塊外, 無錯誤並結束
     }
@@ -2102,8 +2103,9 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
     //非液化: (地下水位以上, 統一土壤分類屬黏土, 已於前面處理), N160cs>=30
     if (N160cs >= 30) {
         // err = [] //第二階段不清除錯誤
-        CRR = '-'
-        CSR = '-'
+        stateFS.push(`N160cs${brk(N160cs)}>=30`)
+        CRR = '-' //尚未計算CRR故複寫「-」
+        CSR = '-' //尚未計算CSR故複寫「-」
         FS = 3
         return ret() //已於while區塊外, 無錯誤並結束
     }
@@ -3597,9 +3599,8 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
     if (qc1Ncs >= 180) {
         // err = [] //第二階段不清除錯誤
         stateFS.push(`qc1Ncs${brk(qc1Ncs)}>=180`)
-        //提供計算後CRR與CSR不複寫
-        // CRR = '-'
-        // CSR = '-'
+        // CRR = '-' //已計算CRR故不複寫
+        // CSR = '-' //已計算CSR故不複寫
         FS = 3
         return ret() //已於while區塊外, 無錯誤並結束
     }
@@ -3621,9 +3622,8 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
         if (useIc > 2.6) {
             // err = [] //第二階段不清除錯誤
             stateFS.push(`Ic${brk(useIc)}>2.6`)
-            //提供計算後CRR與CSR不複寫
-            // CRR = '-'
-            // CSR = '-'
+            // CRR = '-' //已計算CRR故不複寫
+            // CSR = '-' //已計算CSR故不複寫
             FS = 3
             return ret() //已於while區塊外, 無錯誤並結束
         }
@@ -4010,8 +4010,9 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     //非液化: 若是Ic大於等於2.6則須使用其他判斷準則, 或判定為非液化
     if (Ic >= 2.6) {
         // err = [] //第二階段不清除錯誤
-        CRR = '-'
-        CSR = '-'
+        stateFS.push(`Ic${brk(Ic)}>=2.6`)
+        CRR = '-' //尚未計算CRR故複寫「-」
+        CSR = '-' //尚未計算CSR故複寫「-」
         FS = 3
         return ret() //已於while區塊外, 無錯誤並結束
     }
@@ -4033,8 +4034,9 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     //非液化: 若Qt1ncs大於160(none)則直接判定為非液化
     if (Qt1ncs >= 160) {
         // err = [] //第二階段不清除錯誤
-        CRR = '-'
-        CSR = '-'
+        stateFS.push(`Qt1ncs${brk(Qt1ncs)}>=160`)
+        CRR = '-' //尚未計算CRR故複寫「-」
+        CSR = '-' //尚未計算CSR故複寫「-」
         FS = 3
         return ret() //已於while區塊外, 無錯誤並結束
     }
