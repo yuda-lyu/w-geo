@@ -41,7 +41,7 @@ let g = cnst.g
 let cvru = 1 / g * 1000 / 10000
 
 
-//參數單位
+//參數單位:
 // waterLevelDesign(m)
 // soilClassification(none)
 // vibrationType(none)
@@ -60,6 +60,19 @@ let cvru = 1 / g * 1000 / 10000
 // qc(MPa)
 // fs(MPa)
 // u2(MPa)
+
+
+//不須計算直接為非液化條件(FS=3):
+// 1.土層之土壤分類黏土或非指定粉土(土壤分類開頭C,O,P,M(但除了ML與MH)視為非液化條件)
+// 2.土層之中點深度位於地下水以上
+// 3.土層之中點深度位於20m以下
+// 4.土層之SPTN值>=50
+// 5.HBF法特有: PI值>7為非液化
+// 6.HBF法特有: N160cs>=39
+// 7.NCEER法特有: N160cs>=30
+// 8.JRA法特有: 地下水低於地表下10m以下
+// 9.JRA法特有: 細料含量>35%且PI值>=15
+// 10.JRA法特有: D50>10mm或D10>1mm
 
 
 function brk(c) {
@@ -819,10 +832,9 @@ function sptSettlement(N160, N172, CSR, FS) {
             return //清空vstr並強制跳出
         }
 
-        //FS最高2
+        //表格內FS最高2
         if (FS >= 2) {
-            //不提示超過原研究範疇訊息
-            FS = 2
+            FS = 2 //不提示超過原研究範疇訊息
         }
 
         //vstrIY
@@ -882,11 +894,12 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
     let CRR = ''
     let CSR = ''
     let FS = ''
+    let stateFS = []
     let vstrTS = ''
     let vstrIY = ''
 
     function ret() {
-        let r = { rrd, CN, N160, N172, CRR75, CRR, CSR, FS, vstrTS, vstrIY, err: join(err, '; ') }
+        let r = { rrd, CN, N160, N172, CRR75, CRR, CSR, FS, stateFS: join(stateFS, '; '), vstrTS, vstrIY, err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -951,13 +964,21 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
         }
         //soilClassification = cstr(soilClassification)
 
-        //非液化: 地下水位以上, 統一土壤分類屬黏土
-        if (depth < waterLevelDesign || isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
+        //非液化: 地下水位以上
+        if (depth < waterLevelDesign) {
+            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            noLique = true
+        }
+
+        //非液化: 統一土壤分類屬黏土
+        if (isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
+            stateFS.push(`isNoLiqueByUSCS[${soilClassification}]`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
+            stateFS.push(`depth[${depth}]>20`)
             noLique = true
         }
 
@@ -979,6 +1000,7 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
 
             //非液化: N值>=50
             if (N60 >= 50) {
+                stateFS.push(`N60[${N60}]>=50`)
                 noLique = true
             }
 
@@ -1100,7 +1122,7 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = 10
+        FS = 3
         return ret() //無錯誤並結束
     }
 
@@ -1347,11 +1369,8 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    // if (isNumber(FS) && FS > 10) {
-    //     FS = 10
-    // }
-    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
-        FS = 2
+    if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        FS = 3
     }
 
     //check
@@ -1418,11 +1437,12 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
     let CRR = ''
     let CSR = ''
     let FS = ''
+    let stateFS = []
     let vstrTS = ''
     let vstrIY = ''
 
     function ret() {
-        let r = { rrd, ks, CN, N160, N160cs, N172, CRR75, CRR, CSR, FS, vstrTS, vstrIY, err: join(err, '; ') }
+        let r = { rrd, ks, CN, N160, N160cs, N172, CRR75, CRR, CSR, FS, stateFS: join(stateFS, '; '), vstrTS, vstrIY, err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -1493,13 +1513,21 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
         }
         //soilClassification = cstr(soilClassification)
 
-        //非液化: 地下水位以上, 統一土壤分類屬黏土, (N160cs>=39, 於後面檢查)
-        if (depth < waterLevelDesign || isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
+        //非液化: 地下水位以上
+        if (depth < waterLevelDesign) {
+            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            noLique = true
+        }
+
+        //非液化: 統一土壤分類屬黏土, (N160cs>=39, 於後面檢查)
+        if (isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
+            stateFS.push(`isNoLiqueByUSCS[${soilClassification}]`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
+            stateFS.push(`depth[${depth}]>20`)
             noLique = true
         }
 
@@ -1514,6 +1542,7 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
         }
         else {
             if (cdbl(PI) > 7) { //PI單位(%)
+                stateFS.push(`PI[${PI}]>7`)
                 noLique = true
             }
         }
@@ -1536,6 +1565,7 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
 
             //非液化: N值>=50
             if (N60 >= 50) {
+                stateFS.push(`N60[${N60}]>=50`)
                 noLique = true
             }
 
@@ -1657,7 +1687,7 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = 10
+        FS = 3
         return ret() //無錯誤並結束
     }
 
@@ -1703,7 +1733,7 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
         // err = [] //第二階段不清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = 10
+        FS = 3
         return ret() //已於while區塊外, 無錯誤並結束
     }
 
@@ -1732,11 +1762,8 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    // if (isNumber(FS) && FS > 10) {
-    //     FS = 10
-    // }
-    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
-        FS = 2
+    if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        FS = 3
     }
 
     //check
@@ -1803,11 +1830,12 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
     let CRR = ''
     let CSR = ''
     let FS = ''
+    let stateFS = []
     let vstrTS = ''
     let vstrIY = ''
 
     function ret() {
-        let r = { rrd, alpha, beta, CN, N160, N160cs, N172, CRR75, CRR, CSR, FS, vstrTS, vstrIY, err: join(err, '; ') }
+        let r = { rrd, alpha, beta, CN, N160, N160cs, N172, CRR75, CRR, CSR, FS, stateFS: join(stateFS, '; '), vstrTS, vstrIY, err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -1872,13 +1900,21 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
         }
         //soilClassification = cstr(soilClassification)
 
-        //非液化: 地下水位以上, 統一土壤分類屬黏土, (N160cs>=30, 於後面處理)
-        if (depth < waterLevelDesign || isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
+        //非液化: 地下水位以上
+        if (depth < waterLevelDesign) {
+            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            noLique = true
+        }
+
+        //非液化: 統一土壤分類屬黏土, (N160cs>=30, 於後面處理)
+        if (isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
+            stateFS.push(`isNoLiqueByUSCS[${soilClassification}]`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
+            stateFS.push(`depth[${depth}]>20`)
             noLique = true
         }
 
@@ -1900,6 +1936,7 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
 
             //非液化: N值>=50
             if (N60 >= 50) {
+                stateFS.push(`N60[${N60}]>=50`)
                 noLique = true
             }
 
@@ -2021,7 +2058,7 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = 10
+        FS = 3
         return ret() //無錯誤並結束
     }
 
@@ -2065,7 +2102,7 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
         // err = [] //第二階段不清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = 10
+        FS = 3
         return ret() //已於while區塊外, 無錯誤並結束
     }
 
@@ -2102,11 +2139,8 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    // if (isNumber(FS) && FS > 10) {
-    //     FS = 10
-    // }
-    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
-        FS = 2
+    if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        FS = 3
     }
 
     //check
@@ -2179,11 +2213,12 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
     let CRR = ''
     let CSR = ''
     let FS = ''
+    let stateFS = []
     let vstrTS = ''
     let vstrIY = ''
 
     function ret() {
-        let r = { rrd, N160, N172, c1, c2, cFC, Na, RL, cw, CN, CRR75, CRR, CSR, FS, vstrTS, vstrIY, err: join(err, '; ') }
+        let r = { rrd, N160, N172, c1, c2, cFC, Na, RL, cw, CN, CRR75, CRR, CSR, FS, stateFS: join(stateFS, '; '), vstrTS, vstrIY, err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -2256,11 +2291,13 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
 
         //非液化: 非砂或礫質土, 強制視為非液化, 暫時用統一土壤分類區分 2021/05/07
         if (isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
+            stateFS.push(`isNoLiqueByUSCS[${soilClassification}]`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
+            stateFS.push(`depth[${depth}]>20`)
             noLique = true
         }
 
@@ -2282,6 +2319,7 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
 
             //非液化: N值>=50
             if (N60 >= 50) {
+                stateFS.push(`N60[${N60}]>=50`)
                 noLique = true
             }
 
@@ -2300,7 +2338,14 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
         //3.50％粒徑D50為10mm以下的土層，和10％粒徑D10為1mm以下的土層
 
         //非液化: 地下水位以上, 地下水低於地表下10m以下, 細料含量>35%且PI值>=15, D50>10mm或D10>1mm
-        if (depth < waterLevelDesign || waterLevelDesign > 10) {
+        if (depth < waterLevelDesign) {
+            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            noLique = true
+        }
+
+        //非液化: 地下水位以上, 地下水低於地表下10m以下, 細料含量>35%且PI值>=15, D50>10mm或D10>1mm
+        if (waterLevelDesign > 10) {
+            stateFS.push(`waterLevelDesign[${waterLevelDesign}] > 10`)
             noLique = true
         }
 
@@ -2343,6 +2388,7 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
                         //可能液化, FC超過35％但塑性指數IP小於15的土層
                     }
                     else {
+                        stateFS.push(`FC[${FC}]>35且PI[${PI}]>=15`)
                         noLique = true
                     }
 
@@ -2371,11 +2417,13 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
 
             //check
             if (D50 > 10) {
+                stateFS.push(`D50[${D50}]>10`)
                 noLique = true
             }
 
             //check
             if (D10 > 1) {
+                stateFS.push(`D10[${D10}]>1`)
                 noLique = true
             }
 
@@ -2479,7 +2527,7 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = 10
+        FS = 3
         return ret() //無錯誤並結束
     }
 
@@ -2650,11 +2698,8 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    // if (isNumber(FS) && FS > 10) {
-    //     FS = 10
-    // }
-    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
-        FS = 2
+    if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        FS = 3
     }
 
     //check
@@ -2725,11 +2770,12 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
     let CRR = ''
     let CSR = ''
     let FS = ''
+    let stateFS = []
     let vstrTS = ''
     let vstrIY = ''
 
     function ret() {
-        let r = { rrd, N160, N172, dNf, Na, CN, CRR75, CRR, CSR, FS, vstrTS, vstrIY, err: join(err, '; ') }
+        let r = { rrd, N160, N172, dNf, Na, CN, CRR75, CRR, CSR, FS, stateFS: join(stateFS, '; '), vstrTS, vstrIY, err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -2794,14 +2840,21 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
         }
         //soilClassification = cstr(soilClassification)
 
-        //尚無資料, 比照Seed法提供
-        //非液化: 地下水位以上, 統一土壤分類屬黏土
-        if (depth < waterLevelDesign || isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
+        //非液化(無資料, 比照Seed法提供): 地下水位以上
+        if (depth < waterLevelDesign) {
+            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            noLique = true
+        }
+
+        //非液化(無資料, 比照Seed法提供): 統一土壤分類屬黏土
+        if (isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
+            stateFS.push(`isNoLiqueByUSCS[${soilClassification}]`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
+            stateFS.push(`depth[${depth}]>20`)
             noLique = true
         }
 
@@ -2823,6 +2876,7 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
 
             //非液化: N值>=50
             if (N60 >= 50) {
+                stateFS.push(`N60[${N60}]>=50`)
                 noLique = true
             }
 
@@ -2944,7 +2998,7 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = 10
+        FS = 3
         return ret() //無錯誤並結束
     }
 
@@ -3018,11 +3072,8 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    // if (isNumber(FS) && FS > 10) {
-    //     FS = 10
-    // }
-    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
-        FS = 2
+    if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        FS = 3
     }
 
     //check
@@ -3165,7 +3216,6 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
     //HBF(ver=2012,2017,2021)
     //若有使用Robertson(1986)之後版本, qc皆視為使用qt(校正後qc)
     let err = []
-    let msg = ''
     let rc = {}
     let MSF = ''
     let rrd = ''
@@ -3180,6 +3230,7 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
     let CRR = ''
     let CSR = ''
     let FS = ''
+    let stateFS = []
     // let vstrTS = ''
     // let vstrIY = ''
 
@@ -3191,7 +3242,7 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
         // if (isnum(qc1Ncs)) {
         //     qc1Ncs = qc1Ncs / 1000 / cvru //kg/cm2 -> MPa
         // }
-        let r = { ...cptGetData(rc), rrd, Ic, Icn, qc1N, Kc, qc1Ncs, CRR75, CRR, CSR, FS, msg, err: join(err, '; ') }
+        let r = { ...cptGetData(rc), rrd, Ic, Icn, qc1N, Kc, qc1Ncs, CRR75, CRR, CSR, FS, stateFS: join(stateFS, '; '), err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -3263,13 +3314,13 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
 
         //非液化: 地下水位以上
         if (depth < waterLevelDesign) {
-            msg = `判定非液化: 樣本深度[${depth}]位於地下水位[${waterLevelDesign}]之上`
+            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
-            msg = `判定非液化: 樣本深度[${depth}]大於20m`
+            stateFS.push(`depth[${depth}]>20`)
             noLique = true
         }
 
@@ -3437,7 +3488,7 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = 10
+        FS = 3
         return ret() //無錯誤並結束
     }
 
@@ -3532,21 +3583,18 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    // if (isNumber(FS) && FS > 10) {
-    //     FS = 10
-    // }
-    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
-        FS = 2
+    if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        FS = 3
     }
 
     //非液化: 若是qc1Ncs大於180則直接判定為非液化
     if (qc1Ncs >= 180) {
         // err = [] //第二階段不清除錯誤
-        msg = `判定非液化: qc1Ncs[${qc1Ncs}]>=180`
+        stateFS.push(`qc1Ncs[${qc1Ncs}] >= 180`)
         //提供計算後CRR與CSR不複寫
         // CRR = '-'
         // CSR = '-'
-        FS = 10
+        FS = 3
         return ret() //已於while區塊外, 無錯誤並結束
     }
 
@@ -3566,11 +3614,11 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
         //非液化: 若是useIc大於2.6則判定為非液化, 國震簡訊120期(2021)
         if (useIc > 2.6) {
             // err = [] //第二階段不清除錯誤
-            msg = `判定非液化: 判定用Ic[${useIc}]>2.6`
+            stateFS.push(`Ic[${useIc}] > 2.6`)
             //提供計算後CRR與CSR不複寫
             // CRR = '-'
             // CSR = '-'
-            FS = 10
+            FS = 3
             return ret() //已於while區塊外, 無錯誤並結束
         }
 
@@ -3590,9 +3638,6 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
         err.push(`FS${brk(FS)}<0，強制改為0`)
         FS = 0
     }
-    if (FS >= 1) {
-        msg = `判定非液化: FS[${FS}]>=1`
-    }
 
     return ret()
 }
@@ -3604,7 +3649,6 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     //建立全CPT法之土壤臨界液化強度曲線，即NCEER(1997)所選用之方法。詳細流程圖可見Robertson and Wride(1998)。
     //若有使用Robertson(1986)之後版本, qc皆視為使用qt(校正後qc)
     let err = []
-    let msg = ''
     let rc = {}
     let MSF = ''
     let rrd = ''
@@ -3619,6 +3663,7 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     let CRR = ''
     let CSR = ''
     let FS = ''
+    let stateFS = []
     // let vstrTS = ''
     // let vstrIY = ''
 
@@ -3629,7 +3674,7 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
         if (isnum(Qt1ncs)) {
             Qt1ncs = Qt1ncs / cvru
         }
-        let r = { ...cptGetData(rc), rrd, Qt1n, Ic, Kc, Qt1ncs, CRR75, CRR, CSR, FS, msg, err: join(err, '; ') }
+        let r = { ...cptGetData(rc), rrd, Qt1n, Ic, Kc, Qt1ncs, CRR75, CRR, CSR, FS, stateFS: join(stateFS, '; '), err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -3701,11 +3746,13 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
 
         //非液化: 地下水位以上
         if (depth < waterLevelDesign) {
+            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
+            stateFS.push(`depth[${depth}]>20`)
             noLique = true
         }
 
@@ -3873,7 +3920,7 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = 10
+        FS = 3
         return ret() //無錯誤並結束
     }
 
@@ -3959,7 +4006,7 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
         // err = [] //第二階段不清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = 10
+        FS = 3
         return ret() //已於while區塊外, 無錯誤並結束
     }
 
@@ -3982,7 +4029,7 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
         // err = [] //第二階段不清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = 10
+        FS = 3
         return ret() //已於while區塊外, 無錯誤並結束
     }
 
@@ -4017,11 +4064,8 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    // if (isNumber(FS) && FS > 10) {
-    //     FS = 10
-    // }
-    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
-        FS = 2
+    if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        FS = 3
     }
 
     //check
@@ -4046,7 +4090,6 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
 function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2, svp, svpUsual, svpDesign, sv, tou_s, su, PGA, Mw }) {
     //若有使用Robertson(1986)之後版本, qc皆視為使用qt(校正後qc)
     let err = []
-    let msg = ''
     let rc = {}
     let MSF = ''
     let rrd = ''
@@ -4063,11 +4106,12 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
     let CRR = ''
     let CSR = ''
     let FS = ''
+    let stateFS = []
     // let vstrTS = ''
     // let vstrIY = ''
 
     function ret() {
-        let r = { ...cptGetData(rc), rrd, Kc, Kalpha, Fr, Ic, Icn, Qt, Qtn, Qtncs, CRR75, CRR, CSR, FS, msg, err: join(err, '; ') }
+        let r = { ...cptGetData(rc), rrd, Kc, Kalpha, Fr, Ic, Icn, Qt, Qtn, Qtncs, CRR75, CRR, CSR, FS, stateFS: join(stateFS, '; '), err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -4139,11 +4183,13 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
 
         //非液化: 地下水位以上
         if (depth < waterLevelDesign) {
+            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
+            stateFS.push(`depth[${depth}]>20`)
             noLique = true
         }
 
@@ -4311,7 +4357,7 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = 10
+        FS = 3
         return ret() //無錯誤並結束
     }
 
@@ -4513,11 +4559,8 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    // if (isNumber(FS) && FS > 10) {
-    //     FS = 10
-    // }
-    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
-        FS = 2
+    if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        FS = 3
     }
 
     //check
@@ -4542,7 +4585,6 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
 function cptJuang({ ver = '2002', waterLevelDesign, depth, coe_a, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw }) {
     //若有使用Robertson(1986)之後版本, qc皆視為使用qt(校正後qc)
     let err = []
-    let msg = ''
     let rc = {}
     let MSF = ''
     let rrd = ''
@@ -4555,6 +4597,7 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     let CRR = ''
     let CSR = ''
     let FS = ''
+    let stateFS = []
     // let vstrTS = ''
     // let vstrIY = ''
 
@@ -4566,7 +4609,7 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
         // if (isnum(qc1Ncs)) {
         //     qc1Ncs = qc1Ncs / 1000 / cvru //kg/cm2 -> MPa
         // }
-        let r = { ...cptGetData(rc), rrd, qc1N, Ic, qc1Ncs, CRR75, CRR, CSR, FS, msg, err: join(err, '; ') }
+        let r = { ...cptGetData(rc), rrd, qc1N, Ic, qc1Ncs, CRR75, CRR, CSR, FS, stateFS: join(stateFS, '; '), err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -4638,11 +4681,13 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
 
         //非液化: 地下水位以上
         if (depth < waterLevelDesign) {
+            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
+            stateFS.push(`depth[${depth}]>20`)
             noLique = true
         }
 
@@ -4810,7 +4855,7 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = 10
+        FS = 3
         return ret() //無錯誤並結束
     }
 
@@ -4912,11 +4957,8 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    // if (isNumber(FS) && FS > 10) {
-    //     FS = 10
-    // }
-    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
-        FS = 2
+    if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        FS = 3
     }
 
     //check
@@ -4941,7 +4983,6 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
 function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw }) {
     //若有使用Robertson(1986)之後版本, qc皆視為使用qt(校正後qc)
     let err = []
-    let msg = ''
     let rc = {}
     let MSF = ''
     let rrd = ''
@@ -4959,11 +5000,12 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
     let CRR = ''
     let CSR = ''
     let FS = ''
+    let stateFS = []
     // let vstrTS = ''
     // let vstrIY = ''
 
     function ret() {
-        let r = { ...cptGetData(rc), rrd, Fr, Bq, Ic, Icn, Qt, Qtn, Icbj, Csigma, Ksigma, CRR75, CRR, CSR, FS, msg, err: join(err, '; ') }
+        let r = { ...cptGetData(rc), rrd, Fr, Bq, Ic, Icn, Qt, Qtn, Icbj, Csigma, Ksigma, CRR75, CRR, CSR, FS, stateFS: join(stateFS, '; '), err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -5035,11 +5077,13 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
 
         //非液化: 地下水位以上
         if (depth < waterLevelDesign) {
+            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
+            stateFS.push(`depth[${depth}]>20`)
             noLique = true
         }
 
@@ -5207,7 +5251,7 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = 10
+        FS = 3
         return ret() //無錯誤並結束
     }
 
@@ -5359,11 +5403,8 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    // if (isNumber(FS) && FS > 10) {
-    //     FS = 10
-    // }
-    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
-        FS = 2
+    if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        FS = 3
     }
     // console.log('depth',depth,'FS',FS)
 
@@ -5389,7 +5430,6 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
 function cptOlsen({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw }) {
     //若有使用Robertson(1986)之後版本, qc皆視為使用qt(校正後qc)
     let err = []
-    let msg = ''
     let rc = {}
     let MSF = ''
     let rrd = ''
@@ -5400,6 +5440,7 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     let CRR = ''
     let CSR = ''
     let FS = ''
+    let stateFS = []
     // let vstrTS = ''
     // let vstrIY = ''
 
@@ -5408,7 +5449,7 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
         // if (isnum(qc1)) {
         //     qc1 = qc1 / cvru
         // }
-        let r = { ...cptGetData(rc), rrd, qc1, Rf, CRR75, CRR, CSR, FS, msg, err: join(err, '; ') }
+        let r = { ...cptGetData(rc), rrd, qc1, Rf, CRR75, CRR, CSR, FS, stateFS: join(stateFS, '; '), err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -5480,11 +5521,13 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
 
         //非液化: 地下水位以上
         if (depth < waterLevelDesign) {
+            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
+            stateFS.push(`depth[${depth}]>20`)
             noLique = true
         }
 
@@ -5652,7 +5695,7 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = 10
+        FS = 3
         return ret() //無錯誤並結束
     }
 
@@ -5729,11 +5772,8 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    // if (isNumber(FS) && FS > 10) {
-    //     FS = 10
-    // }
-    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
-        FS = 2
+    if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        FS = 3
     }
 
     //check
@@ -5758,7 +5798,6 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
 function cptShibata({ ver = '1988', waterLevelDesign, depth, coe_a, qc, fs, u2, svp, svpUsual, svpDesign, sv, PGA, Mw, D50 }) {
     //若有使用Robertson(1986)之後版本, qc皆視為使用qt(校正後qc)
     let err = []
-    let msg = ''
     let rc = {}
     let MSF = ''
     let rrd = ''
@@ -5769,6 +5808,7 @@ function cptShibata({ ver = '1988', waterLevelDesign, depth, coe_a, qc, fs, u2, 
     let CRR = ''
     let CSR = ''
     let FS = ''
+    let stateFS = []
     // let vstrTS = ''
     // let vstrIY = ''
 
@@ -5780,7 +5820,7 @@ function cptShibata({ ver = '1988', waterLevelDesign, depth, coe_a, qc, fs, u2, 
         if (isnum(qc1cr)) {
             qc1cr = qc1cr / cvru
         }
-        let r = { ...cptGetData(rc), rrd, qc1, qc1cr, CRR75, CRR, CSR, FS, msg, err: join(err, '; ') }
+        let r = { ...cptGetData(rc), rrd, qc1, qc1cr, CRR75, CRR, CSR, FS, stateFS: join(stateFS, '; '), err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -5852,11 +5892,13 @@ function cptShibata({ ver = '1988', waterLevelDesign, depth, coe_a, qc, fs, u2, 
 
         //非液化: 地下水位以上
         if (depth < waterLevelDesign) {
+            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
             noLique = true
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
+            stateFS.push(`depth[${depth}]>20`)
             noLique = true
         }
 
@@ -6042,7 +6084,7 @@ function cptShibata({ ver = '1988', waterLevelDesign, depth, coe_a, qc, fs, u2, 
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = 10
+        FS = 3
         return ret() //無錯誤並結束
     }
 
@@ -6129,11 +6171,8 @@ function cptShibata({ ver = '1988', waterLevelDesign, depth, coe_a, qc, fs, u2, 
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    // if (isNumber(FS) && FS > 10) {
-    //     FS = 10
-    // }
-    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
-        FS = 2
+    if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        FS = 3
     }
 
     //check
@@ -6162,9 +6201,10 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     let CRR = ''
     let CSR = ''
     let FS = ''
+    let stateFS = []
 
     function ret() {
-        let r = { CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        let r = { CRR75, CRR, CSR, FS, stateFS: join(stateFS, '; '), err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -6174,84 +6214,201 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     }
 
     //check
-    if (!isnum(waterLevelDesign)) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
-        waterLevelDesign = 0
-    }
-    waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
-        waterLevelDesign = 0
+    let noLique = false
+    let delayErr = false
+    while (true) { //bbb
+
+        //check depth
+        if (!isnum(depth)) {
+            err.push(`depth${brk(depth)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            depth = cdbl(depth)
+
+            //check
+            if (depth < 0) {
+                err.push(`depth${brk(depth)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check waterLevelUsual, 不使用故不需檢查
+
+        //check waterLevelDesign
+        if (!isnum(waterLevelDesign)) {
+            err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
+            waterLevelDesign = 0
+        }
+        else {
+
+            //cdbl
+            waterLevelDesign = cdbl(waterLevelDesign)
+
+            //check
+            if (waterLevelDesign < 0) {
+                err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
+                waterLevelDesign = 0
+            }
+
+        }
+
+        //非液化: 地下水位以上
+        if (depth < waterLevelDesign) {
+            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            noLique = true
+        }
+
+        //非液化: 深度大於20m
+        if (depth > 20) {
+            stateFS.push(`depth[${depth}]>20`)
+            noLique = true
+        }
+
+        //check Vs
+        if (!isnum(Vs)) {
+            err.push(`Vs${brk(Vs)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            Vs = cdbl(Vs)
+
+            //check
+            if (Vs < 0) {
+                err.push(`Vs${brk(Vs)}<0`)
+                delayErr = true
+            }
+
+        }
+
+        //check FC
+        if (!isnum(FC)) {
+            err.push(`FC${brk(FC)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            FC = cdbl(FC)
+
+            //check
+            if (FC < 0) {
+                err.push(`FC${brk(FC)}<0`)
+                delayErr = true
+            }
+
+        }
+
+        // //check svpUsual, 不使用故不需檢查
+        // if (!isnum(svpUsual)) {
+        //     err.push(`svpUsual${brk(svpUsual)}非數字`)
+        //     return ret() //重大錯誤直接報錯結束
+        // }
+        // else {
+
+        //     //cdbl
+        //     svpUsual = cdbl(svpUsual)
+
+        //     //check
+        //     if (svpUsual < 0) {
+        //         err.push(`svpUsual${brk(svpUsual)}<0`)
+        //         return ret() //重大錯誤直接報錯結束
+        //     }
+
+        // }
+
+        //check svpDesign
+        if (!isnum(svpDesign)) {
+            err.push(`svpDesign${brk(svpDesign)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            svpDesign = cdbl(svpDesign)
+
+            //check
+            if (svpDesign < 0) {
+                err.push(`svpDesign${brk(svpDesign)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check sv
+        if (!isnum(sv)) {
+            err.push(`sv${brk(sv)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            sv = cdbl(sv)
+
+            //check
+            if (sv < 0) {
+                err.push(`sv${brk(sv)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check PGA
+        if (!isnum(PGA)) {
+            err.push(`PGA${brk(PGA)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            PGA = cdbl(PGA)
+
+            //check
+            if (PGA < 0) {
+                err.push(`PGA${brk(PGA)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check Mw
+        if (!isnum(Mw)) {
+            err.push(`Mw${brk(Mw)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            Mw = cdbl(Mw)
+
+            //check
+            if (Mw < 0) {
+                err.push(`Mw${brk(Mw)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        break
     }
 
-    if (!isnum(depth)) {
-        err.push(`depth${brk(depth)}非數字`)
-        return ret()
-    }
-    depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)}<0`)
-        return ret()
-    }
-
-    if (!isnum(Vs)) {
-        err.push(`Vs${brk(Vs)}非數字`)
-        return ret()
-    }
-    Vs = cdbl(Vs)
-    if (Vs < 0) {
-        err.push(`Vs${brk(Vs)}<0`)
-        return ret()
+    //check noLique
+    if (noLique === true) {
+        err = [] //清除錯誤
+        CRR = '-'
+        CSR = '-'
+        FS = 3
+        return ret() //無錯誤並結束
     }
 
-    if (!isnum(FC)) {
-        err.push(`FC${brk(FC)}非數字`)
-        return ret()
-    }
-    FC = cdbl(FC)
-    if (FC < 0) {
-        err.push(`FC${brk(FC)}<0`)
-        return ret()
-    }
-
-    if (!isnum(svpDesign)) {
-        err.push(`svpDesign${brk(svpDesign)}非數字`)
-        return ret()
-    }
-    svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)}<0`)
-        return ret()
-    }
-
-    if (!isnum(sv)) {
-        err.push(`sv${brk(sv)}非數字`)
-        return ret()
-    }
-    sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)}<0`)
-        return ret()
-    }
-
-    if (!isnum(PGA)) {
-        err.push(`PGA${brk(PGA)}非數字`)
-        return ret()
-    }
-    PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)}<0`)
-        return ret()
-    }
-
-    if (!isnum(Mw)) {
-        err.push(`Mw${brk(Mw)}非數字`)
-        return ret()
-    }
-    Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)}<0`)
-        return ret()
+    //check delayErr
+    if (delayErr === true) {
+        return ret() //觸發延遲報錯並結束
     }
 
     //MSF, 規模修正因子
@@ -6303,19 +6460,8 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    // if (isNumber(FS) && FS > 10) {
-    //     FS = 10
-    // }
-    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
-        FS = 2
-    }
-
-    //非液化: 深度大於20m
-    if (depth > 20) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
+    if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        FS = 3
     }
 
     //check
@@ -6343,9 +6489,10 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     let CRR = ''
     let CSR = ''
     let FS = ''
+    let stateFS = []
 
     function ret() {
-        let r = { CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        let r = { CRR75, CRR, CSR, FS, stateFS: join(stateFS, '; '), err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -6355,84 +6502,201 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     }
 
     //check
-    if (!isnum(waterLevelDesign)) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
-        waterLevelDesign = 0
-    }
-    waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
-        waterLevelDesign = 0
+    let noLique = false
+    let delayErr = false
+    while (true) { //bbb
+
+        //check depth
+        if (!isnum(depth)) {
+            err.push(`depth${brk(depth)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            depth = cdbl(depth)
+
+            //check
+            if (depth < 0) {
+                err.push(`depth${brk(depth)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check waterLevelUsual, 不使用故不需檢查
+
+        //check waterLevelDesign
+        if (!isnum(waterLevelDesign)) {
+            err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
+            waterLevelDesign = 0
+        }
+        else {
+
+            //cdbl
+            waterLevelDesign = cdbl(waterLevelDesign)
+
+            //check
+            if (waterLevelDesign < 0) {
+                err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
+                waterLevelDesign = 0
+            }
+
+        }
+
+        //非液化: 地下水位以上
+        if (depth < waterLevelDesign) {
+            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            noLique = true
+        }
+
+        //非液化: 深度大於20m
+        if (depth > 20) {
+            stateFS.push(`depth[${depth}]>20`)
+            noLique = true
+        }
+
+        //check Vs
+        if (!isnum(Vs)) {
+            err.push(`Vs${brk(Vs)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            Vs = cdbl(Vs)
+
+            //check
+            if (Vs < 0) {
+                err.push(`Vs${brk(Vs)}<0`)
+                delayErr = true
+            }
+
+        }
+
+        //check FC
+        if (!isnum(FC)) {
+            err.push(`FC${brk(FC)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            FC = cdbl(FC)
+
+            //check
+            if (FC < 0) {
+                err.push(`FC${brk(FC)}<0`)
+                delayErr = true
+            }
+
+        }
+
+        // //check svpUsual, 不使用故不需檢查
+        // if (!isnum(svpUsual)) {
+        //     err.push(`svpUsual${brk(svpUsual)}非數字`)
+        //     return ret() //重大錯誤直接報錯結束
+        // }
+        // else {
+
+        //     //cdbl
+        //     svpUsual = cdbl(svpUsual)
+
+        //     //check
+        //     if (svpUsual < 0) {
+        //         err.push(`svpUsual${brk(svpUsual)}<0`)
+        //         return ret() //重大錯誤直接報錯結束
+        //     }
+
+        // }
+
+        //check svpDesign
+        if (!isnum(svpDesign)) {
+            err.push(`svpDesign${brk(svpDesign)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            svpDesign = cdbl(svpDesign)
+
+            //check
+            if (svpDesign < 0) {
+                err.push(`svpDesign${brk(svpDesign)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check sv
+        if (!isnum(sv)) {
+            err.push(`sv${brk(sv)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            sv = cdbl(sv)
+
+            //check
+            if (sv < 0) {
+                err.push(`sv${brk(sv)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check PGA
+        if (!isnum(PGA)) {
+            err.push(`PGA${brk(PGA)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            PGA = cdbl(PGA)
+
+            //check
+            if (PGA < 0) {
+                err.push(`PGA${brk(PGA)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check Mw
+        if (!isnum(Mw)) {
+            err.push(`Mw${brk(Mw)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            Mw = cdbl(Mw)
+
+            //check
+            if (Mw < 0) {
+                err.push(`Mw${brk(Mw)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        break
     }
 
-    if (!isnum(depth)) {
-        err.push(`depth${brk(depth)}非數字`)
-        return ret()
-    }
-    depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)}<0`)
-        return ret()
-    }
-
-    if (!isnum(Vs)) {
-        err.push(`Vs${brk(Vs)}非數字`)
-        return ret()
-    }
-    Vs = cdbl(Vs)
-    if (Vs < 0) {
-        err.push(`Vs${brk(Vs)}<0`)
-        return ret()
+    //check noLique
+    if (noLique === true) {
+        err = [] //清除錯誤
+        CRR = '-'
+        CSR = '-'
+        FS = 3
+        return ret() //無錯誤並結束
     }
 
-    if (!isnum(FC)) {
-        err.push(`FC${brk(FC)}非數字`)
-        return ret()
-    }
-    FC = cdbl(FC)
-    if (FC < 0) {
-        err.push(`FC${brk(FC)}<0`)
-        return ret()
-    }
-
-    if (!isnum(svpDesign)) {
-        err.push(`svpDesign${brk(svpDesign)}非數字`)
-        return ret()
-    }
-    svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)}<0`)
-        return ret()
-    }
-
-    if (!isnum(sv)) {
-        err.push(`sv${brk(sv)}非數字`)
-        return ret()
-    }
-    sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)}<0`)
-        return ret()
-    }
-
-    if (!isnum(PGA)) {
-        err.push(`PGA${brk(PGA)}非數字`)
-        return ret()
-    }
-    PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)}<0`)
-        return ret()
-    }
-
-    if (!isnum(Mw)) {
-        err.push(`Mw${brk(Mw)}非數字`)
-        return ret()
-    }
-    Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)}<0`)
-        return ret()
+    //check delayErr
+    if (delayErr === true) {
+        return ret() //觸發延遲報錯並結束
     }
 
     //MSF, 規模修正因子
@@ -6481,19 +6745,8 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    // if (isNumber(FS) && FS > 10) {
-    //     FS = 10
-    // }
-    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
-        FS = 2
-    }
-
-    //非液化: 深度大於20m
-    if (depth > 20) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
+    if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        FS = 3
     }
 
     //check
@@ -6521,9 +6774,10 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     let CRR = ''
     let CSR = ''
     let FS = ''
+    let stateFS = []
 
     function ret() {
-        let r = { CRR75, CRR, CSR, FS, err: join(err, '; ') }
+        let r = { CRR75, CRR, CSR, FS, stateFS: join(stateFS, '; '), err: join(err, '; ') }
         each(r, (v, k) => {
             if (!isestr(v) && !isnum(v)) {
                 r[k] = ''
@@ -6533,84 +6787,201 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     }
 
     //check
-    if (!isnum(waterLevelDesign)) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
-        waterLevelDesign = 0
-    }
-    waterLevelDesign = cdbl(waterLevelDesign)
-    if (waterLevelDesign < 0) {
-        err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
-        waterLevelDesign = 0
+    let noLique = false
+    let delayErr = false
+    while (true) { //bbb
+
+        //check depth
+        if (!isnum(depth)) {
+            err.push(`depth${brk(depth)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            depth = cdbl(depth)
+
+            //check
+            if (depth < 0) {
+                err.push(`depth${brk(depth)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check waterLevelUsual, 不使用故不需檢查
+
+        //check waterLevelDesign
+        if (!isnum(waterLevelDesign)) {
+            err.push(`waterLevelDesign${brk(waterLevelDesign)}非數字，強制預設為0(m)`)
+            waterLevelDesign = 0
+        }
+        else {
+
+            //cdbl
+            waterLevelDesign = cdbl(waterLevelDesign)
+
+            //check
+            if (waterLevelDesign < 0) {
+                err.push(`waterLevelDesign${brk(waterLevelDesign)}<0，強制預設為0(m)`)
+                waterLevelDesign = 0
+            }
+
+        }
+
+        //非液化: 地下水位以上
+        if (depth < waterLevelDesign) {
+            stateFS.push(`depth[${depth}]<waterLevelDesign[${waterLevelDesign}]`)
+            noLique = true
+        }
+
+        //非液化: 深度大於20m
+        if (depth > 20) {
+            stateFS.push(`depth[${depth}]>20`)
+            noLique = true
+        }
+
+        //check Vs
+        if (!isnum(Vs)) {
+            err.push(`Vs${brk(Vs)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            Vs = cdbl(Vs)
+
+            //check
+            if (Vs < 0) {
+                err.push(`Vs${brk(Vs)}<0`)
+                delayErr = true
+            }
+
+        }
+
+        //check FC
+        if (!isnum(FC)) {
+            err.push(`FC${brk(FC)}非數字`)
+            delayErr = true
+        }
+        else {
+
+            //cdbl
+            FC = cdbl(FC)
+
+            //check
+            if (FC < 0) {
+                err.push(`FC${brk(FC)}<0`)
+                delayErr = true
+            }
+
+        }
+
+        // //check svpUsual, 不使用故不需檢查
+        // if (!isnum(svpUsual)) {
+        //     err.push(`svpUsual${brk(svpUsual)}非數字`)
+        //     return ret() //重大錯誤直接報錯結束
+        // }
+        // else {
+
+        //     //cdbl
+        //     svpUsual = cdbl(svpUsual)
+
+        //     //check
+        //     if (svpUsual < 0) {
+        //         err.push(`svpUsual${brk(svpUsual)}<0`)
+        //         return ret() //重大錯誤直接報錯結束
+        //     }
+
+        // }
+
+        //check svpDesign
+        if (!isnum(svpDesign)) {
+            err.push(`svpDesign${brk(svpDesign)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            svpDesign = cdbl(svpDesign)
+
+            //check
+            if (svpDesign < 0) {
+                err.push(`svpDesign${brk(svpDesign)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check sv
+        if (!isnum(sv)) {
+            err.push(`sv${brk(sv)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            sv = cdbl(sv)
+
+            //check
+            if (sv < 0) {
+                err.push(`sv${brk(sv)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check PGA
+        if (!isnum(PGA)) {
+            err.push(`PGA${brk(PGA)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            PGA = cdbl(PGA)
+
+            //check
+            if (PGA < 0) {
+                err.push(`PGA${brk(PGA)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        //check Mw
+        if (!isnum(Mw)) {
+            err.push(`Mw${brk(Mw)}非數字`)
+            return ret() //重大錯誤直接報錯結束
+        }
+        else {
+
+            //cdbl
+            Mw = cdbl(Mw)
+
+            //check
+            if (Mw < 0) {
+                err.push(`Mw${brk(Mw)}<0`)
+                return ret() //重大錯誤直接報錯結束
+            }
+
+        }
+
+        break
     }
 
-    if (!isnum(depth)) {
-        err.push(`depth${brk(depth)}非數字`)
-        return ret()
-    }
-    depth = cdbl(depth)
-    if (depth < 0) {
-        err.push(`depth${brk(depth)}<0`)
-        return ret()
-    }
-
-    if (!isnum(Vs)) {
-        err.push(`Vs${brk(Vs)}非數字`)
-        return ret()
-    }
-    Vs = cdbl(Vs)
-    if (Vs < 0) {
-        err.push(`Vs${brk(Vs)}<0`)
-        return ret()
+    //check noLique
+    if (noLique === true) {
+        err = [] //清除錯誤
+        CRR = '-'
+        CSR = '-'
+        FS = 3
+        return ret() //無錯誤並結束
     }
 
-    if (!isnum(FC)) {
-        err.push(`FC${brk(FC)}非數字`)
-        return ret()
-    }
-    FC = cdbl(FC)
-    if (FC < 0) {
-        err.push(`FC${brk(FC)}<0`)
-        return ret()
-    }
-
-    if (!isnum(svpDesign)) {
-        err.push(`svpDesign${brk(svpDesign)}非數字`)
-        return ret()
-    }
-    svpDesign = cdbl(svpDesign)
-    if (svpDesign < 0) {
-        err.push(`svpDesign${brk(svpDesign)}<0`)
-        return ret()
-    }
-
-    if (!isnum(sv)) {
-        err.push(`sv${brk(sv)}非數字`)
-        return ret()
-    }
-    sv = cdbl(sv)
-    if (sv < 0) {
-        err.push(`sv${brk(sv)}<0`)
-        return ret()
-    }
-
-    if (!isnum(PGA)) {
-        err.push(`PGA${brk(PGA)}非數字`)
-        return ret()
-    }
-    PGA = cdbl(PGA)
-    if (PGA < 0) {
-        err.push(`PGA${brk(PGA)}<0`)
-        return ret()
-    }
-
-    if (!isnum(Mw)) {
-        err.push(`Mw${brk(Mw)}非數字`)
-        return ret()
-    }
-    Mw = cdbl(Mw)
-    if (Mw < 0) {
-        err.push(`Mw${brk(Mw)}<0`)
-        return ret()
+    //check delayErr
+    if (delayErr === true) {
+        return ret() //觸發延遲報錯並結束
     }
 
     //MSF, 規模修正因子
@@ -6659,19 +7030,8 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
     if (isNumber(CRR) && isNumber(CSR) && CSR > 0) {
         FS = CRR / CSR
     }
-    // if (isNumber(FS) && FS > 10) {
-    //     FS = 10
-    // }
-    if (isNumber(FS) && FS > 2) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為2, 故轉設定上限為2
-        FS = 2
-    }
-
-    //非液化: 深度大於20m
-    if (depth > 20) {
-        CRR = '-'
-        CSR = '-'
-        FS = 10
-        return ret()
+    if (isNumber(FS) && FS > 3) { //針對液化土(砂土與粉土但非ML與非MH)要繪製FS至圖內, 圖內FS最大值為3, 故轉設定上限為3
+        FS = 3
     }
 
     //check
