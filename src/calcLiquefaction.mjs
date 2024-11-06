@@ -62,8 +62,9 @@ let cvru = 1 / g * 1000 / 10000
 // u2(MPa)
 
 
-//limFSNoliq, limFSMax
-let limFSNoliq = 10 //非液化條件之安全係數
+//limFSNoliqForBasic, limFSNoliqForSpec, limFSMax
+let limFSNoliqForBasic = 10 //基本非液化條件之安全係數
+let limFSNoliqForSpec = 3 //指定非液化條件之安全係數
 let limFSMax = 3 //安全係數最大值
 
 
@@ -86,25 +87,25 @@ let t = `
 ## 二、系統處理原則
 
 ### 2.1 直接視為非液化條件不須計算FS
-1. FS=10 : 土層之土壤分類黏土或非指定粉土(土壤分類開頭C,O,P,M(但除了ML與MH))視為非液化
+1. FS=10 : 土層之土壤分類為黏土或非指定粉土(土壤分類開頭C,O,P,M(但除了ML與MH))視為非液化
 1. FS=10 : 土層之中點深度位於地下水以上視為非液化
 1. FS=10 : 土層之中點深度位於20m以下視為非液化
-1. FS=10 : 土層之SPTN值>=50視為非液化
-1. FS=10 : HBF法特有: PI值>7視為非液化
-1. FS=10 : HBF法特有: N160cs>=39視為非液化
-1. FS=10 : NCEER法特有: N160cs>=30視為非液化
-1. FS=10 : JRA法特有: 地下水低於地表下10m以下視為非液化
-1. FS=10 : JRA法特有: 細料含量>35%且PI值>=15視為非液化
-1. FS=10 : JRA法特有: D50>10mm或D10>1mm視為非液化
+1. FS=3  : 土層之SPTN值>=50視為非液化
+1. FS=3  : HBF法特有: PI值>7視為非液化
+1. FS=3  : HBF法特有: N160cs>=39視為非液化
+1. FS=3  : NCEER法特有: N160cs>=30視為非液化
+1. FS=3  : JRA法特有: 地下水低於地表下10m以下視為非液化
+1. FS=3  : JRA法特有: 細料含量>35%且PI值>=15視為非液化
+1. FS=3  : JRA法特有: D50>10mm或D10>1mm視為非液化
 
 ### 2.2 可進行液化分析但無法計算有效FS
-1. FS=3 : 垂直總應力<=0
+1. FS=3 : 垂直總應力sv<=0
 1. FS=3 : 地震矩規模Mw<=1
 1. FS=3 : 最大地表加速度PGA<=0
 1. FS=3 : 應力折減係數rd<=0
 
 ### 2.3 可進行液化分析且可計算出FS
-1. 此時FS最大值取3
+1. 可算出FS但最大值為3
 
 `
 
@@ -1002,18 +1003,21 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
         if (depth < waterLevelDesign) {
             stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //非液化: 統一土壤分類屬黏土
         if (isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
             stateFS.push(`非液化之土壤分類${brk(soilClassification)}`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
             stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //check N60
@@ -1036,6 +1040,7 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
             if (N60 >= 50) {
                 stateFS.push(`N60${brk(N60)}>=50`)
                 noLique = true
+                FS = limFSNoliqForSpec
             }
 
         }
@@ -1156,7 +1161,9 @@ function sptSeed({ noLiqueMode = 'new', waterLevelDesign, soilClassification, de
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = limFSNoliq
+        if (!isnum(FS)) {
+            throw new Error(`FS[${FS}]非數字`)
+        }
         return ret() //無錯誤並結束
     }
 
@@ -1564,18 +1571,21 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
         if (depth < waterLevelDesign) {
             stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //非液化: 統一土壤分類屬黏土, (N160cs>=39, 於後面檢查)
         if (isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
             stateFS.push(`非液化之土壤分類${brk(soilClassification)}`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
             stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //check PI為NP, 不需阿太堡時，預設樣品PI、LL位於塑性圖Aline以下，並隸屬於ML(LL<50)，此時使用PI=0、LL=40
@@ -1591,6 +1601,7 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
             if (cdbl(PI) > 7) { //PI單位(%)
                 stateFS.push(`PI${brk(PI)}>7`)
                 noLique = true
+                FS = limFSNoliqForSpec
             }
         }
 
@@ -1614,6 +1625,7 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
             if (N60 >= 50) {
                 stateFS.push(`N60${brk(N60)}>=50`)
                 noLique = true
+                FS = limFSNoliqForSpec
             }
 
         }
@@ -1734,7 +1746,9 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = limFSNoliq
+        if (!isnum(FS)) {
+            throw new Error(`FS[${FS}]非數字`)
+        }
         return ret() //無錯誤並結束
     }
 
@@ -1781,7 +1795,7 @@ function sptHBF({ ver = '2012', noLiqueMode = 'new', waterLevelDesign, soilClass
         stateFS.push(`N160cs${brk(N160cs)}>=39`)
         CRR = '-' //尚未計算CRR故複寫「-」
         CSR = '-' //尚未計算CSR故複寫「-」
-        FS = limFSNoliq
+        FS = limFSNoliqForSpec  
         return ret() //已於while區塊外, 無錯誤並結束
     }
 
@@ -1965,18 +1979,21 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
         if (depth < waterLevelDesign) {
             stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //非液化: 統一土壤分類屬黏土, (N160cs>=30, 於後面處理)
         if (isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
             stateFS.push(`非液化之土壤分類${brk(soilClassification)}`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
             stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //check N60
@@ -1999,6 +2016,7 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
             if (N60 >= 50) {
                 stateFS.push(`N60${brk(N60)}>=50`)
                 noLique = true
+                FS = limFSNoliqForSpec
             }
 
         }
@@ -2119,7 +2137,9 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = limFSNoliq
+        if (!isnum(FS)) {
+            throw new Error(`FS[${FS}]非數字`)
+        }
         return ret() //無錯誤並結束
     }
 
@@ -2164,7 +2184,7 @@ function sptNCEER({ noLiqueMode = 'new', waterLevelDesign, soilClassification, d
         stateFS.push(`N160cs${brk(N160cs)}>=30`)
         CRR = '-' //尚未計算CRR故複寫「-」
         CSR = '-' //尚未計算CSR故複寫「-」
-        FS = limFSNoliq
+        FS = limFSNoliqForSpec
         return ret() //已於while區塊外, 無錯誤並結束
     }
 
@@ -2368,12 +2388,14 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
         if (isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
             stateFS.push(`非液化之土壤分類${brk(soilClassification)}`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
             stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //check N60
@@ -2396,6 +2418,7 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
             if (N60 >= 50) {
                 stateFS.push(`N60${brk(N60)}>=50`)
                 noLique = true
+                FS = limFSNoliqForSpec
             }
 
         }
@@ -2416,12 +2439,14 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
         if (depth < waterLevelDesign) {
             stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //非液化: 地下水位以上, 地下水低於地表下10m以下, 細料含量>35%且PI值>=15, D50>10mm或D10>1mm
         if (waterLevelDesign > 10) {
             stateFS.push(`waterLevelDesign${brk(waterLevelDesign)}>10`)
             noLique = true
+            FS = limFSNoliqForSpec
         }
 
         //check FC
@@ -2465,6 +2490,7 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
                     else {
                         stateFS.push(`FC${brk(FC)}>35且PI${brk(PI)}>=15`)
                         noLique = true
+                        FS = limFSNoliqForSpec
                     }
 
                 }
@@ -2494,12 +2520,14 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
             if (D50 > 10) {
                 stateFS.push(`D50${brk(D50)}>10`)
                 noLique = true
+                FS = limFSNoliqForSpec
             }
 
             //check
             if (D10 > 1) {
                 stateFS.push(`D10${brk(D10)}>1`)
                 noLique = true
+                FS = limFSNoliqForSpec
             }
 
         }
@@ -2602,7 +2630,9 @@ function sptNJRA({ ver = '1996', noLiqueMode = 'new', waterLevelDesign, soilClas
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = limFSNoliq
+        if (!isnum(FS)) {
+            throw new Error(`FS[${FS}]非數字`)
+        }
         return ret() //無錯誤並結束
     }
 
@@ -2932,18 +2962,21 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
         if (depth < waterLevelDesign) {
             stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //非液化(無資料, 比照Seed法提供): 統一土壤分類屬黏土
         if (isNoLiqueByUSCS(soilClassification, noLiqueMode)) {
             stateFS.push(`非液化之土壤分類${brk(soilClassification)}`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
             stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //check N60
@@ -2966,6 +2999,7 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
             if (N60 >= 50) {
                 stateFS.push(`N60${brk(N60)}>=50`)
                 noLique = true
+                FS = limFSNoliqForSpec
             }
 
         }
@@ -3086,7 +3120,9 @@ function sptTY({ noLiqueMode = 'new', waterLevelDesign, soilClassification, dept
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = limFSNoliq
+        if (!isnum(FS)) {
+            throw new Error(`FS[${FS}]非數字`)
+        }
         return ret() //無錯誤並結束
     }
 
@@ -3423,12 +3459,14 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
         if (depth < waterLevelDesign) {
             stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
             stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //check qc
@@ -3595,7 +3633,9 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = limFSNoliq
+        if (!isnum(FS)) {
+            throw new Error(`FS[${FS}]非數字`)
+        }
         return ret() //無錯誤並結束
     }
 
@@ -3713,7 +3753,7 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
         stateFS.push(`qc1Ncs${brk(qc1Ncs)}>=180`)
         // CRR = '-' //已計算CRR故不複寫
         // CSR = '-' //已計算CSR故不複寫
-        FS = limFSNoliq
+        FS = limFSNoliqForBasic
         return ret() //已於while區塊外, 無錯誤並結束
     }
 
@@ -3736,7 +3776,7 @@ function cptHBF({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u2, svp,
             stateFS.push(`Ic${brk(useIc)}>2.6`)
             // CRR = '-' //已計算CRR故不複寫
             // CSR = '-' //已計算CSR故不複寫
-            FS = limFSNoliq
+            FS = limFSNoliqForBasic
             return ret() //已於while區塊外, 無錯誤並結束
         }
 
@@ -3866,12 +3906,14 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
         if (depth < waterLevelDesign) {
             stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
             stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //check qc
@@ -4038,7 +4080,9 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = limFSNoliq
+        if (!isnum(FS)) {
+            throw new Error(`FS[${FS}]非數字`)
+        }
         return ret() //無錯誤並結束
     }
 
@@ -4125,7 +4169,7 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
         stateFS.push(`Ic${brk(Ic)}>=2.6`)
         CRR = '-' //尚未計算CRR故複寫「-」
         CSR = '-' //尚未計算CSR故複寫「-」
-        FS = limFSNoliq
+        FS = limFSNoliqForBasic
         return ret() //已於while區塊外, 無錯誤並結束
     }
 
@@ -4149,7 +4193,7 @@ function cptNCEER({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
         stateFS.push(`Qt1ncs${brk(Qt1ncs)}>=160`)
         CRR = '-' //尚未計算CRR故複寫「-」
         CSR = '-' //尚未計算CSR故複寫「-」
-        FS = limFSNoliq
+        FS = limFSNoliqForBasic
         return ret() //已於while區塊外, 無錯誤並結束
     }
 
@@ -4318,12 +4362,14 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
         if (depth < waterLevelDesign) {
             stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
             stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //check qc
@@ -4490,7 +4536,9 @@ function cptRobertson({ ver = '2009', waterLevelDesign, depth, coe_a, qc, fs, u2
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = limFSNoliq
+        if (!isnum(FS)) {
+            throw new Error(`FS[${FS}]非數字`)
+        }
         return ret() //無錯誤並結束
     }
 
@@ -4829,12 +4877,14 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
         if (depth < waterLevelDesign) {
             stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
             stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //check qc
@@ -5001,7 +5051,9 @@ function cptJuang({ ver = '2002', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = limFSNoliq
+        if (!isnum(FS)) {
+            throw new Error(`FS[${FS}]非數字`)
+        }
         return ret() //無錯誤並結束
     }
 
@@ -5238,12 +5290,14 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
         if (depth < waterLevelDesign) {
             stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
             stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //check qc
@@ -5410,7 +5464,9 @@ function cptKuAndJuang({ ver = '2012', waterLevelDesign, depth, coe_a, qc, fs, u
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = limFSNoliq
+        if (!isnum(FS)) {
+            throw new Error(`FS[${FS}]非數字`)
+        }
         return ret() //無錯誤並結束
     }
 
@@ -5695,12 +5751,14 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
         if (depth < waterLevelDesign) {
             stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
             stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //check qc
@@ -5867,7 +5925,9 @@ function cptOlsen({ ver = '1997', waterLevelDesign, depth, coe_a, qc, fs, u2, sv
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = limFSNoliq
+        if (!isnum(FS)) {
+            throw new Error(`FS[${FS}]非數字`)
+        }
         return ret() //無錯誤並結束
     }
 
@@ -6079,12 +6139,14 @@ function cptShibata({ ver = '1988', waterLevelDesign, depth, coe_a, qc, fs, u2, 
         if (depth < waterLevelDesign) {
             stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
             stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //check qc
@@ -6269,7 +6331,9 @@ function cptShibata({ ver = '1988', waterLevelDesign, depth, coe_a, qc, fs, u2, 
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = limFSNoliq
+        if (!isnum(FS)) {
+            throw new Error(`FS[${FS}]非數字`)
+        }
         return ret() //無錯誤並結束
     }
 
@@ -6449,12 +6513,14 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         if (depth < waterLevelDesign) {
             stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
             stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //check Vs
@@ -6591,7 +6657,9 @@ function vsHBF({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = limFSNoliq
+        if (!isnum(FS)) {
+            throw new Error(`FS[${FS}]非數字`)
+        }
         return ret() //無錯誤並結束
     }
 
@@ -6750,12 +6818,14 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         if (depth < waterLevelDesign) {
             stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
             stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //check Vs
@@ -6892,7 +6962,9 @@ function vsAndrus({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = limFSNoliq
+        if (!isnum(FS)) {
+            throw new Error(`FS[${FS}]非數字`)
+        }
         return ret() //無錯誤並結束
     }
 
@@ -7048,12 +7120,14 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         if (depth < waterLevelDesign) {
             stateFS.push(`depth${brk(depth)}<waterLevelDesign${brk(waterLevelDesign)}`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //非液化: 深度大於20m
         if (depth > 20) {
             stateFS.push(`depth${brk(depth)}>20`)
             noLique = true
+            FS = limFSNoliqForBasic
         }
 
         //check Vs
@@ -7190,7 +7264,9 @@ function vsNCEER({ waterLevelDesign, depth, Vs, FC, svpDesign, sv, PGA, Mw }) {
         err = [] //清除錯誤
         CRR = '-'
         CSR = '-'
-        FS = limFSNoliq
+        if (!isnum(FS)) {
+            throw new Error(`FS[${FS}]非數字`)
+        }
         return ret() //無錯誤並結束
     }
 
