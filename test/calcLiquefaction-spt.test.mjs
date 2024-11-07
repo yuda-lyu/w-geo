@@ -30,6 +30,7 @@ describe(`calcLiquefaction`, function() {
     //         let dt = {}
     //         _.each(ks, (k) => {
     //             dt[`${k}-FS`] = _.get(v, `${k}-FS`)
+    //             dt[`${k}-stateFS`] = _.get(v, `${k}-stateFS`)
     //             dt[`${k}-stlTS`] = _.get(v, `${k}-stlTS`)
     //             dt[`${k}-stlIY`] = _.get(v, `${k}-stlIY`)
     //             dt[`${k}-H1`] = _.get(v, `${k}-H1`)

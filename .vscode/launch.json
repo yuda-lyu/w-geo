@@ -11,7 +11,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/g3-calcLiquefaction-cpt.mjs",
+            "program": "${workspaceFolder}/g_2_1-calcLiquefaction-spt.mjs",
             "runtimeArgs": [
                 "--max-old-space-size=14448",
                 "--experimental-modules",
