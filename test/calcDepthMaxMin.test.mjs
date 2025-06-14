@@ -1,9 +1,13 @@
+import fs from 'fs'
 import assert from 'assert'
 import { calcDepthMaxMin } from '../src/calcDepthMaxMin.mjs'
-import rowsIn1 from './calcDepthMaxMin-rowsIn1.json' assert { type: "json" }
 
 
 describe(`calcDepthMaxMin`, function() {
+
+    let j
+    j = fs.readFileSync('./test/calcDepthMaxMin-rowsIn1.json', 'utf8')
+    let rowsIn1 = JSON.parse(j)
 
     let ropt = {
         1: { approximate: false },

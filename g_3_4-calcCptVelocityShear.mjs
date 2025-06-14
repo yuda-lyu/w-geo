@@ -5065,4 +5065,4 @@ _.each(ms, (method, i) => {
 
 })
 
-//node --experimental-modules g_3_4-calcCptVelocityShear.mjs
+//node g_3_4-calcCptVelocityShear.mjs

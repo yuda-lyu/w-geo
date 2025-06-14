@@ -15,7 +15,7 @@ import isearr from 'wsemi/src/isearr.mjs'
 import iseobj from 'wsemi/src/iseobj.mjs'
 import isbol from 'wsemi/src/isbol.mjs'
 import isfun from 'wsemi/src/isfun.mjs'
-import judge from './judge.mjs'
+import judge from 'wsemi/src/judge.mjs'
 import checkDepthStartEnd from './checkDepthStartEnd.mjs'
 
 

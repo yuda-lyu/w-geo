@@ -1,12 +1,19 @@
+import fs from 'fs'
 import assert from 'assert'
 import calcLiquefactionSptForCriticalPga from '../src/calcLiquefactionSptForCriticalPga.mjs'
-import rowsIn1 from './calcLiquefactionSptForCriticalPga-rowsIn1.json' assert { type: "json" }
-import resOut1 from './calcLiquefactionSptForCriticalPga-resOut1.json' assert { type: "json" }
-import rowsIn2 from './calcLiquefactionSptForCriticalPga-rowsIn2.json' assert { type: "json" }
-import resOut2 from './calcLiquefactionSptForCriticalPga-resOut2.json' assert { type: "json" }
 
 
 describe(`calcLiquefactionSptForCriticalPga`, function() {
+
+    let j
+    j = fs.readFileSync('./test/calcLiquefactionSptForCriticalPga-rowsIn1.json', 'utf8')
+    let rowsIn1 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcLiquefactionSptForCriticalPga-resOut1.json', 'utf8')
+    let resOut1 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcLiquefactionSptForCriticalPga-rowsIn2.json', 'utf8')
+    let rowsIn2 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcLiquefactionSptForCriticalPga-resOut2.json', 'utf8')
+    let resOut2 = JSON.parse(j)
 
     let methods = [
         'sptHBF2017',

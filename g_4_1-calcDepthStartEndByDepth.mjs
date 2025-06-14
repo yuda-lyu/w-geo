@@ -103,4 +103,4 @@ console.log(rs)
 // ]
 
 
-//node --experimental-modules g_4_1-calcDepthStartEndByDepth.mjs
+//node g_4_1-calcDepthStartEndByDepth.mjs

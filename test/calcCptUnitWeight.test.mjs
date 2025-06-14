@@ -1,14 +1,23 @@
+import fs from 'fs'
 import assert from 'assert'
 import calcCptUnitWeight from '../src/calcCptUnitWeight.mjs'
-import rowsIn from './calcCptUnitWeight-rowsIn.json' assert { type: "json" }
-import rowsOut1 from './calcCptUnitWeight-rowsOut1.json' assert { type: "json" }
-import rowsOut2 from './calcCptUnitWeight-rowsOut2.json' assert { type: "json" }
-import rowsOut3 from './calcCptUnitWeight-rowsOut3.json' assert { type: "json" }
-import rowsOut4 from './calcCptUnitWeight-rowsOut4.json' assert { type: "json" }
-import rowsOut5 from './calcCptUnitWeight-rowsOut5.json' assert { type: "json" }
 
 
 describe(`calcCptUnitWeight`, function() {
+
+    let j
+    j = fs.readFileSync('./test/calcCptUnitWeight-rowsIn.json', 'utf8')
+    let rowsIn = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptUnitWeight-rowsOut1.json', 'utf8')
+    let rowsOut1 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptUnitWeight-rowsOut2.json', 'utf8')
+    let rowsOut2 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptUnitWeight-rowsOut3.json', 'utf8')
+    let rowsOut3 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptUnitWeight-rowsOut4.json', 'utf8')
+    let rowsOut4 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptUnitWeight-rowsOut5.json', 'utf8')
+    let rowsOut5 = JSON.parse(j)
 
     //optDef
     let optDef = {

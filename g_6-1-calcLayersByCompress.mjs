@@ -5159,4 +5159,4 @@ fs.writeFileSync(`./calcLayersByCompress-rowsOut.json`, JSON.stringify(rowsOut),
 w.downloadExcelFileFromData(`./calcLayersByCompress-mat(${numMaxLayers}).xlsx`, 'data', rowsOut)
 
 
-//node --experimental-modules g_6-1-calcLayersByCompress.mjs
+//node g_6-1-calcLayersByCompress.mjs

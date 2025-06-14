@@ -1,22 +1,38 @@
+import fs from 'fs'
 import assert from 'assert'
 import calcCptUnitWeight from '../src/calcCptUnitWeight.mjs'
 import calcCptVelocityShear from '../src/calcCptVelocityShear.mjs'
-import _rowsIn from './calcCptVelocityShear-rowsIn.json' assert { type: "json" }
-import rowsOut1 from './calcCptVelocityShear-rowsOut1.json' assert { type: "json" }
-import rowsOut2 from './calcCptVelocityShear-rowsOut2.json' assert { type: "json" }
-import rowsOut3 from './calcCptVelocityShear-rowsOut3.json' assert { type: "json" }
-import rowsOut4 from './calcCptVelocityShear-rowsOut4.json' assert { type: "json" }
-import rowsOut5 from './calcCptVelocityShear-rowsOut5.json' assert { type: "json" }
-import rowsOut6 from './calcCptVelocityShear-rowsOut6.json' assert { type: "json" }
-import rowsOut7 from './calcCptVelocityShear-rowsOut7.json' assert { type: "json" }
-import rowsOut8 from './calcCptVelocityShear-rowsOut8.json' assert { type: "json" }
-import rowsOut9 from './calcCptVelocityShear-rowsOut9.json' assert { type: "json" }
-import rowsOut10 from './calcCptVelocityShear-rowsOut10.json' assert { type: "json" }
-import rowsOut11 from './calcCptVelocityShear-rowsOut11.json' assert { type: "json" }
-import rowsOut12 from './calcCptVelocityShear-rowsOut12.json' assert { type: "json" }
 
 
 describe(`calcCptVelocityShear`, function() {
+
+    let j
+    j = fs.readFileSync('./test/calcCptVelocityShear-rowsIn.json', 'utf8')
+    let _rowsIn = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptVelocityShear-rowsOut1.json', 'utf8')
+    let rowsOut1 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptVelocityShear-rowsOut2.json', 'utf8')
+    let rowsOut2 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptVelocityShear-rowsOut3.json', 'utf8')
+    let rowsOut3 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptVelocityShear-rowsOut4.json', 'utf8')
+    let rowsOut4 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptVelocityShear-rowsOut5.json', 'utf8')
+    let rowsOut5 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptVelocityShear-rowsOut6.json', 'utf8')
+    let rowsOut6 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptVelocityShear-rowsOut7.json', 'utf8')
+    let rowsOut7 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptVelocityShear-rowsOut8.json', 'utf8')
+    let rowsOut8 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptVelocityShear-rowsOut9.json', 'utf8')
+    let rowsOut9 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptVelocityShear-rowsOut10.json', 'utf8')
+    let rowsOut10 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptVelocityShear-rowsOut11.json', 'utf8')
+    let rowsOut11 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptVelocityShear-rowsOut12.json', 'utf8')
+    let rowsOut12 = JSON.parse(j)
 
     //optDef
     let optDef = {

@@ -1,3 +1,4 @@
+import fs from 'fs'
 import assert from 'assert'
 import _ from 'lodash-es'
 import w from 'wsemi'
@@ -5,11 +6,16 @@ import calcCptUnitWeight from '../src/calcCptUnitWeight.mjs'
 import { calcCpt } from '../src/calcCpt.mjs'
 import { simplifyRobertson2009 } from '../src/calcCptClassify.mjs'
 import calcLayersByCompress from '../src/calcLayersByCompress.mjs'
-import _rowsIn from './calcLayersByCompress-rowsIn.json' assert { type: "json" }
-import _rowsOut from './calcLayersByCompress-rowsOut.json' assert { type: "json" }
 
 
 describe(`calcLayersByCompress`, function() {
+
+    let j
+    j = fs.readFileSync('./test/calcLayersByCompress-rowsIn.json', 'utf8')
+    let _rowsIn = JSON.parse(j)
+    j = fs.readFileSync('./test/calcLayersByCompress-rowsOut.json', 'utf8')
+    let _rowsOut = JSON.parse(j)
+
     let rowsIn = _rowsIn
 
     //numMaxLayers

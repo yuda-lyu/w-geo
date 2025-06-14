@@ -234,4 +234,4 @@ console.log(JSON.stringify(rs, null, 2))
 //   }
 // ]
 
-//node --experimental-modules g_5_1-groupByDepthStartEnd.mjs
+//node g_5_1-groupByDepthStartEnd.mjs

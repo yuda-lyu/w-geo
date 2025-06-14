@@ -1,10 +1,15 @@
+import fs from 'fs'
 import assert from 'assert'
 import { calcCpt } from '../src/calcCpt.mjs'
-import rowsIn1 from './calcCpt-rowsIn1.json' assert { type: "json" }
-import rowsOut1 from './calcCpt-rowsOut1.json' assert { type: "json" }
 
 
 describe(`calcCpt`, function() {
+
+    let j
+    j = fs.readFileSync('./test/calcCpt-rowsIn1.json', 'utf8')
+    let rowsIn1 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCpt-rowsOut1.json', 'utf8')
+    let rowsOut1 = JSON.parse(j)
 
     //opt
     let opt = {

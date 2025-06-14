@@ -9,7 +9,7 @@ import cdbl from 'wsemi/src/cdbl.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
 import isearr from 'wsemi/src/isearr.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
-import judge from './judge.mjs'
+import judge from 'wsemi/src/judge.mjs'
 
 
 /**

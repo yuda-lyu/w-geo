@@ -1,12 +1,19 @@
+import fs from 'fs'
 import assert from 'assert'
 import calcLiquefactionSpt from '../src/calcLiquefactionSpt.mjs'
-import rowsIn1 from './calcLiquefactionSpt-rowsIn1.json' assert { type: "json" }
-import resOut1 from './calcLiquefactionSpt-resOut1.json' assert { type: "json" }
-import rowsIn2 from './calcLiquefactionSpt-rowsIn2.json' assert { type: "json" }
-import resOut2 from './calcLiquefactionSpt-resOut2.json' assert { type: "json" }
 
 
 describe(`calcLiquefactionSpt`, function() {
+
+    let j
+    j = fs.readFileSync('./test/calcLiquefactionSpt-rowsIn1.json', 'utf8')
+    let rowsIn1 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcLiquefactionSpt-resOut1.json', 'utf8')
+    let resOut1 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcLiquefactionSpt-rowsIn2.json', 'utf8')
+    let rowsIn2 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcLiquefactionSpt-resOut2.json', 'utf8')
+    let resOut2 = JSON.parse(j)
 
     let methods = [
         'sptHBF2017',

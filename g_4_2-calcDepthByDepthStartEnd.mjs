@@ -69,4 +69,4 @@ console.log(rs)
 // ]
 
 
-//node --experimental-modules g_4_2-calcDepthByDepthStartEnd.mjs
+//node g_4_2-calcDepthByDepthStartEnd.mjs

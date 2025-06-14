@@ -150,4 +150,4 @@ console.log('GS,e', r)
 //   err: '輸入孔隙比[0.86]與反算出孔隙比[0.8785106382978726]差距過大'
 // }
 
-//node --experimental-modules g_1_1-relaPorous.mjs
+//node g_1_1-relaPorous.mjs

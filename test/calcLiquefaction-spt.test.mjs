@@ -1,12 +1,19 @@
+import fs from 'fs'
 import assert from 'assert'
 import calcLiquefaction from '../src/calcLiquefaction.mjs'
-import rowsIn1 from './calcLiquefaction-spt-rowsIn1.json' assert { type: "json" }
-import rowsOut1 from './calcLiquefaction-spt-rowsOut1.json' assert { type: "json" }
-import rowsIn2 from './calcLiquefaction-spt-rowsIn2.json' assert { type: "json" }
-import rowsOut2 from './calcLiquefaction-spt-rowsOut2.json' assert { type: "json" }
 
 
 describe(`calcLiquefaction`, function() {
+
+    let j
+    j = fs.readFileSync('./test/calcLiquefaction-spt-rowsIn1.json', 'utf8')
+    let rowsIn1 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcLiquefaction-spt-rowsOut1.json', 'utf8')
+    let rowsOut1 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcLiquefaction-spt-rowsIn2.json', 'utf8')
+    let rowsIn2 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcLiquefaction-spt-rowsOut2.json', 'utf8')
+    let rowsOut2 = JSON.parse(j)
 
     let opt = {
         // waterLevelUsual: 0.7,

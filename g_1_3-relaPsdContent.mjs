@@ -18,4 +18,4 @@ console.log(r)
 //   ctFine: 55
 // }
 
-//node --experimental-modules g_1_3-relaPsdContent.mjs
+//node g_1_3-relaPsdContent.mjs

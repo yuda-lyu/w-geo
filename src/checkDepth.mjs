@@ -7,7 +7,7 @@ import cdbl from 'wsemi/src/cdbl.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
 import isearr from 'wsemi/src/isearr.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
-import judge from './judge.mjs'
+import judge from 'wsemi/src/judge.mjs'
 
 
 /**
@@ -141,7 +141,6 @@ function checkDepth(rows, opt = {}) {
         dc1 = cdbl(dc1)
 
         //check
-        //if (dc0 >= dc1) {
         if (judge(dc0, '>=', dc1)) {
             errs.push(`第 ${k - 1} 樣本之中點深度${keyDepth}[${dc0}]大於等於第 ${k} 樣本之中點深度${keyDepth}[${dc1}]`)
         }

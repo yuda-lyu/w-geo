@@ -28,4 +28,4 @@ console.log('dtn', dtn)
 // }
 
 
-//node --experimental-modules g_8_3-dtIntrpPsdContentIso.mjs
+//node g_8_3-dtIntrpPsdContentIso.mjs

@@ -49,4 +49,4 @@ console.log(r)
 // => 98.4880247416152
 
 
-//node --experimental-modules g_7_1-intrpPsdBySize.mjs
+//node g_7_1-intrpPsdBySize.mjs

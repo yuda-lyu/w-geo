@@ -67,5 +67,5 @@ errs = checkDepth(rows, { keyDepth: 'center_depth' })
 console.log(errs)
 // => []
 
-//node --experimental-modules g_0_1-checkDepth.mjs
+//node g_0_1-checkDepth.mjs
 

@@ -1291,4 +1291,4 @@ _.each(ms, (method, i) => {
 })
 
 
-//node --experimental-modules g_3_2-calcCptUnitWeight.mjs
+//node g_3_2-calcCptUnitWeight.mjs

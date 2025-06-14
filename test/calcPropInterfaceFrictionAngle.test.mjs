@@ -1,16 +1,27 @@
+import fs from 'fs'
 import assert from 'assert'
 import calcPropInterfaceFrictionAngle from '../src/calcPropInterfaceFrictionAngle.mjs'
-import dataIn1 from './calcPropInterfaceFrictionAngle-dataIn1.json' assert { type: "json" }
-import dataIn2 from './calcPropInterfaceFrictionAngle-dataIn2.json' assert { type: "json" }
-import dataIn3 from './calcPropInterfaceFrictionAngle-dataIn3.json' assert { type: "json" }
-import dataIn4 from './calcPropInterfaceFrictionAngle-dataIn4.json' assert { type: "json" }
-import dataOut1 from './calcPropInterfaceFrictionAngle-dataOut1.json' assert { type: "json" }
-import dataOut2 from './calcPropInterfaceFrictionAngle-dataOut2.json' assert { type: "json" }
-import dataOut3 from './calcPropInterfaceFrictionAngle-dataOut3.json' assert { type: "json" }
-import dataOut4 from './calcPropInterfaceFrictionAngle-dataOut4.json' assert { type: "json" }
 
 
 describe(`calcPropInterfaceFrictionAngle`, function() {
+
+    let j
+    j = fs.readFileSync('./test/calcPropInterfaceFrictionAngle-dataIn1.json', 'utf8')
+    let dataIn1 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcPropInterfaceFrictionAngle-dataIn2.json', 'utf8')
+    let dataIn2 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcPropInterfaceFrictionAngle-dataIn3.json', 'utf8')
+    let dataIn3 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcPropInterfaceFrictionAngle-dataIn4.json', 'utf8')
+    let dataIn4 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcPropInterfaceFrictionAngle-dataOut1.json', 'utf8')
+    let dataOut1 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcPropInterfaceFrictionAngle-dataOut2.json', 'utf8')
+    let dataOut2 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcPropInterfaceFrictionAngle-dataOut3.json', 'utf8')
+    let dataOut3 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcPropInterfaceFrictionAngle-dataOut4.json', 'utf8')
+    let dataOut4 = JSON.parse(j)
 
     it(`should return dataOut1 when calcPropInterfaceFrictionAngle(dataIn1.rowsIn, dataIn1.xMeanTarget, dataIn1.opt)`, async function() {
         let r = await calcPropInterfaceFrictionAngle(dataIn1.rowsIn, dataIn1.xMeanTarget, dataIn1.opt)

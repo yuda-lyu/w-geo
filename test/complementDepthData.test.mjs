@@ -1,11 +1,17 @@
+import fs from 'fs'
 import assert from 'assert'
 import complementDepthData from '../src/complementDepthData.mjs'
-import rowsIn from './complementDepthData-rowsIn.json' assert { type: "json" }
-import rowsOutFill from './complementDepthData-rowsOut-linearFill.json' assert { type: "json" }
-import rowsOutCut from './complementDepthData-rowsOut-cut.json' assert { type: "json" }
 
 
 describe(`complementDepthData`, function() {
+
+    let j
+    j = fs.readFileSync('./test/complementDepthData-rowsIn.json', 'utf8')
+    let rowsIn = JSON.parse(j)
+    j = fs.readFileSync('./test/complementDepthData-rowsOut-linearFill.json', 'utf8')
+    let rowsOutFill = JSON.parse(j)
+    j = fs.readFileSync('./test/complementDepthData-rowsOut-cut.json', 'utf8')
+    let rowsOutCut = JSON.parse(j)
 
     let keyDepth = 'depth(m)'
     let keyValue = 'qc(MPa)'

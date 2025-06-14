@@ -11,7 +11,7 @@ import isestr from 'wsemi/src/isestr.mjs'
 import isearr from 'wsemi/src/isearr.mjs'
 import iseobj from 'wsemi/src/iseobj.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
-import judge from './judge.mjs'
+import judge from 'wsemi/src/judge.mjs'
 import checkDepth from './checkDepth.mjs'
 
 
@@ -359,7 +359,6 @@ function groupByDepthStartEnd(rows, depthStartAndEnds, opt = {}) {
         de1 = cdbl(de1)
 
         //check
-        //if (ds1 > de1) {
         if (judge(ds1, '>', de1)) {
             errs.push(`群組用起訖深度陣列中，第 ${k} 元素之起始深度${keyDepthStart}[${ds1}]大於結束深度${keyDepthEnd}[${de1}]`)
         }
@@ -376,7 +375,6 @@ function groupByDepthStartEnd(rows, depthStartAndEnds, opt = {}) {
         de0 = cdbl(de0)
 
         //比較「上層結束深度」是否大於「下層起始深度」, 不要求上下層連續(上層結束深度等於下層起始深度)
-        //if (de0 > ds1) {
         if (judge(de0, '>', ds1)) {
             errs.push(`第 ${k} 樣本結束深度${keyDepthEnd}[${de0}]大於第 ${k + 1} 個樣本起始深度${keyDepthStart}[${ds1}]`)
         }
@@ -406,12 +404,10 @@ function groupByDepthStartEnd(rows, depthStartAndEnds, opt = {}) {
         let rrows = [] //本群(輪)所屬的ts樣本
         each(ts, (t, kt) => {
             let rdc = t[keyDepth]
-            //if (rdc >= ds && rdc <= de) {
             if (judge(rdc, '>=', ds) && judge(rdc, '<=', de)) {
                 rdels.push(kt)
                 rrows.push(t)
             }
-            //if (rdc > de) {
             if (judge(rdc, '>', de)) {
                 return false //break
             }

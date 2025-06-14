@@ -43,4 +43,4 @@ let ys2 = fun2(xs2)
 console.log(ys2)
 // => [ 1.5, 2, 2.45, 2.5, 2.55 ]
 
-//node --experimental-modules g_5_4-buildInterpFun.mjs
+//node g_5_4-buildInterpFun.mjs

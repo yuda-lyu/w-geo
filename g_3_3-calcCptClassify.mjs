@@ -55,4 +55,4 @@ console.log('clsRamFrQt', clsRamFrQt)
 // => clsRamFrQt { success: { int: 9, msg: '9: Clean to slightly silty sand' } }
 
 
-//node --experimental-modules g_3_3-calcCptClassify.mjs
+//node g_3_3-calcCptClassify.mjs

@@ -1,17 +1,29 @@
+import fs from 'fs'
 import assert from 'assert'
 import { calcCptLayer } from '../src/calcCptLayers.mjs'
-import rowsIn from './calcCptLayers-rowsIn.json' assert { type: "json" }
-import rowsOut1 from './calcCptLayers-rowsOut1.json' assert { type: "json" }
-import rowsOut2 from './calcCptLayers-rowsOut2.json' assert { type: "json" }
-import rowsOut3 from './calcCptLayers-rowsOut3.json' assert { type: "json" }
-import rowsOut4 from './calcCptLayers-rowsOut4.json' assert { type: "json" }
-import rowsOut5 from './calcCptLayers-rowsOut5.json' assert { type: "json" }
-import rowsOut6 from './calcCptLayers-rowsOut6.json' assert { type: "json" }
-import rowsOut7 from './calcCptLayers-rowsOut7.json' assert { type: "json" }
-import rowsOut8 from './calcCptLayers-rowsOut8.json' assert { type: "json" }
 
 
 describe(`calcCptLayers`, function() {
+
+    let j
+    j = fs.readFileSync('./test/calcCptLayers-rowsIn.json', 'utf8')
+    let rowsIn = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptLayers-rowsOut1.json', 'utf8')
+    let rowsOut1 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptLayers-rowsOut2.json', 'utf8')
+    let rowsOut2 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptLayers-rowsOut3.json', 'utf8')
+    let rowsOut3 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptLayers-rowsOut4.json', 'utf8')
+    let rowsOut4 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptLayers-rowsOut5.json', 'utf8')
+    let rowsOut5 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptLayers-rowsOut6.json', 'utf8')
+    let rowsOut6 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptLayers-rowsOut7.json', 'utf8')
+    let rowsOut7 = JSON.parse(j)
+    j = fs.readFileSync('./test/calcCptLayers-rowsOut8.json', 'utf8')
+    let rowsOut8 = JSON.parse(j)
 
     let methods = [
         'Robertson1986T6',

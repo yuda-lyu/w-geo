@@ -95,5 +95,5 @@ errs = checkDepthStartEnd(rows, { keyDepthStart: 'top_depth', keyDepthEnd: 'bott
 console.log(errs)
 // => []
 
-//node --experimental-modules g_0_2-checkDepthStartEnd.mjs
+//node g_0_2-checkDepthStartEnd.mjs
 

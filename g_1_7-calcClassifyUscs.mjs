@@ -60,4 +60,4 @@ if (true) {
     console.log('cks', cks[0], _.size(cks))
 }
 
-//node --experimental-modules g_1_7-calcClassifyUscs.mjs
+//node g_1_7-calcClassifyUscs.mjs

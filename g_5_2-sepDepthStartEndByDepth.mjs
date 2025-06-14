@@ -127,5 +127,5 @@ console.log(r)
 //  { top_depth: 5.5, bottom_depth: 10, data: 'def' }
 //]
 
-//node --experimental-modules g_5_2-sepDepthStartEndByDepth.mjs
+//node g_5_2-sepDepthStartEndByDepth.mjs
 

@@ -13,7 +13,6 @@ To view documentation or get support, visit [docs](https://yuda-lyu.github.io/w-
 
 ## Installation
 ### Using npm(ES6 module):
-> **Note:** w-geo is mainly dependent on `lodash-es` and `wsemi`.
 ```alias
 npm i w-geo
 ```
@@ -23,5 +22,5 @@ npm i w-geo
 
 Add script for w-geo.
 ```alias
-<script src="https://cdn.jsdelivr.net/npm/w-geo@1.1.60/dist/w-geo.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/w-geo@1.1.61/dist/w-geo.umd.js"></script>
 ```

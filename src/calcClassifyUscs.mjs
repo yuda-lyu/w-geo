@@ -5,7 +5,7 @@ import isNumber from 'lodash-es/isNumber.js'
 import isnum from 'wsemi/src/isnum.mjs'
 import isestr from 'wsemi/src/isestr.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
-import judge from './judge.mjs'
+import judge from 'wsemi/src/judge.mjs'
 
 
 //LL非數字應該為'-'或'NP'

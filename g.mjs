@@ -41,4 +41,4 @@ let rr2 = [
 let _rr2 = calcEstmRelativeDensity(r2)
 console.log(_rr2)
 
-//node --experimental-modules g.mjs
+//node g.mjs

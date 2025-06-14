@@ -10,7 +10,7 @@ import iseobj from 'wsemi/src/iseobj.mjs'
 import isbol from 'wsemi/src/isbol.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
 import cstr from 'wsemi/src/cstr.mjs'
-import judge from './judge.mjs'
+import judge from 'wsemi/src/judge.mjs'
 
 
 /**
@@ -126,7 +126,6 @@ function calcLayersByMerge(ltdt, opt = {}) {
         let b2 = b2a && b2b
         let b = false
         if (b1 || b2) {
-            //b=isestr(t0) && t0 === t1 && judge(de0, '===', ds1)
             b = cstr(t0) === cstr(t1) && judge(de0, '===', ds1)
         }
         if (b) {

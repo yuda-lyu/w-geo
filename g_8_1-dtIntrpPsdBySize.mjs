@@ -47,4 +47,4 @@ console.log('fss', fss)
 // ]
 
 
-//node --experimental-modules g_8_1-dtIntrpPsdBySize.mjs
+//node g_8_1-dtIntrpPsdBySize.mjs

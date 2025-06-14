@@ -45,4 +45,4 @@ console.log(ltdtOut)
 //   { depth: 3, rd: 18, rsat: 19, sv: 56.046875, svp: 26.616875 }
 // ]
 
-//node --experimental-modules g_4_6-calcEstmVerticalStress.mjs
+//node g_4_6-calcEstmVerticalStress.mjs

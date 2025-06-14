@@ -97,4 +97,4 @@ console.log('32,PI,PL', r)
 //   err: '輸入塑限[10]與反算出塑限[18]差距過大, 輸入塑性指數[14]與反算出塑性指數[22]差距過大, 輸入液限[32]與反算出液限[24]差距過大'
 // }
 
-//node --experimental-modules g_1_2-relaPlasticity.mjs
+//node g_1_2-relaPlasticity.mjs
