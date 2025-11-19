@@ -2,25 +2,10 @@ import fs from 'fs'
 import _ from 'lodash-es'
 import w from 'wsemi'
 import calcDepthStartEndByGroup from './src/calcDepthStartEndByGroup.mjs'
-// import t from './kpLtdt.json'
-// console.log(_.keys(t))
-
-
-// let rows = t['id-for-CPT-1']
-// let rs = calcDepthStartEndByGroup(rows)
-// rs = _.map(rs, (v) => {
-//     return {
-//         group: v.group,
-//         depthStart: v.depthStart,
-//         depthEnd: v.depthEnd,
-//     }
-// })
-// console.log(rs)
 
 
 let rows
 let rs
-
 
 rows = [
     {

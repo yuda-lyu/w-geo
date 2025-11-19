@@ -2,6 +2,7 @@ import fs from 'fs'
 import w from 'wsemi'
 import { cptClassify } from './src/calcCptClassify.mjs'
 
+
 let r = { 'depth': '0.02', 'qc': '0.417438462', 'fs': '0.002153846', 'u2': '-0.005923077', 'depthStart': '0.01', 'depthEnd': '0.03', 'rsat': '19', 'u0': '0.0001962', 'rd': '16', 'sv': '0.00038', 'svp': '0.0001838', 'qt': '0.415957693', 'qnet': '0.415577693', 'Bq': '-0.014724748', 'Qt': '2261.032061', 'Qtn': '105.8960737', 'Rf': '0.517804103', 'Fr': '0.518277578', 'Ic': '0.941696263', 'Icn': '1.720982028', 'n': '0.515104315', 'Cn': '25.83741963' }
 
 let clsIc = cptClassify.csfIc(w.cdbl(r.Ic))

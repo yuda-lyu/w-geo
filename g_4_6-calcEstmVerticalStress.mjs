@@ -1,5 +1,6 @@
 import calcEstmVerticalStress from './src/calcEstmVerticalStress.mjs'
 
+
 let ltdtIn
 let ltdtOut
 
@@ -44,5 +45,6 @@ console.log(ltdtOut)
 //   { depth: 2, rd: 17.75, rsat: 18.75, sv: 37.234375, svp: 17.614375 },
 //   { depth: 3, rd: 18, rsat: 19, sv: 56.046875, svp: 26.616875 }
 // ]
+
 
 //node g_4_6-calcEstmVerticalStress.mjs

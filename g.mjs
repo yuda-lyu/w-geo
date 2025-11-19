@@ -2,6 +2,7 @@ import _ from 'lodash-es'
 import w from 'wsemi'
 import calcEstmRelativeDensity from './src/calcEstmRelativeDensity.mjs'
 
+
 let rIn
 let rOut
 let dtIn
@@ -40,5 +41,6 @@ let rr2 = [
 ]
 let _rr2 = calcEstmRelativeDensity(r2)
 console.log(_rr2)
+
 
 //node g.mjs

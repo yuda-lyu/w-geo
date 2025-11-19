@@ -3,6 +3,7 @@ import _ from 'lodash-es'
 import w from 'wsemi'
 import complementDepthData from './src/complementDepthData.mjs'
 
+
 //rows
 let t = `
 depth(m) qc(MPa) fs(MPa) u2(MPa)
@@ -5061,5 +5062,6 @@ fs.writeFileSync(`./complementDepthData-rowsOut-linearFill.json`, JSON.stringify
 let rsCut = complementDepthData(rows, keyDepth, keyValue, keysValueCmp, { cmpMode: 'cut' })
 w.downloadExcelFileFromData(`./complement-cut.xlsx`, 'data', rsCut)
 fs.writeFileSync(`./complementDepthData-rowsOut-cut.json`, JSON.stringify(rsCut), 'utf8')
+
 
 //node g_5_5-complementDepthData.mjs

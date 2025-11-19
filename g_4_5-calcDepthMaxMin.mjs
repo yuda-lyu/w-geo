@@ -5019,4 +5019,5 @@ console.log(mm2)
 let k = 1
 fs.writeFileSync(`./calcDepthMaxMin-rowsIn${k}.json`, JSON.stringify(rowsIn), 'utf8')
 
+
 //node g_4_5-calcDepthMaxMin.mjs
