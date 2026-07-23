@@ -1,13 +1,14 @@
 import fs from 'fs'
-import assert from 'assert'
 import calcCptUnitWeight from '../src/calcCptUnitWeight.mjs'
 import calcCptVelocityShear from '../src/calcCptVelocityShear.mjs'
+import assertApprox from './tools/assertApprox.mjs'
 
 
 //註: 標準數據(rowsOut)內由calcCptUnitWeight帶入之n,Cn,Qtn,Icn, 其末位數字取決於JS引擎`**`(冪運算)之捨入結果,
-//    現行引擎(Node.js v24.16.0)與早期產製標準數據之引擎不同, 例如Cn=(Pa/svp)**n之(0.10139616/0.0012504000000000003)**0.5871172594706838,
-//    現得13.206590989250211而舊標準數據為13.20659098925021, 相差1個ULP, 經迭代後相對誤差最大約8e-16.
-//    故於2026/07/23以Node.js v24.16.0重新產製標準數據(g_3_4-calcCptVelocityShear.mjs), 計算邏輯與相依套件原始碼皆未更動.
+//    JS引擎更版會改變`**`末位捨入, 例如Cn=(Pa/svp)**n之(0.10139616/0.0012504000000000003)**0.5871172594706838,
+//    現行引擎(Node.js v24.16.0)得13.206590989250211, 而早期引擎得13.20659098925021, 相差1個ULP,
+//    經迭代後相對誤差最大約8e-16, 故改用assertApprox以相對誤差門檻(預設1e-12)比對, 門檻訂定依據見tools/assertApprox.mjs.
+//    標準數據已於2026/07/23以Node.js v24.16.0重新產製(g_3_4-calcCptVelocityShear.mjs), 計算邏輯與相依套件原始碼皆未更動.
 
 
 describe(`calcCptVelocityShear`, function() {
@@ -63,7 +64,7 @@ describe(`calcCptVelocityShear`, function() {
     it(`should return rowsOut1 when calcCptVelocityShear(rowsIn, ${JSON.stringify(opt1)})`, function() {
         let r = calcCptVelocityShear(rowsIn, opt1)
         let rr = rowsOut1
-        assert.strict.deepStrictEqual(r, rr)
+        assertApprox(r, rr)
     })
 
     let opt2 = {
@@ -73,7 +74,7 @@ describe(`calcCptVelocityShear`, function() {
     it(`should return rowsOut2 when calcCptVelocityShear(rowsIn, ${JSON.stringify(opt2)})`, function() {
         let r = calcCptVelocityShear(rowsIn, opt2)
         let rr = rowsOut2
-        assert.strict.deepStrictEqual(r, rr)
+        assertApprox(r, rr)
     })
 
     let opt3 = {
@@ -83,7 +84,7 @@ describe(`calcCptVelocityShear`, function() {
     it(`should return rowsOut3 when calcCptVelocityShear(rowsIn, ${JSON.stringify(opt3)})`, function() {
         let r = calcCptVelocityShear(rowsIn, opt3)
         let rr = rowsOut3
-        assert.strict.deepStrictEqual(r, rr)
+        assertApprox(r, rr)
     })
 
     let opt4 = {
@@ -93,7 +94,7 @@ describe(`calcCptVelocityShear`, function() {
     it(`should return rowsOut4 when calcCptVelocityShear(rowsIn, ${JSON.stringify(opt4)})`, function() {
         let r = calcCptVelocityShear(rowsIn, opt4)
         let rr = rowsOut4
-        assert.strict.deepStrictEqual(r, rr)
+        assertApprox(r, rr)
     })
 
     let opt5 = {
@@ -103,7 +104,7 @@ describe(`calcCptVelocityShear`, function() {
     it(`should return rowsOut5 when calcCptVelocityShear(rowsIn, ${JSON.stringify(opt5)})`, function() {
         let r = calcCptVelocityShear(rowsIn, opt5)
         let rr = rowsOut5
-        assert.strict.deepStrictEqual(r, rr)
+        assertApprox(r, rr)
     })
 
     let opt6 = {
@@ -113,7 +114,7 @@ describe(`calcCptVelocityShear`, function() {
     it(`should return rowsOut6 when calcCptVelocityShear(rowsIn, ${JSON.stringify(opt6)})`, function() {
         let r = calcCptVelocityShear(rowsIn, opt6)
         let rr = rowsOut6
-        assert.strict.deepStrictEqual(r, rr)
+        assertApprox(r, rr)
     })
 
     let opt7 = {
@@ -123,7 +124,7 @@ describe(`calcCptVelocityShear`, function() {
     it(`should return rowsOut7 when calcCptVelocityShear(rowsIn, ${JSON.stringify(opt7)})`, function() {
         let r = calcCptVelocityShear(rowsIn, opt7)
         let rr = rowsOut7
-        assert.strict.deepStrictEqual(r, rr)
+        assertApprox(r, rr)
     })
 
     let opt8 = {
@@ -133,7 +134,7 @@ describe(`calcCptVelocityShear`, function() {
     it(`should return rowsOut8 when calcCptVelocityShear(rowsIn, ${JSON.stringify(opt8)})`, function() {
         let r = calcCptVelocityShear(rowsIn, opt8)
         let rr = rowsOut8
-        assert.strict.deepStrictEqual(r, rr)
+        assertApprox(r, rr)
     })
 
     let opt9 = {
@@ -143,7 +144,7 @@ describe(`calcCptVelocityShear`, function() {
     it(`should return rowsOut9 when calcCptVelocityShear(rowsIn, ${JSON.stringify(opt9)})`, function() {
         let r = calcCptVelocityShear(rowsIn, opt9)
         let rr = rowsOut9
-        assert.strict.deepStrictEqual(r, rr)
+        assertApprox(r, rr)
     })
 
     let opt10 = {
@@ -153,7 +154,7 @@ describe(`calcCptVelocityShear`, function() {
     it(`should return rowsOut10 when calcCptVelocityShear(rowsIn, ${JSON.stringify(opt10)})`, function() {
         let r = calcCptVelocityShear(rowsIn, opt10)
         let rr = rowsOut10
-        assert.strict.deepStrictEqual(r, rr)
+        assertApprox(r, rr)
     })
 
     let opt11 = {
@@ -163,7 +164,7 @@ describe(`calcCptVelocityShear`, function() {
     it(`should return rowsOut11 when calcCptVelocityShear(rowsIn, ${JSON.stringify(opt11)})`, function() {
         let r = calcCptVelocityShear(rowsIn, opt11)
         let rr = rowsOut11
-        assert.strict.deepStrictEqual(r, rr)
+        assertApprox(r, rr)
     })
 
     let opt12 = {
@@ -173,7 +174,7 @@ describe(`calcCptVelocityShear`, function() {
     it(`should return rowsOut12 when calcCptVelocityShear(rowsIn, ${JSON.stringify(opt12)})`, function() {
         let r = calcCptVelocityShear(rowsIn, opt12)
         let rr = rowsOut12
-        assert.strict.deepStrictEqual(r, rr)
+        assertApprox(r, rr)
     })
 
 })
