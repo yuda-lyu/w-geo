@@ -3,6 +3,12 @@ import assert from 'assert'
 import calcCptUnitWeight from '../src/calcCptUnitWeight.mjs'
 
 
+//註: 標準數據(rowsOut)內Robertson應力指數迭代所得之n,Cn,Qtn,Icn, 其末位數字取決於JS引擎`**`(冪運算)之捨入結果,
+//    現行引擎(Node.js v24.16.0)與早期產製標準數據之引擎不同, 例如Cn=(Pa/svp)**n之(0.10139616/0.0012504000000000003)**0.5871172594706838,
+//    現得13.206590989250211而舊標準數據為13.20659098925021, 相差1個ULP, 經迭代後相對誤差最大約7e-16.
+//    故於2026/07/23以Node.js v24.16.0重新產製標準數據(g_3_2-calcCptUnitWeight.mjs), 計算邏輯與相依套件原始碼皆未更動.
+
+
 describe(`calcCptUnitWeight`, function() {
 
     let j

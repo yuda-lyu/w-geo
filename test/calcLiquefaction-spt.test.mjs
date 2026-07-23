@@ -3,6 +3,13 @@ import assert from 'assert'
 import calcLiquefaction from '../src/calcLiquefaction.mjs'
 
 
+//註: 標準數據(rowsOut)內CRR75,CRR,FS,vstrIY,stlIY,PL等欄位, 其末位數字取決於JS引擎`**`(冪運算)之捨入結果,
+//    現行引擎(Node.js v24.16.0)與早期產製標準數據之引擎不同, 例如NCEER之CRR75多項式含N160cs**3,
+//    現24.584**3得14857.907208703999, 而24.584*24.584*24.584得14857.907208704, 相差1個ULP,
+//    經CRR->FS->體積應變內插後放大至相對誤差最大約9e-15.
+//    故於2026/07/23以Node.js v24.16.0重新產製標準數據(g_2_1-calcLiquefaction-spt.mjs), 計算邏輯與相依套件原始碼皆未更動.
+
+
 describe(`calcLiquefaction`, function() {
 
     let j
