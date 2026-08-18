@@ -5027,7 +5027,7 @@ let ms = [
     'Andrus(2007) for Pleistocene soil',
 ]
 
-_.each(ms, (method, i) => {
+_.each(ms, async (method, i) => {
     let k = i + 1
 
     //optDef
@@ -5061,7 +5061,7 @@ _.each(ms, (method, i) => {
 
     fs.writeFileSync(`./calcCptVelocityShear-rowsIn.json`, JSON.stringify(_rowsIn, null, 2), 'utf8')
     fs.writeFileSync(`./calcCptVelocityShear-rowsOut${k}.json`, JSON.stringify(rowsOut, null, 2), 'utf8')
-    w.downloadExcelFileFromData(`./calcCptVelocityShear-mat(${optVelocityShear.method}).xlsx`, 'mat', rowsOut)
+    await w.downloadExcelFileFromData(`./calcCptVelocityShear-mat(${optVelocityShear.method}).xlsx`, 'mat', rowsOut)
 
 })
 

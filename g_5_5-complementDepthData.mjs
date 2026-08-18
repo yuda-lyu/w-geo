@@ -5056,11 +5056,11 @@ let keysValueCmp = ['qc(MPa)', 'fs(MPa)', 'u2(MPa)']
 fs.writeFileSync(`./complementDepthData-rowsIn.json`, JSON.stringify(rows), 'utf8')
 
 let rsFill = complementDepthData(rows, keyDepth, keyValue, keysValueCmp, { cmpMode: 'linear-fill' })
-w.downloadExcelFileFromData(`./complement-linearFill.xlsx`, 'data', rsFill)
+await w.downloadExcelFileFromData(`./complement-linearFill.xlsx`, 'data', rsFill)
 fs.writeFileSync(`./complementDepthData-rowsOut-linearFill.json`, JSON.stringify(rsFill), 'utf8')
 
 let rsCut = complementDepthData(rows, keyDepth, keyValue, keysValueCmp, { cmpMode: 'cut' })
-w.downloadExcelFileFromData(`./complement-cut.xlsx`, 'data', rsCut)
+await w.downloadExcelFileFromData(`./complement-cut.xlsx`, 'data', rsCut)
 fs.writeFileSync(`./complementDepthData-rowsOut-cut.json`, JSON.stringify(rsCut), 'utf8')
 
 

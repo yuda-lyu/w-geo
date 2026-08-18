@@ -1270,7 +1270,7 @@ let ms = [
     'Mayne(2014)',
 ]
 
-_.each(ms, (method, i) => {
+_.each(ms, async (method, i) => {
     let k = i + 1
 
     //opt
@@ -1286,7 +1286,7 @@ _.each(ms, (method, i) => {
 
     fs.writeFileSync(`./calcCptUnitWeight-rowsIn.json`, JSON.stringify(rowsIn, null, 2), 'utf8')
     fs.writeFileSync(`./calcCptUnitWeight-rowsOut${k}.json`, JSON.stringify(rowsOut, null, 2), 'utf8')
-    w.downloadExcelFileFromData(`./calcCptUnitWeight-mat(${opt.method}).xlsx`, 'mat', rowsOut)
+    await w.downloadExcelFileFromData(`./calcCptUnitWeight-mat(${opt.method}).xlsx`, 'mat', rowsOut)
 
 })
 

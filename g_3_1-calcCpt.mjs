@@ -5034,7 +5034,7 @@ let rowsOut = calcCpt(rowsIn, opt)
 let k = 1
 fs.writeFileSync(`./calcCpt-rowsIn${k}.json`, JSON.stringify(rowsIn), 'utf8')
 fs.writeFileSync(`./calcCpt-rowsOut${k}.json`, JSON.stringify(rowsOut), 'utf8')
-w.downloadExcelFileFromData(`./calcCpt-mat.xlsx`, 'mat', rowsOut)
+await w.downloadExcelFileFromData(`./calcCpt-mat.xlsx`, 'mat', rowsOut)
 
 
 //node g_3_1-calcCpt.mjs

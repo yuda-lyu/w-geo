@@ -5071,7 +5071,7 @@ let ms = [
 ]
 //多methods可用calcCptLayers
 
-_.each(ms, (method, i) => {
+_.each(ms, async (method, i) => {
     let k = i + 1
 
     //rs
@@ -5090,7 +5090,7 @@ _.each(ms, (method, i) => {
 
     fs.writeFileSync(`./calcCptLayers-rowsIn.json`, JSON.stringify(rs), 'utf8')
     fs.writeFileSync(`./calcCptLayers-rowsOut${k}.json`, JSON.stringify(rowsOut), 'utf8')
-    w.downloadExcelFileFromData(`./calcCptLayers-mat(${method}).xlsx`, method, rowsOut)
+    await w.downloadExcelFileFromData(`./calcCptLayers-mat(${method}).xlsx`, method, rowsOut)
 
 })
 

@@ -5156,7 +5156,7 @@ if (true) {
 
 fs.writeFileSync(`./calcLayersByCompress-rowsIn.json`, JSON.stringify(_rowsIn), 'utf8')
 fs.writeFileSync(`./calcLayersByCompress-rowsOut.json`, JSON.stringify(rowsOut), 'utf8')
-w.downloadExcelFileFromData(`./calcLayersByCompress-mat(${numMaxLayers}).xlsx`, 'data', rowsOut)
+await w.downloadExcelFileFromData(`./calcLayersByCompress-mat(${numMaxLayers}).xlsx`, 'data', rowsOut)
 
 
 //node g_6-1-calcLayersByCompress.mjs
