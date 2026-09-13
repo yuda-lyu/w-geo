@@ -35,10 +35,10 @@ function dtIntrpPsdContentUscs(dt, opt = {}) {
         keyFraction = 'fraction'
     }
 
-    //showLog
-    let showLog = get(opt, 'showLog')
-    if (!isbol(showLog)) {
-        showLog = true
+    //useShowLog
+    let useShowLog = get(opt, 'useShowLog')
+    if (!isbol(useShowLog)) {
+        useShowLog = true
     }
 
     //dtIntrpPsdBySize
@@ -71,12 +71,12 @@ function dtIntrpPsdContentUscs(dt, opt = {}) {
 
     //check
     if (size(psds) === 0) {
-        if (showLog) console.log('dt', dt)
-        if (showLog) console.log('psizes', psizes)
-        if (showLog) console.log('keyGSD', keyGSD)
-        if (showLog) console.log('keyGSP', keyGSP)
-        if (showLog) console.log('keySize', keySize)
-        if (showLog) console.log('keyFraction', keyFraction)
+        if (useShowLog) console.log('dt', dt)
+        if (useShowLog) console.log('psizes', psizes)
+        if (useShowLog) console.log('keyGSD', keyGSD)
+        if (useShowLog) console.log('keyGSP', keyGSP)
+        if (useShowLog) console.log('keySize', keySize)
+        if (useShowLog) console.log('keyFraction', keyFraction)
         throw new Error('invalid PSD')
     }
 

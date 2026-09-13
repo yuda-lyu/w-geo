@@ -37,10 +37,10 @@ function dtEstmRelativeDensity(dt, opt = {}) {
         checkLimit = true
     }
 
-    //showLog
-    let showLog = get(opt, 'showLog')
-    if (!isbol(showLog)) {
-        showLog = true
+    //useShowLog
+    let useShowLog = get(opt, 'useShowLog')
+    if (!isbol(useShowLog)) {
+        useShowLog = true
     }
 
     //rd, rdMin, rdMax
@@ -50,15 +50,15 @@ function dtEstmRelativeDensity(dt, opt = {}) {
 
     //check
     if (!isnum(rd)) {
-        if (showLog) console.log('dt', dt)
+        if (useShowLog) console.log('dt', dt)
         throw new Error(`rd[${rd}] is not a number`)
     }
     if (!isnum(rdMin)) {
-        if (showLog) console.log('dt', dt)
+        if (useShowLog) console.log('dt', dt)
         throw new Error(`rdMin[${rdMin}] is not a number`)
     }
     if (!isnum(rdMax)) {
-        if (showLog) console.log('dt', dt)
+        if (useShowLog) console.log('dt', dt)
         throw new Error(`rdMax[${rdMax}] is not a number`)
     }
 

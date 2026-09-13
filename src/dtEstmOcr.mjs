@@ -25,10 +25,10 @@ function dtEstmOcr(dt, opt = {}) {
         keyOcr = 'ocr'
     }
 
-    //showLog
-    let showLog = get(opt, 'showLog')
-    if (!isbol(showLog)) {
-        showLog = true
+    //useShowLog
+    let useShowLog = get(opt, 'useShowLog')
+    if (!isbol(useShowLog)) {
+        useShowLog = true
     }
 
     //compressiveStrength, svp
@@ -37,11 +37,11 @@ function dtEstmOcr(dt, opt = {}) {
 
     //check
     if (!isnum(compressiveStrength)) {
-        if (showLog) console.log('dt', dt)
+        if (useShowLog) console.log('dt', dt)
         throw new Error(`compressiveStrength[${compressiveStrength}] is not a number`)
     }
     if (!isnum(svp)) {
-        if (showLog) console.log('dt', dt)
+        if (useShowLog) console.log('dt', dt)
         throw new Error(`svp[${svp}] is not a number`)
     }
 
