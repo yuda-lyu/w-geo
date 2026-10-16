@@ -29,6 +29,22 @@ import judge from 'wsemi/src/judge.mjs'
  * @param {String} [opt.keyFromInds='fromInds'] 輸入儲存來源指標欄位字串，預設'fromInds'
  * @returns {Array} 回傳合併後的數據陣列
  * @example
+ *
+ * let ltdt
+ * let r
+ *
+ * ltdt = [
+ *     { depthStart: 0, depthEnd: 1, type: 'A' },
+ *     { depthStart: 1, depthEnd: 2, type: 'A' },
+ *     { depthStart: 2, depthEnd: 3, type: 'B' },
+ * ]
+ * r = calcLayersByMerge(ltdt)
+ * console.log(r)
+ * // => [
+ * //     { depthStart: 0, depthEnd: 2, type: 'A', ind: 1, fromInds: [ 0, 1 ] },
+ * //     { depthStart: 2, depthEnd: 3, type: 'B', ind: 2 }
+ * // ]
+ *
  */
 function calcLayersByMerge(ltdt, opt = {}) {
 

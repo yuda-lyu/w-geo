@@ -1,6 +1,6 @@
 {
   "name": "w-geo",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "main": "dist/w-geo.umd.js",
   "dependencies": {
     "w-highcharts": "^1.0.26",
