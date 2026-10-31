@@ -404,6 +404,7 @@ function groupByDepthStartEnd(rows, depthStartAndEnds, opt = {}) {
         let rrows = [] //本群(輪)所屬的ts樣本
         each(ts, (t, kt) => {
             let rdc = t[keyDepth]
+            rdc = cdbl(rdc)
             if (judge(rdc, '>=', ds) && judge(rdc, '<=', de)) {
                 rdels.push(kt)
                 rrows.push(t)

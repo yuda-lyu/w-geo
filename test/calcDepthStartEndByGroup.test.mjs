@@ -376,4 +376,43 @@ describe(`calcDepthStartEndByGroup`, function() {
     }
     f4()
 
+    let f5 = () => {
+        //spec: isnum放行之極端值('0x10', '1e400', ±Infinity)作為樣本深度時, 與群組起訖深度之比較須如同函數內其餘站點先cdbl為有限數, 不得因wsemi judge改用isenum判定而throw
+        let rowsNew0x10 = [
+            {
+                group: 'a',
+                depthStart: 0,
+                depthEnd: 8.5,
+                rows: [{ depth: 1, group: 'a', depthStart: 0, depthEnd: 8.5 }],
+            },
+            {
+                group: 'b',
+                depthStart: 8.5,
+                depthEnd: 30,
+                rows: [{ depth: '0x10', group: 'b', depthStart: 8.5, depthEnd: 30 }],
+            },
+        ]
+        let rows0x10 = [{ depth: 1, group: 'a' }, { depth: '0x10', group: 'b' }]
+        it(`should return rowsNew when calcDepthStartEndByGroup(${JSON.stringify(rows0x10)}, { depthEndMax: 30 })`, function() {
+            let r = calcDepthStartEndByGroup(rows0x10, { depthEndMax: 30 })
+            let rr = rowsNew0x10
+            assert.strict.deepStrictEqual(r, rr)
+        })
+
+        //極端值樣本之深度與群組邊界皆經cdbl為同一有限數, 故各樣本須恰歸屬1個群組(不遺失樣本)
+        let vs = ['1e400', Infinity, -Infinity]
+        for (let v of vs) {
+            let rows = [{ depth: 1, group: 'a' }, { depth: v, group: 'b' }]
+            it(`should keep every input row in exactly one group when calcDepthStartEndByGroup([{ depth: 1, group: 'a' }, { depth: ${String(v)}, group: 'b' }])`, function() {
+                let r = calcDepthStartEndByGroup(rows)
+                let n = 0
+                for (let g of r) {
+                    n += g.rows.length
+                }
+                assert.strict.strictEqual(n, 2)
+            })
+        }
+    }
+    f5()
+
 })

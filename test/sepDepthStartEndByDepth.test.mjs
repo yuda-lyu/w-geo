@@ -169,4 +169,26 @@ describe(`sepDepthStartEndByDepth`, function() {
     }
     f6()
 
+    let f7 = () => {
+        //spec: isnum放行之極端值('0x10', '1e400', ±Infinity)作為分割深度時, 與各樣本起訖深度之比較須先cdbl為有限數, 不得因wsemi judge改用isenum判定而throw; 極端值皆不位於土層內, 故不分割
+        let vs = ['0x10', '1e400', Infinity, -Infinity]
+        for (let v of vs) {
+            let rows = [
+                { depthStart: 0, depthEnd: 5 },
+                { depthStart: 5, depthEnd: 10 },
+            ]
+            let points = [{ depth: v }]
+            let rowsNew = [
+                { depthStart: 0, depthEnd: 5 },
+                { depthStart: 5, depthEnd: 10 },
+            ]
+            it(`should return rows without separation when sepDepthStartEndByDepth(rows, [{ depth: ${String(v)} }])`, function() {
+                let r = sepDepthStartEndByDepth(rows, points)
+                let rr = rowsNew
+                assert.strict.deepStrictEqual(r, rr)
+            })
+        }
+    }
+    f7()
+
 })

@@ -251,6 +251,7 @@ function calcDepthStartEndByConnect(rows, opt = {}) {
         let up = size(rows) - 1
         let rowsEnd = rows[up]
         let de = rowsEnd[keyDepthEnd]
+        de = cdbl(de)
         if (judge(de, '<', depthEndMax)) {
             rows[up][keyDepthEnd] = depthEndMax
         }

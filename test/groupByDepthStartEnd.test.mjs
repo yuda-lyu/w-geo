@@ -271,4 +271,31 @@ describe(`groupByDepthStartEnd`, function() {
     }
     f5()
 
+    let f6 = () => {
+        //spec: isnum放行之極端值('0x10', '1e400', ±Infinity)作為樣本深度時, 與群組起訖深度之比較須如同函數內其餘站點先cdbl為有限數, 不得因wsemi judge改用isenum判定而throw
+        let rangs = [
+            { depthStart: 0, depthEnd: 5 },
+            { depthStart: 5, depthEnd: 20 },
+        ]
+        let cases = [
+            { dc: '0x10', rows2: [{ depth: '0x10' }] }, //cdbl('0x10')=16, 位於5~20
+            { dc: '1e400', rows2: [] }, //cdbl為正最大有限數, 大於20, 不屬任何群組
+            { dc: Infinity, rows2: [] }, //同上
+            { dc: -Infinity, rows2: [] }, //cdbl為負最大有限數, 小於0, 不屬任何群組
+        ]
+        for (let c of cases) {
+            let rows = [{ depth: 1 }, { depth: c.dc }]
+            let rowsNew = [
+                { depthStart: 0, depthEnd: 5, rows: [{ depth: 1 }] },
+                { depthStart: 5, depthEnd: 20, rows: c.rows2 },
+            ]
+            it(`should return rowsNew when groupByDepthStartEnd([{ depth: 1 }, { depth: ${String(c.dc)} }], ranges)`, function() {
+                let r = groupByDepthStartEnd(rows, rangs)
+                let rr = rowsNew
+                assert.strict.deepStrictEqual(r, rr)
+            })
+        }
+    }
+    f6()
+
 })

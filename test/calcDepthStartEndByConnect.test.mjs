@@ -169,4 +169,30 @@ describe(`calcDepthStartEndByConnect`, function() {
     }
     f6()
 
+    let f7 = () => {
+        //spec: isnum放行之極端值('0x10', '1e400', ±Infinity)作為末樣本depthEnd時, 與depthEndMax之比較須如同函數內其餘站點先cdbl為有限數, 不得因wsemi judge改用isenum判定而throw
+        let cases = [
+            { de: '0x10', deNew: 20 }, //cdbl('0x10')=16<20, 故改為depthEndMax
+            { de: -Infinity, deNew: 20 }, //cdbl(-Infinity)為負最大有限數<20, 故改為depthEndMax
+            { de: Infinity, deNew: Infinity }, //cdbl(Infinity)為正最大有限數, 不小於20, 故保留原值
+            { de: '1e400', deNew: '1e400' }, //同上, 保留原值
+        ]
+        for (let c of cases) {
+            let rows = [
+                { depthStart: 0, depthEnd: 5 },
+                { depthStart: 5, depthEnd: c.de },
+            ]
+            let rowsNew = [
+                { depthStart: 0, depthEnd: 5 },
+                { depthStart: 5, depthEnd: c.deNew },
+            ]
+            it(`should return rowsNew with last depthEnd[${String(c.deNew)}] when calcDepthStartEndByConnect(rows with last depthEnd[${String(c.de)}], { depthEndMax: 20 })`, function() {
+                let r = calcDepthStartEndByConnect(rows, { depthEndMax: 20 })
+                let rr = rowsNew
+                assert.strict.deepStrictEqual(r, rr)
+            })
+        }
+    }
+    f7()
+
 })

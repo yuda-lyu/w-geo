@@ -220,6 +220,9 @@ function sepDepthStartEndByDepth(rows, points, opt = {}) {
         //cloneDeep
         rows = cloneDeep(rows)
 
+        //dic, 比較用有限數字, 分割時仍使用原di
+        let dic = cdbl(di)
+
         //detect
         each(rows, (v, k) => {
 
@@ -230,7 +233,7 @@ function sepDepthStartEndByDepth(rows, points, opt = {}) {
             de = cdbl(de)
 
             //check
-            if (judge(di, '>', ds) && judge(di, '<', de)) { //需位於土層內, 故判斷中為不等於起訖深度
+            if (judge(dic, '>', ds) && judge(dic, '<', de)) { //需位於土層內, 故判斷中為不等於起訖深度
 
                 //rowNew1, rowNew2
                 let rowNew1 = cloneDeep(v)
