@@ -1,15 +1,15 @@
 {
   "name": "w-geo",
-  "version": "1.2.41",
+  "version": "1.2.42",
   "main": "dist/w-geo.umd.js",
   "dependencies": {
-    "w-highcharts": "^1.0.59",
-    "w-optimization": "^1.0.76",
-    "w-statistic": "^1.0.77",
-    "wsemi": "^1.9.76"
+    "w-highcharts": "^1.0.60",
+    "w-optimization": "^1.0.77",
+    "w-statistic": "^1.0.78",
+    "wsemi": "^1.9.77"
   },
   "devDependencies": {
-    "w-package-tools": "^1.1.30"
+    "w-package-tools": "^1.1.31"
   },
   "scripts": {
     "test": "mocha --parallel \"test/*.test.mjs\" --timeout 180000",
