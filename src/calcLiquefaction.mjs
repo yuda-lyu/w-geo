@@ -16,7 +16,6 @@ import cdbl from 'wsemi/src/cdbl.mjs'
 import cint from 'wsemi/src/cint.mjs'
 import cstr from 'wsemi/src/cstr.mjs'
 import strleft from 'wsemi/src/strleft.mjs'
-import strright from 'wsemi/src/strright.mjs'
 import replace from 'wsemi/src/replace.mjs'
 import sep from 'wsemi/src/sep.mjs'
 import isnum from 'wsemi/src/isnum.mjs'
@@ -7455,7 +7454,41 @@ let methodSettlements = {
 }
 
 
-function liquefaction(kind, rows, opt = {}) {
+//isStrStartWith, 與strleft(k, size(t)) === t等價(t為非空ASCII字串, 即本檔之分析種類小寫與方法名): k非有效字串時strleft回'', 不等於非空之t; k為有效字串時strleft即k.substring(0, t.length)
+//改用原生判斷以免逐鍵經strleft之參數檢測, 排序欄位時每列每鍵皆呼叫, 為液化分析之熱點(Gitea #232)
+let isStrStartWith = (k, t) => {
+    return typeof k === 'string' && k.startsWith(t)
+}
+
+
+//isStrEndWith, 與strright(k, size(t)) === t等價(t為非空ASCII字串): k長度不足時strright回整串, 長度必不等於t
+let isStrEndWith = (k, t) => {
+    return typeof k === 'string' && k.endsWith(t)
+}
+
+
+//cloneRowFlat, 結果與cloneDeep(row)相同: 原型為Object.prototype、無自有symbol鍵、無'__proto__'鍵且各自有可列舉鍵之值皆為原始型別(含null、undefined)之物件, 逐鍵指派即與cloneDeep同結果(同鍵次序、值不須遞迴複製), 其他一律交cloneDeep
+//供liqFS逐列複製之用, 液化分析每個PGA每列皆複製一次, 為熱點(Gitea #232)
+let cloneRowFlat = (row) => {
+    if (row === null || typeof row !== 'object' || Object.getPrototypeOf(row) !== Object.prototype || Object.getOwnPropertySymbols(row).length > 0) {
+        return cloneDeep(row)
+    }
+    let r = {}
+    let ks = Object.keys(row)
+    for (let i = 0; i < ks.length; i++) {
+        let k = ks[i]
+        let v = row[k]
+        if (k === '__proto__' || (v !== null && (typeof v === 'object' || typeof v === 'function'))) {
+            return cloneDeep(row)
+        }
+        r[k] = v
+    }
+    return r
+}
+
+
+//liquefactionCore, ctrl為內部用(不對外): ctrl.onPrepared(rows)於liqParams後交出結果; ctrl.usePrepared為true時rows即先前交出之結果(已改寫PGA), 略過前段; 公開之calc固定ctrl為null
+function liquefactionCore(kind, rows, opt, ctrl) {
 
     //check
     if (kind !== 'SPT' && kind !== 'CPT' && kind !== 'VS') {
@@ -7974,8 +8007,8 @@ function liquefaction(kind, rows, opt = {}) {
     //liqFS
     let liqFS = (kind, row) => {
 
-        //cloneDeep
-        row = cloneDeep(row)
+        //cloneDeep, 平面物件且值皆原始型別者走快速路徑, 結果與cloneDeep相同
+        row = cloneRowFlat(row)
 
         //ms
         let ms = keys(methodLiques[kind])
@@ -8042,8 +8075,7 @@ function liquefaction(kind, rows, opt = {}) {
     //liqPL
     let liqPL = (rows) => {
 
-        //cloneDeep
-        rows = cloneDeep(rows)
+        //不再cloneDeep: 僅由本函數依序呼叫, 輸入為liqFS逐列新複製且無他處引用之列, 原地修改與複製後修改結果相同(Gitea #232)
 
         //getKeysFromRows
         let ks = getKeysFromRows(rows)
@@ -8106,8 +8138,7 @@ function liquefaction(kind, rows, opt = {}) {
     //liqH1
     let liqH1 = (rows) => {
 
-        //cloneDeep
-        rows = cloneDeep(rows)
+        //不再cloneDeep: 理由同liqPL
 
         //getKeysFromRows
         let ks = getKeysFromRows(rows)
@@ -8168,8 +8199,7 @@ function liquefaction(kind, rows, opt = {}) {
     //liqH1PL
     let liqH1PL = (rows) => {
 
-        //cloneDeep
-        rows = cloneDeep(rows)
+        //不再cloneDeep: 理由同liqPL
 
         //getKeysFromRows
         let ks = getKeysFromRows(rows)
@@ -8248,8 +8278,7 @@ function liquefaction(kind, rows, opt = {}) {
     //liqSett
     let liqSett = (rows) => {
 
-        //cloneDeep
-        rows = cloneDeep(rows)
+        //不再cloneDeep: 理由同liqPL
 
         //getKeysFromRows
         let ks = getKeysFromRows(rows)
@@ -8315,24 +8344,37 @@ function liquefaction(kind, rows, opt = {}) {
         throw new Error(`kind(分析種類)${brk(kind)}非有效值: SPT, CPT, VS`)
     }
 
-    //cloneDeep
-    rows = cloneDeep(rows)
-    // console.log('cloneDeep rows', rows[0])
-
-    //checkDepthStartEnd
-    let ckds = checkDepthStartEnd(rows)
-    if (size(ckds) > 0) {
-        throw new Error(join(ckds, ', '))
+    if (get(ctrl, 'usePrepared') === true) {
+        //內部用(見calcLiquefactionSpt.mjs之calcLiquefactionSptByPrepared): rows為同一輸入先前經onPrepared交出之liqParams結果, 呼叫端已改寫各列PGA, 故略過複製、檢查、排序與liqParams
     }
+    else {
 
-    //sortBy
-    rows = sortBy(rows, (v) => {
-        return cdbl(v[keyDepthStart])
-    })
+        //cloneDeep
+        rows = cloneDeep(rows)
+        // console.log('cloneDeep rows', rows[0])
 
-    //liqParams, 自動計算參數
-    rows = liqParams(kind, rows)
-    // console.log('liqParams rows', rows[0])
+        //checkDepthStartEnd
+        let ckds = checkDepthStartEnd(rows)
+        if (size(ckds) > 0) {
+            throw new Error(join(ckds, ', '))
+        }
+
+        //sortBy
+        rows = sortBy(rows, (v) => {
+            return cdbl(v[keyDepthStart])
+        })
+
+        //liqParams, 自動計算參數
+        rows = liqParams(kind, rows)
+        // console.log('liqParams rows', rows[0])
+
+        //onPrepared, 內部用: 交出liqParams結果(其後liqFS逐列先複製才寫入, 故此結果不再被本函數修改)
+        let onPrepared = get(ctrl, 'onPrepared')
+        if (isfun(onPrepared)) {
+            onPrepared(rows)
+        }
+
+    }
 
     //liqFS, 各樣本計算安全係數與沉陷
     rows = map(rows, (row, k) => {
@@ -8363,23 +8405,27 @@ function liquefaction(kind, rows, opt = {}) {
     rows = map(rows, (row) => {
         let r = {}
         let kd = toLower(kind)
-        let nkd = size(kd)
+
+        //kvs, 以each遍歷本列一次取得鍵值(次序同each), 以下各次遍歷共用; 遍歷期間只寫入r, 本列不變, 故與逐次以each遍歷本列相同(Gitea #232)
+        let kvs = []
+        each(row, (v, k) => {
+            kvs.push({ k, v })
+        })
 
         //添加非結果欄位
-        each(row, (v, k) => {
-            if (strleft(k, nkd) !== kd) {
+        each(kvs, ({ k, v }) => {
+            if (!isStrStartWith(k, kd)) {
                 r[k] = v
             }
         })
 
         //添加各液化分析結果
         each(methodLiques[kind], (m, km) => {
-            let nkm = size(km)
             let kerr = ''
             let err = ''
-            each(row, (v, k) => {
-                if (strleft(k, nkm) === km) {
-                    if (strright(k, 4) === '-err') {
+            each(kvs, ({ k, v }) => {
+                if (isStrStartWith(k, km)) {
+                    if (isStrEndWith(k, '-err')) {
                         kerr = k
                         err = v
                     }
@@ -8435,6 +8481,11 @@ function liquefaction(kind, rows, opt = {}) {
 }
 
 
+function liquefaction(kind, rows, opt = {}) {
+    return liquefactionCore(kind, rows, opt, null)
+}
+
+
 /**
  * 液化分析
  *
@@ -8461,6 +8512,9 @@ let calcLiquefaction = {
     mSettls: methodSettlements,
     calc: liquefaction,
 }
+
+
+export { liquefactionCore } //內部用(calcLiquefactionSpt.mjs), 不由WGeo.mjs匯出
 
 
 export default calcLiquefaction

@@ -16,7 +16,7 @@ import isestr from 'wsemi/src/isestr.mjs'
 import isbol from 'wsemi/src/isbol.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
 import calcLiquefactionSptAddPropsBasic from './calcLiquefactionSptAddPropsBasic.mjs'
-import calcLiquefactionSpt from './calcLiquefactionSpt.mjs'
+import { calcLiquefactionSptCore, calcLiquefactionSptByPrepared } from './calcLiquefactionSpt.mjs'
 import calcLiquefactionExtractErr from './calcLiquefactionExtractErr.mjs'
 
 
@@ -163,7 +163,7 @@ function ckH1PL(ltdt, keyH1PL) {
 }
 
 
-function calcCriticalPga(ltdt, PGA, methods, opt = {}) {
+function calcCriticalPga(ltdt, PGA, methods, opt, cap) {
 
     //check
     if (!isnum(PGA)) {
@@ -230,8 +230,14 @@ function calcCriticalPga(ltdt, PGA, methods, opt = {}) {
         useH1PL = true
     }
 
-    //calcLiquefactionSpt
-    let r = calcLiquefactionSpt(ltdt, methods, { PGA, Mw, waterLevelUsual, waterLevelDesign, unitSvSvp })
+    //calcLiquefactionSpt, 各PGA之ltdt、methods與設定皆同而僅PGA不同: 首次照原流程計算並以cap擷取與PGA無關之中間結果, 其後只改寫PGA重算其餘步驟, 結果與逐次呼叫calcLiquefactionSpt相同(Gitea #232)
+    let r
+    if (cap.prepared !== undefined && PGA >= 0) {
+        r = calcLiquefactionSptByPrepared(cap, PGA)
+    }
+    else {
+        r = calcLiquefactionSptCore(ltdt, methods, { PGA, Mw, waterLevelUsual, waterLevelDesign, unitSvSvp }, cap)
+    }
     let ltdtTemp = r.ltdt
     let dtRes = r.dtRes
     // console.log('r.ltdt[sptNJRA2017-FS]', map(r.ltdt, 'sptNJRA2017-FS'))
@@ -405,6 +411,9 @@ function calcLiquefactionSptForCriticalPga(ltdt, methods, opt = {}) {
     let pgaTests = times(pgaMax / pgaSlice)
     // console.log('pgaTests', pgaTests)
 
+    //cap, 供各PGA共用與PGA無關之液化分析中間結果(見calcCriticalPga)
+    let cap = {}
+
     //ltdtRes
     let pgasLtdt = []
     let ltdtRes = []
@@ -428,7 +437,7 @@ function calcLiquefactionSptForCriticalPga(ltdt, methods, opt = {}) {
             stlLims,
             useH1PL,
         }
-        let r = calcCriticalPga(ltdt, PGA, methods, optCalcCriticalPga)
+        let r = calcCriticalPga(ltdt, PGA, methods, optCalcCriticalPga, cap)
         let ltdtTemp = r.ltdt
         let dtRes = r.dtRes
 

@@ -57,6 +57,33 @@ function calcLiquefactionExtractErr(ltdt, opt = {}) {
     //cloneDeep
     ltdt = cloneDeep(ltdt)
 
+    //ub, 最下列的指標
+    let ub = size(ltdt) - 1
+
+    //mergeErrs
+    mergeErrs(ltdt, keyDepthStart, keyDepthEnd, (k, cers) => {
+
+        //save
+        if (mergeTo === 'last') {
+            ltdt[ub][k] = cers
+        }
+        else { //first
+            ltdt[0][k] = cers
+        }
+
+    })
+
+    if (returnLastone) {
+        let r = get(ltdt, ub) //取得最下列
+        return r
+    }
+    return ltdt
+}
+
+
+//mergeErrs, 提取rows各列之錯誤欄位(首列之鍵含'-err'者與'err'), 加註深度後合併, 逐鍵交save(k, cers)儲存; 只讀rows不修改, save所寫之鍵不再被讀取
+function mergeErrs(ltdt, keyDepthStart, keyDepthEnd, save) {
+
     //ks
     let row0 = get(ltdt, 0)
     let ks = keys(row0)
@@ -64,9 +91,6 @@ function calcLiquefactionExtractErr(ltdt, opt = {}) {
         return k.indexOf('-err') >= 0 //提取各液化方法儲存錯誤欄位
     })
     ks = [...ks, 'err']
-
-    //ub, 最下列的指標
-    let ub = size(ltdt) - 1
 
     //merge
     each(ks, (k) => {
@@ -136,23 +160,40 @@ function calcLiquefactionExtractErr(ltdt, opt = {}) {
             }
 
             //save
-            if (mergeTo === 'last') {
-                ltdt[ub][k] = cers
-            }
-            else { //first
-                ltdt[0][k] = cers
-            }
+            save(k, cers)
 
         }
 
     })
 
-    if (returnLastone) {
-        let r = get(ltdt, ub) //取得最下列
-        return r
-    }
-    return ltdt
 }
+
+
+//calcLiquefactionExtractErrLastone, 內部用: 結果與calcLiquefactionExtractErr(ltdt, { returnLastone: true })相同(mergeTo為'last'), 但只複製回傳之最下列而非整個ltdt(Gitea #232)
+//等價依據: mergeErrs只讀各列, 寫入之鍵不再被讀取, 故自原ltdt讀取與自其複製讀取所得相同; 回傳物件為最下列之cloneDeep並寫入合併結果, 與整體複製後取最下列相同
+function calcLiquefactionExtractErrLastone(ltdt) {
+
+    //check
+    if (size(ltdt) === 0) {
+        return ltdt
+    }
+
+    //ub, 最下列的指標
+    let ub = size(ltdt) - 1
+
+    //rowLast
+    let rowLast = cloneDeep(get(ltdt, ub))
+
+    //mergeErrs, 計算核心複雜不提供更換鍵名
+    mergeErrs(ltdt, 'depthStart', 'depthEnd', (k, cers) => {
+        rowLast[k] = cers
+    })
+
+    return rowLast
+}
+
+
+export { calcLiquefactionExtractErrLastone } //內部用(calcLiquefactionSpt.mjs), 不由WGeo.mjs匯出
 
 
 export default calcLiquefactionExtractErr

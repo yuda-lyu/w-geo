@@ -7,6 +7,7 @@
 | 條目 | 內容 | 位置 |
 | --- | --- | --- |
 | R-JUDGE-FINITE-01 | 送入 wsemi `judge` 之運算元須為有限數:取自資料之值先 `cdbl`(2026-10-31,wsemi 1.9.35～1.9.36 `judge` 改以 `isenum` 判定且容差改 12 位有效數字) | 本檔 |
+| R-LIQ-CLONE-01 | 液化分析內部函數之複製與共用計算:公開入口複製一次、內部不重複複製、較快之複製須與 `cloneDeep` 同結果、與 PGA 無關之前段於多 PGA 間只算一次;輸出須與 1.2.49 逐字相同(2026-11-28,Gitea #232) | 本檔 |
 
 ## R-JUDGE-FINITE-01 送入 `judge` 之運算元須為有限數
 
@@ -55,3 +56,41 @@
 | `sepDepthStartEndByDepth.mjs:233` | `test/sepDepthStartEndByDepth.test.mjs` 之 `f7`(4 案) |
 
 執行:`npm test`(本套件 `package.json` 之 test script);只跑此四檔:`npx mocha --no-parallel test/calcDepthStartEndByConnect.test.mjs test/calcDepthStartEndByGroup.test.mjs test/groupByDepthStartEnd.test.mjs test/sepDepthStartEndByDepth.test.mjs --timeout 180000`(以 `quiet-run --lock` 包).
+
+## R-LIQ-CLONE-01 液化分析內部函數之複製與共用計算
+
+**背景**:使用端以 `calcLiquefactionSptForCriticalPga` 求臨界 PGA,每個 PGA(預設 100 個)皆完整重跑 `calcLiquefactionSpt`,其內各層函數入口各自 `cloneDeep`,排序欄位又以 wsemi `strleft`/`strright` 逐鍵判斷(每次呼叫皆做參數檢測),單孔約 0.8 秒(Gitea #232).使用端之成果以 `JSON.stringify` 寫出,輸出有任何一位不同即須全部重算,故**加速不得改變任何輸出**.
+
+### 規則
+
+1. **公開函數之入口複製一次且保留**(呼叫端之輸入不被修改):`calcLiquefactionSpt`、`calcLiquefaction.calc`(`liquefactionCore` 非 `usePrepared` 時)、`calcVerticalStress`、`calcLiquefactionExtractErr`.不得為加速而移除.
+2. **內部串接之函數不重複複製**:只有輸入為「本流程剛複製出、無他處引用」之列時,才可原地修改(`liqPL`、`liqSett`、`liqH1`、`liqH1PL` 之輸入為 `liqFS` 逐列新複製者).仍被他處引用者必須複製:`liqParams` 之結果於多個 PGA 共用(`liqFS` 先複製才寫入)、`calcVerticalStress` 之 `core` 兩次讀同一 `ltdt`、`calcLiquefactionSptByPrepared` 拋錯時之 `cap.preCalc`(首個 PGA 拋錯時即其回傳之 `ltdt`).
+3. **較快之複製須與 `cloneDeep` 同結果**:`cloneRowFlat` 只對「原型為 `Object.prototype`、無自有 symbol 鍵、無 `__proto__` 鍵、各值皆原始型別(含 `null`、`undefined`)」之列逐鍵指派,其餘一律交 `cloneDeep`(巢狀值、類別實例、陣列等).只回傳末列者以 `calcLiquefactionExtractErrLastone` 只複製末列(與整體複製後取末列同結果).
+4. **與 PGA 無關之前段只算一次**:`calcLiquefactionSptForCriticalPga` 之首個 PGA 照原流程計算(`calcLiquefactionSptCore`),以 `cap` 擷取 `preCalc`(液化分析前之各列)與 `prepared`(`liqParams` 之結果);其後之 PGA 以 `calcLiquefactionSptByPrepared` 只改寫各列 `PGA` 再接續 `liqFS` 以後各步.前段(複製、清除應力、`AddPropsBasic`、`AddPropsAdv`、深度檢查、排序、`liqParams` 之地下水位、深度與孔隙參數、垂直應力、`Mw`、振動形式)皆不讀 PGA,唯 `getPGA` 讀各列之 `PGA` 而寫回,即改寫之值.**前段任何一步改為讀 PGA(新增欄位、改公式)時,本共用即不成立**,須把該步移到 `liqFS` 之後或改回逐 PGA 計算.前段拋錯者(`cap.prepared` 不存在)其後各 PGA 皆照原流程(含 console 輸出次數).
+5. **熱路徑上與 wsemi 函數等價之字串判斷可改原生寫法**,註解寫明等價依據:`isStrStartWith(k, t)` ≡ `strleft(k, size(t)) === t`、`isStrEndWith(k, t)` ≡ `strright(k, size(t)) === t`(`t` 為非空 ASCII 字串).排序欄位每列只以 `each` 取一次鍵值(`kvs`)供各次遍歷共用.
+6. **浮點運算之次序不得改變**;不改 PGA 之掃描方式(不二分、不提前結束,`ltdtRes` 保留完整筆數).
+7. 改動本條所列之任何站點前後,**以對拍工具逐字比對新舊版**(見下〈驗證〉),0 不同才可交付.
+
+### 盤點指令與站點全集(2026-11-28)
+
+盤點:`Grep "cloneDeep\(|cloneRowFlat\(" src/calcLiquefaction.mjs src/calcLiquefactionSpt.mjs src/calcLiquefactionExtractErr.mjs src/calcLiquefactionSptForCriticalPga.mjs src/calcVerticalStress.mjs`,扣除 `// console.log` 註解行須 11 處.判準:保留(公開入口或有他處引用)/快速路徑/只複製末列/刻意不改.
+
+| 站點 | 用途 | 判準 |
+| --- | --- | --- |
+| `calcLiquefactionSpt.mjs` `calcLiquefactionSptCore` 入口 `ltdt = cloneDeep(ltdt)` | 公開入口 | 保留(規則 1) |
+| `calcLiquefactionSpt.mjs` `calcLiquefactionSptByPrepared` 之 `cloneDeep(cap.preCalc)` | 拋錯時回傳液化分析前之各列 | 保留(規則 2,`preCalc` 可能即首個 PGA 之回傳) |
+| `calcLiquefaction.mjs` `liquefactionCore` 入口 `rows = cloneDeep(rows)` | 公開入口;亦保護 `calcLiquefactionSpt` 拋錯時之 `preCalc` | 保留(規則 1、2) |
+| `calcLiquefaction.mjs` `liqFS` 之 `cloneRowFlat(row)` | 逐列複製,保護多 PGA 共用之 `prepared` | 快速路徑(規則 3) |
+| `calcLiquefaction.mjs` `cloneRowFlat` 內 2 處 `cloneDeep(row)` | 不合快速路徑者之退回 | 保留 |
+| `calcLiquefaction.mjs` `liqPL`、`liqSett`、`liqH1`、`liqH1PL` | 原各自 `cloneDeep(rows)` | 已移除(規則 2) |
+| `calcLiquefactionExtractErr.mjs` 公開函數之 `cloneDeep(ltdt)` | 公開入口 | 保留(規則 1) |
+| `calcLiquefactionExtractErr.mjs` `calcLiquefactionExtractErrLastone` 之 `cloneDeep(get(ltdt, ub))` | 只複製回傳之末列 | 只複製末列(規則 3) |
+| `calcVerticalStress.mjs` `calcVerticalStress` 入口 | 公開入口 | 保留 |
+| `calcVerticalStress.mjs` `core` 入口 | 兩次 `core` 讀同一 `ltdt` | 刻意不改(多 PGA 時只在首個 PGA 執行,已非熱點) |
+| `calcLiquefactionSptForCriticalPga.mjs` `res = cloneDeep(...)` | 每次呼叫一次,`searchLimit` 會改寫 | 刻意不改(非熱點);同檔末段之 `calcLiquefactionExtractErr(ltdtRes, …)` 亦每次呼叫一次,刻意不改 |
+
+### 驗證
+
+- 凍結值測試:`test/unit-liquefactionFrozen.test.mjs`(期望值 `test/unit-liquefactionFrozen.json`,以 1.2.49 之 `src` 對 `test/tools/liqGen.mjs` 之合成輸入計算後凍結,比對「呼叫後之輸入＋輸出」之型別化序列化、拋錯與 console 輸出).執行:`npx mocha --no-parallel test/unit-liquefactionFrozen.test.mjs --timeout 180000`(以 `quiet-run --lock` 包).改 `liqGen.mjs` 之產生邏輯即須以 1.2.49 之 `src` 重產(`node test/tools/liqFrozenMake.mjs <1.2.49之根>`),不可以改後之程式碼重產.
+- 新舊對拍:`git archive <基準commit> src | tar -x -C ./tmp/ref`,再 `node test/tools/liqDuel.mjs ./tmp/ref . critical,spt,calcSpt,calcCpt,extractErr,vstress 500`,末行須為 `DUEL PASS`.
+- 使用端之實際呼叫參數夾具(Gitea #232,含使用端之鑽孔試驗數據)由主控保管,不入本庫.

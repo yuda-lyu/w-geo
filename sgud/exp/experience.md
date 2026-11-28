@@ -29,3 +29,13 @@
 
 - `npm i <套件>@latest` 會順手把 `package-lock.json` 頂層 `version` 同步成 `package.json` 現值(原落後 1.2.8 → 1.2.9),並使 `package.json` 末尾多一個換行;皆非版本變更.
 - 全套測試並行約 13 秒,5390 案;`calcCptUnitWeight` 等會印大量 console.log(完整輸出約 13 萬行),一律經 `quiet-run`.
+
+## 5. 液化分析加速而輸出逐字不變(2026-11-28,Gitea #232)
+
+- **先量再改**:`node --cpu-prof` 剖析使用端之實際呼叫(每孔 100 個 PGA)得:排序欄位(`liquefactionCore` 末段)逐鍵呼叫 wsemi `strleft`/`strright` 約 30%(每次呼叫皆經 `optVal`/`iseint` 之參數檢測),`cloneDeep` 合計約 34%,`liqParams`(含垂直應力)約 10%.改後剩以 `sptNJRA`、`sptSettlement` 之實際計算為主(其內 wsemi `interp1` 之 `toArrayXY` 約 12%,屬 wsemi,未動).彙整 `.cpuprofile` 之 self/inclusive 時間只需數十行腳本(依 `nodes`、`samples`、`timeDeltas`,inclusive 沿父鏈去重).
+- **移除內部 `cloneDeep` 之判準**:輸入為本流程剛複製出且無他處引用者,原地修改與複製後修改結果相同(`cloneDeep` 之輸出再 `cloneDeep` 結構不變,含別名).但**別名**須另看:陣列內同一物件重複出現時,`cloneDeep(rows)` 保留別名、逐列 `cloneDeep(row)` 則拆開;零厚度或近零厚度(相對 1e-13)之層可通過深度連續檢查(12 位有效數字),故別名可到達 `liqFS`,移除逐列複製會改變結果.
+- **前段共用之形式**:首個 PGA 照原流程算、以回呼擷取中間結果,其後 PGA 只改寫 `PGA`;前段拋錯時其後 PGA 照原流程,console 輸出次數亦同.比起另寫一份「前段函數」,此法不必複製前段之程式碼,錯誤路徑自然與原流程一致.
+- **`calcLiquefactionSptForCriticalPga` 於 1.2.49 即就地修改呼叫端之層物件**(`calcLiquefactionSptAddPropsBasic` 以 `map` 原地寫入 `FC`、`rd`、`rsat`、`N60`、`soilClassification`),回傳之 `ltdt` 即呼叫端之物件;本輪保持不變,測試以「呼叫後狀態與 1.2.49 逐字相同」斷言,其餘公開函數則斷言不修改輸入.
+- **對拍之序列化須含物件同一性**:`JSON.stringify` 看不到「輸出與輸入共用物件」與別名;`test/tools/liqSer.mjs` 之 `ser` 首見記 `@id`、再見記 `#id`,並區分 `-0`、`NaN`、`undefined`、原型;console 輸出(Error 取名稱與訊息)與拋錯亦比.
+- **錯誤路徑之變異須有可觀察之輸入**:「拋錯時回傳之 `ltdt` 未改寫 PGA」「拋錯時未複製 `preCalc`」兩變異只在「`returnLtdtForEachPga: true` 且液化分析拋錯」時可觀察;純隨機之產生器 60 組內碰不到而存活,改以「情境」先選(各錯誤路徑及其與逐 PGA 回傳之組合)後才被抓到.凍結值之選案亦須以情境為特徵.
+- **主控之 `quiet-run` 經 cmd 執行,空字串參數(`""`)會消失**:變異腳本以 `all` 等明確值代替,並對「0 個變異被執行」報失敗(首輪即因此空跑而誤報全抓到).

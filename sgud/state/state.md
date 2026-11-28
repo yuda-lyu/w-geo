@@ -2,7 +2,7 @@
 
 本檔記載當前已開發功能之最新狀態:各功能做到哪裡、對應之規則帳本條目與測試檔、已知缺口與待辦、最近一次驗證或發布之版本.只記現況,不寫過程(過程見 `sgud/exp/experience.md`).規則帳本為藍圖(`sgud/rule/rulebook.md`),兩者比對即知尚未做到者.
 
-套件:`w-geo`(大地工程分析工具套件;`package.json` version 未動,現為 1.2.9,2026-10-31 修正輪之改動待主控複審並發布).相依 `wsemi` ^1.9.36、`w-optimization` ^1.0.44、`w-statistic` ^1.0.45、`w-highcharts` ^1.0.28(2026-10-31 升級;`w-package-tools` ^1.1.21 已是最新).
+套件:`w-geo`(大地工程分析工具套件;`package.json` version 未動,現為 1.2.49,2026-11-28 修正輪(Gitea #232)之改動待主控複審並發布).相依 `wsemi` ^1.9.83、`w-optimization` ^1.0.82、`w-statistic` ^1.0.85、`w-highcharts` ^1.0.65,devDependencies `w-package-tools` ^1.1.32.
 
 ## 功能現況
 
@@ -17,7 +17,7 @@
 | 孔隙、塑性、相對密度、OCR 估算 | `calcRelaPorous`／`relaPorous`、`calcRelaPlasticity`／`relaPlasticity`、`calcEstmRelativeDensity`／`estmRelativeDensity`、`calcEstmOcr`／`estmOcr`、`dtRelaPorous`、`dtRelaPlasticity`、`dtEstm*`、`trimParams` | 完成 | — | 同名測試檔 |
 | 垂直應力 | `calcVerticalStress`、`calcEstmVerticalStress`、`checkVerticalStress`、`buildSvsAndSvps` | 完成 | — | `calcVerticalStress`、`calcEstmVerticalStress`;`checkVerticalStress`、`buildSvsAndSvps` 無獨立測試檔 |
 | CPT 分析 | `calcCpt`、`calcCptClassify`、`calcCptLayers`、`calcCptUnitWeight`、`calcCptVelocityShear`、`getCptDepthHcOpt` | 完成(`dig` 站點結果不變,見下) | — | `calcCpt`、`calcCptLayers`、`calcCptUnitWeight`、`calcCptVelocityShear`;`calcCptClassify`、`getCptDepthHcOpt` 無獨立測試檔 |
-| 液化分析 | `calcLiquefaction`、`calcLiquefactionSpt`、`calcLiquefactionSptForCriticalPga`、`calcLiquefactionSpt*`、`calcLiquefactionAddErr`／`ClearStress`／`ExtractErr` | 完成 | — | `calcLiquefaction-cpt`、`calcLiquefaction-spt`、`calcLiquefactionSpt`、`calcLiquefactionSptForCriticalPga` |
+| 液化分析 | `calcLiquefaction`、`calcLiquefactionSpt`、`calcLiquefactionSptForCriticalPga`、`calcLiquefactionSpt*`、`calcLiquefactionAddErr`／`ClearStress`／`ExtractErr` | 完成(2026-11-28:內部複製與共用計算之加速,輸出與 1.2.49 逐字相同;使用端夾具合計耗時約為改前之 1/3.7,見下〈最近一次驗證〉) | R-LIQ-CLONE-01 | `calcLiquefaction-cpt`、`calcLiquefaction-spt`、`calcLiquefactionSpt`、`calcLiquefactionSptForCriticalPga`、`unit-liquefactionFrozen`(1.2.49 凍結值 61 案);對拍工具 `test/tools/liqDuel.mjs` |
 | 其他 | `buildInterpFun`、`calcPropInterfaceFrictionAngle` | 完成 | — | `buildInterpFun`、`calcPropInterfaceFrictionAngle` |
 
 ## 待裁示
@@ -29,7 +29,9 @@
 - `calcDepthStartEndByGroup` 兩相鄰樣本深度皆約 `1e308` 以上時內部 `(dc0 + dc1) / 2` 溢位為 `Infinity` 使 `judge` throw:刻意不修(無實務意義),已記 README〈Breaking changes〉(R-JUDGE-FINITE-01 已知限制 1).
 - 舊命名之測試檔(無 `unit-`／`api-` 前綴)與部分函數無獨立測試檔(見上表):未動,屬既有狀況.
 - 未發布:`dist/`、`docs/` 為發布時自動產製,本輪未重編.
+- 液化分析改後之耗時以各方法之實際計算為主(`sptNJRA`、`sptSettlement`,其內 wsemi `interp1` 約占 1/4),屬 wsemi 之部分已記 `sgud/feedback/feedback.md`,未改.
+- `calcLiquefactionSptForCriticalPga` 會就地補齊呼叫端層物件之 `FC`、`rd`、`rsat`、`N60`、`soilClassification`,且回傳之 `ltdt` 即呼叫端之物件:1.2.49 即如此,刻意不改(語意不變);其餘液化相關公開函數不修改輸入.
 
 ## 最近一次驗證
 
-2026-10-31(任務 20261031121854,wsemi 1.9.35～1.9.36 下游修正):全套 `npm test`(`quiet-run --lock`)**升級前(wsemi 1.9.25)5374 通過/0 失敗;升級後(1.9.36)未改碼 5374 通過/0 失敗;補 `cdbl`＋新增 16 案後 5390 通過/0 失敗**.修前紅:新增 16 案對 HEAD 之 `src/`(複本)16 全紅(`x1 is not a number`).新舊 `judge` 並行記錄(全套 879,052 次呼叫)0 分歧;新舊 `dig` 並行記錄(863,880 次呼叫)101 分歧,皆為 `calcCptUnitWeight.mjs:213` 之 `dig(-Infinity, 2)`(舊 `'NaN'`、新 `''`),經 `cdbl` 後皆為 0,5 方法×4 資料集之輸出新舊逐一相同.eslint 變更檔 0 error.報告:`C:\opensrcOper\dnow\20261031121854\agent-out\geo-修正報告.md`.
+2026-11-28(主控任務 20261128134128 之 geo699,Gitea #232 液化分析加速):全套 `npm test`(`quiet-run --lock`)5452 通過/0 失敗/0 略過(既有 5390＋新增 `unit-liquefactionFrozen` 62).使用端之實際呼叫參數夾具(26 孔,主控保管)PASS 26/26,合計耗時 1.2.49 中位 23.5 秒 → 改後中位 6.7 秒(交替各 3 次,約 3.5 倍).新舊對拍(`test/tools/liqDuel.mjs`,1.2.49 以 `git archive` 取得)7 組產生器各 500 組＋`calcSpt`、`spt` 另 500 組,0 不同;變異 19 個中 18 個被新測試抓到,1 個(`cloneRowFlat` 共用巢狀值)為等價變異(再對拍 1500 組 0 不同).eslint 變更檔 0 新增(`calcLiquefaction.mjs` 之 `t` 未用為既有);JSDoc 實跑 0 ERROR.前一次驗證(2026-10-31,wsemi 1.9.35～1.9.36 下游修正)見 `sgud/exp/experience.md` §1～§3.
